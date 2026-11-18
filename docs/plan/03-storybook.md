@@ -149,7 +149,7 @@ interface StorybookAdapter {
 
 ---
 
-## 4. Metadata extraction
+## 4. Metadata extraction <a id="metadata-extraction"></a>
 
 ### 4.1 Per-story `loadStory`
 
