@@ -140,6 +140,13 @@ These are binding for every chapter. If a chapter disagrees with this table, thi
 | D-29 | **Default conflict policy: "Keep mine".** When a designer edited a managed node and the code changed it too, the node is skipped and flagged (`SYNC_CONFLICT`); the user resolves it in the diff preview. Designers can also `lock` any node (see [10](10-sync.md)) | ✅ |
 | D-30 | **States axis:** `disabled`/`loading`/`invalid` args and pseudo-states fold into one `State` variant axis instead of separate boolean axes, unless config says otherwise (see [04](04-variant-model.md)) | ✅ |
 | D-31 | **Hashing split:** producers (CLI) compute every content hash (`vk`, `irh`, asset sha256). The plugin has no `crypto.subtle`, so it only computes `ah` with pure-JS FNV-1a-64 | 🟡 (spike S-06) |
+| D-32 | **Branch files.** There is one Figma file per git feature branch: a duplicated file by default, or a Figma-native branch when the plan allows. The link is stored in root `branch:meta` and in `.figmabook/branches/` (see [15](15-change-requests.md)) | ✅ |
+| D-33 | **Proposal mode.** In branch files, designer edits to managed nodes are proposals, not conflicts. Library files keep D-29 (see [15](15-change-requests.md)) | ✅ |
+| D-34 | **Embedded baseline.** In proposal mode, the applier stores a compressed, normalized applied snapshot per variant (`base:*`, same normalizer as `ah`). The DCR is diffed against that snapshot, never against the Scene IR's intent (see [15](15-change-requests.md)) | ✅ |
+| D-35 | **Deterministic DCR.** The extraction is a pure function with no LLM, clock or randomness, using canonical JSON, stable item ids and asset bytes outside the hash. The same file version and baseline give a byte-identical `dcr.json` and `prompt.md` (see [15](15-change-requests.md)) | ✅ |
+| D-36 | **Provenance.** Branch mode captures from the Vite dev server with source maps. The mapper records field → CSS origin in `provenance/<sid>.json`. An optional `@figmabook/vite-plugin` adds JSX locations (see [15](15-change-requests.md)) | ✅ |
+| D-37 | **Agent contract.** Stories are mandatory for every new or changed item, tagged `parameters.figmabook.implements`. `figmabook verify` is the acceptance test. DCRs and verify reports are committed with the PR (see [15](15-change-requests.md)) | ✅ |
+| D-38 | **Designer text is untrusted data** in prompts: always fenced or escaped, never inside instructions (see [15](15-change-requests.md)) | ✅ |
 
 ## 6. Architecture at a glance
 
@@ -176,10 +183,12 @@ The packages (details in [02](02-architecture.md#monorepo)) are published under 
 | `layout-sim` | a model of Figma's auto-layout and grid algorithm, used by mapper verification and by `figma-fake` | isomorphic |
 | `plugin` | Figma plugin: main (reconciler/applier) + UI | Figma |
 | `figma-fake` | in-memory implementation of the plugin's narrow `FigmaPort` interface, for tests | Node |
-| `cli` | `figmabook` binary (alias `fbk`): `init`, `doctor`, `list`, `capture`, `export`, `serve`, `mcp`, `codeconnect`, `telemetry`. Exit codes in [11](11-ux.md) | Node |
+| `cli` | `figmabook` binary (alias `fbk`): `init`, `doctor`, `list`, `capture`, `export`, `serve`, `mcp`, `codeconnect`, `telemetry`, `branch start|link|refresh|close`, `dcr`, `verify`. Exit codes in [11](11-ux.md) | Node |
 | `storybook-addon` | optional: typed `parameters.figmabook`, a manager panel, a build-time manifest via `experimental_manifests`, and in-preview capture hooks | Storybook |
 | `action` | GitHub Action wrapper around the CLI | CI |
 | `fidelity` (tool) | scoring: screenshot vs Figma export, box deltas, reports | Node |
+| `dcr` | pure Figma snapshot ↔ baseline diff, classification, reverse property→arg mapping, DCR IR, deterministic `prompt.md` renderer | everywhere |
+| `vite-plugin` | optional `@figmabook/vite-plugin`: stamps JSX source locations for provenance in branch mode | Node (Vite) |
 
 ## 7. Glossary and cross-chapter contracts
 
@@ -219,6 +228,10 @@ Use these exact terms and identifiers in every chapter.
 | **Managed node** | a Figma node carrying `figmabook/nk`. Unmanaged nodes inside managed components are designer additions and are never modified |
 | **Fallback** | per container: absolute child positions embedded in the Scene IR, applied when read-back verification fails |
 | **Apply plan** | the plugin-side diff (create/update/move/deprecate/conflict) computed read-only before writing |
+| **Branch file** | a Figma file (duplicate or Figma-native branch) linked to one git feature branch and its `baseCommit` (D-32) |
+| **Proposal mode** | the sync mode of branch files: designer edits to managed nodes are *intent*, captured for a DCR, not conflicts (D-33) |
+| **Baseline snapshot** | the normalized applied state per variant stored at generation time (`base:*`); the DCR diffs against it (D-34) |
+| **DCR** | Design Change Request: deterministic, schema-validated list of design changes vs the baseline (modified, new variant/property/component, usage, deleted, detached), each with provenance, tokens, assets and an acceptance criterion; rendered to `prompt.md` for an AI agent ([15](15-change-requests.md)) |
 
 ### Config precedence (lowest to highest)
 
@@ -243,6 +256,7 @@ Details, estimates and exit criteria are in [14](14-roadmap.md).
 | 2 | Native structure | Auto layout/grid inference with verification and fallback; text and font fidelity; naming; simplification |
 | 3 | Components & variants | Variant planner, component sets, component properties (BOOLEAN/TEXT), states; local server + pairing; doc frames |
 | 4 | Sync | Identity, keyed in-place reconciliation, diff preview, conflict policies, deprecation, renames |
+| 4.5 | **DCR MVP** (flagship) | Branch files, proposal mode, baseline snapshot, deterministic DCR (modified / new / usage) with provenance, `prompt.md`, `figmabook dcr` + MCP `design_changes`. Full verify loop lands with Phase 7 |
 | 5 | Tokens | Variables, aliases, modes from themes, bindings, styles, library matching |
 | 6 | Composition | Nested instances, icon extraction, INSTANCE_SWAP, SLOT |
 | 7 | Automation | GitHub Action + registry, Storybook addon, Code Connect generation, MCP server |
@@ -256,3 +270,5 @@ Details, estimates and exit criteria are in [14](14-roadmap.md).
 4. **Distribution:** public Figma Community plugin, or a private org plugin first (no review, faster iteration)?
 5. ~~Storybook minimum version~~ → **Storybook 10 primary**; 11 at GA; 8/9 best-effort; no 7 (decided, D-11).
 6. Is a hosted or paid tier ever intended? (Affects nothing in the MIT core; only where a future service would live.)
+7. **Figma plan:** Organization/Enterprise (Figma-native branching for branch files) or one duplicated file per branch (any plan)? (D-32)
+8. **Who edits branch files:** designers only, or developers too? Affects how much of the DCR preview targets non-developers.
