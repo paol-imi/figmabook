@@ -87,11 +87,11 @@ figmabook makes the Figma library a *build artifact* of the Storybook, produced 
 
 ## 4. Success metrics
 
-These are tracked from Phase 1 onward by the fidelity harness ([12](12-quality.md)).
+These are tracked from Phase 1 onward by the fidelity harness ([12](12-quality.md)); they become release-blocking gates from milestone M5. Until then a regression is reported but does not block.
 
 | Metric | Definition | v1 target |
 |---|---|---|
-| Visual fidelity | median and p10 SSIM, Figma PNG export vs Playwright element screenshot @2x | median ≥0.985, p10 ≥0.95 |
+| Visual fidelity | median and p10 text-masked SSIM (`S_masked`, see [12](12-quality.md)), Figma PNG export vs Playwright element screenshot @2x | median ≥0.985, p10 ≥0.95 |
 | Geometry fidelity | p95 \|Δ\| of every node's Figma `absoluteBoundingBox` vs captured rect | ≤1px |
 | Auto-layout coverage | share of IR containers emitted as auto layout (not absolute) and still passing verification | ≥85% on fixtures |
 | Text line parity | share of text nodes whose Figma line count equals the browser's | ≥98% |
@@ -110,7 +110,7 @@ These are binding for every chapter. If a chapter disagrees with this table, thi
 | D-01 | **Public product name: Holotype** (proposed; CLI `holotype`, alias `holo`; npm scope `@holotype`; GitHub org e.g. `holotypehq`). A holotype is the single reference specimen a species is defined from: the code is the specimen, Figma gets the faithful copy. npm name and scope are free; no conflicting dev or design product was found; a formal USPTO/EUIPO search is still required. Runners-up: Twinform, Limner (trademark risk: an existing painting app). Until the rename lands, every package, CLI and doc keeps the codename `figmabook`; the rename happens before the first public release (see [13](13-security-legal.md#trademark)). Listing title pattern: "Holotype — Storybook to components, plugin for Figma Design" | 🟡 (user confirm + trademark search) |
 | D-02 | **License:** MIT for all packages in this repo (user decision). A future hosted service, if any, lives in a separate repo (closed source or FSL-1.1-MIT) | ✅ |
 | D-03 | **Language/runtime:** TypeScript (strict) everywhere; Node ≥20.19, developed on Node 24 LTS; ESM only | ✅ |
-| D-04 | **Monorepo:** pnpm workspaces + Turborepo + changesets; Vitest; Biome (lint+format); tsup for Node packages | ✅ |
+| D-04 | **Monorepo:** pnpm workspaces + Turborepo + changesets; Vitest; Biome (lint+format); tsup for Node packages. Core libraries: Hono + `ws` (local server), c12/jiti (config), citty (CLI), fflate (bundle zip), `@noble/hashes`, colorjs.io, fontkit + harfbuzzjs (font metrics), sharp (CLI only), sirv; dependency-cruiser enforces package boundaries. Plugin bundle budgets: main ≤400 KB, UI ≤600 KB (see [02](02-architecture.md)) | ✅ |
 | D-05 | **Capture:** Playwright, **Chromium only**, browser version pinned per release (it is part of the cache key); CDP used directly | ✅ |
 | D-06 | **Plugin build:** create-figma-plugin (esbuild + Preact UI); `documentAccess: "dynamic-page"`; async APIs only; typings pinned | ✅ |
 | D-07 | **Schemas:** TypeBox is the single source of truth, with JSON Schema emitted and published per major version | ✅ |
@@ -118,21 +118,26 @@ These are binding for every chapter. If a chapter disagrees with this table, thi
 | D-09 | **Plugin = reconciler.** The plugin does not infer CSS. It applies the Scene IR by keyed in-place reconciliation, verifies by read-back, and falls back per container to the embedded absolute layout | ✅ |
 | D-10 | **MVP topologies:** (A) local CLI server on loopback with a pairing token, and (B) bundle-file import (always available). Then (D) CI/GitHub Action + registry, then (C) optional hosted renderer. (E) in-iframe rendering is rejected | ✅ |
 | D-11 | **Storybook support:** **10.x is the primary, first-class target** (user decision): all fixtures, dogfooding and release gates run on it. 11.x is tracked from beta and becomes first-class at its GA. 8.x/9.x are best-effort: the adapter keeps their code paths and CI runs a smoke test only. 7.x and older are not supported. Static build is the reference target; dev server is supported | ✅ |
-| D-26 | **Primary target stack:** React + Vite (`@storybook/react-vite`) on Storybook 10 (user decision). Every fixture, golden test, spike and dogfooding project uses it until M5. The DOM-based pipeline stays framework-agnostic (G8), but other renderers (Vue, Lit, Angular, Svelte, HTML) are *best-effort, untested* until they get fixtures in a later phase; framework-specific enhancers (D-21) ship for React first | ✅ |
 | D-12 | **Variant source priority:** curated config > `parameters.figmabook` > stories-as-variants > args matrix. The default is *not* a blind Cartesian product (see [04](04-variant-model.md)) | ✅ |
 | D-13 | **Property classification:** each arg is classified VARIANT / BOOLEAN / TEXT / INSTANCE_SWAP / SLOT / FIXED by **render-and-diff verification**, not by type alone | ✅ |
 | D-14 | **Pseudo-states:** CDP `CSS.forcePseudoState` on the target and its ancestor chain by default; real Playwright interaction as a per-component fallback or option; the storybook-addon-pseudo-states global when that addon is installed; drop states with no visual effect | ✅ |
-| D-15 | **Layout policy:** absolute positioning is the always-correct baseline. Auto layout or grid is emitted per container only if the capture-side simulation passes (≤0.6px), and it is kept only if the plugin read-back passes (≤1px). Failures fall back *per container*, never per document | ✅ |
+| D-15 | **Layout policy:** absolute positioning is the always-correct baseline. Auto layout or grid is emitted per container only if the capture-side simulation passes (`TOL_SIM` ≤0.6px), and it is kept only if the plugin read-back passes (`TOL_READBACK` ≤1px). On read-back failure the plugin relaxes step by step (text width buffer → HUG→FIXED → FILL→FIXED) before the full absolute fallback. Failures fall back *per container*, never per document. `SPACE_EVENLY`/`SPACE_AROUND` are approximated until spike S-10 confirms parity | ✅ |
 | D-16 | **Borders:** CSS border maps to an INSIDE stroke. Padding in the Scene = CSS padding + border width with `strokesIncludedInLayout:false` (exact). Per-side colors are decomposed | 🟡 (spike S-05) |
 | D-17 | **Text:** one TEXT node per inline formatting context, with styled ranges. Explicit px line-height, never Figma "Auto". Fonts resolved via CDP `CSS.getPlatformFontsForNode`. Default wrap mode `reflow`, with `locked-lines` as an option | ✅ |
 | D-18 | **Tokens:** a binding is created only when the value is *provably* produced by a `var()` chain (CDP matched styles). Value-equality matching is opt-in and flagged low-confidence. Existing library variables are matched by `codeSyntax.WEB`, then by name, before anything new is created. Generated values never silently overwrite existing variable values | ✅ |
-| D-19 | **Identity:** shared plugin data under the namespace `figmabook`. Keys `sid` (component), `vk` (variant), `nk` (node), `irh` (subtree hash), `ah` (applied hash), `v` (schema version). No delete-and-recreate of managed nodes, ever | ✅ |
+| D-19 | **Identity:** shared plugin data under the namespace `figmabook`. Keys `sid` (component), `vk` (variant), `nk` (node), `irh` (subtree hash), `ah` (applied hash), `v` (schema version). `v` = `"<irMajor>.<applierEpoch>"` (epoch bumps when a plugin fix changes output for the same input). Each key is a separate entry so `nk` can be indexed; the index skips nodes inside instances. Option `sync.identityStorage: "private"` keeps identity in private plugin data instead. The namespace is renamed to the public name before the first public release, with the old one read for one major (`SYNC_LEGACY_NAMESPACE`). No delete-and-recreate of managed nodes, ever | ✅ |
 | D-20 | **Deletions:** a removed story leads to deprecation (moved to a "Deprecated" page and renamed), never a hard delete while instances may exist | ✅ |
 | D-21 | **Nested components:** detected in priority order: framework boundaries (React fiber `type`, Vue `__vueParentComponent`, Angular `ng.getComponent`, custom-element tag), matched to Storybook `component` references, then structural subtree hash. Each is emitted as an instance only if the instance render matches within tolerance | ✅ |
 | D-22 | **File organization:** page "Components" (configurable), with one Figma Section per top-level title segment, and each component set laid out with a documentation frame. Also pages "Icons" and "Deprecated". The registry is stored chunked in `figma.root` shared plugin data | 🟡 (M2) |
 | D-23 | **Telemetry:** off by default and opt-in, anonymous aggregates only; honours `DO_NOT_TRACK`; off in CI | ✅ |
-| D-24 | **Default viewport/DPR:** capture at DPR 2, viewport 1280×800, `reducedMotion: reduce`, user agent suffixed `StorybookTestRunner` (Storybook then snaps animations), locale `en-US`, timezone `UTC`, clock pinned | ✅ |
+| D-24 | **Default capture environment:** DPR 2, viewport 1280×800, `reducedMotion: reduce`, user agent suffixed `StorybookTestRunner` (Storybook then snaps animations), locale `en-US`, timezone `UTC`, clock pinned to `2026-01-01T00:00:00Z`, seeded `Math.random`, Chromium `--font-render-hinting=none`. Stories render with `layout: 'fullscreen'` and decorator padding stripped unless `keepLayout` is set (see [05](05-capture.md)) | ✅ |
 | D-25 | **Local server ports:** a fixed list of 3 loopback ports declared in the manifest (default `127.0.0.1:47321-47323`) | 🟡 (spike S-01) |
+| D-26 | **Primary target stack:** React + Vite (`@storybook/react-vite`) on Storybook 10 (user decision). Every fixture, golden test, spike and dogfooding project uses it until M5. The DOM-based pipeline stays framework-agnostic (G8), but other renderers (Vue, Lit, Angular, Svelte, HTML) are *best-effort, untested* until they get fixtures in a later phase; framework-specific enhancers (D-21) ship for React first | ✅ |
+| D-27 | **Superset trees:** every variant in a set contains the aligned union of nodes (by `nk`); nodes absent in a variant are emitted as hidden placeholders. BOOLEAN bindings and variant switching then keep instance overrides (see [07](07-mapping.md#alignment)) | ✅ |
+| D-28 | **Variant budgets:** per set `budget.warn` 128, `budget.max` 256, `hardLimit` 1024 variants; `maxProbes` 120 classification renders. Probe renders classify args and are never emitted as variants (see [04](04-variant-model.md#budgets)) | 🟡 (spike S-06) |
+| D-29 | **Default conflict policy: "Keep mine".** When a designer edited a managed node and the code changed it too, the node is skipped and flagged (`SYNC_CONFLICT`); the user resolves it in the diff preview. Designers can also `lock` any node (see [10](10-sync.md)) | ✅ |
+| D-30 | **States axis:** `disabled`/`loading`/`invalid` args and pseudo-states fold into one `State` variant axis instead of separate boolean axes, unless config says otherwise (see [04](04-variant-model.md)) | ✅ |
+| D-31 | **Hashing split:** producers (CLI) compute every content hash (`vk`, `irh`, asset sha256). The plugin has no `crypto.subtle`, so it only computes `ah` with pure-JS FNV-1a-64 | 🟡 (spike S-06) |
 
 ## 6. Architecture at a glance
 
@@ -169,7 +174,7 @@ The packages (details in [02](02-architecture.md#monorepo)) are published under 
 | `layout-sim` | a model of Figma's auto-layout and grid algorithm, used by mapper verification and by `figma-fake` | isomorphic |
 | `plugin` | Figma plugin: main (reconciler/applier) + UI | Figma |
 | `figma-fake` | in-memory implementation of the plugin's narrow `FigmaPort` interface, for tests | Node |
-| `cli` | `figmabook` binary: `init`, `doctor`, `list`, `capture`, `export`, `serve`, `mcp`, `codeconnect` | Node |
+| `cli` | `figmabook` binary (alias `fbk`): `init`, `doctor`, `list`, `capture`, `export`, `serve`, `mcp`, `codeconnect`, `telemetry`. Exit codes in [11](11-ux.md) | Node |
 | `storybook-addon` | optional: typed `parameters.figmabook`, a manager panel, a build-time manifest via `experimental_manifests`, and in-preview capture hooks | Storybook |
 | `action` | GitHub Action wrapper around the CLI | CI |
 | `fidelity` (tool) | scoring: screenshot vs Figma export, box deltas, reports | Node |
@@ -231,7 +236,7 @@ Details, estimates and exit criteria are in [14](14-roadmap.md).
 
 | Phase | Theme | Headline deliverable |
 |---|---|---|
-| 0 | Foundations & spikes | Repo, CI, schemas skeleton; 12 de-risking spikes answered |
+| 0 | Foundations & spikes | Repo, CI, schemas skeleton; 14 de-risking spikes (S-01..S-14) answered |
 | 1 | Pixel-correct snapshot | `figmabook capture <story>` → bundle → plugin builds an **absolute**, pixel-faithful frame. Fidelity harness live |
 | 2 | Native structure | Auto layout/grid inference with verification and fallback; text and font fidelity; naming; simplification |
 | 3 | Components & variants | Variant planner, component sets, component properties (BOOLEAN/TEXT), states; local server + pairing; doc frames |
