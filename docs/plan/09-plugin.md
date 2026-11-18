@@ -748,7 +748,7 @@ Harness mode (`options.auto = true`, set only by the CLI in a dev build) skips t
 | Merkle skip: unchanged `irh` → no writes for that subtree ([10 §10](10-sync.md#merkle)) | a no-op re-sync costs 0 writes (metric in README §4) |
 | Fonts loaded once, images created once (sha → hash map in the registry) | avoids repeated decode and upload |
 | Build directly on the target page | cross-page moves are expensive |
-| Batch plugin-data writes: one JSON blob per node (`figmabook/id = {nk, irh, ah, v}`) rather than 4 keys ([10 §2](10-sync.md#keys)) | fewer API calls |
+| Plugin-data writes only for keys whose value changed (`irh`/`ah` usually change together, `nk`/`v` rarely) ([10 §2](10-sync.md#keys)) | fewer API calls on updates |
 | Skip unchanged property writes in update mode (compare the current value to the target before assigning) | each assignment can trigger relayout and override bookkeeping |
 | Large sets: warn when a set has more than 500 variants (`APPLY_SET_LARGE`, info). Hard cap from planner budgets ([04](04-variant-model.md#budgets)) | Figma editor performance degrades with huge sets (verify, S-06) |
 
