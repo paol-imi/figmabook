@@ -162,7 +162,7 @@ Key: ✅ yes, ◐ partial, ✗ no, ? unknown. "figmabook v1" means the end of Ph
 | Local / private without cloud | ◐ (agent, paid for localhost) | ✅ | ◐ (extension) | ✅ | ✅ | ✅ default (G7) |
 | Fidelity score per variant | ✗ | ✗ | ✗ | ✗ | ✅ (internal) | ✅ user-visible |
 | Code Connect generation | ✗ (own codegen for React/WC) | n/a | ✗ | ✗ | ✗ | ✅ (Phase 7) |
-| Open source | ✗ | ✗ | ✗ | ✗ | ✅ MIT | ✅ Apache-2.0 (D-02) |
+| Open source | ✗ | ✗ | ✗ | ✗ | ✅ MIT | ✅ MIT (D-02) |
 | Price | $149–199/mo per Storybook | Figma paid plan | Freemium | Paid | Free | Free core |
 
 ## 5. Our wedge
@@ -178,7 +178,7 @@ Key: ✅ yes, ◐ partial, ✗ no, ? unknown. "figmabook v1" means the end of Ph
    - Private and SSO Storybooks work without sending credentials anywhere.
    - "Outdated" is a CI fact, not a poll.
 4. **Measured fidelity.** Every variant carries a box-delta and SSIM score, and the fixture corpus runs as a ratchet ([12](12-quality.md)). We publish scores against code-to-canvas on the same fixtures.
-5. **Open, scriptable, agent-ready.** Apache-2.0, a documented JSON Schema for both IRs, and an MCP server so agents can "sync component X" (Phase 7).
+5. **Open, scriptable, agent-ready.** MIT, a documented JSON Schema for both IRs, and an MCP server so agents can "sync component X" (Phase 7).
 
 ### Deliberately *not* competing on
 - **Arbitrary websites and full-page capture** (html.to.design, code-to-canvas).

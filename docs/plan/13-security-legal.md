@@ -171,10 +171,10 @@ A headless browser fetching user-supplied URLs is an SSRF tool by construction (
   - After rename, the plugin and addon accept the old key as an alias for one major version (`SYNC_LEGACY_NAMESPACE` info).
 
 ### 6.2 Our license (D-02)
-- **Apache-2.0** for all packages in this repo. It includes an explicit patent grant and is enterprise-friendly. A `NOTICE` file lists attributions.
+- **MIT** for all packages in this repo (user decision). It is the most familiar license in the JS ecosystem (Storybook itself is MIT) and has the least friction for adoption. Trade-off vs Apache-2.0: MIT has no explicit patent grant; accepted. Third-party attributions go in `THIRD_PARTY_NOTICES.md`; Apache-2.0 dependencies that ship a `NOTICE` file have it reproduced there.
 - No AGPL anywhere. Many enterprise legal teams ban it, and it would block embedding in internal tooling.
-- **Future hosted service:** either closed source, or FSL-1.1-Apache-2.0. FSL allows every use except a competing service, and each version converts to Apache-2.0 after 2 years ([fsl.software](https://fsl.software/)). Decision at M3 (D-02 is 🟡).
-- **Contributions:** DCO sign-off (`Signed-off-by`), not a CLA. That keeps contribution friction low; it is compatible with Apache-2.0 and doesn't block a later hosted tier, because the hosted code lives elsewhere.
+- **Future hosted service (if ever):** lives in a separate repo, either closed source or FSL-1.1-MIT. FSL allows every use except a competing service, and each version converts to MIT after 2 years ([fsl.software](https://fsl.software/)). The MIT core never depends on it.
+- **Contributions:** DCO sign-off (`Signed-off-by`), not a CLA. That keeps contribution friction low; it is compatible with MIT and doesn't block a later hosted tier, because the hosted code lives elsewhere.
 
 ### 6.3 Third-party code we may borrow <a id="licensing"></a>
 

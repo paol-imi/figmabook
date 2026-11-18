@@ -72,7 +72,7 @@ figmabook makes the Figma library a *build artifact* of the Storybook, produced 
   - Every change is previewed as a diff before it is applied.
 - **G6 Automation.** Everything the plugin can import can be produced by a CLI or a GitHub Action from a static Storybook build. Agents can drive it through an MCP server.
 - **G7 Open & private by default.**
-  - Apache-2.0 core.
+  - MIT-licensed core.
   - Storybook content and credentials never leave the user's machine or CI unless they opt into a hosted service.
 - **G8 Framework-agnostic.** Works with any Storybook renderer (React, Vue, Angular, Svelte, Web Components/Lit, HTML), because conversion operates on the rendered DOM. Framework hooks are only *enhancers*, used for component boundaries and names.
 
@@ -108,7 +108,7 @@ These are binding for every chapter. If a chapter disagrees with this table, thi
 | ID | Decision | Status |
 |---|---|---|
 | D-01 | Public product name. Codename `figmabook`; the public name must not contain "Figma"/"Fig". Listing title pattern: "‹Name› — Storybook to components, plugin for Figma Design" | ❓ |
-| D-02 | **License:** Apache-2.0 for all core packages. A future hosted service is closed source or FSL-1.1-Apache-2.0 | 🟡 (M3) |
+| D-02 | **License:** MIT for all packages in this repo (user decision). A future hosted service, if any, lives in a separate repo (closed source or FSL-1.1-MIT) | ✅ |
 | D-03 | **Language/runtime:** TypeScript (strict) everywhere; Node ≥20.19, developed on Node 24 LTS; ESM only | ✅ |
 | D-04 | **Monorepo:** pnpm workspaces + Turborepo + changesets; Vitest; Biome (lint+format); tsup for Node packages | ✅ |
 | D-05 | **Capture:** Playwright, **Chromium only**, browser version pinned per release (it is part of the cache key); CDP used directly | ✅ |
@@ -117,7 +117,8 @@ These are binding for every chapter. If a chapter disagrees with this table, thi
 | D-08 | **Two IRs:** the *Capture IR* holds raw browser facts and stays CLI-side (cached). The *Scene IR* is the Figma-ready desired graph with absolute fallbacks embedded, and it is what ships to the plugin. Inference (the `mapper`) runs **CLI-side**, is pure and isomorphic, and is never written against the `figma` global | ✅ |
 | D-09 | **Plugin = reconciler.** The plugin does not infer CSS. It applies the Scene IR by keyed in-place reconciliation, verifies by read-back, and falls back per container to the embedded absolute layout | ✅ |
 | D-10 | **MVP topologies:** (A) local CLI server on loopback with a pairing token, and (B) bundle-file import (always available). Then (D) CI/GitHub Action + registry, then (C) optional hosted renderer. (E) in-iframe rendering is rejected | ✅ |
-| D-11 | **Storybook support:** first-class 8.x, 9.x, 10.x; 11.x by GA; 7.6 best-effort; 6.x not supported. Static build is the reference target; dev server is supported | 🟡 (M2) |
+| D-11 | **Storybook support:** **10.x is the primary, first-class target** (user decision): all fixtures, dogfooding and release gates run on it. 11.x is tracked from beta and becomes first-class at its GA. 8.x/9.x are best-effort: the adapter keeps their code paths and CI runs a smoke test only. 7.x and older are not supported. Static build is the reference target; dev server is supported | ✅ |
+| D-26 | **Primary target stack:** React + Vite (`@storybook/react-vite`) on Storybook 10 (user decision). Every fixture, golden test, spike and dogfooding project uses it until M5. The DOM-based pipeline stays framework-agnostic (G8), but other renderers (Vue, Lit, Angular, Svelte, HTML) are *best-effort, untested* until they get fixtures in a later phase; framework-specific enhancers (D-21) ship for React first | ✅ |
 | D-12 | **Variant source priority:** curated config > `parameters.figmabook` > stories-as-variants > args matrix. The default is *not* a blind Cartesian product (see [04](04-variant-model.md)) | ✅ |
 | D-13 | **Property classification:** each arg is classified VARIANT / BOOLEAN / TEXT / INSTANCE_SWAP / SLOT / FIXED by **render-and-diff verification**, not by type alone | ✅ |
 | D-14 | **Pseudo-states:** CDP `CSS.forcePseudoState` on the target and its ancestor chain by default; real Playwright interaction as a per-component fallback or option; the storybook-addon-pseudo-states global when that addon is installed; drop states with no visual effect | ✅ |
@@ -242,8 +243,9 @@ Details, estimates and exit criteria are in [14](14-roadmap.md).
 
 ## 9. Decisions needed from the user
 
-1. **D-01 public name.** It may not contain "Figma"/"Fig".
-2. **D-02 license.** Apache-2.0 (recommended) or MIT. Is a hosted or paid tier ever intended?
-3. **Primary target stack** for fixtures and dogfooding: React-only first, or React + Vue + Lit from day one?
+1. **D-01 public name.** It may not contain "Figma"/"Fig". *In progress: candidates being researched.*
+2. ~~D-02 license~~ → **MIT** (decided).
+3. ~~Primary target stack~~ → **React + Vite on Storybook 10** (decided, D-26).
 4. **Distribution:** public Figma Community plugin, or a private org plugin first (no review, faster iteration)?
-5. **Storybook minimum version** (D-11): is 7.6 needed?
+5. ~~Storybook minimum version~~ → **Storybook 10 primary**; 11 at GA; 8/9 best-effort; no 7 (decided, D-11).
+6. Is a hosted or paid tier ever intended? (Affects nothing in the MIT core; only where a future service would live.)

@@ -92,7 +92,7 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 | `layout-sim` | Figma stack + wrap + grid simulation calibrated with S-10 / T1 data |
 | `mapper` | container classification, flex/grid mapping, sizing HUG/FILL/FIXED, margin strategies, absolute children + constraints, z-order handling, tree simplification, naming chain, text sizing/truncation/wrap modes, embedded per-container fallback |
 | `plugin` | auto-layout build-order rules, read-back verification + per-container fallback, `LAYOUT_*` diagnostics in report |
-| `fixtures` | Vue + Lit golden ports; real DS dogfooding pipeline (MUI, shadcn, Shoelace) |
+| `fixtures` | More React + Vite golden fixtures; real DS dogfooding pipeline on Storybook 10 (MUI, shadcn/ui, Radix-based kits). Vue/Lit ports deferred to post-M5 renderer expansion (D-26) |
 
 **Exit criteria:** auto-layout coverage ≥75% on golden fixtures (≥85% target at M5), geometry p95 ≤1px maintained, text parity ≥97%, ≤5% layers with generic names (`div`, `span`) on golden fixtures. **Decision checkpoint M2:** D-11 (SB matrix), D-22 (file organization). **Effort:** 20 ew.
 
@@ -155,7 +155,7 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 | `mapper` | instance substitution with props → variant/property values; icon extraction (repeated normalized SVG hash, `split` components), slot regions |
 | `plugin` | instance creation + `setProperties`, preferred values, `createSlot`/SLOT properties, Icons page, instance-vs-capture verification (`APPLY_INSTANCE_MISMATCH`) |
 
-**Exit criteria:** Card→Button→Icon nesting produces instances in React/Vue/Lit golden fixtures; instance precision ≥98% (no wrong instance), recall ≥85%; icon swaps work in designer test. **Effort:** 12 ew.
+**Exit criteria:** Card→Button→Icon nesting produces instances in the React + Vite golden fixtures (D-26); instance precision ≥98% (no wrong instance), recall ≥85%; icon swaps work in designer test. **Effort:** 12 ew.
 
 ---
 
@@ -233,11 +233,11 @@ L = likelihood, I = impact (H/M/L).
 ## Open questions
 
 From README §9 (user decisions):
-1. D-01 public name.
-2. D-02 Apache-2.0 vs MIT; any hosted/paid tier intended?
-3. Fixture/dogfooding target: React-only first, or React + Vue + Lit from day one? (Plan assumes React first in Phase 1, Vue + Lit in Phase 2.)
+1. D-01 public name (in progress).
+2. ~~License~~ → MIT (decided).
+3. ~~Fixture target~~ → React + Vite on Storybook 10 (decided, D-26). Vue/Lit/Angular fixtures move out of Phases 2–3 to post-M5 ("renderer expansion"); the pipeline stays DOM-based so they work best-effort meanwhile.
 4. Distribution: Community public vs private org plugin first.
-5. Is Storybook 7.6 required (D-11)?
+5. ~~Storybook 7.6~~ → not supported; SB10 primary, 11 at GA, 8/9 best-effort (decided, D-11).
 
 Technical (answered by spikes or during phases):
 6. WebSocket vs SSE/HTTP chunking for streaming (S-01).
@@ -281,7 +281,7 @@ Week 4 — spikes batch C + smoke path
 18. S-09 SVG/icon-font fidelity. (E2)
 19. S-11 `use_figma` feasibility. (E3)
 20. S-12 variables coverage & plan limits (needs bot accounts on 3 plans). (E3)
-21. S-13 nested component detection prototype (React + Vue). (E1)
+21. S-13 nested component detection prototype (React; other renderers via structural hash only). (E1)
 22. Smoke path: CLI captures one micro-fixture → minimal Capture IR → absolute Scene IR → plugin file import builds rectangles + text. (all)
 23. macOS self-hosted runner provisioning + Figma desktop bot account + "run last plugin" automation proof. (E3)
 24. Write spike reports; update README §5 decisions; replan Phase 1 estimates. (all)
