@@ -107,7 +107,7 @@ These are binding for every chapter. If a chapter disagrees with this table, thi
 
 | ID | Decision | Status |
 |---|---|---|
-| D-01 | Public product name. Codename `figmabook`; the public name must not contain "Figma"/"Fig". Listing title pattern: "‹Name› — Storybook to components, plugin for Figma Design" | ❓ |
+| D-01 | **Public product name: Holotype** (proposed; CLI `holotype`, alias `holo`; npm scope `@holotype`; GitHub org e.g. `holotypehq`). A holotype is the single reference specimen a species is defined from: the code is the specimen, Figma gets the faithful copy. npm name and scope are free; no conflicting dev or design product was found; a formal USPTO/EUIPO search is still required. Runners-up: Twinform, Limner (trademark risk: an existing painting app). Until the rename lands, every package, CLI and doc keeps the codename `figmabook`; the rename happens before the first public release (see [13](13-security-legal.md#trademark)). Listing title pattern: "Holotype — Storybook to components, plugin for Figma Design" | 🟡 (user confirm + trademark search) |
 | D-02 | **License:** MIT for all packages in this repo (user decision). A future hosted service, if any, lives in a separate repo (closed source or FSL-1.1-MIT) | ✅ |
 | D-03 | **Language/runtime:** TypeScript (strict) everywhere; Node ≥20.19, developed on Node 24 LTS; ESM only | ✅ |
 | D-04 | **Monorepo:** pnpm workspaces + Turborepo + changesets; Vitest; Biome (lint+format); tsup for Node packages | ✅ |
@@ -243,7 +243,7 @@ Details, estimates and exit criteria are in [14](14-roadmap.md).
 
 ## 9. Decisions needed from the user
 
-1. **D-01 public name.** It may not contain "Figma"/"Fig". *In progress: candidates being researched.*
+1. **D-01 public name.** Proposed **Holotype** (alternatives Twinform, Limner). Needs user confirmation and a formal trademark search.
 2. ~~D-02 license~~ → **MIT** (decided).
 3. ~~Primary target stack~~ → **React + Vite on Storybook 10** (decided, D-26).
 4. **Distribution:** public Figma Community plugin, or a private org plugin first (no review, faster iteration)?
