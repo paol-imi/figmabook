@@ -1,4 +1,6 @@
 import { type DocumentContext, type FakeNodeType, NodeState } from './state';
+import { lineHeightPx } from './text-metrics';
+import { DEFAULT_CHAR_STYLE } from './text-model';
 import { deepFreeze } from './values';
 
 function solid(r: number, g: number, b: number): readonly Paint[] {
@@ -22,7 +24,7 @@ const SET_PURPLE: readonly [number, number, number] = [151 / 255, 71 / 255, 1];
  * - Rectangle, ellipse: "a default fill, width and height both at 100" (typings:911-980).
  * - Component: 100x100 with no fill: the typings mention no background (typings:1088-1102).
  * - Vector: "has a bounding box but doesn't have any vertices" (typings:1036-1041).
- * - Text: "the text has no characters" (typings:1043-1067); size grows with text in B-54.
+ * - Text: "the text has no characters" (typings:1043-1067); its size follows its text (`text-metrics.ts`).
  * - Section, page, component set: values the editor uses; see README "Differences".
  */
 function applyTypeDefaults(state: NodeState): void {
@@ -31,6 +33,7 @@ function applyTypeDefaults(state: NodeState): void {
       state.fills = solid(1, 1, 1);
       break;
     case 'COMPONENT':
+    case 'INSTANCE':
       state.clipsContent = false;
       break;
     case 'COMPONENT_SET':
@@ -51,8 +54,9 @@ function applyTypeDefaults(state: NodeState): void {
       break;
     case 'TEXT':
       state.strokeAlign = 'OUTSIDE';
+      // Empty text is one line of Inter Regular 12 with auto line height (text-metrics.ts).
       state.width = 0;
-      state.height = 14;
+      state.height = lineHeightPx(DEFAULT_CHAR_STYLE);
       break;
     case 'SECTION':
       state.fills = solid(1, 1, 1);

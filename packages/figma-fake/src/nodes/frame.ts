@@ -2,6 +2,7 @@ import { figmaError, setterName, unsupported } from '../errors';
 import { live, type NodeState } from '../state';
 import { checkBoolean, checkEnum, checkNumber, frozenCopy } from '../values';
 import type { Ctor } from './core';
+import { demoteFillChildren, primaryAxis } from './layout';
 import { assign } from './props';
 
 const LAYOUT_MODES = ['NONE', 'HORIZONTAL', 'VERTICAL', 'GRID'] as const;
@@ -32,7 +33,7 @@ function setPadding(state: NodeState, field: Padding, value: number): void {
   state.ctx.record(state, 'set', field, value);
 }
 
-/** `AutoLayoutMixin` (typings:7694-8201). Child positions and HUG sizes come from layout-sim in B-54. */
+/** `AutoLayoutMixin` (typings:7694-8201). Child positions and HUG sizes come from layout-sim (`layout/relayout.ts`). */
 export function WithAutoLayout<B extends Ctor>(Base: B) {
   return class extends Base implements AutoLayoutMixin {
     get layoutMode(): (typeof LAYOUT_MODES)[number] {
@@ -100,8 +101,11 @@ export function WithAutoLayout<B extends Ctor>(Base: B) {
     }
 
     set primaryAxisSizingMode(value: 'FIXED' | 'AUTO') {
-      requireLayout(live(this), 'primaryAxisSizingMode', false);
-      assign(this, 'primaryAxisSizingMode', checkEnum('set_primaryAxisSizingMode', 'value', value, ['FIXED', 'AUTO']));
+      const state = live(this);
+      requireLayout(state, 'primaryAxisSizingMode', false);
+      const mode = checkEnum('set_primaryAxisSizingMode', 'value', value, ['FIXED', 'AUTO']);
+      if (mode === 'AUTO') demoteFillChildren(state, primaryAxis(state));
+      assign(this, 'primaryAxisSizingMode', mode);
     }
 
     get counterAxisSizingMode(): 'FIXED' | 'AUTO' {
@@ -109,8 +113,11 @@ export function WithAutoLayout<B extends Ctor>(Base: B) {
     }
 
     set counterAxisSizingMode(value: 'FIXED' | 'AUTO') {
-      requireLayout(live(this), 'counterAxisSizingMode', false);
-      assign(this, 'counterAxisSizingMode', checkEnum('set_counterAxisSizingMode', 'value', value, ['FIXED', 'AUTO']));
+      const state = live(this);
+      requireLayout(state, 'counterAxisSizingMode', false);
+      const mode = checkEnum('set_counterAxisSizingMode', 'value', value, ['FIXED', 'AUTO']);
+      if (mode === 'AUTO') demoteFillChildren(state, primaryAxis(state) === 'h' ? 'v' : 'h');
+      assign(this, 'counterAxisSizingMode', mode);
     }
 
     get strokesIncludedInLayout(): boolean {

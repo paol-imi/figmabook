@@ -1,14 +1,15 @@
-import { figmaError, unsupported } from '../errors';
+import { figmaError } from '../errors';
 import { live } from '../state';
+import { networkFromPaths, pathsFromNetwork } from '../svg/network';
 import { checkEnum, checkNumber, checkString, deepFreeze } from '../values';
 import type { Ctor } from './core';
 import { assign } from './props';
 
-/** `VectorLikeMixin` (typings:9170-9189). Vector networks are B-54 (SVG → vectors). */
+/** `VectorLikeMixin` (typings:9170-9189). The network is derived from `vectorPaths` (see `svg/network.ts`). */
 export function WithVectorLike<B extends Ctor>(Base: B) {
   return class extends Base implements VectorLikeMixin {
     get vectorNetwork(): VectorNetwork {
-      return unsupported('VectorNode.vectorNetwork');
+      return networkFromPaths(live(this).vectorPaths);
     }
 
     /** Read-only under `documentAccess: "dynamic-page"` (typings:9174). */
@@ -19,8 +20,11 @@ export function WithVectorLike<B extends Ctor>(Base: B) {
       );
     }
 
-    setVectorNetworkAsync(_vectorNetwork: VectorNetwork): Promise<void> {
-      return unsupported('VectorNode.setVectorNetworkAsync');
+    /** Stores the network as paths: one per region, plus loose segments (typings:9175-9178). */
+    async setVectorNetworkAsync(vectorNetwork: VectorNetwork): Promise<void> {
+      const state = live(this);
+      state.vectorPaths = pathsFromNetwork('setVectorNetworkAsync', vectorNetwork);
+      state.ctx.record(state, 'setVectorNetworkAsync', null, vectorNetwork);
     }
 
     get vectorPaths(): VectorPaths {

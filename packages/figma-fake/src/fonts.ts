@@ -84,4 +84,30 @@ export class FontStore {
   unloadAll(): void {
     this.#loaded.clear();
   }
+
+  /** The available style of `family` with `weight` and the italic-ness of `like` (variable `fontWeight` bindings). */
+  styleWithWeight(family: string, weight: number, like: FontName): FontName | null {
+    const italic = fontStyleOf(like);
+    return (
+      this.#available.find((f) => f.family === family && fontWeightOf(f) === weight && fontStyleOf(f) === italic) ??
+      null
+    );
+  }
+}
+
+/**
+ * Writes that can change rendered text need every affected font loaded: "Calling this function
+ * is **necessary** to modify any property of a text node that may cause the rendered text to
+ * change" (typings:1662-1670; https://developers.figma.com/docs/plugins/working-with-text).
+ * The message follows Figma's.
+ */
+export function requireLoaded(api: string, store: FontStore, fonts: readonly FontName[]): void {
+  for (const font of fonts) {
+    if (!store.isLoaded(font)) {
+      throw figmaError(
+        api,
+        `Cannot write to node with unloaded font "${fontLabel(font)}". Please call figma.loadFontAsync({ family: "${font.family}", style: "${font.style}" }) and await the returned promise first.`,
+      );
+    }
+  }
 }

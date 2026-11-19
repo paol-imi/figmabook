@@ -1,3 +1,4 @@
+import { boundingBox, renderBounds } from '../bounds';
 import { figmaError, setterName, unsupported } from '../errors';
 import { live, type NodeState } from '../state';
 import { checkEnum, checkNumber, deepFreeze } from '../values';
@@ -7,7 +8,7 @@ import { assign } from './props';
 /** Sizes below 0.01 are rejected: "Must be >= 0.01" (typings:7504-7505, 7519-7520). */
 export const MIN_SIZE = 0.01;
 
-type Axis = 'h' | 'v';
+export type Axis = 'h' | 'v';
 type Sizing = 'FIXED' | 'HUG' | 'FILL';
 
 function checkTransform(api: string, value: unknown): Transform {
@@ -21,20 +22,20 @@ function checkTransform(api: string, value: unknown): Transform {
 }
 
 /** The axis an auto-layout frame grows along. GRID frames are treated as horizontal until B-111. */
-function primaryAxis(state: NodeState): Axis {
+export function primaryAxis(state: NodeState): Axis {
   return state.layoutMode === 'VERTICAL' ? 'v' : 'h';
 }
 
-function ownMode(state: NodeState, axis: Axis): 'FIXED' | 'AUTO' {
+export function ownMode(state: NodeState, axis: Axis): 'FIXED' | 'AUTO' {
   return axis === primaryAxis(state) ? state.primaryAxisSizingMode : state.counterAxisSizingMode;
 }
 
-function setOwnMode(state: NodeState, axis: Axis, mode: 'FIXED' | 'AUTO'): void {
+export function setOwnMode(state: NodeState, axis: Axis, mode: 'FIXED' | 'AUTO'): void {
   if (axis === primaryAxis(state)) state.primaryAxisSizingMode = mode;
   else state.counterAxisSizingMode = mode;
 }
 
-function isFill(state: NodeState, axis: Axis): boolean {
+export function isFill(state: NodeState, axis: Axis): boolean {
   if (!state.isLaidOut || !state.parent) return false;
   return axis === primaryAxis(state.parent) ? state.layoutGrow === 1 : state.layoutAlign === 'STRETCH';
 }
@@ -43,6 +44,17 @@ function setFill(state: NodeState, axis: Axis, fill: boolean): void {
   if (!state.parent?.isAutoLayout) return;
   if (axis === primaryAxis(state.parent)) state.layoutGrow = fill ? 1 : 0;
   else state.layoutAlign = fill ? 'STRETCH' : 'INHERIT';
+}
+
+/**
+ * A frame cannot hug an axis its children fill (layout-sim `fill-breaks-hug`,
+ * https://help.figma.com/hc/en-us/articles/360040451373): making it hug turns those children
+ * FIXED at their current size (README "Differences", verify S-05).
+ */
+export function demoteFillChildren(state: NodeState, axis: Axis): void {
+  for (const child of state.children) {
+    if (child.isLaidOut && isFill(child, axis)) setFill(child, axis, false);
+  }
 }
 
 /** A text node with fixed width in `axis` (typings:11026-11035). */
@@ -71,8 +83,10 @@ export function sizingOf(state: NodeState, axis: Axis): Sizing {
  */
 function setSizing(state: NodeState, axis: Axis, value: Sizing, api: string): void {
   if (value === 'HUG') {
-    if (state.isAutoLayout) setOwnMode(state, axis, 'AUTO');
-    else if (state.type === 'TEXT') {
+    if (state.isAutoLayout) {
+      setOwnMode(state, axis, 'AUTO');
+      demoteFillChildren(state, axis);
+    } else if (state.type === 'TEXT') {
       if (axis === 'h') state.textAutoResize = 'WIDTH_AND_HEIGHT';
       else if (state.textAutoResize !== 'WIDTH_AND_HEIGHT') state.textAutoResize = 'HEIGHT';
     } else throw figmaError(api, '"HUG" is only valid on auto-layout frames and text nodes');
@@ -88,7 +102,7 @@ function setSizing(state: NodeState, axis: Axis, value: Sizing, api: string): vo
 }
 
 /** Applies a parent's resize to its children's constraints (typings:7501-7515), recursively. */
-function applyConstraints(state: NodeState, dw: number, dh: number, sx: number, sy: number): void {
+export function applyConstraints(state: NodeState, dw: number, dh: number, sx: number, sy: number): void {
   if (state.type === 'PAGE' || state.type === 'SECTION') return;
   for (const child of state.children) {
     if (child.isLaidOut) continue;
@@ -108,6 +122,8 @@ function applyConstraints(state: NodeState, dw: number, dh: number, sx: number, 
       const [cw, ch] = [child.width, child.height];
       child.width = width;
       child.height = height;
+      // A resized auto-layout child lays out its own children again.
+      child.ctx.touch(child);
       applyConstraints(child, width - cw, height - ch, width / cw, height / ch);
     }
   }
@@ -230,12 +246,7 @@ export function WithDimensions<B extends Ctor>(Base: B) {
 
     /** Axis-aligned bounds on the page, without strokes or effects (typings:7387-7390). */
     get absoluteBoundingBox(): Rect | null {
-      const state = live(this);
-      const [[a, b, tx], [c, d, ty]] = state.absoluteTransform();
-      const xs = [0, state.width].flatMap((w) => [0, state.height].map((h) => a * w + b * h + tx));
-      const ys = [0, state.width].flatMap((w) => [0, state.height].map((h) => c * w + d * h + ty));
-      const [x, y] = [Math.min(...xs), Math.min(...ys)];
-      return { x, y, width: Math.max(...xs) - x, height: Math.max(...ys) - y };
+      return boundingBox(live(this));
     }
   };
 }
@@ -255,7 +266,7 @@ function checkMinMax(state: NodeState, name: string, value: number | null): numb
 export function WithLayout<B extends Ctor>(Base: B) {
   return class extends WithDimensions(Base) implements LayoutMixin {
     get absoluteRenderBounds(): Rect | null {
-      return unsupported('LayoutMixin.absoluteRenderBounds');
+      return renderBounds(live(this));
     }
 
     get constrainProportions(): boolean {

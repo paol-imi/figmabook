@@ -1,8 +1,10 @@
+import { createInstanceState, retarget, setViewFactory } from '../components/instances';
+import { defaultVariantOf, instanceProperties, setInstanceProperties, variantGroups } from '../components/properties';
 import { figmaError, unsupported } from '../errors';
 import { live, type NodeState } from '../state';
 import { normalizePaints } from '../values';
 import { stateOf, WithChildren } from './children';
-import { variantPropertiesOf, WithComponentProperties, WithPublishable, WithVariant } from './component';
+import { WithComponentProperties, WithPublishable, WithVariant } from './component';
 import { NodeCore } from './core';
 import { WithAutoLayout, WithBaseFrame, WithFramePrototyping, WithGridLayout } from './frame';
 import { resizeNode, WithDimensions, WithLayout } from './layout';
@@ -31,7 +33,7 @@ import {
 } from './scene';
 import { WithArcData, WithVectorLike } from './shapes';
 import { WithText } from './text';
-import { attachNode } from './tree';
+import { attachNode, checkInstanceTarget } from './tree';
 
 // Mixin stacks, named after the typings interfaces they implement.
 
@@ -117,18 +119,26 @@ export class FakeComponentNode
     return cloneUnsupported('ComponentNode');
   }
 
+  /** "By default, the instance will be parented under `figma.currentPage`" (typings:11213-11216). */
   createInstance(): InstanceNode {
-    return unsupported('ComponentNode.createInstance');
+    const main = live(this);
+    const instance = createInstanceState(main);
+    const page = main.ctx.currentPage;
+    attachNode('createInstance', page, instance, page.children.length);
+    main.ctx.record(instance, 'createInstance', null, main.id);
+    return instance.instanceView;
   }
 
   createSlot(): SlotNode {
     return unsupported('ComponentNode.createSlot', 'B-142');
   }
 
-  /** Instances arrive with B-54; until then no component has any. */
+  /** "All of the instances of this component in the document" (typings:11217-11220), in document order. */
   async getInstancesAsync(): Promise<InstanceNode[]> {
-    live(this);
-    return [];
+    const main = live(this);
+    return [main.ctx.root, ...main.ctx.root.descendants()]
+      .filter((node) => node.type === 'INSTANCE' && node.mainComponent === main && !node.removed)
+      .map((node) => node.instanceView);
   }
 
   /** "Accessing this property will throw an exception if the plugin manifest contains `"documentAccess": "dynamic-page"`" (typings:11224-11229). */
@@ -162,8 +172,7 @@ export class FakeComponentSetNode
 
   /** "The top-left-most variant, spatially" (typings:11184-11187): smallest y, then smallest x. */
   get defaultVariant(): ComponentNode {
-    const variants = [...live(this).children].sort((a, b) => a.y - b.y || a.x - b.x);
-    const first = variants[0];
+    const first = defaultVariantOf(live(this));
     if (!first) throw figmaError('defaultVariant', 'The component set has no variants');
     return first.componentView;
   }
@@ -171,14 +180,116 @@ export class FakeComponentSetNode
   /** Every variant property with its values in first-seen order (typings:11188-11195). */
   get variantGroupProperties(): { [property: string]: { values: string[] } } {
     const groups: { [property: string]: { values: string[] } } = {};
-    for (const child of live(this).children) {
-      for (const [property, value] of Object.entries(variantPropertiesOf(child) ?? {})) {
-        const group = groups[property] ?? { values: [] };
-        if (!group.values.includes(value)) group.values.push(value);
-        groups[property] = group;
-      }
-    }
+    for (const [property, values] of variantGroups(live(this))) groups[property] = { values };
     return groups;
+  }
+}
+
+/** A component to point an instance at: a live component that does not contain the instance. */
+function targetComponent(api: string, instance: NodeState, node: unknown): NodeState {
+  const target = stateOf(api, node);
+  if (target.type !== 'COMPONENT') throw figmaError(api, 'Expected a component node');
+  checkInstanceTarget(api, instance, target);
+  return target;
+}
+
+/** `InstanceNode` (typings:11244-11330): basic instances (BUILD §8.1); overrides are B-125. */
+export class FakeInstanceNode extends WithVariant(DefaultFrame) implements InstanceNode {
+  constructor(state: NodeState) {
+    super(state);
+    state.views.node = this;
+    state.views.scene = this;
+    state.views.container = this;
+    state.views.instance = this;
+  }
+
+  get type(): 'INSTANCE' {
+    return 'INSTANCE';
+  }
+
+  clone(): InstanceNode {
+    return cloneUnsupported('InstanceNode');
+  }
+
+  /** The main component, or `null` once it was deleted (typings:11253-11256). */
+  async getMainComponentAsync(): Promise<ComponentNode | null> {
+    const main = live(this).mainComponent;
+    return main && !main.removed ? main.componentView : null;
+  }
+
+  /** "Write-only" under `documentAccess: "dynamic-page"` (typings:11257-11262). */
+  get mainComponent(): ComponentNode | null {
+    throw figmaError(
+      'get_mainComponent',
+      'Cannot read mainComponent with documentAccess: dynamic-page. Use node.getMainComponentAsync instead.',
+    );
+  }
+
+  /** Points the instance at `value` and clears its overrides (typings:11257-11262). */
+  set mainComponent(value: ComponentNode | null) {
+    const state = live(this);
+    const target = targetComponent('set_mainComponent', state, value);
+    retarget(state, target, false);
+    state.ctx.record(state, 'set', 'mainComponent', target.id);
+  }
+
+  /** Swaps the main component and keeps overrides on layers that match by name (typings:11263-11275). */
+  swapComponent(componentNode: ComponentNode): void {
+    const state = live(this);
+    const target = targetComponent('swapComponent', state, componentNode);
+    retarget(state, target, true);
+    state.ctx.record(state, 'swapComponent', null, target.id);
+  }
+
+  setProperties(properties: { [propertyName: string]: string | boolean | VariableAlias }): void {
+    const state = live(this);
+    setInstanceProperties(state, properties);
+    state.ctx.record(state, 'setProperties', null, properties);
+  }
+
+  get componentProperties(): ComponentProperties {
+    return instanceProperties(live(this));
+  }
+
+  detachInstance(): FrameNode {
+    return unsupported('InstanceNode.detachInstance', 'hardening');
+  }
+
+  /** 1 unless scaled with the scale tool, which the API cannot do (typings:11303-11310). */
+  get scaleFactor(): number {
+    live(this);
+    return 1;
+  }
+
+  set scaleFactor(_value: number) {
+    unsupported('InstanceNode.scaleFactor', 'hardening');
+  }
+
+  /** Exposed nested instances arrive with nested instances (B-142); none are exposed before. */
+  get exposedInstances(): InstanceNode[] {
+    live(this);
+    return [];
+  }
+
+  get isExposedInstance(): boolean {
+    live(this);
+    return false;
+  }
+
+  set isExposedInstance(_value: boolean) {
+    unsupported('InstanceNode.isExposedInstance', 'B-142');
+  }
+
+  get overrides(): { id: string; overriddenFields: NodeChangeProperty[] }[] {
+    return unsupported('InstanceNode.overrides', 'B-125');
+  }
+
+  resetOverrides(): void {
+    unsupported('InstanceNode.resetOverrides', 'B-125');
+  }
+
+  removeOverrides(): void {
+    unsupported('InstanceNode.removeOverrides', 'B-125');
   }
 }
 
@@ -242,6 +353,7 @@ export class FakeTextNode extends WithText(ShapeBase) implements TextNode {
     super(state);
     state.views.node = this;
     state.views.scene = this;
+    state.views.text = this;
   }
 
   get type(): 'TEXT' {
@@ -506,3 +618,41 @@ export class FakeDocumentNode extends NodeCore implements DocumentNode {
     return requireAllPages('findWidgetNodesByWidgetId');
   }
 }
+
+/** Builds the public node for a state of a scene type; used for instance sublayers and copies. */
+export function createView(state: NodeState): void {
+  switch (state.type) {
+    case 'FRAME':
+      new FakeFrameNode(state);
+      return;
+    case 'COMPONENT':
+      new FakeComponentNode(state);
+      return;
+    case 'COMPONENT_SET':
+      new FakeComponentSetNode(state);
+      return;
+    case 'INSTANCE':
+      new FakeInstanceNode(state);
+      return;
+    case 'SECTION':
+      new FakeSectionNode(state);
+      return;
+    case 'RECTANGLE':
+      new FakeRectangleNode(state);
+      return;
+    case 'ELLIPSE':
+      new FakeEllipseNode(state);
+      return;
+    case 'VECTOR':
+      new FakeVectorNode(state);
+      return;
+    case 'TEXT':
+      new FakeTextNode(state);
+      return;
+    case 'PAGE':
+    case 'DOCUMENT':
+      throw new Error(`figma-fake internal error: cannot build a ${state.type} view here`);
+  }
+}
+
+setViewFactory(createView);

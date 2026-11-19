@@ -2,8 +2,10 @@ import type { FigmaPort } from '@holotype/plugin/port';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 import { createFakeFigma, type FakeFigma } from '../src';
 
-/** Every member of the B-06 port (BUILD §8.1 row "Global"). Kept in sync with port.ts by the type test below. */
+/** Every member of the port (BUILD §8.1). Kept in sync with port.ts by the type test below. */
 const PORT_MEMBERS = [
+  'createComponentFromNode',
+  'variables',
   'createFrame',
   'createComponent',
   'createText',

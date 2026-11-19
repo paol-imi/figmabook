@@ -132,7 +132,7 @@ describe('snapshot()', () => {
                   "children": [
                     {
                       "characters": "Title",
-                      "height": 14,
+                      "height": 24.21875,
                       "id": "1:3",
                       "layoutAlign": "STRETCH",
                       "layoutSizingHorizontal": "FILL",
@@ -151,7 +151,7 @@ describe('snapshot()', () => {
                         },
                       ],
                       "type": "TEXT",
-                      "width": 0,
+                      "width": 100,
                       "x": 0,
                       "y": 0,
                     },
@@ -170,7 +170,7 @@ describe('snapshot()', () => {
                       "visible": true,
                     },
                   ],
-                  "height": 100,
+                  "height": 24.21875,
                   "id": "1:2",
                   "itemSpacing": 8,
                   "layoutMode": "VERTICAL",

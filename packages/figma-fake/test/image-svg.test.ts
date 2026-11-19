@@ -85,18 +85,19 @@ describe('createNodeFromSvg (typings:1731-1734)', () => {
   const icon =
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0L24 24" fill="#ff0000" fill-rule="evenodd"/><path d="M1 1"/></svg>';
 
-  it('returns a frame of the SVG size with one vector per path', () => {
+  it('returns a frame of the SVG size with one vector per drawn path', () => {
     const figma = createFakeFigma();
     const frame = figma.createNodeFromSvg(icon);
     expect(frame.type).toBe('FRAME');
     expect(frame.parent).toBe(figma.currentPage);
     expect([frame.width, frame.height]).toEqual([24, 24]);
     expect(frame.fills).toEqual([]);
-    const [first, second] = frame.children;
-    if (first?.type !== 'VECTOR' || second?.type !== 'VECTOR') throw new Error('expected vectors');
-    expect(first.vectorPaths).toEqual([{ windingRule: 'EVENODD', data: 'M0 0L24 24' }]);
+    // `M1 1` draws nothing, so it gives no layer.
+    expect(frame.children).toHaveLength(1);
+    const [first] = frame.children;
+    if (first?.type !== 'VECTOR') throw new Error('expected a vector');
+    expect(first.vectorPaths).toEqual([{ windingRule: 'EVENODD', data: 'M 0 0 L 24 24' }]);
     expect(first.fills).toEqual([expect.objectContaining({ color: { r: 1, g: 0, b: 0 } })]);
-    expect(second.fills).toEqual([expect.objectContaining({ color: { r: 0, g: 0, b: 0 } })]);
   });
 
   it('uses the viewBox when width and height are absent', () => {
@@ -110,10 +111,13 @@ describe('createNodeFromSvg (typings:1731-1734)', () => {
     expect(() => figma.createNodeFromSvg('<svg width="1"><path d="M0 0"/>')).toThrow(/well formed/);
   });
 
-  it('fails loudly on SVG elements the slice does not import yet (B-54)', () => {
+  it('fails loudly on SVG elements the fake does not import (hardening)', () => {
     const figma = createFakeFigma();
-    expect(() => figma.createNodeFromSvg('<svg width="4" height="4"><circle r="2"/></svg>')).toThrow(
-      NotImplementedError,
-    );
+    for (const element of ['<text>Hi</text>', '<image href="a.png"/>', '<use href="#a"/>', '<style>.a{}</style>']) {
+      expect(() => figma.createNodeFromSvg(`<svg width="4" height="4">${element}</svg>`)).toThrow(NotImplementedError);
+    }
+    expect(() =>
+      figma.createNodeFromSvg('<svg width="4" height="4"><path d="M0 0H4V4Z" clip-path="url(#c)"/></svg>'),
+    ).toThrow(/hardening/);
   });
 });

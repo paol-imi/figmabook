@@ -1,11 +1,11 @@
+import { NotImplementedError } from '@holotype/shared';
 import { describe, expect, it } from 'vitest';
 import { createFakeFigma } from '../src';
 import { fakeWithFonts, RED, stack, textNode } from './helpers';
 
 /**
  * One contract test per row of the constraint table in 09 §6.2 ("The fake enforces these
- * rules, so tests catch ordering regressions"), named after the row. Rows whose API arrives
- * later are `todo` with the work item that adds them.
+ * rules, so tests catch ordering regressions"), named after the row.
  */
 describe('09 §6.2 constraint table', () => {
   it('Padding, spacing and alignment need `layoutMode ≠ NONE`', () => {
@@ -180,7 +180,25 @@ describe('09 §6.2 constraint table', () => {
     }).toThrow(TypeError);
   });
 
-  it.todo('`setBoundVariableForPaint` returns a *new* paint (B-54, variables subset)');
+  it('`setBoundVariableForPaint` returns a *new* paint', () => {
+    const figma = createFakeFigma();
+    const collection = figma.variables.createVariableCollection('Tokens');
+    const brand = figma.variables.createVariable('color/brand', collection, 'COLOR');
+    brand.setValueForMode(collection.defaultModeId, { r: 0, g: 0.5, b: 1 });
+    const rect = figma.createRectangle();
+    rect.fills = [RED];
+    const old = rect.fills[0] as SolidPaint;
+    const bound = figma.variables.setBoundVariableForPaint(old, 'color', brand);
+    expect(bound).not.toBe(old);
+    expect(bound.boundVariables?.color).toEqual({ type: 'VARIABLE_ALIAS', id: brand.id });
+    expect(bound.color).toEqual({ r: 0, g: 0.5, b: 1 });
+    // The old paint is not bound: assigning it keeps the literal colour, and "the binding is lost".
+    expect(old.boundVariables).toEqual({});
+    rect.fills = [old];
+    expect(rect.boundVariables?.fills).toBeUndefined();
+    rect.fills = [bound];
+    expect(rect.boundVariables?.fills).toEqual([{ type: 'VARIABLE_ALIAS', id: brand.id }]);
+  });
 
   it('`combineAsVariants` needs ≥1 component, all on the same page and not inside an instance', async () => {
     const figma = createFakeFigma({ pages: ['A', 'B'] });
@@ -195,11 +213,30 @@ describe('09 §6.2 constraint table', () => {
     const b = figma.createComponent();
     pageB.appendChild(b);
     expect(() => figma.combineAsVariants([a, b], figma.currentPage)).toThrow(/same page/);
-    // "not inside an instance": instances arrive with B-54, which adds that case.
+    const main = figma.createComponent();
+    main.appendChild(figma.createFrame());
+    const instance = main.createInstance();
+    const sublayer = instance.children[0] as FrameNode;
+    expect(() => figma.combineAsVariants([a], instance)).toThrow(/inside an instance/);
+    expect(() => figma.combineAsVariants([a], sublayer)).toThrow(/inside an instance/);
     expect(figma.combineAsVariants([a], figma.currentPage).type).toBe('COMPONENT_SET');
   });
 
-  it.todo('`createComponentFromNode` throws for a node inside a component or instance (not in the B-06 port)');
+  it('`createComponentFromNode` throws for a node inside a component or instance', () => {
+    const figma = createFakeFigma();
+    const main = figma.createComponent();
+    const inner = figma.createFrame();
+    main.appendChild(inner);
+    const instance = main.createInstance();
+    const sublayer = instance.children[0] as FrameNode;
+    for (const node of [inner, sublayer, main]) {
+      expect(() => figma.createComponentFromNode(node)).toThrow(/Cannot create component from node/);
+    }
+    const set = figma.combineAsVariants([figma.createComponent()], figma.currentPage);
+    expect(() => figma.createComponentFromNode(set)).toThrow(/Cannot create component from node/);
+    const loose = figma.createFrame();
+    expect(figma.createComponentFromNode(loose).type).toBe('COMPONENT');
+  });
 
   it('Minimum size 0.01', () => {
     const figma = createFakeFigma();
@@ -209,7 +246,19 @@ describe('09 §6.2 constraint table', () => {
     }
   });
 
-  it.todo('GRID: tracks cannot be FLEX on an axis where the container is HUG (B-111)');
+  it('GRID: tracks cannot be FLEX on an axis where the container is HUG', () => {
+    // Grid tracks arrive with B-111 (BUILD §8.2), which enforces the rule; until then any track
+    // write fails loudly, so the rule cannot be broken silently.
+    const frame = createFakeFigma().createFrame();
+    frame.layoutMode = 'GRID';
+    frame.layoutSizingHorizontal = 'HUG';
+    expect(() => {
+      frame.gridColumnSizes = [{ type: 'FLEX', value: 1 }];
+    }).toThrow(NotImplementedError);
+    expect(() => {
+      frame.gridColumnSizes = [{ type: 'FLEX', value: 1 }];
+    }).toThrow(/B-111/);
+  });
 
   it("`counterAxisAlignItems = 'BASELINE'` is horizontal-only", () => {
     const figma = createFakeFigma();
@@ -226,7 +275,8 @@ describe('09 §6.2 constraint table', () => {
     const figma = createFakeFigma();
     expect(() => figma.getNodeById(figma.root.id)).toThrow(/dynamic-page/);
     expect(() => figma.createComponent().instances).toThrow(/dynamic-page/);
-    // `InstanceNode.mainComponent`: instances arrive with B-54.
+    const instance = figma.createComponent().createInstance();
+    expect(() => instance.mainComponent).toThrow(/dynamic-page/);
   });
 });
 

@@ -1,11 +1,21 @@
 import { figmaError, setterName, unsupported } from '../errors';
-import { fontLabel, fontStyleOf, fontWeightOf } from '../fonts';
+import { fontStyleOf, fontWeightOf, requireLoaded } from '../fonts';
 import { MIXED, type Mixed } from '../mixed';
 import { type HasState, live, type NodeState } from '../state';
 import type { CharStyle, StyleField, TextModel } from '../text-model';
 import { checkBoolean, checkEnum, checkNumber, checkString, deepFreeze, normalizePaints } from '../values';
+import { bindTextRange, isTextField, variableArg } from '../variables/bindings';
+import { BOUND_BY, rangeBinding, setRangeBinding } from '../variables/text-bindings';
 import type { Ctor } from './core';
 import { pick } from './pick';
+
+/**
+ * `openTypeFeatures`: "This map only contains features that diverge from their default values"
+ * (typings:9816). The Plugin API cannot change features (09 §6.1), so the map is always empty.
+ * The typings declare the map with every feature key, so the empty map needs a type assertion
+ * (README "Type assertions").
+ */
+const NO_FEATURES = Object.freeze({}) as { readonly [feature in OpenTypeFeature]: boolean };
 
 const TEXT_CASES = ['ORIGINAL', 'UPPER', 'LOWER', 'TITLE', 'SMALL_CAPS', 'SMALL_CAPS_FORCED'] as const;
 const DECORATIONS = ['NONE', 'UNDERLINE', 'STRIKETHROUGH'] as const;
@@ -26,14 +36,7 @@ function model(state: NodeState): TextModel {
  * textAlignVertical and textAutoResize). The message follows Figma's.
  */
 export function requireFonts(api: string, state: NodeState, fonts: readonly FontName[]): void {
-  for (const font of fonts) {
-    if (!state.ctx.fonts.isLoaded(font)) {
-      throw figmaError(
-        api,
-        `Cannot write to node with unloaded font "${fontLabel(font)}". Please call figma.loadFontAsync({ family: "${font.family}", style: "${font.style}" }) and await the returned promise first.`,
-      );
-    }
-  }
+  requireLoaded(api, state.ctx.fonts, fonts);
 }
 
 function requireNodeFonts(api: string, state: NodeState): TextModel {
@@ -82,10 +85,17 @@ function getNode<K extends StyleField>(node: HasState, field: K): CharStyle[K] |
   return model(live(node)).uniform(field) ?? MIXED;
 }
 
+/** A literal write to a bound text field unbinds it (08 §8; see `variables/bindings.ts`). */
+function unbindStyle(state: NodeState, field: StyleField, start: number, end: number): void {
+  const fields = BOUND_BY[field];
+  if (fields && !state.ctx.silent) setRangeBinding(state, start, end, fields, null);
+}
+
 function setNode<K extends StyleField>(node: HasState, property: string, field: K, value: CharStyle[K]): void {
   const state = live(node);
   const text = requireNodeFonts(setterName(property), state);
   text.setRange(field, 0, text.characters.length, value);
+  unbindStyle(state, field, 0, text.characters.length);
   state.ctx.record(state, 'set', property, value);
 }
 
@@ -115,6 +125,7 @@ function setRange<K extends StyleField>(
   checkRange(api, text, start, end);
   if (needsFont) requireFonts(api, state, text.fonts(start, end));
   text.setRange(field, start, end, value);
+  unbindStyle(state, field, start, end);
   state.ctx.record(state, api, null, { start, end, value });
 }
 
@@ -155,10 +166,8 @@ function segmentOf(state: NodeState, text: TextModel, start: number, end: number
     paragraphSpacing: state.paragraphSpacing,
     textWrapStyle: state.textWrapStyle,
     hyperlink: style.hyperlink,
-    get openTypeFeatures(): StyledTextSegment['openTypeFeatures'] {
-      return unsupported('StyledTextSegment.openTypeFeatures');
-    },
-    boundVariables: {},
+    openTypeFeatures: NO_FEATURES,
+    boundVariables: { ...style.boundVariables },
     textStyleOverrides: [],
   };
 }
@@ -180,6 +189,7 @@ const SEGMENT_FIELDS: Readonly<Record<string, StyleField | null>> = {
   letterSpacing: 'letterSpacing',
   fills: 'fills',
   hyperlink: 'hyperlink',
+  boundVariables: 'boundVariables',
 };
 
 /** A text node property stored on the node (not per character) that needs loaded fonts. */
@@ -190,8 +200,12 @@ function setLayoutText<K extends 'paragraphIndent' | 'paragraphSpacing' | 'listS
 ): void {
   const state = live(node);
   const api = setterName(field);
-  requireNodeFonts(api, state);
+  const text = requireNodeFonts(api, state);
   state[field] = checkNumber(api, field, value, 0);
+  const name: string = field;
+  const bound =
+    name === 'paragraphIndent' ? 'paragraphIndent' : name === 'paragraphSpacing' ? 'paragraphSpacing' : null;
+  if (bound && !state.ctx.silent) setRangeBinding(state, 0, text.characters.length, [bound], null);
   state.ctx.record(state, 'set', field, value);
 }
 
@@ -275,6 +289,7 @@ export function WithText<B extends Ctor>(Base: B) {
       requireFonts(api, state, [font]);
       const text = model(state);
       text.setRange('fontName', 0, text.characters.length, font);
+      unbindStyle(state, 'fontName', 0, text.characters.length);
       state.ctx.record(state, 'set', 'fontName', font);
     }
 
@@ -291,9 +306,10 @@ export function WithText<B extends Ctor>(Base: B) {
       setNode(this, 'textCase', 'textCase', checkEnum('set_textCase', 'textCase', value, TEXT_CASES));
     }
 
-    /** OpenType features are verified by spike S-04 and modelled in B-54. */
+    /** Features that diverge from their defaults: none, as the API cannot set them (typings:9810-9836, 09 §6.1). */
     get openTypeFeatures(): { readonly [feature in OpenTypeFeature]: boolean } | Mixed {
-      return unsupported('TextNode.openTypeFeatures');
+      live(this);
+      return NO_FEATURES;
     }
 
     get letterSpacing(): LetterSpacing | Mixed {
@@ -505,7 +521,7 @@ export function WithText<B extends Ctor>(Base: B) {
 
     getRangeOpenTypeFeatures(start: number, end: number): { readonly [feature in OpenTypeFeature]: boolean } | Mixed {
       checkRange('getRangeOpenTypeFeatures', model(live(this)), start, end);
-      return unsupported('TextNode.getRangeOpenTypeFeatures');
+      return NO_FEATURES;
     }
 
     getRangeLetterSpacing(start: number, end: number): LetterSpacing | Mixed {
@@ -572,18 +588,29 @@ export function WithText<B extends Ctor>(Base: B) {
       );
     }
 
-    getRangeBoundVariable(start: number, end: number, _field: VariableBindableTextField): VariableAlias | null | Mixed {
-      checkRange('getRangeBoundVariable', model(live(this)), start, end);
-      return null;
+    /** The variable bound to `field` on the range, `null`, or `figma.mixed` (typings:9977-9983). */
+    getRangeBoundVariable(start: number, end: number, field: VariableBindableTextField): VariableAlias | null | Mixed {
+      const state = live(this);
+      checkRange('getRangeBoundVariable', model(state), start, end);
+      if (!isTextField(field)) throw figmaError('getRangeBoundVariable', `Invalid field "${String(field)}"`);
+      const alias = rangeBinding(state, start, end, field);
+      return alias === undefined ? MIXED : alias;
     }
 
+    /** Binds `field` on the range to a variable, or unbinds it with `null` (typings:9984-9990, 08 §8). */
     setRangeBoundVariable(
-      _start: number,
-      _end: number,
-      _field: VariableBindableTextField,
-      _variable: Variable | null,
+      start: number,
+      end: number,
+      field: VariableBindableTextField,
+      variable: Variable | null,
     ): void {
-      unsupported('setRangeBoundVariable');
+      const state = live(this);
+      const api = 'setRangeBoundVariable';
+      checkRange(api, model(state), start, end);
+      if (!isTextField(field)) throw figmaError(api, `Invalid field "${String(field)}"`);
+      const target = variableArg(api, state.ctx.variables, variable);
+      bindTextRange(state, state.ctx.variables, start, end, field, target);
+      state.ctx.record(state, api, null, { start, end, field, variable: target ? target.id : null });
     }
 
     getRangeTextDecoration(start: number, end: number): TextDecoration | Mixed {
