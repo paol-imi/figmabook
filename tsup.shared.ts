@@ -6,6 +6,8 @@ const common = {
   dts: true,
   sourcemap: true,
   clean: true,
+  // Keep `node:` specifiers: Node ≥20.19 supports them and they mark built-ins clearly.
+  removeNodeProtocol: false,
 } satisfies Options;
 
 /**

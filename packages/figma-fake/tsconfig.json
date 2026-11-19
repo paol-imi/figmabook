@@ -1,16 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "lib": [
-      "ES2023"
-    ],
-    "types": [
-      "@figma/plugin-typings"
-    ]
+    "lib": ["ES2023"],
+    "types": ["node", "@figma/plugin-typings"]
   },
-  "include": [
-    "src",
-    "test",
-    "*.config.ts"
-  ]
+  "include": ["src", "test", "*.config.ts"]
 }

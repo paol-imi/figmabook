@@ -1,6 +1,6 @@
 import { showUI } from '@create-figma-plugin/utilities';
 import { SUPPORTED_SCENE_MAJORS } from '@holotype/ir';
-import packageJson from '../package.json';
+import { version } from '../package.json';
 import { isProtocolMessage, type MainToUi, PROTOCOL_VERSION, type UiToMain } from './protocol';
 
 // The only module that touches the `figma` global: the applier receives a `FigmaPort`.
@@ -11,7 +11,7 @@ export default function main(): void {
       v: PROTOCOL_VERSION,
       sessionId: message.sessionId,
       t: 'ready',
-      pluginVersion: packageJson.version,
+      pluginVersion: version,
       irMajors: SUPPORTED_SCENE_MAJORS,
       fileKey: figma.fileKey ?? null,
     };

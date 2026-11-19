@@ -1,7 +1,7 @@
 import { Container, Muted, render, Stack, Text, VerticalSpace } from '@create-figma-plugin/ui';
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import packageJson from '../package.json';
+import { version } from '../package.json';
 import { isProtocolMessage, type MainToUi, PROTOCOL_VERSION, type UiToMain } from './protocol';
 
 function post(message: UiToMain): void {
@@ -18,7 +18,7 @@ function Plugin() {
       if (isProtocolMessage<MainToUi>(message, 'ready') && message.sessionId === sessionId) setReady(message);
     };
     window.addEventListener('message', onMessage);
-    post({ v: PROTOCOL_VERSION, sessionId, t: 'hello', uiVersion: packageJson.version });
+    post({ v: PROTOCOL_VERSION, sessionId, t: 'hello', uiVersion: version });
     return () => window.removeEventListener('message', onMessage);
   }, []);
 
