@@ -1,1 +1,1 @@
-docs/plan/12-quality.md:43: domain CAP_ has more than one table
+internal/plan/12-quality.md:43: domain CAP_ has more than one table

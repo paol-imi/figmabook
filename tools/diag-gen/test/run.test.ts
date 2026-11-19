@@ -18,10 +18,13 @@ async function put(path: string, content: string): Promise<void> {
 
 /** A throwaway repository with the valid fixture catalog and the chapters it links to. */
 async function seedRepo(): Promise<void> {
-  await put('docs/plan/12-quality.md', await readFile(`${fixtures}valid/12-quality.md`, 'utf8'));
-  await put('docs/plan/03-storybook.md', '# 03\n\n`SB_INDEX_UNREACHABLE`, `SB_ARG_UNKNOWN`\n');
-  await put('docs/plan/13-security-legal.md', '# 13\n\n<a id="hosted"></a>\n\n`SB_NOT_A_STORYBOOK`\n');
-  await put('docs/plan/05-capture.md', '# 05\n\n## Walk\n\n`CAP_TREE_TOO_LARGE`, `CAP_LICENSE_UNKNOWN`\n');
+  await put('internal/plan/12-quality.md', await readFile(`${fixtures}valid/12-quality.md`, 'utf8'));
+  await put(
+    'internal/plan/03-storybook.md',
+    '# 03: Storybook integration\n\n`SB_INDEX_UNREACHABLE`, `SB_ARG_UNKNOWN`\n',
+  );
+  await put('internal/plan/13-security-legal.md', '# 13\n\n<a id="hosted"></a>\n\n`SB_NOT_A_STORYBOOK`\n');
+  await put('internal/plan/05-capture.md', '# 05\n\n## Walk\n\n`CAP_TREE_TOO_LARGE`, `CAP_LICENSE_UNKNOWN`\n');
   await put('packages/capture/src/walk.ts', "export const code = 'CAP_TREE_TOO_LARGE';\n");
 }
 
@@ -59,6 +62,14 @@ describe('generate', () => {
     expect(await readFile(join(root, MODULE), 'utf8')).toBe(before);
   });
 
+  it('names linked chapters by their title, or by number when they have none', async () => {
+    await generate(root);
+    const page = await readFile(join(root, 'docs/diagnostics/SB_ARG_UNKNOWN.md'), 'utf8');
+    expect(page).toContain('- Behaviour: [Storybook integration](../../internal/plan/03-storybook.md) (design notes).');
+    const capture = await readFile(join(root, 'docs/diagnostics/CAP_TREE_TOO_LARGE.md'), 'utf8');
+    expect(capture).toContain('- Behaviour: [Chapter 05](../../internal/plan/05-capture.md#walk) (design notes).');
+  });
+
   it('removes pages of codes that are no longer listed', async () => {
     await put('docs/diagnostics/SB_GONE.md', 'old');
     const result = await generate(root);
@@ -67,9 +78,9 @@ describe('generate', () => {
   });
 
   it('throws a CatalogError listing every problem', async () => {
-    await put('docs/plan/12-quality.md', await readFile(`${fixtures}malformed/bad-severity.md`, 'utf8'));
+    await put('internal/plan/12-quality.md', await readFile(`${fixtures}malformed/bad-severity.md`, 'utf8'));
     await expect(generate(root)).rejects.toThrow(CatalogError);
-    await expect(loadCatalog(root)).rejects.toThrow(/docs\/plan\/12-quality\.md:\d+: SB_ARG_UNKNOWN: severity/);
+    await expect(loadCatalog(root)).rejects.toThrow(/internal\/plan\/12-quality\.md:\d+: SB_ARG_UNKNOWN: severity/);
   });
 });
 
@@ -86,8 +97,16 @@ describe('check', () => {
     await put(MODULE, '// edited by hand\n');
     await rm(join(root, 'docs/diagnostics/SB_ARG_UNKNOWN.md'));
     expect((await check(root)).errors).toEqual([
-      `${MODULE}: out of date with docs/plan/12-quality.md; run \`pnpm diag:gen\``,
+      `${MODULE}: out of date with internal/plan/12-quality.md; run \`pnpm diag:gen\``,
       'docs/diagnostics/SB_ARG_UNKNOWN.md: missing; run `pnpm diag:gen`',
+    ]);
+  });
+
+  it('fails when a linked chapter is retitled', async () => {
+    await put('internal/plan/03-storybook.md', '# 03: Storybook adapter\n\n`SB_INDEX_UNREACHABLE`, `SB_ARG_UNKNOWN`\n');
+    expect((await check(root)).errors).toEqual([
+      'docs/diagnostics/SB_ARG_UNKNOWN.md: out of date with internal/plan/12-quality.md; run `pnpm diag:gen`',
+      'docs/diagnostics/SB_INDEX_UNREACHABLE.md: out of date with internal/plan/12-quality.md; run `pnpm diag:gen`',
     ]);
   });
 
@@ -110,29 +129,29 @@ describe('check', () => {
     await put('packages/plugin/test/fake.test.ts', "export const t = 'SB_ONLY_IN_TESTS';\n");
     await put('packages/plugin/src/node_modules/x.ts', "export const t = 'SB_VENDORED';\n");
     expect((await check(root)).errors).toEqual([
-      'packages/plugin/src/apply/nested.ts:1: SB_RENDER_TIMEOUT is not in the diagnostics catalog; add its row to docs/plan/12-quality.md first',
+      'packages/plugin/src/apply/nested.ts:1: SB_RENDER_TIMEOUT is not in the diagnostics catalog; add its row to internal/plan/12-quality.md first',
     ]);
   });
 
   it('fails on a malformed catalog, listing each row', async () => {
-    await put('docs/plan/12-quality.md', await readFile(`${fixtures}malformed/count-mismatch.md`, 'utf8'));
+    await put('internal/plan/12-quality.md', await readFile(`${fixtures}malformed/count-mismatch.md`, 'utf8'));
     expect((await check(root)).errors).toEqual([
-      'docs/plan/12-quality.md:19: summary says 5 codes, the domain headings add up to 6',
-      'docs/plan/12-quality.md:19: summary says SB 3, the SB_ heading says 4',
-      'docs/plan/12-quality.md:23: domain SB_ heading says 4 codes, its table has 3 rows',
+      'internal/plan/12-quality.md:19: summary says 5 codes, the domain headings add up to 6',
+      'internal/plan/12-quality.md:19: summary says SB 3, the SB_ heading says 4',
+      'internal/plan/12-quality.md:23: domain SB_ heading says 4 codes, its table has 3 rows',
     ]);
   });
 
   it('fails on a link to a missing chapter and warns on a chapter that does not mention its code', async () => {
-    await rm(join(root, 'docs/plan/13-security-legal.md'));
-    await put('docs/plan/05-capture.md', '# 05\n\n`CAP_TREE_TOO_LARGE`\n');
+    await rm(join(root, 'internal/plan/13-security-legal.md'));
+    await put('internal/plan/05-capture.md', '# 05\n\n`CAP_TREE_TOO_LARGE`\n');
     expect(await check(root)).toEqual({
       errors: [
-        'docs/plan/12-quality.md:28: SB_NOT_A_STORYBOOK is defined in docs/plan/13-security-legal.md, which does not exist',
+        'internal/plan/12-quality.md:28: SB_NOT_A_STORYBOOK is defined in internal/plan/13-security-legal.md, which does not exist',
       ],
       warnings: [
-        'docs/plan/12-quality.md:40: docs/plan/05-capture.md has no #walk anchor',
-        'docs/plan/12-quality.md:41: docs/plan/05-capture.md does not mention CAP_LICENSE_UNKNOWN',
+        'internal/plan/12-quality.md:40: internal/plan/05-capture.md has no #walk anchor',
+        'internal/plan/12-quality.md:41: internal/plan/05-capture.md does not mention CAP_LICENSE_UNKNOWN',
       ],
     });
   });
@@ -162,10 +181,10 @@ describe('cli main', () => {
   });
 
   it('gen exits 1 on a malformed catalog', async () => {
-    await put('docs/plan/12-quality.md', await readFile(`${fixtures}malformed/no-anchor.md`, 'utf8'));
+    await put('internal/plan/12-quality.md', await readFile(`${fixtures}malformed/no-anchor.md`, 'utf8'));
     const { lines, log } = silentLog();
     expect(await main(['gen', '--root', root], log)).toBe(1);
-    expect(lines.join('\n')).toMatch(/malformed:\ndocs\/plan\/12-quality\.md:1: missing the/);
+    expect(lines.join('\n')).toMatch(/malformed:\ninternal\/plan\/12-quality\.md:1: missing the/);
   });
 
   it('exits 2 on usage errors', async () => {

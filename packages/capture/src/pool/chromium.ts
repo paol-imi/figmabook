@@ -3,7 +3,7 @@
  * context per worker with the D-24 options, the frozen clock, the seeded `Math.random` and
  * the serializer injected before any page code.
  */
-import type { ConnectedStorybook, RenderDriver } from '@holotype/storybook';
+import type { ConnectedStorybook, DriverMode, DriverOptions, RenderDriver } from '@holotype/storybook';
 import { type Browser, type BrowserContext, chromium, type LaunchOptions, type Page } from 'playwright';
 import {
   type CaptureEnvironment,
@@ -30,6 +30,8 @@ export interface ChromiumBackendOptions {
   readonly chromiumPath?: string;
   readonly launch?: LaunchOptions;
   readonly renderTimeoutMs?: number;
+  /** `channel` (default, URL fallback) or `url` (03 §5). */
+  readonly renderMode?: DriverMode;
   /** Called for each new page before its driver opens: routes, auth headers (03 §9.4). */
   readonly preparePage?: (page: Page) => void | Promise<void>;
 }
@@ -81,8 +83,11 @@ export class ChromiumBackend implements WorkerBackend<CaptureSession> {
       crashed = true;
     });
     await this.options.preparePage?.(page);
-    const driverOptions =
-      this.options.renderTimeoutMs === undefined ? {} : { renderTimeoutMs: this.options.renderTimeoutMs };
+    const { renderTimeoutMs, renderMode } = this.options;
+    const driverOptions: DriverOptions = {
+      ...(renderTimeoutMs === undefined ? {} : { renderTimeoutMs }),
+      ...(renderMode === undefined ? {} : { mode: renderMode }),
+    };
     const driver = await this.options.storybook.openDriver(page, driverOptions);
     return {
       page,

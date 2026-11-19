@@ -1,0 +1,466 @@
+[
+  {
+    "id": "micro-backgrounds--solid-alpha",
+    "sid": "micro-backgrounds",
+    "title": "Micro/Backgrounds",
+    "titlePath": [
+      "Micro",
+      "Backgrounds"
+    ],
+    "name": "Solid Alpha",
+    "exportName": "SolidAlpha",
+    "importPath": "./src/micro/Backgrounds.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Backgrounds.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-backgrounds",
+      "storiesPath": "./src/micro/Backgrounds.stories.tsx",
+      "storyIds": [
+        "micro-backgrounds--solid-alpha",
+        "micro-backgrounds--oklch",
+        "micro-backgrounds--linear-angle",
+        "micro-backgrounds--linear-hard-stops",
+        "micro-backgrounds--radial",
+        "micro-backgrounds--conic",
+        "micro-backgrounds--multi-layer",
+        "micro-backgrounds--image-cover"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-backgrounds--oklch",
+    "sid": "micro-backgrounds",
+    "title": "Micro/Backgrounds",
+    "titlePath": [
+      "Micro",
+      "Backgrounds"
+    ],
+    "name": "Oklch",
+    "exportName": "Oklch",
+    "importPath": "./src/micro/Backgrounds.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Backgrounds.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-backgrounds",
+      "storiesPath": "./src/micro/Backgrounds.stories.tsx",
+      "storyIds": [
+        "micro-backgrounds--solid-alpha",
+        "micro-backgrounds--oklch",
+        "micro-backgrounds--linear-angle",
+        "micro-backgrounds--linear-hard-stops",
+        "micro-backgrounds--radial",
+        "micro-backgrounds--conic",
+        "micro-backgrounds--multi-layer",
+        "micro-backgrounds--image-cover"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-backgrounds--linear-angle",
+    "sid": "micro-backgrounds",
+    "title": "Micro/Backgrounds",
+    "titlePath": [
+      "Micro",
+      "Backgrounds"
+    ],
+    "name": "Linear Angle",
+    "exportName": "LinearAngle",
+    "importPath": "./src/micro/Backgrounds.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Backgrounds.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-backgrounds",
+      "storiesPath": "./src/micro/Backgrounds.stories.tsx",
+      "storyIds": [
+        "micro-backgrounds--solid-alpha",
+        "micro-backgrounds--oklch",
+        "micro-backgrounds--linear-angle",
+        "micro-backgrounds--linear-hard-stops",
+        "micro-backgrounds--radial",
+        "micro-backgrounds--conic",
+        "micro-backgrounds--multi-layer",
+        "micro-backgrounds--image-cover"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-backgrounds--linear-hard-stops",
+    "sid": "micro-backgrounds",
+    "title": "Micro/Backgrounds",
+    "titlePath": [
+      "Micro",
+      "Backgrounds"
+    ],
+    "name": "Linear Hard Stops",
+    "exportName": "LinearHardStops",
+    "importPath": "./src/micro/Backgrounds.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Backgrounds.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-backgrounds",
+      "storiesPath": "./src/micro/Backgrounds.stories.tsx",
+      "storyIds": [
+        "micro-backgrounds--solid-alpha",
+        "micro-backgrounds--oklch",
+        "micro-backgrounds--linear-angle",
+        "micro-backgrounds--linear-hard-stops",
+        "micro-backgrounds--radial",
+        "micro-backgrounds--conic",
+        "micro-backgrounds--multi-layer",
+        "micro-backgrounds--image-cover"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-backgrounds--radial",
+    "sid": "micro-backgrounds",
+    "title": "Micro/Backgrounds",
+    "titlePath": [
+      "Micro",
+      "Backgrounds"
+    ],
+    "name": "Radial",
+    "exportName": "Radial",
+    "importPath": "./src/micro/Backgrounds.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Backgrounds.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-backgrounds",
+      "storiesPath": "./src/micro/Backgrounds.stories.tsx",
+      "storyIds": [
+        "micro-backgrounds--solid-alpha",
+        "micro-backgrounds--oklch",
+        "micro-backgrounds--linear-angle",
+        "micro-backgrounds--linear-hard-stops",
+        "micro-backgrounds--radial",
+        "micro-backgrounds--conic",
+        "micro-backgrounds--multi-layer",
+        "micro-backgrounds--image-cover"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-backgrounds--conic",
+    "sid": "micro-backgrounds",
+    "title": "Micro/Backgrounds",
+    "titlePath": [
+      "Micro",
+      "Backgrounds"
+    ],
+    "name": "Conic",
+    "exportName": "Conic",
+    "importPath": "./src/micro/Backgrounds.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Backgrounds.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-backgrounds",
+      "storiesPath": "./src/micro/Backgrounds.stories.tsx",
+      "storyIds": [
+        "micro-backgrounds--solid-alpha",
+        "micro-backgrounds--oklch",
+        "micro-backgrounds--linear-angle",
+        "micro-backgrounds--linear-hard-stops",
+        "micro-backgrounds--radial",
+        "micro-backgrounds--conic",
+        "micro-backgrounds--multi-layer",
+        "micro-backgrounds--image-cover"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-backgrounds--multi-layer",
+    "sid": "micro-backgrounds",
+    "title": "Micro/Backgrounds",
+    "titlePath": [
+      "Micro",
+      "Backgrounds"
+    ],
+    "name": "Multi Layer",
+    "exportName": "MultiLayer",
+    "importPath": "./src/micro/Backgrounds.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Backgrounds.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-backgrounds",
+      "storiesPath": "./src/micro/Backgrounds.stories.tsx",
+      "storyIds": [
+        "micro-backgrounds--solid-alpha",
+        "micro-backgrounds--oklch",
+        "micro-backgrounds--linear-angle",
+        "micro-backgrounds--linear-hard-stops",
+        "micro-backgrounds--radial",
+        "micro-backgrounds--conic",
+        "micro-backgrounds--multi-layer",
+        "micro-backgrounds--image-cover"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-backgrounds--image-cover",
+    "sid": "micro-backgrounds",
+    "title": "Micro/Backgrounds",
+    "titlePath": [
+      "Micro",
+      "Backgrounds"
+    ],
+    "name": "Image Cover",
+    "exportName": "ImageCover",
+    "importPath": "./src/micro/Backgrounds.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Backgrounds.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-backgrounds",
+      "storiesPath": "./src/micro/Backgrounds.stories.tsx",
+      "storyIds": [
+        "micro-backgrounds--solid-alpha",
+        "micro-backgrounds--oklch",
+        "micro-backgrounds--linear-angle",
+        "micro-backgrounds--linear-hard-stops",
+        "micro-backgrounds--radial",
+        "micro-backgrounds--conic",
+        "micro-backgrounds--multi-layer",
+        "micro-backgrounds--image-cover"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  }
+]

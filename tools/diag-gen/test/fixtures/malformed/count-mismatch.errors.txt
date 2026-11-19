@@ -1,3 +1,3 @@
-docs/plan/12-quality.md:19: summary says 5 codes, the domain headings add up to 6
-docs/plan/12-quality.md:19: summary says SB 3, the SB_ heading says 4
-docs/plan/12-quality.md:23: domain SB_ heading says 4 codes, its table has 3 rows
+internal/plan/12-quality.md:19: summary says 5 codes, the domain headings add up to 6
+internal/plan/12-quality.md:19: summary says SB 3, the SB_ heading says 4
+internal/plan/12-quality.md:23: domain SB_ heading says 4 codes, its table has 3 rows

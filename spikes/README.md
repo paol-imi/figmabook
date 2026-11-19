@@ -118,17 +118,20 @@ The kit is the `@holotype/spikes` workspace package (BUILD B-08, §9).
 ```sh
 pnpm -F @holotype/spikes build     # → dist/holotype-spikes.zip (+ -<version>.zip), runner/build/*
 pnpm -F @holotype/spikes test      # unit tests, UI tests and dry runs of every spike
-pnpm -F @holotype/spikes test:e2e  # Chromium checks of the S-05 reference data
+pnpm -F @holotype/spikes test:e2e  # Chromium checks: S-05 reference data, S-19 provenance on the ds-react dev server
 pnpm -F @holotype/spikes refs      # regenerate S-05/refs.json with headless Chromium
+pnpm build && pnpm -F @holotype/spikes s19   # S-19 coverage run → S-19/results/summary.json (internal/spikes/S-19.md)
+pnpm -F @holotype/spikes s19:record          # re-record S-19/test/fixtures/button-primary.json from the dev server
 ```
 
 To try a local build without the zip, import `spikes/runner/manifest.json` in Figma desktop.
 
-| Path       | Contents                                                                                                     |
-| ---------- | ------------------------------------------------------------------------------------------------------------ |
-| `runner/`  | the plugin: manifest, main host, UI (Preact), build scripts, tests and the dry-run Plugin API                |
-| `_shared/` | the spike contract (`spike.ts`), result envelope, Figma and pixel helpers, schemas                           |
-| `S-xx/`    | one spike: `plugin.ts` (main tasks), `steps.ts` (UI steps), pure model files, `schema.ts` (answers), `test/` |
+| Path       | Contents                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `runner/`  | the plugin: manifest, main host, UI (Preact), build scripts, tests and the dry-run Plugin API                                 |
+| `_shared/` | the spike contract (`spike.ts`), result envelope, Figma and pixel helpers, schemas                                            |
+| `S-xx/`    | one spike: `plugin.ts` (main tasks), `steps.ts` (UI steps), pure model files, `schema.ts` (answers), `test/`                  |
+| `S-19/`    | container-only, not in the kit: the CSS provenance resolver (`resolver/`, reused by B-45), the CDP probe and the coverage run |
 
 How it works: the UI runs each step as an async function. It calls named main tasks (`S-xx/<task>`) over `postMessage`, asks the user with `io.ask`, keeps multi-step state in `figma.clientStorage`, and returns JSON. The runner wraps it in the envelope `{ format, spike, kitVersion, step, status, env: { apiVersion, editorType, client, os }, results }`, where `results.answers` answers the spike's questions directly. Every task receives the Plugin API as a parameter, so `pnpm test` runs every step against a dry-run API (`runner/test/support/dry-run-figma.ts`); members that `@holotype/figma-fake` does not implement yet are served and listed by that recording model.
 

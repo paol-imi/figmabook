@@ -4,7 +4,7 @@
  * serving goes on while the user watches the Report tab.
  */
 import { createDiagnostic, type Diagnostic, diagnostic } from '@holotype/shared';
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import type { UiChannel } from '../../channel';
 import { type ReadBundleOptions, readBundle } from './bundle';
 import { serveBundle } from './serve';
@@ -48,7 +48,9 @@ export function useImport(channel: UiChannel, options: ReadBundleOptions = DEFAU
   // Only the latest pick may update the state: a slow earlier read must not win.
   const attempt = useRef(0);
 
-  useEffect(
+  // A layout effect, so unmounting stops serving at once: Preact 11 defers plain
+  // `useEffect` cleanups until after the next paint.
+  useLayoutEffect(
     () => () => {
       stopServing.current?.();
     },

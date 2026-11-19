@@ -1,0 +1,4386 @@
+{
+  "story": "components-button--primary",
+  "note": "Recorded by spikes/S-19/record.ts (pruned, see prune()); absolute paths replaced by /repo/.",
+  "repoRoot": "/repo/",
+  "sheets": [
+    {
+      "header": {
+        "styleSheetId": "style-sheet-17640-1",
+        "frameId": "912CF45BFB2026D5385FCB417E0DBB24",
+        "sourceURL": "http://127.0.0.1:35647/iframe.html?id=components-button--primary&viewMode=story",
+        "sourceMapURL": "data:application/json;base64,e30=",
+        "origin": "regular",
+        "title": "",
+        "ownerNode": 3,
+        "disabled": false,
+        "isInline": true,
+        "isMutable": false,
+        "isConstructed": false,
+        "startLine": 15,
+        "startColumn": 11,
+        "length": 2910,
+        "endLine": 48,
+        "endColumn": 1993
+      },
+      "sourceMap": {
+        "file": "\u0000/iframe.html",
+        "mappings": ";MACM;QACE,0BAA0B;QAC1B,kBAAkB;QAClB,gBAAgB;QAChB,kBAAkB;QAClB,wEAAwE;MAC1E;;MAEA;QACE,0BAA0B;QAC1B,kBAAkB;QAClB,gBAAgB;QAChB,kBAAkB;QAClB,uEAAuE;MACzE;;MAEA;QACE,0BAA0B;QAC1B,kBAAkB;QAClB,gBAAgB;QAChB,kBAAkB;QAClB,qEAAqE;MACvE;;MAEA;QACE,0BAA0B;QAC1B,kBAAkB;QAClB,gBAAgB;QAChB,kBAAkB;QAClB,4EAA4E;MAC9E",
+        "names": [],
+        "sources": ["/repo/fixtures/ds-react/\u0000/iframe.html"],
+        "sourcesContent": [
+          "\n      @font-face {\n        font-family: 'Nunito Sans';\n        font-style: normal;\n        font-weight: 400;\n        font-display: swap;\n        src: url('./sb-common-assets/nunito-sans-regular.woff2') format('woff2');\n      }\n\n      @font-face {\n        font-family: 'Nunito Sans';\n        font-style: italic;\n        font-weight: 400;\n        font-display: swap;\n        src: url('./sb-common-assets/nunito-sans-italic.woff2') format('woff2');\n      }\n\n      @font-face {\n        font-family: 'Nunito Sans';\n        font-style: normal;\n        font-weight: 700;\n        font-display: swap;\n        src: url('./sb-common-assets/nunito-sans-bold.woff2') format('woff2');\n      }\n\n      @font-face {\n        font-family: 'Nunito Sans';\n        font-style: italic;\n        font-weight: 700;\n        font-display: swap;\n        src: url('./sb-common-assets/nunito-sans-bold-italic.woff2') format('woff2');\n      }\n    "
+        ],
+        "version": 3
+      }
+    },
+    {
+      "header": {
+        "styleSheetId": "style-sheet-17640-2",
+        "frameId": "912CF45BFB2026D5385FCB417E0DBB24",
+        "sourceURL": "http://127.0.0.1:35647/iframe.html?id=components-button--primary&viewMode=story",
+        "origin": "regular",
+        "title": "",
+        "ownerNode": 4,
+        "disabled": false,
+        "isInline": true,
+        "isMutable": false,
+        "isConstructed": false,
+        "startLine": 69,
+        "startColumn": 7,
+        "length": 9955,
+        "endLine": 546,
+        "endColumn": 0
+      }
+    },
+    {
+      "header": {
+        "styleSheetId": "style-sheet-17640-3",
+        "frameId": "912CF45BFB2026D5385FCB417E0DBB24",
+        "sourceURL": "",
+        "sourceMapURL": "data:application/json;base64,e30=",
+        "origin": "regular",
+        "title": "",
+        "ownerNode": 5,
+        "disabled": false,
+        "isInline": false,
+        "isMutable": false,
+        "isConstructed": false,
+        "startLine": 0,
+        "startColumn": 0,
+        "length": 6130,
+        "endLine": 37,
+        "endColumn": 3741
+      },
+      "devId": "/repo/fixtures/ds-react/src/styles/fonts.css",
+      "sourceMap": {
+        "file": "/repo/fixtures/ds-react/src/styles/fonts.css",
+        "mappings": "AAAA;;;;EAIE,CCJF,2BAA2B;AAC3B;EACE,oBAAoB;EACpB,kBAAkB;EAClB,kBAAkB;EAClB,gBAAgB;EAChB,6YAAuH;AACzH;ACPA,2BAA2B;AAC3B;EACE,oBAAoB;EACpB,kBAAkB;EAClB,kBAAkB;EAClB,gBAAgB;EAChB,6YAAuH;AACzH;ACPA,2BAA2B;AAC3B;EACE,oBAAoB;EACpB,kBAAkB;EAClB,kBAAkB;EAClB,gBAAgB;EAChB,6YAAuH;AACzH;ACPA,2BAA2B;AAC3B;EACE,oBAAoB;EACpB,kBAAkB;EAClB,kBAAkB;EAClB,gBAAgB;EAChB,6YAAuH;AACzH",
+        "names": [],
+        "sources": [
+          "/repo/fixtures/ds-react/src/styles/fonts.css",
+          "/repo/node_modules/.pnpm/@fontsource+inter@5.3.0/node_modules/@fontsource/inter/latin-400.css",
+          "/repo/node_modules/.pnpm/@fontsource+inter@5.3.0/node_modules/@fontsource/inter/latin-500.css",
+          "/repo/node_modules/.pnpm/@fontsource+inter@5.3.0/node_modules/@fontsource/inter/latin-600.css",
+          "/repo/node_modules/.pnpm/@fontsource+inter@5.3.0/node_modules/@fontsource/inter/latin-700.css"
+        ],
+        "sourcesContent": [
+          "/*\n * Inter 400/500/600/700, Latin subset, self-hosted from @fontsource/inter.\n * Every file these faces reference is pinned by sha256 in fixtures/fonts.lock:\n * change the weights here and in scripts/lock-fonts.ts together, then run `pnpm fonts:lock`.\n */\n@import \"@fontsource/inter/latin-400.css\";\n@import \"@fontsource/inter/latin-500.css\";\n@import \"@fontsource/inter/latin-600.css\";\n@import \"@fontsource/inter/latin-700.css\";\n",
+          "/* inter-latin-400-normal */\n@font-face {\n  font-family: 'Inter';\n  font-style: normal;\n  font-display: swap;\n  font-weight: 400;\n  src: url(./files/inter-latin-400-normal.woff2) format('woff2'), url(./files/inter-latin-400-normal.woff) format('woff');\n}",
+          "/* inter-latin-500-normal */\n@font-face {\n  font-family: 'Inter';\n  font-style: normal;\n  font-display: swap;\n  font-weight: 500;\n  src: url(./files/inter-latin-500-normal.woff2) format('woff2'), url(./files/inter-latin-500-normal.woff) format('woff');\n}",
+          "/* inter-latin-600-normal */\n@font-face {\n  font-family: 'Inter';\n  font-style: normal;\n  font-display: swap;\n  font-weight: 600;\n  src: url(./files/inter-latin-600-normal.woff2) format('woff2'), url(./files/inter-latin-600-normal.woff) format('woff');\n}",
+          "/* inter-latin-700-normal */\n@font-face {\n  font-family: 'Inter';\n  font-style: normal;\n  font-display: swap;\n  font-weight: 700;\n  src: url(./files/inter-latin-700-normal.woff2) format('woff2'), url(./files/inter-latin-700-normal.woff) format('woff');\n}"
+        ],
+        "version": 3
+      }
+    },
+    {
+      "header": {
+        "styleSheetId": "style-sheet-17640-4",
+        "frameId": "912CF45BFB2026D5385FCB417E0DBB24",
+        "sourceURL": "",
+        "sourceMapURL": "data:application/json;base64,e30=",
+        "origin": "regular",
+        "title": "",
+        "ownerNode": 6,
+        "disabled": false,
+        "isInline": false,
+        "isMutable": false,
+        "isConstructed": false,
+        "startLine": 0,
+        "startColumn": 0,
+        "length": 33848,
+        "endLine": 188,
+        "endColumn": 27917
+      },
+      "devId": "/repo/fixtures/ds-react/src/tokens/tokens.css",
+      "sourceMap": {
+        "version": 3,
+        "sources": ["/repo/fixtures/ds-react/src/tokens/tokens.css"],
+        "sourcesContent": [
+          "/*\n * Design tokens for the fixture design system.\n *\n * Primitives come first, then semantic aliases that point at primitives through var().\n * Component CSS modules use only these custom properties (BUILD B-03).\n *\n * Two tokens are deliberately unbindable in Figma (12 §2.2):\n *   --control-height-md     a calc() expression\n *   --color-primary-subtle  a color-mix() expression\n *\n * Token names are API for capture, mapper and DCR tests: add new ones, never rename.\n */\n\n:root {\n  /* Color primitives: --color-<hue>-<step> */\n  --color-gray-0: #ffffff;\n  --color-gray-50: #f8fafc;\n  --color-gray-100: #f1f5f9;\n  --color-gray-200: #e2e8f0;\n  --color-gray-300: #cbd5e1;\n  --color-gray-400: #94a3b8;\n  --color-gray-500: #64748b;\n  --color-gray-600: #475569;\n  --color-gray-700: #334155;\n  --color-gray-800: #1e293b;\n  --color-gray-900: #0f172a;\n\n  --color-blue-50: #eff6ff;\n  --color-blue-100: #dbeafe;\n  --color-blue-200: #bfdbfe;\n  --color-blue-300: #93c5fd;\n  --color-blue-400: #60a5fa;\n  --color-blue-500: #3b82f6;\n  --color-blue-600: #2563eb;\n  --color-blue-700: #1d4ed8;\n  --color-blue-800: #1e40af;\n  --color-blue-900: #1e3a8a;\n\n  --color-green-50: #f0fdf4;\n  --color-green-100: #dcfce7;\n  --color-green-500: #22c55e;\n  --color-green-600: #16a34a;\n  --color-green-700: #15803d;\n\n  --color-amber-50: #fffbeb;\n  --color-amber-100: #fef3c7;\n  --color-amber-500: #f59e0b;\n  --color-amber-600: #d97706;\n  --color-amber-700: #b45309;\n\n  --color-red-50: #fef2f2;\n  --color-red-100: #fee2e2;\n  --color-red-500: #ef4444;\n  --color-red-600: #dc2626;\n  --color-red-700: #b91c1c;\n\n  /* Spacing: --space-1..8 */\n  --space-1: 4px;\n  --space-2: 8px;\n  --space-3: 12px;\n  --space-4: 16px;\n  --space-5: 20px;\n  --space-6: 24px;\n  --space-7: 32px;\n  --space-8: 40px;\n\n  /* Radii */\n  --radius-sm: 4px;\n  --radius-md: 6px;\n  --radius-lg: 10px;\n  --radius-full: 9999px;\n\n  /* Borders */\n  --border-width-1: 1px;\n  --border-width-2: 2px;\n\n  /* Typography */\n  --font-family-sans: \"Inter\", sans-serif;\n  --font-weight-regular: 400;\n  --font-weight-medium: 500;\n  --font-weight-semibold: 600;\n  --font-weight-bold: 700;\n\n  --font-size-xs: 12px;\n  --font-size-sm: 14px;\n  --font-size-md: 16px;\n  --font-size-lg: 18px;\n  --font-size-xl: 20px;\n\n  --line-height-xs: 16px;\n  --line-height-sm: 20px;\n  --line-height-md: 24px;\n  --line-height-lg: 28px;\n  --line-height-xl: 28px;\n\n  /* Elevation */\n  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.08);\n  --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.1), 0 2px 4px -2px rgb(15 23 42 / 0.1);\n\n  /* Sizes */\n  --size-icon-sm: 16px;\n  --size-icon-md: 20px;\n  --size-icon-lg: 24px;\n  --size-dot: 6px;\n  --size-card-width: 320px;\n  --size-field-max-width: 320px;\n  --size-card-media-height: 160px;\n  --size-card-min-height: 240px;\n  --control-height-sm: 32px;\n  /* Unbindable on purpose: a calc() over two primitives (12 §2.2). */\n  --control-height-md: calc(var(--space-7) + var(--space-1));\n  --control-height-lg: 44px;\n\n  /* Motion */\n  --duration-spin: 800ms;\n\n  /* Semantic aliases (light theme) */\n  --color-bg: var(--color-gray-0);\n  --color-fg: var(--color-gray-900);\n  --color-fg-muted: var(--color-gray-500);\n  --color-surface: var(--color-gray-0);\n  --color-surface-muted: var(--color-gray-100);\n  --color-border: var(--color-gray-200);\n  --color-border-strong: var(--color-gray-300);\n  --color-primary: var(--color-blue-600);\n  --color-primary-hover: var(--color-blue-700);\n  --color-primary-active: var(--color-blue-800);\n  --color-primary-fg: var(--color-gray-0);\n  /* Unbindable on purpose: color-mix() has no Figma variable equivalent (12 §2.2). */\n  --color-primary-subtle: color-mix(in srgb, var(--color-primary) 12%, transparent);\n  --color-focus-ring: var(--color-blue-400);\n  --color-danger: var(--color-red-600);\n  --color-disabled-fg: var(--color-gray-400);\n  --color-disabled-bg: var(--color-gray-100);\n\n  --color-tone-neutral-bg: var(--color-gray-100);\n  --color-tone-neutral-fg: var(--color-gray-700);\n  --color-tone-info-bg: var(--color-blue-100);\n  --color-tone-info-fg: var(--color-blue-800);\n  --color-tone-success-bg: var(--color-green-100);\n  --color-tone-success-fg: var(--color-green-700);\n  --color-tone-warning-bg: var(--color-amber-100);\n  --color-tone-warning-fg: var(--color-amber-700);\n  --color-tone-danger-bg: var(--color-red-100);\n  --color-tone-danger-fg: var(--color-red-700);\n\n  /* Component tokens */\n  --button-bg: var(--color-primary);\n  --button-bg-hover: var(--color-primary-hover);\n  --button-bg-active: var(--color-primary-active);\n  --button-fg: var(--color-primary-fg);\n  --button-radius: var(--radius-md);\n  --input-bg: var(--color-surface);\n  --input-border: var(--color-border-strong);\n  --card-bg: var(--color-surface);\n  --card-radius: var(--radius-lg);\n  --card-body-lines: 3;\n}\n\n[data-theme=\"dark\"] {\n  --color-bg: var(--color-gray-900);\n  --color-fg: var(--color-gray-50);\n  --color-fg-muted: var(--color-gray-400);\n  --color-surface: var(--color-gray-800);\n  --color-surface-muted: var(--color-gray-700);\n  --color-border: var(--color-gray-700);\n  --color-border-strong: var(--color-gray-600);\n  --color-primary: var(--color-blue-500);\n  --color-primary-hover: var(--color-blue-400);\n  --color-primary-active: var(--color-blue-300);\n  --color-primary-fg: var(--color-gray-900);\n  --color-focus-ring: var(--color-blue-300);\n  --color-danger: var(--color-red-500);\n  --color-disabled-fg: var(--color-gray-500);\n  --color-disabled-bg: var(--color-gray-800);\n\n  --color-tone-neutral-bg: var(--color-gray-700);\n  --color-tone-neutral-fg: var(--color-gray-100);\n  --color-tone-info-bg: var(--color-blue-900);\n  --color-tone-info-fg: var(--color-blue-100);\n  --color-tone-success-bg: var(--color-green-700);\n  --color-tone-success-fg: var(--color-green-50);\n  --color-tone-warning-bg: var(--color-amber-700);\n  --color-tone-warning-fg: var(--color-amber-50);\n  --color-tone-danger-bg: var(--color-red-700);\n  --color-tone-danger-fg: var(--color-red-50);\n}\n"
+        ],
+        "names": [],
+        "mappings": "AAAA,CAAC;AACD,CAAC,CAAC,CAAC,MAAM,CAAC,MAAM,CAAC,GAAG,CAAC,GAAG,CAAC,OAAO,CAAC,MAAM,CAAC,MAAM;AAC9C,CAAC;AACD,CAAC,CAAC,CAAC,UAAU,CAAC,IAAI,CAAC,KAAK,CAAC,CAAC,IAAI,CAAC,QAAQ,CAAC,OAAO,CAAC,IAAI,CAAC,KAAK,CAAC,EAAE,CAAC,UAAU,CAAC,OAAO,CAAC,GAAG,CAAC,CAAC;AACtF,CAAC,CAAC,CAAC,SAAS,CAAC,GAAG,CAAC,OAAO,CAAC,GAAG,CAAC,IAAI,CAAC,KAAK,CAAC,MAAM,CAAC,UAAU,CAAC,CAAC,KAAK,CAAC,CAAC,CAAC,EAAE,CAAC;AACtE,CAAC;AACD,CAAC,CAAC,CAAC,GAAG,CAAC,MAAM,CAAC,GAAG,CAAC,YAAY,CAAC,UAAU,CAAC,EAAE,CAAC,KAAK,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5D,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,OAAO,CAAC,MAAM,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,IAAI,CAAC,CAAC,CAAC;AACtC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,OAAO,CAAC,MAAM,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,GAAG,CAAC,CAAC,CAAC;AAC3C,CAAC;AACD,CAAC,CAAC,CAAC,KAAK,CAAC,KAAK,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,OAAO,CAAC,CAAC,MAAM,CAAC,GAAG,CAAC,GAAG,CAAC,KAAK,CAAC,CAAC,GAAG,CAAC,GAAG,CAAC,IAAI,CAAC,CAAC,KAAK,CAAC,MAAM;AACpF,CAAC,CAAC;;AAEF,CAAC,IAAI,CAAC;AACN,CAAC,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,UAAU,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,IAAI,CAAC,CAAC,CAAC;AAC7C,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,CAAC,CAAC,CAAC,CAAC,MAAM;AACzB,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,EAAE,CAAC,CAAC,CAAC,MAAM;AAC1B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;;AAE3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,EAAE,CAAC,CAAC,CAAC,MAAM;AAC1B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC3B,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,CAAC,MAAM;AAC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"
+      }
+    },
+    {
+      "header": {
+        "styleSheetId": "style-sheet-17640-5",
+        "frameId": "912CF45BFB2026D5385FCB417E0DBB24",
+        "sourceURL": "",
+        "sourceMapURL": "data:application/json;base64,e30=",
+        "origin": "regular",
+        "title": "",
+        "ownerNode": 7,
+        "disabled": false,
+        "isInline": false,
+        "isMutable": false,
+        "isConstructed": false,
+        "startLine": 0,
+        "startColumn": 0,
+        "length": 1996,
+        "endLine": 16,
+        "endColumn": 1685
+      },
+      "devId": "/repo/fixtures/ds-react/src/styles/base.css",
+      "sourceMap": {
+        "version": 3,
+        "sources": ["/repo/fixtures/ds-react/src/styles/base.css"],
+        "sourcesContent": [
+          "/* Document defaults shared by every story. Uses tokens only. */\n*,\n*::before,\n*::after {\n  box-sizing: border-box;\n}\n\nbody {\n  margin: 0;\n  background: var(--color-bg);\n  color: var(--color-fg);\n  font-family: var(--font-family-sans);\n  font-size: var(--font-size-sm);\n  line-height: var(--line-height-sm);\n}\n"
+        ],
+        "names": [],
+        "mappings": "AAAA,CAAC,CAAC,CAAC,QAAQ,CAAC,QAAQ,CAAC,MAAM,CAAC,EAAE,CAAC,KAAK,CAAC,KAAK,CAAC,CAAC,IAAI,CAAC,MAAM,CAAC,IAAI,CAAC,CAAC,CAAC;AAC/D,CAAC;AACD,CAAC,CAAC,CAAC,MAAM;AACT,CAAC,CAAC,CAAC,KAAK,CAAC;AACT,CAAC,CAAC,GAAG,CAAC,MAAM,CAAC,CAAC,MAAM,CAAC,GAAG;AACxB;;AAEA,IAAI,CAAC;AACL,CAAC,CAAC,MAAM,CAAC,CAAC,CAAC;AACX,CAAC,CAAC,UAAU,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,KAAK,CAAC,EAAE,CAAC;AAC7B,CAAC,CAAC,KAAK,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,KAAK,CAAC,EAAE,CAAC;AACxB,CAAC,CAAC,IAAI,CAAC,MAAM,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,IAAI,CAAC,MAAM,CAAC,IAAI,CAAC;AACtC,CAAC,CAAC,IAAI,CAAC,IAAI,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,IAAI,CAAC,IAAI,CAAC,EAAE,CAAC;AAChC,CAAC,CAAC,IAAI,CAAC,MAAM,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,IAAI,CAAC,MAAM,CAAC,EAAE,CAAC;AACpC;"
+      }
+    },
+    {
+      "header": {
+        "styleSheetId": "style-sheet-17640-6",
+        "frameId": "912CF45BFB2026D5385FCB417E0DBB24",
+        "sourceURL": "",
+        "sourceMapURL": "data:application/json;base64,e30=",
+        "origin": "regular",
+        "title": "",
+        "ownerNode": 9,
+        "disabled": false,
+        "isInline": false,
+        "isMutable": false,
+        "isConstructed": false,
+        "startLine": 0,
+        "startColumn": 0,
+        "length": 7138,
+        "endLine": 112,
+        "endColumn": 4745
+      },
+      "devId": "/repo/fixtures/ds-react/src/components/Button/Button.module.css",
+      "sourceMap": {
+        "file": "/repo/fixtures/ds-react/src/components/Button/Button.module.css",
+        "mappings": "AAAA;EACE,oBAAoB;EACpB,mBAAmB;EACnB,uBAAuB;EACvB,+CAA+C;EAC/C,mCAAmC;EACnC,oCAAoC;EACpC,wCAAwC;EACxC,mBAAmB;EACnB,eAAe;AACjB;;AAEA;EACE,4DAA4D;EAC5D,qCAAqC;AACvC;;AAEA,aAAa;;AAEb;EACE,4BAA4B;EAC5B,uBAAuB;AACzB;;AAEA;EACE,kCAAkC;AACpC;;AAEA;EACE,mCAAmC;AACrC;;AAEA;EACE,wCAAwC;EACxC,gCAAgC;EAChC,sBAAsB;AACxB;;AAEA;;EAEE,sCAAsC;AACxC;;AAEA;EACE,uBAAuB;EACvB,2BAA2B;AAC7B;;AAEA;;EAEE,uCAAuC;AACzC;;AAEA,UAAU;;AAEV;EACE,mBAAmB;EACnB,gCAAgC;EAChC,8BAA8B;EAC9B,8BAA8B;EAC9B,kCAAkC;AACpC;;AAEA;EACE,mBAAmB;EACnB,gCAAgC;EAChC,8BAA8B;EAC9B,8BAA8B;EAC9B,kCAAkC;AACpC;;AAEA;EACE,mBAAmB;EACnB,gCAAgC;EAChC,8BAA8B;EAC9B,8BAA8B;EAC9B,kCAAkC;AACpC;;AAEA,WAAW;;AAEX;EACE,yBAAyB;EACzB,oCAAoC;EACpC,+BAA+B;EAC/B,mBAAmB;AACrB;;AAEA;EACE,gBAAgB;AAClB;;AAEA;EACE,qBAAqB;AACvB;;AAEA;EACE,cAAc;EACd,0BAA0B;EAC1B,2BAA2B;EAC3B,gDAAgD;EAChD,+BAA+B;EAC/B,iCAAiC;EACjC,8DAAoD;AACtD;;AAEA;EACE;IACE,wBAAwB;EAC1B;AACF",
+        "names": [],
+        "sources": ["/repo/fixtures/ds-react/src/components/Button/Button.module.css"],
+        "sourcesContent": [
+          ".button {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  border: var(--border-width-1) solid transparent;\n  border-radius: var(--button-radius);\n  font-family: var(--font-family-sans);\n  font-weight: var(--font-weight-semibold);\n  white-space: nowrap;\n  cursor: pointer;\n}\n\n.button:focus-visible {\n  outline: var(--border-width-2) solid var(--color-focus-ring);\n  outline-offset: var(--border-width-2);\n}\n\n/* Variants */\n\n.primary {\n  background: var(--button-bg);\n  color: var(--button-fg);\n}\n\n.primary:hover:not(:disabled) {\n  background: var(--button-bg-hover);\n}\n\n.primary:active:not(:disabled) {\n  background: var(--button-bg-active);\n}\n\n.secondary {\n  border-color: var(--color-border-strong);\n  background: var(--color-surface);\n  color: var(--color-fg);\n}\n\n.secondary:hover:not(:disabled),\n.secondary:active:not(:disabled) {\n  background: var(--color-surface-muted);\n}\n\n.ghost {\n  background: transparent;\n  color: var(--color-primary);\n}\n\n.ghost:hover:not(:disabled),\n.ghost:active:not(:disabled) {\n  background: var(--color-primary-subtle);\n}\n\n/* Sizes */\n\n.sm {\n  gap: var(--space-1);\n  height: var(--control-height-sm);\n  padding-inline: var(--space-3);\n  font-size: var(--font-size-xs);\n  line-height: var(--line-height-xs);\n}\n\n.md {\n  gap: var(--space-2);\n  height: var(--control-height-md);\n  padding-inline: var(--space-4);\n  font-size: var(--font-size-sm);\n  line-height: var(--line-height-sm);\n}\n\n.lg {\n  gap: var(--space-2);\n  height: var(--control-height-lg);\n  padding-inline: var(--space-5);\n  font-size: var(--font-size-md);\n  line-height: var(--line-height-md);\n}\n\n/* States */\n\n.button:disabled {\n  border-color: transparent;\n  background: var(--color-disabled-bg);\n  color: var(--color-disabled-fg);\n  cursor: not-allowed;\n}\n\n.loading:disabled {\n  cursor: progress;\n}\n\n.label {\n  display: inline-block;\n}\n\n.spinner {\n  flex-shrink: 0;\n  width: var(--size-icon-sm);\n  height: var(--size-icon-sm);\n  border: var(--border-width-2) solid currentColor;\n  border-right-color: transparent;\n  border-radius: var(--radius-full);\n  animation: spin var(--duration-spin) linear infinite;\n}\n\n@keyframes spin {\n  to {\n    transform: rotate(1turn);\n  }\n}\n"
+        ],
+        "version": 3
+      }
+    },
+    {
+      "header": {
+        "styleSheetId": "style-sheet-17640-7",
+        "frameId": "912CF45BFB2026D5385FCB417E0DBB24",
+        "sourceURL": "",
+        "origin": "regular",
+        "title": "",
+        "ownerNode": 10,
+        "disabled": false,
+        "isInline": false,
+        "isMutable": false,
+        "isConstructed": false,
+        "startLine": 0,
+        "startColumn": 0,
+        "length": 3470,
+        "endLine": 95,
+        "endColumn": 10
+      }
+    },
+    {
+      "header": {
+        "styleSheetId": "style-sheet-17640-8",
+        "frameId": "912CF45BFB2026D5385FCB417E0DBB24",
+        "sourceURL": "",
+        "sourceMapURL": "data:application/json;base64,e30=",
+        "origin": "regular",
+        "title": "",
+        "ownerNode": 8,
+        "disabled": false,
+        "isInline": false,
+        "isMutable": false,
+        "isConstructed": false,
+        "startLine": 0,
+        "startColumn": 0,
+        "length": 1425,
+        "endLine": 21,
+        "endColumn": 1097
+      },
+      "devId": "/repo/fixtures/ds-react/src/components/Icon/Icon.module.css",
+      "sourceMap": {
+        "file": "/repo/fixtures/ds-react/src/components/Icon/Icon.module.css",
+        "mappings": "AAAA;EACE,qBAAqB;EACrB,cAAc;EACd,sBAAsB;AACxB;;AAEA;EACE,0BAA0B;EAC1B,2BAA2B;AAC7B;;AAEA;EACE,0BAA0B;EAC1B,2BAA2B;AAC7B;;AAEA;EACE,0BAA0B;EAC1B,2BAA2B;AAC7B",
+        "names": [],
+        "sources": ["/repo/fixtures/ds-react/src/components/Icon/Icon.module.css"],
+        "sourcesContent": [
+          ".icon {\n  display: inline-block;\n  flex-shrink: 0;\n  vertical-align: middle;\n}\n\n.sm {\n  width: var(--size-icon-sm);\n  height: var(--size-icon-sm);\n}\n\n.md {\n  width: var(--size-icon-md);\n  height: var(--size-icon-md);\n}\n\n.lg {\n  width: var(--size-icon-lg);\n  height: var(--size-icon-lg);\n}\n"
+        ],
+        "version": 3
+      }
+    }
+  ],
+  "nodes": {
+    "button": {
+      "matched": {
+        "inlineStyle": {
+          "styleSheetId": "17640.0",
+          "cssProperties": [],
+          "shorthandEntries": [],
+          "cssText": "",
+          "range": {
+            "startLine": 0,
+            "startColumn": 0,
+            "endLine": 0,
+            "endColumn": 0
+          }
+        },
+        "matchedCSSRules": [
+          {
+            "rule": {
+              "selectorList": {
+                "selectors": [
+                  {
+                    "text": "button",
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "button",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "text": "button"
+              },
+              "origin": "user-agent",
+              "style": {
+                "cssProperties": [
+                  {
+                    "name": "appearance",
+                    "value": "auto"
+                  }
+                ],
+                "shorthandEntries": []
+              },
+              "media": [],
+              "containerQueries": [],
+              "supports": [],
+              "layers": [],
+              "scopes": [],
+              "ruleTypes": [],
+              "startingStyles": [],
+              "navigations": []
+            },
+            "matchingSelectors": [0]
+          },
+          {
+            "rule": {
+              "selectorList": {
+                "selectors": [
+                  {
+                    "text": "input",
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "input",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "textarea",
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "textarea",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "select",
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "select",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "button",
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "button",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "text": "input, textarea, select, button"
+              },
+              "origin": "user-agent",
+              "style": {
+                "cssProperties": [
+                  {
+                    "name": "margin-top",
+                    "value": "0em"
+                  },
+                  {
+                    "name": "margin-right",
+                    "value": "0em"
+                  },
+                  {
+                    "name": "margin-bottom",
+                    "value": "0em"
+                  },
+                  {
+                    "name": "margin-left",
+                    "value": "0em"
+                  },
+                  {
+                    "name": "font-style",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-variant-ligatures",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-variant-caps",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-variant-numeric",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-variant-east-asian",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-variant-alternates",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-variant-position",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-variant-emoji",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-weight",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-stretch",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-size",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-family",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-optical-sizing",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-size-adjust",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-kerning",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-feature-settings",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-variation-settings",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-language-override",
+                    "value": ""
+                  },
+                  {
+                    "name": "text-rendering",
+                    "value": "auto"
+                  },
+                  {
+                    "name": "color",
+                    "value": "fieldtext"
+                  },
+                  {
+                    "name": "letter-spacing",
+                    "value": "normal"
+                  },
+                  {
+                    "name": "word-spacing",
+                    "value": "normal"
+                  },
+                  {
+                    "name": "line-height",
+                    "value": "normal"
+                  },
+                  {
+                    "name": "text-transform",
+                    "value": "none"
+                  },
+                  {
+                    "name": "text-indent",
+                    "value": "0px"
+                  },
+                  {
+                    "name": "text-shadow",
+                    "value": "none"
+                  },
+                  {
+                    "name": "display",
+                    "value": "inline-block"
+                  },
+                  {
+                    "name": "text-align",
+                    "value": "start"
+                  }
+                ],
+                "shorthandEntries": [
+                  {
+                    "name": "margin",
+                    "value": "0em 0em 0em 0em"
+                  },
+                  {
+                    "name": "font",
+                    "value": ""
+                  }
+                ]
+              },
+              "media": [],
+              "containerQueries": [],
+              "supports": [],
+              "layers": [],
+              "scopes": [],
+              "ruleTypes": [],
+              "startingStyles": [],
+              "navigations": []
+            },
+            "matchingSelectors": [3]
+          },
+          {
+            "rule": {
+              "selectorList": {
+                "selectors": [
+                  {
+                    "text": "input[type=\"button\" i]",
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "input",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        },
+                        {
+                          "text": "[type=\"button\" i]",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "input[type=\"submit\" i]",
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "input",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        },
+                        {
+                          "text": "[type=\"submit\" i]",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "input[type=\"reset\" i]",
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "input",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        },
+                        {
+                          "text": "[type=\"reset\" i]",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "input[type=\"file\" i]::-webkit-file-upload-button",
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 2,
+                      "components": [
+                        {
+                          "text": "input",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        },
+                        {
+                          "text": "[type=\"file\" i]",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        },
+                        {
+                          "text": "::-webkit-file-upload-button",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "button",
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "button",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "text": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button"
+              },
+              "origin": "user-agent",
+              "style": {
+                "cssProperties": [
+                  {
+                    "name": "cursor",
+                    "value": "default"
+                  },
+                  {
+                    "name": "box-sizing",
+                    "value": "border-box"
+                  }
+                ],
+                "shorthandEntries": []
+              },
+              "media": [],
+              "containerQueries": [],
+              "supports": [],
+              "layers": [],
+              "scopes": [],
+              "ruleTypes": [],
+              "startingStyles": [],
+              "navigations": []
+            },
+            "matchingSelectors": [4]
+          },
+          {
+            "rule": {
+              "selectorList": {
+                "selectors": [
+                  {
+                    "text": "input[type=\"button\" i]",
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "input",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        },
+                        {
+                          "text": "[type=\"button\" i]",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "input[type=\"submit\" i]",
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "input",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        },
+                        {
+                          "text": "[type=\"submit\" i]",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "input[type=\"reset\" i]",
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "input",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        },
+                        {
+                          "text": "[type=\"reset\" i]",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "input[type=\"file\" i]::-webkit-file-upload-button",
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 2,
+                      "components": [
+                        {
+                          "text": "input",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        },
+                        {
+                          "text": "[type=\"file\" i]",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        },
+                        {
+                          "text": "::-webkit-file-upload-button",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "button",
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "button",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "text": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button"
+              },
+              "origin": "user-agent",
+              "style": {
+                "cssProperties": [
+                  {
+                    "name": "text-align",
+                    "value": "center"
+                  },
+                  {
+                    "name": "padding-block-start",
+                    "value": "1px"
+                  },
+                  {
+                    "name": "padding-block-end",
+                    "value": "1px"
+                  },
+                  {
+                    "name": "padding-inline-start",
+                    "value": "6px"
+                  },
+                  {
+                    "name": "padding-inline-end",
+                    "value": "6px"
+                  },
+                  {
+                    "name": "border-top-width",
+                    "value": "2px"
+                  },
+                  {
+                    "name": "border-right-width",
+                    "value": "2px"
+                  },
+                  {
+                    "name": "border-bottom-width",
+                    "value": "2px"
+                  },
+                  {
+                    "name": "border-left-width",
+                    "value": "2px"
+                  },
+                  {
+                    "name": "border-top-style",
+                    "value": "outset"
+                  },
+                  {
+                    "name": "border-right-style",
+                    "value": "outset"
+                  },
+                  {
+                    "name": "border-bottom-style",
+                    "value": "outset"
+                  },
+                  {
+                    "name": "border-left-style",
+                    "value": "outset"
+                  },
+                  {
+                    "name": "border-top-color",
+                    "value": "buttonborder"
+                  },
+                  {
+                    "name": "border-right-color",
+                    "value": "buttonborder"
+                  },
+                  {
+                    "name": "border-bottom-color",
+                    "value": "buttonborder"
+                  },
+                  {
+                    "name": "border-left-color",
+                    "value": "buttonborder"
+                  },
+                  {
+                    "name": "border-image-source",
+                    "value": "none",
+                    "implicit": true
+                  },
+                  {
+                    "name": "border-image-slice",
+                    "value": "100%",
+                    "implicit": true
+                  },
+                  {
+                    "name": "border-image-width",
+                    "value": "1",
+                    "implicit": true
+                  },
+                  {
+                    "name": "border-image-outset",
+                    "value": "0",
+                    "implicit": true
+                  },
+                  {
+                    "name": "border-image-repeat",
+                    "value": "stretch",
+                    "implicit": true
+                  },
+                  {
+                    "name": "background-color",
+                    "value": "buttonface"
+                  },
+                  {
+                    "name": "color",
+                    "value": "buttontext"
+                  }
+                ],
+                "shorthandEntries": [
+                  {
+                    "name": "padding-block",
+                    "value": "1px"
+                  },
+                  {
+                    "name": "padding-inline",
+                    "value": "6px"
+                  },
+                  {
+                    "name": "border-width",
+                    "value": "2px"
+                  },
+                  {
+                    "name": "border-style",
+                    "value": "outset"
+                  },
+                  {
+                    "name": "border-color",
+                    "value": "buttonborder"
+                  },
+                  {
+                    "name": "border-image",
+                    "value": "none"
+                  }
+                ]
+              },
+              "media": [],
+              "containerQueries": [],
+              "supports": [],
+              "layers": [],
+              "scopes": [],
+              "ruleTypes": [],
+              "startingStyles": [],
+              "navigations": []
+            },
+            "matchingSelectors": [4]
+          },
+          {
+            "rule": {
+              "styleSheetId": "style-sheet-17640-5",
+              "selectorList": {
+                "selectors": [
+                  {
+                    "text": "*",
+                    "range": {
+                      "startLine": 1,
+                      "startColumn": 0,
+                      "endLine": 1,
+                      "endColumn": 1
+                    },
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 0,
+                      "components": []
+                    }
+                  },
+                  {
+                    "text": "*::before",
+                    "range": {
+                      "startLine": 2,
+                      "startColumn": 0,
+                      "endLine": 2,
+                      "endColumn": 9
+                    },
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "::before",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "*::after",
+                    "range": {
+                      "startLine": 3,
+                      "startColumn": 0,
+                      "endLine": 3,
+                      "endColumn": 8
+                    },
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "::after",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "text": "*, ::before, ::after"
+              },
+              "origin": "regular",
+              "style": {
+                "styleSheetId": "style-sheet-17640-5",
+                "cssProperties": [
+                  {
+                    "name": "box-sizing",
+                    "value": "border-box",
+                    "implicit": false,
+                    "text": "box-sizing: border-box;",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 4,
+                      "startColumn": 2,
+                      "endLine": 4,
+                      "endColumn": 25
+                    }
+                  },
+                  {
+                    "name": "box-sizing",
+                    "value": "border-box"
+                  }
+                ],
+                "shorthandEntries": [],
+                "cssText": "\n  box-sizing: border-box;\n",
+                "range": {
+                  "startLine": 3,
+                  "startColumn": 10,
+                  "endLine": 5,
+                  "endColumn": 0
+                }
+              },
+              "originTreeScopeNodeId": 2,
+              "media": [],
+              "containerQueries": [],
+              "supports": [],
+              "layers": [],
+              "scopes": [],
+              "ruleTypes": [],
+              "startingStyles": [],
+              "navigations": []
+            },
+            "matchingSelectors": [0]
+          },
+          {
+            "rule": {
+              "styleSheetId": "style-sheet-17640-6",
+              "selectorList": {
+                "selectors": [
+                  {
+                    "text": "._button_xefp9_1",
+                    "range": {
+                      "startLine": 0,
+                      "startColumn": 0,
+                      "endLine": 0,
+                      "endColumn": 16
+                    },
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 0,
+                      "components": [
+                        {
+                          "text": "._button_xefp9_1",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "text": "._button_xefp9_1"
+              },
+              "origin": "regular",
+              "style": {
+                "styleSheetId": "style-sheet-17640-6",
+                "cssProperties": [
+                  {
+                    "name": "display",
+                    "value": "inline-flex",
+                    "implicit": false,
+                    "text": "display: inline-flex;",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 1,
+                      "startColumn": 2,
+                      "endLine": 1,
+                      "endColumn": 23
+                    }
+                  },
+                  {
+                    "name": "align-items",
+                    "value": "center",
+                    "implicit": false,
+                    "text": "align-items: center;",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 2,
+                      "startColumn": 2,
+                      "endLine": 2,
+                      "endColumn": 22
+                    }
+                  },
+                  {
+                    "name": "justify-content",
+                    "value": "center",
+                    "implicit": false,
+                    "text": "justify-content: center;",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 3,
+                      "startColumn": 2,
+                      "endLine": 3,
+                      "endColumn": 26
+                    }
+                  },
+                  {
+                    "name": "border",
+                    "value": "var(--border-width-1) solid transparent",
+                    "implicit": false,
+                    "text": "border: var(--border-width-1) solid transparent;",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 4,
+                      "startColumn": 2,
+                      "endLine": 4,
+                      "endColumn": 50
+                    }
+                  },
+                  {
+                    "name": "border-radius",
+                    "value": "var(--button-radius)",
+                    "implicit": false,
+                    "text": "border-radius: var(--button-radius);",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 5,
+                      "startColumn": 2,
+                      "endLine": 5,
+                      "endColumn": 38
+                    }
+                  },
+                  {
+                    "name": "font-family",
+                    "value": "var(--font-family-sans)",
+                    "implicit": false,
+                    "text": "font-family: var(--font-family-sans);",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 6,
+                      "startColumn": 2,
+                      "endLine": 6,
+                      "endColumn": 39
+                    }
+                  },
+                  {
+                    "name": "font-weight",
+                    "value": "var(--font-weight-semibold)",
+                    "implicit": false,
+                    "text": "font-weight: var(--font-weight-semibold);",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 7,
+                      "startColumn": 2,
+                      "endLine": 7,
+                      "endColumn": 43
+                    }
+                  },
+                  {
+                    "name": "white-space",
+                    "value": "nowrap",
+                    "implicit": false,
+                    "text": "white-space: nowrap;",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 8,
+                      "startColumn": 2,
+                      "endLine": 8,
+                      "endColumn": 22
+                    },
+                    "longhandProperties": [
+                      {
+                        "name": "white-space-collapse",
+                        "value": "collapse"
+                      },
+                      {
+                        "name": "text-wrap-mode",
+                        "value": "nowrap"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "cursor",
+                    "value": "pointer",
+                    "implicit": false,
+                    "text": "cursor: pointer;",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 9,
+                      "startColumn": 2,
+                      "endLine": 9,
+                      "endColumn": 18
+                    }
+                  },
+                  {
+                    "name": "display",
+                    "value": "inline-flex"
+                  },
+                  {
+                    "name": "align-items",
+                    "value": "center"
+                  },
+                  {
+                    "name": "justify-content",
+                    "value": "center"
+                  },
+                  {
+                    "name": "border-top-color",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-top-style",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-top-width",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-right-color",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-right-style",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-right-width",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-bottom-color",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-bottom-style",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-bottom-width",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-left-color",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-left-style",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-left-width",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-image-source",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-image-slice",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-image-width",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-image-outset",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-image-repeat",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-top-left-radius",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-top-right-radius",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-bottom-right-radius",
+                    "value": ""
+                  },
+                  {
+                    "name": "border-bottom-left-radius",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-family",
+                    "value": "var(--font-family-sans)"
+                  },
+                  {
+                    "name": "font-weight",
+                    "value": "var(--font-weight-semibold)"
+                  },
+                  {
+                    "name": "white-space-collapse",
+                    "value": "collapse"
+                  },
+                  {
+                    "name": "text-wrap-mode",
+                    "value": "nowrap"
+                  },
+                  {
+                    "name": "cursor",
+                    "value": "pointer"
+                  }
+                ],
+                "shorthandEntries": [
+                  {
+                    "name": "border",
+                    "value": "var(--border-width-1) solid transparent"
+                  },
+                  {
+                    "name": "border-radius",
+                    "value": "var(--button-radius)"
+                  },
+                  {
+                    "name": "white-space",
+                    "value": "nowrap"
+                  }
+                ],
+                "cssText": "\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  border: var(--border-width-1) solid transparent;\n  border-radius: var(--button-radius);\n  font-family: var(--font-family-sans);\n  font-weight: var(--font-weight-semibold);\n  white-space: nowrap;\n  cursor: pointer;\n",
+                "range": {
+                  "startLine": 0,
+                  "startColumn": 18,
+                  "endLine": 10,
+                  "endColumn": 0
+                }
+              },
+              "originTreeScopeNodeId": 2,
+              "media": [],
+              "containerQueries": [],
+              "supports": [],
+              "layers": [],
+              "scopes": [],
+              "ruleTypes": [],
+              "startingStyles": [],
+              "navigations": []
+            },
+            "matchingSelectors": [0]
+          },
+          {
+            "rule": {
+              "styleSheetId": "style-sheet-17640-6",
+              "selectorList": {
+                "selectors": [
+                  {
+                    "text": "._primary_xefp9_20",
+                    "range": {
+                      "startLine": 19,
+                      "startColumn": 0,
+                      "endLine": 19,
+                      "endColumn": 18
+                    },
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 0,
+                      "components": [
+                        {
+                          "text": "._primary_xefp9_20",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "text": "._primary_xefp9_20"
+              },
+              "origin": "regular",
+              "style": {
+                "styleSheetId": "style-sheet-17640-6",
+                "cssProperties": [
+                  {
+                    "name": "background",
+                    "value": "var(--button-bg)",
+                    "implicit": false,
+                    "text": "background: var(--button-bg);",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 20,
+                      "startColumn": 2,
+                      "endLine": 20,
+                      "endColumn": 31
+                    }
+                  },
+                  {
+                    "name": "color",
+                    "value": "var(--button-fg)",
+                    "implicit": false,
+                    "text": "color: var(--button-fg);",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 21,
+                      "startColumn": 2,
+                      "endLine": 21,
+                      "endColumn": 26
+                    }
+                  },
+                  {
+                    "name": "background-image",
+                    "value": ""
+                  },
+                  {
+                    "name": "background-position-x",
+                    "value": ""
+                  },
+                  {
+                    "name": "background-position-y",
+                    "value": ""
+                  },
+                  {
+                    "name": "background-size",
+                    "value": ""
+                  },
+                  {
+                    "name": "background-repeat",
+                    "value": ""
+                  },
+                  {
+                    "name": "background-attachment",
+                    "value": ""
+                  },
+                  {
+                    "name": "background-origin",
+                    "value": ""
+                  },
+                  {
+                    "name": "background-clip",
+                    "value": ""
+                  },
+                  {
+                    "name": "background-color",
+                    "value": ""
+                  },
+                  {
+                    "name": "color",
+                    "value": "var(--button-fg)"
+                  }
+                ],
+                "shorthandEntries": [
+                  {
+                    "name": "background",
+                    "value": "var(--button-bg)"
+                  }
+                ],
+                "cssText": "\n  background: var(--button-bg);\n  color: var(--button-fg);\n",
+                "range": {
+                  "startLine": 19,
+                  "startColumn": 20,
+                  "endLine": 22,
+                  "endColumn": 0
+                }
+              },
+              "originTreeScopeNodeId": 2,
+              "media": [],
+              "containerQueries": [],
+              "supports": [],
+              "layers": [],
+              "scopes": [],
+              "ruleTypes": [],
+              "startingStyles": [],
+              "navigations": []
+            },
+            "matchingSelectors": [0]
+          },
+          {
+            "rule": {
+              "styleSheetId": "style-sheet-17640-6",
+              "selectorList": {
+                "selectors": [
+                  {
+                    "text": "._md_xefp9_64",
+                    "range": {
+                      "startLine": 63,
+                      "startColumn": 0,
+                      "endLine": 63,
+                      "endColumn": 13
+                    },
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 0,
+                      "components": [
+                        {
+                          "text": "._md_xefp9_64",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "text": "._md_xefp9_64"
+              },
+              "origin": "regular",
+              "style": {
+                "styleSheetId": "style-sheet-17640-6",
+                "cssProperties": [
+                  {
+                    "name": "gap",
+                    "value": "var(--space-2)",
+                    "implicit": false,
+                    "text": "gap: var(--space-2);",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 64,
+                      "startColumn": 2,
+                      "endLine": 64,
+                      "endColumn": 22
+                    }
+                  },
+                  {
+                    "name": "height",
+                    "value": "var(--control-height-md)",
+                    "implicit": false,
+                    "text": "height: var(--control-height-md);",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 65,
+                      "startColumn": 2,
+                      "endLine": 65,
+                      "endColumn": 35
+                    }
+                  },
+                  {
+                    "name": "padding-inline",
+                    "value": "var(--space-4)",
+                    "implicit": false,
+                    "text": "padding-inline: var(--space-4);",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 66,
+                      "startColumn": 2,
+                      "endLine": 66,
+                      "endColumn": 33
+                    }
+                  },
+                  {
+                    "name": "font-size",
+                    "value": "var(--font-size-sm)",
+                    "implicit": false,
+                    "text": "font-size: var(--font-size-sm);",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 67,
+                      "startColumn": 2,
+                      "endLine": 67,
+                      "endColumn": 33
+                    }
+                  },
+                  {
+                    "name": "line-height",
+                    "value": "var(--line-height-sm)",
+                    "implicit": false,
+                    "text": "line-height: var(--line-height-sm);",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 68,
+                      "startColumn": 2,
+                      "endLine": 68,
+                      "endColumn": 37
+                    }
+                  },
+                  {
+                    "name": "row-gap",
+                    "value": ""
+                  },
+                  {
+                    "name": "column-gap",
+                    "value": ""
+                  },
+                  {
+                    "name": "height",
+                    "value": "var(--control-height-md)"
+                  },
+                  {
+                    "name": "padding-inline-start",
+                    "value": ""
+                  },
+                  {
+                    "name": "padding-inline-end",
+                    "value": ""
+                  },
+                  {
+                    "name": "font-size",
+                    "value": "var(--font-size-sm)"
+                  },
+                  {
+                    "name": "line-height",
+                    "value": "var(--line-height-sm)"
+                  }
+                ],
+                "shorthandEntries": [
+                  {
+                    "name": "gap",
+                    "value": "var(--space-2)"
+                  },
+                  {
+                    "name": "padding-inline",
+                    "value": "var(--space-4)"
+                  }
+                ],
+                "cssText": "\n  gap: var(--space-2);\n  height: var(--control-height-md);\n  padding-inline: var(--space-4);\n  font-size: var(--font-size-sm);\n  line-height: var(--line-height-sm);\n",
+                "range": {
+                  "startLine": 63,
+                  "startColumn": 15,
+                  "endLine": 69,
+                  "endColumn": 0
+                }
+              },
+              "originTreeScopeNodeId": 2,
+              "media": [],
+              "containerQueries": [],
+              "supports": [],
+              "layers": [],
+              "scopes": [],
+              "ruleTypes": [],
+              "startingStyles": [],
+              "navigations": []
+            },
+            "matchingSelectors": [0]
+          }
+        ],
+        "inherited": [
+          {
+            "matchedCSSRules": [
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-5",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "*",
+                        "range": {
+                          "startLine": 1,
+                          "startColumn": 0,
+                          "endLine": 1,
+                          "endColumn": 1
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 0,
+                          "components": []
+                        }
+                      },
+                      {
+                        "text": "*::before",
+                        "range": {
+                          "startLine": 2,
+                          "startColumn": 0,
+                          "endLine": 2,
+                          "endColumn": 9
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::before",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "text": "*::after",
+                        "range": {
+                          "startLine": 3,
+                          "startColumn": 0,
+                          "endLine": 3,
+                          "endColumn": 8
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::after",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "*, ::before, ::after"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-5",
+                    "cssProperties": [
+                      {
+                        "name": "box-sizing",
+                        "value": "border-box",
+                        "implicit": false,
+                        "text": "box-sizing: border-box;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 4,
+                          "startColumn": 2,
+                          "endLine": 4,
+                          "endColumn": 25
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [],
+                    "cssText": "\n  box-sizing: border-box;\n",
+                    "range": {
+                      "startLine": 3,
+                      "startColumn": 10,
+                      "endLine": 5,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              }
+            ]
+          },
+          {
+            "matchedCSSRules": [
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-5",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "*",
+                        "range": {
+                          "startLine": 1,
+                          "startColumn": 0,
+                          "endLine": 1,
+                          "endColumn": 1
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 0,
+                          "components": []
+                        }
+                      },
+                      {
+                        "text": "*::before",
+                        "range": {
+                          "startLine": 2,
+                          "startColumn": 0,
+                          "endLine": 2,
+                          "endColumn": 9
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::before",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "text": "*::after",
+                        "range": {
+                          "startLine": 3,
+                          "startColumn": 0,
+                          "endLine": 3,
+                          "endColumn": 8
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::after",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "*, ::before, ::after"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-5",
+                    "cssProperties": [
+                      {
+                        "name": "box-sizing",
+                        "value": "border-box",
+                        "implicit": false,
+                        "text": "box-sizing: border-box;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 4,
+                          "startColumn": 2,
+                          "endLine": 4,
+                          "endColumn": 25
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [],
+                    "cssText": "\n  box-sizing: border-box;\n",
+                    "range": {
+                      "startLine": 3,
+                      "startColumn": 10,
+                      "endLine": 5,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              },
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-5",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "body",
+                        "range": {
+                          "startLine": 7,
+                          "startColumn": 0,
+                          "endLine": 7,
+                          "endColumn": 4
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "body",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "body"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-5",
+                    "cssProperties": [
+                      {
+                        "name": "margin",
+                        "value": "0",
+                        "implicit": false,
+                        "text": "margin: 0;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 8,
+                          "startColumn": 2,
+                          "endLine": 8,
+                          "endColumn": 12
+                        },
+                        "longhandProperties": [
+                          {
+                            "name": "margin-top",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-right",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-bottom",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-left",
+                            "value": "0px"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "background",
+                        "value": "var(--color-bg)",
+                        "implicit": false,
+                        "text": "background: var(--color-bg);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 9,
+                          "startColumn": 2,
+                          "endLine": 9,
+                          "endColumn": 30
+                        }
+                      },
+                      {
+                        "name": "color",
+                        "value": "var(--color-fg)",
+                        "implicit": false,
+                        "text": "color: var(--color-fg);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 10,
+                          "startColumn": 2,
+                          "endLine": 10,
+                          "endColumn": 25
+                        }
+                      },
+                      {
+                        "name": "font-family",
+                        "value": "var(--font-family-sans)",
+                        "implicit": false,
+                        "text": "font-family: var(--font-family-sans);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 11,
+                          "startColumn": 2,
+                          "endLine": 11,
+                          "endColumn": 39
+                        }
+                      },
+                      {
+                        "name": "font-size",
+                        "value": "var(--font-size-sm)",
+                        "implicit": false,
+                        "text": "font-size: var(--font-size-sm);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 12,
+                          "startColumn": 2,
+                          "endLine": 12,
+                          "endColumn": 33
+                        }
+                      },
+                      {
+                        "name": "line-height",
+                        "value": "var(--line-height-sm)",
+                        "implicit": false,
+                        "text": "line-height: var(--line-height-sm);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 13,
+                          "startColumn": 2,
+                          "endLine": 13,
+                          "endColumn": 37
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [
+                      {
+                        "name": "margin",
+                        "value": "0px"
+                      },
+                      {
+                        "name": "background",
+                        "value": "var(--color-bg)"
+                      }
+                    ],
+                    "cssText": "\n  margin: 0;\n  background: var(--color-bg);\n  color: var(--color-fg);\n  font-family: var(--font-family-sans);\n  font-size: var(--font-size-sm);\n  line-height: var(--line-height-sm);\n",
+                    "range": {
+                      "startLine": 7,
+                      "startColumn": 6,
+                      "endLine": 14,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              },
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-2",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": ".sb-show-main.sb-main-padded",
+                        "range": {
+                          "startLine": 48,
+                          "startColumn": 2,
+                          "endLine": 48,
+                          "endColumn": 30
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 2,
+                          "c": 0,
+                          "components": [
+                            {
+                              "text": ".sb-show-main",
+                              "a": 0,
+                              "b": 1,
+                              "c": 0
+                            },
+                            {
+                              "text": ".sb-main-padded",
+                              "a": 0,
+                              "b": 1,
+                              "c": 0
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": ".sb-show-main.sb-main-padded"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-2",
+                    "cssProperties": [
+                      {
+                        "name": "margin",
+                        "value": "0",
+                        "implicit": false,
+                        "text": "margin: 0;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 49,
+                          "startColumn": 4,
+                          "endLine": 49,
+                          "endColumn": 14
+                        },
+                        "longhandProperties": [
+                          {
+                            "name": "margin-top",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-right",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-bottom",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-left",
+                            "value": "0px"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "padding",
+                        "value": "1rem",
+                        "implicit": false,
+                        "text": "padding: 1rem;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 50,
+                          "startColumn": 4,
+                          "endLine": 50,
+                          "endColumn": 18
+                        },
+                        "longhandProperties": [
+                          {
+                            "name": "padding-top",
+                            "value": "1rem"
+                          },
+                          {
+                            "name": "padding-right",
+                            "value": "1rem"
+                          },
+                          {
+                            "name": "padding-bottom",
+                            "value": "1rem"
+                          },
+                          {
+                            "name": "padding-left",
+                            "value": "1rem"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "display",
+                        "value": "block",
+                        "implicit": false,
+                        "text": "display: block;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 51,
+                          "startColumn": 4,
+                          "endLine": 51,
+                          "endColumn": 19
+                        }
+                      },
+                      {
+                        "name": "box-sizing",
+                        "value": "border-box",
+                        "implicit": false,
+                        "text": "box-sizing: border-box;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 52,
+                          "startColumn": 4,
+                          "endLine": 52,
+                          "endColumn": 27
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [
+                      {
+                        "name": "margin",
+                        "value": "0px"
+                      },
+                      {
+                        "name": "padding",
+                        "value": "1rem"
+                      }
+                    ],
+                    "cssText": "\n    margin: 0;\n    padding: 1rem;\n    display: block;\n    box-sizing: border-box;\n  ",
+                    "range": {
+                      "startLine": 48,
+                      "startColumn": 32,
+                      "endLine": 53,
+                      "endColumn": 2
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              }
+            ]
+          },
+          {
+            "matchedCSSRules": [
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-5",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "*",
+                        "range": {
+                          "startLine": 1,
+                          "startColumn": 0,
+                          "endLine": 1,
+                          "endColumn": 1
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 0,
+                          "components": []
+                        }
+                      },
+                      {
+                        "text": "*::before",
+                        "range": {
+                          "startLine": 2,
+                          "startColumn": 0,
+                          "endLine": 2,
+                          "endColumn": 9
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::before",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "text": "*::after",
+                        "range": {
+                          "startLine": 3,
+                          "startColumn": 0,
+                          "endLine": 3,
+                          "endColumn": 8
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::after",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "*, ::before, ::after"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-5",
+                    "cssProperties": [
+                      {
+                        "name": "box-sizing",
+                        "value": "border-box",
+                        "implicit": false,
+                        "text": "box-sizing: border-box;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 4,
+                          "startColumn": 2,
+                          "endLine": 4,
+                          "endColumn": 25
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [],
+                    "cssText": "\n  box-sizing: border-box;\n",
+                    "range": {
+                      "startLine": 3,
+                      "startColumn": 10,
+                      "endLine": 5,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              },
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-4",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": ":root",
+                        "range": {
+                          "startLine": 13,
+                          "startColumn": 0,
+                          "endLine": 13,
+                          "endColumn": 5
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 1,
+                          "c": 0,
+                          "components": [
+                            {
+                              "text": ":root",
+                              "a": 0,
+                              "b": 1,
+                              "c": 0
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": ":root"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-4",
+                    "cssProperties": [
+                      {
+                        "name": "--color-gray-0",
+                        "value": "#ffffff",
+                        "implicit": false,
+                        "text": "--color-gray-0: #ffffff;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 15,
+                          "startColumn": 2,
+                          "endLine": 15,
+                          "endColumn": 26
+                        }
+                      },
+                      {
+                        "name": "--color-gray-900",
+                        "value": "#0f172a",
+                        "implicit": false,
+                        "text": "--color-gray-900: #0f172a;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 25,
+                          "startColumn": 2,
+                          "endLine": 25,
+                          "endColumn": 28
+                        }
+                      },
+                      {
+                        "name": "--color-blue-600",
+                        "value": "#2563eb",
+                        "implicit": false,
+                        "text": "--color-blue-600: #2563eb;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 33,
+                          "startColumn": 2,
+                          "endLine": 33,
+                          "endColumn": 28
+                        }
+                      },
+                      {
+                        "name": "--space-1",
+                        "value": "4px",
+                        "implicit": false,
+                        "text": "--space-1: 4px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 57,
+                          "startColumn": 2,
+                          "endLine": 57,
+                          "endColumn": 17
+                        }
+                      },
+                      {
+                        "name": "--space-2",
+                        "value": "8px",
+                        "implicit": false,
+                        "text": "--space-2: 8px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 58,
+                          "startColumn": 2,
+                          "endLine": 58,
+                          "endColumn": 17
+                        }
+                      },
+                      {
+                        "name": "--space-4",
+                        "value": "16px",
+                        "implicit": false,
+                        "text": "--space-4: 16px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 60,
+                          "startColumn": 2,
+                          "endLine": 60,
+                          "endColumn": 18
+                        }
+                      },
+                      {
+                        "name": "--space-7",
+                        "value": "32px",
+                        "implicit": false,
+                        "text": "--space-7: 32px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 63,
+                          "startColumn": 2,
+                          "endLine": 63,
+                          "endColumn": 18
+                        }
+                      },
+                      {
+                        "name": "--radius-md",
+                        "value": "6px",
+                        "implicit": false,
+                        "text": "--radius-md: 6px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 68,
+                          "startColumn": 2,
+                          "endLine": 68,
+                          "endColumn": 19
+                        }
+                      },
+                      {
+                        "name": "--border-width-1",
+                        "value": "1px",
+                        "implicit": false,
+                        "text": "--border-width-1: 1px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 73,
+                          "startColumn": 2,
+                          "endLine": 73,
+                          "endColumn": 24
+                        }
+                      },
+                      {
+                        "name": "--font-family-sans",
+                        "value": "\"Inter\", sans-serif",
+                        "implicit": false,
+                        "text": "--font-family-sans: \"Inter\", sans-serif;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 77,
+                          "startColumn": 2,
+                          "endLine": 77,
+                          "endColumn": 42
+                        }
+                      },
+                      {
+                        "name": "--font-weight-semibold",
+                        "value": "600",
+                        "implicit": false,
+                        "text": "--font-weight-semibold: 600;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 80,
+                          "startColumn": 2,
+                          "endLine": 80,
+                          "endColumn": 30
+                        }
+                      },
+                      {
+                        "name": "--font-size-sm",
+                        "value": "14px",
+                        "implicit": false,
+                        "text": "--font-size-sm: 14px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 84,
+                          "startColumn": 2,
+                          "endLine": 84,
+                          "endColumn": 23
+                        }
+                      },
+                      {
+                        "name": "--line-height-sm",
+                        "value": "20px",
+                        "implicit": false,
+                        "text": "--line-height-sm: 20px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 90,
+                          "startColumn": 2,
+                          "endLine": 90,
+                          "endColumn": 25
+                        }
+                      },
+                      {
+                        "name": "--control-height-md",
+                        "value": "calc(var(--space-7) + var(--space-1))",
+                        "implicit": false,
+                        "text": "--control-height-md: calc(var(--space-7) + var(--space-1));",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 110,
+                          "startColumn": 2,
+                          "endLine": 110,
+                          "endColumn": 61
+                        }
+                      },
+                      {
+                        "name": "--color-bg",
+                        "value": "var(--color-gray-0)",
+                        "implicit": false,
+                        "text": "--color-bg: var(--color-gray-0);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 117,
+                          "startColumn": 2,
+                          "endLine": 117,
+                          "endColumn": 34
+                        }
+                      },
+                      {
+                        "name": "--color-fg",
+                        "value": "var(--color-gray-900)",
+                        "implicit": false,
+                        "text": "--color-fg: var(--color-gray-900);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 118,
+                          "startColumn": 2,
+                          "endLine": 118,
+                          "endColumn": 36
+                        }
+                      },
+                      {
+                        "name": "--color-primary",
+                        "value": "var(--color-blue-600)",
+                        "implicit": false,
+                        "text": "--color-primary: var(--color-blue-600);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 124,
+                          "startColumn": 2,
+                          "endLine": 124,
+                          "endColumn": 41
+                        }
+                      },
+                      {
+                        "name": "--color-primary-fg",
+                        "value": "var(--color-gray-0)",
+                        "implicit": false,
+                        "text": "--color-primary-fg: var(--color-gray-0);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 127,
+                          "startColumn": 2,
+                          "endLine": 127,
+                          "endColumn": 42
+                        }
+                      },
+                      {
+                        "name": "--button-bg",
+                        "value": "var(--color-primary)",
+                        "implicit": false,
+                        "text": "--button-bg: var(--color-primary);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 147,
+                          "startColumn": 2,
+                          "endLine": 147,
+                          "endColumn": 36
+                        }
+                      },
+                      {
+                        "name": "--button-fg",
+                        "value": "var(--color-primary-fg)",
+                        "implicit": false,
+                        "text": "--button-fg: var(--color-primary-fg);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 150,
+                          "startColumn": 2,
+                          "endLine": 150,
+                          "endColumn": 39
+                        }
+                      },
+                      {
+                        "name": "--button-radius",
+                        "value": "var(--radius-md)",
+                        "implicit": false,
+                        "text": "--button-radius: var(--radius-md);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 151,
+                          "startColumn": 2,
+                          "endLine": 151,
+                          "endColumn": 36
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [],
+                    "cssText": "\n  /* Color primitives: --color-<hue>-<step> */\n  --color-gray-0: #ffffff;\n  --color-gray-50: #f8fafc;\n  --color-gray-100: #f1f5f9;\n  --color-gray-200: #e2e8f0;\n  --color-gray-300: #cbd5e1;\n  --color-gray-400: #94a3b8;\n  --color-gray-500: #64748b;\n  --color-gray-600: #475569;\n  --color-gray-700: #334155;\n  --color-gray-800: #1e293b;\n  --color-gray-900: #0f172a;\n\n  --color-blue-50: #eff6ff;\n  --color-blue-100: #dbeafe;\n  --color-blue-200: #bfdbfe;\n  --color-blue-300: #93c5fd;\n  --color-blue-400: #60a5fa;\n  --color-blue-500: #3b82f6;\n  --color-blue-600: #2563eb;\n  --color-blue-700: #1d4ed8;\n  --color-blue-800: #1e40af;\n  --color-blue-900: #1e3a8a;\n\n  --color-green-50: #f0fdf4;\n  --color-green-100: #dcfce7;\n  --color-green-500: #22c55e;\n  --color-green-600: #16a34a;\n  --color-green-700: #15803d;\n\n  --color-amber-50: #fffbeb;\n  --color-amber-100: #fef3c7;\n  --color-amber-500: #f59e0b;\n  --color-amber-600: #d97706;\n  --color-amber-700: #b45309;\n\n  --color-red-50: #fef2f2;\n  --color-red-100: #fee2e2;\n  --color-red-500: #ef4444;\n  --color-red-600: #dc2626;\n  --color-red-700: #b91c1c;\n\n  /* Spacing: --space-1..8 */\n  --space-1: 4px;\n  --space-2: 8px;\n  --space-3: 12px;\n  --space-4: 16px;\n  --space-5: 20px;\n  --space-6: 24px;\n  --space-7: 32px;\n  --space-8: 40px;\n\n  /* Radii */\n  --radius-sm: 4px;\n  --radius-md: 6px;\n  --radius-lg: 10px;\n  --radius-full: 9999px;\n\n  /* Borders */\n  --border-width-1: 1px;\n  --border-width-2: 2px;\n\n  /* Typography */\n  --font-family-sans: \"Inter\", sans-serif;\n  --font-weight-regular: 400;\n  --font-weight-medium: 500;\n  --font-weight-semibold: 600;\n  --font-weight-bold: 700;\n\n  --font-size-xs: 12px;\n  --font-size-sm: 14px;\n  --font-size-md: 16px;\n  --font-size-lg: 18px;\n  --font-size-xl: 20px;\n\n  --line-height-xs: 16px;\n  --line-height-sm: 20px;\n  --line-height-md: 24px;\n  --line-height-lg: 28px;\n  --line-height-xl: 28px;\n\n  /* Elevation */\n  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.08);\n  --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.1), 0 2px 4px -2px rgb(15 23 42 / 0.1);\n\n  /* Sizes */\n  --size-icon-sm: 16px;\n  --size-icon-md: 20px;\n  --size-icon-lg: 24px;\n  --size-dot: 6px;\n  --size-card-width: 320px;\n  --size-field-max-width: 320px;\n  --size-card-media-height: 160px;\n  --size-card-min-height: 240px;\n  --control-height-sm: 32px;\n  /* Unbindable on purpose: a calc() over two primitives (12 §2.2). */\n  --control-height-md: calc(var(--space-7) + var(--space-1));\n  --control-height-lg: 44px;\n\n  /* Motion */\n  --duration-spin: 800ms;\n\n  /* Semantic aliases (light theme) */\n  --color-bg: var(--color-gray-0);\n  --color-fg: var(--color-gray-900);\n  --color-fg-muted: var(--color-gray-500);\n  --color-surface: var(--color-gray-0);\n  --color-surface-muted: var(--color-gray-100);\n  --color-border: var(--color-gray-200);\n  --color-border-strong: var(--color-gray-300);\n  --color-primary: var(--color-blue-600);\n  --color-primary-hover: var(--color-blue-700);\n  --color-primary-active: var(--color-blue-800);\n  --color-primary-fg: var(--color-gray-0);\n  /* Unbindable on purpose: color-mix() has no Figma variable equivalent (12 §2.2). */\n  --color-primary-subtle: color-mix(in srgb, var(--color-primary) 12%, transparent);\n  --color-focus-ring: var(--color-blue-400);\n  --color-danger: var(--color-red-600);\n  --color-disabled-fg: var(--color-gray-400);\n  --color-disabled-bg: var(--color-gray-100);\n\n  --color-tone-neutral-bg: var(--color-gray-100);\n  --color-tone-neutral-fg: var(--color-gray-700);\n  --color-tone-info-bg: var(--color-blue-100);\n  --color-tone-info-fg: var(--color-blue-800);\n  --color-tone-success-bg: var(--color-green-100);\n  --color-tone-success-fg: var(--color-green-700);\n  --color-tone-warning-bg: var(--color-amber-100);\n  --color-tone-warning-fg: var(--color-amber-700);\n  --color-tone-danger-bg: var(--color-red-100);\n  --color-tone-danger-fg: var(--color-red-700);\n\n  /* Component tokens */\n  --button-bg: var(--color-primary);\n  --button-bg-hover: var(--color-primary-hover);\n  --button-bg-active: var(--color-primary-active);\n  --button-fg: var(--color-primary-fg);\n  --button-radius: var(--radius-md);\n  --input-bg: var(--color-surface);\n  --input-border: var(--color-border-strong);\n  --card-bg: var(--color-surface);\n  --card-radius: var(--radius-lg);\n  --card-body-lines: 3;\n",
+                    "range": {
+                      "startLine": 13,
+                      "startColumn": 7,
+                      "endLine": 157,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              }
+            ]
+          }
+        ]
+      },
+      "computed": {
+        "color": "rgb(255, 255, 255)",
+        "font-family": "Inter, sans-serif",
+        "font-size": "14px",
+        "font-weight": "600",
+        "background-color": "rgb(37, 99, 235)",
+        "border-bottom-color": "rgba(0, 0, 0, 0)",
+        "border-bottom-left-radius": "6px",
+        "border-bottom-right-radius": "6px",
+        "border-bottom-style": "solid",
+        "border-bottom-width": "1px",
+        "border-left-color": "rgba(0, 0, 0, 0)",
+        "border-left-style": "solid",
+        "border-left-width": "1px",
+        "border-right-color": "rgba(0, 0, 0, 0)",
+        "border-right-style": "solid",
+        "border-right-width": "1px",
+        "border-top-color": "rgba(0, 0, 0, 0)",
+        "border-top-left-radius": "6px",
+        "border-top-right-radius": "6px",
+        "border-top-style": "solid",
+        "border-top-width": "1px",
+        "column-gap": "8px",
+        "display": "inline-flex",
+        "letter-spacing": "normal",
+        "line-height": "20px",
+        "padding-bottom": "1px",
+        "padding-left": "16px",
+        "padding-right": "16px",
+        "padding-top": "1px",
+        "row-gap": "8px"
+      }
+    },
+    "label": {
+      "matched": {
+        "inlineStyle": {
+          "styleSheetId": "17640.1",
+          "cssProperties": [],
+          "shorthandEntries": [],
+          "cssText": "",
+          "range": {
+            "startLine": 0,
+            "startColumn": 0,
+            "endLine": 0,
+            "endColumn": 0
+          }
+        },
+        "matchedCSSRules": [
+          {
+            "rule": {
+              "styleSheetId": "style-sheet-17640-5",
+              "selectorList": {
+                "selectors": [
+                  {
+                    "text": "*",
+                    "range": {
+                      "startLine": 1,
+                      "startColumn": 0,
+                      "endLine": 1,
+                      "endColumn": 1
+                    },
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 0,
+                      "components": []
+                    }
+                  },
+                  {
+                    "text": "*::before",
+                    "range": {
+                      "startLine": 2,
+                      "startColumn": 0,
+                      "endLine": 2,
+                      "endColumn": 9
+                    },
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "::before",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "text": "*::after",
+                    "range": {
+                      "startLine": 3,
+                      "startColumn": 0,
+                      "endLine": 3,
+                      "endColumn": 8
+                    },
+                    "specificity": {
+                      "a": 0,
+                      "b": 0,
+                      "c": 1,
+                      "components": [
+                        {
+                          "text": "::after",
+                          "a": 0,
+                          "b": 0,
+                          "c": 1
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "text": "*, ::before, ::after"
+              },
+              "origin": "regular",
+              "style": {
+                "styleSheetId": "style-sheet-17640-5",
+                "cssProperties": [
+                  {
+                    "name": "box-sizing",
+                    "value": "border-box",
+                    "implicit": false,
+                    "text": "box-sizing: border-box;",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 4,
+                      "startColumn": 2,
+                      "endLine": 4,
+                      "endColumn": 25
+                    }
+                  },
+                  {
+                    "name": "box-sizing",
+                    "value": "border-box"
+                  }
+                ],
+                "shorthandEntries": [],
+                "cssText": "\n  box-sizing: border-box;\n",
+                "range": {
+                  "startLine": 3,
+                  "startColumn": 10,
+                  "endLine": 5,
+                  "endColumn": 0
+                }
+              },
+              "originTreeScopeNodeId": 2,
+              "media": [],
+              "containerQueries": [],
+              "supports": [],
+              "layers": [],
+              "scopes": [],
+              "ruleTypes": [],
+              "startingStyles": [],
+              "navigations": []
+            },
+            "matchingSelectors": [0]
+          },
+          {
+            "rule": {
+              "styleSheetId": "style-sheet-17640-6",
+              "selectorList": {
+                "selectors": [
+                  {
+                    "text": "._label_xefp9_93",
+                    "range": {
+                      "startLine": 92,
+                      "startColumn": 0,
+                      "endLine": 92,
+                      "endColumn": 16
+                    },
+                    "specificity": {
+                      "a": 0,
+                      "b": 1,
+                      "c": 0,
+                      "components": [
+                        {
+                          "text": "._label_xefp9_93",
+                          "a": 0,
+                          "b": 1,
+                          "c": 0
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "text": "._label_xefp9_93"
+              },
+              "origin": "regular",
+              "style": {
+                "styleSheetId": "style-sheet-17640-6",
+                "cssProperties": [
+                  {
+                    "name": "display",
+                    "value": "inline-block",
+                    "implicit": false,
+                    "text": "display: inline-block;",
+                    "disabled": false,
+                    "range": {
+                      "startLine": 93,
+                      "startColumn": 2,
+                      "endLine": 93,
+                      "endColumn": 24
+                    }
+                  },
+                  {
+                    "name": "display",
+                    "value": "inline-block"
+                  }
+                ],
+                "shorthandEntries": [],
+                "cssText": "\n  display: inline-block;\n",
+                "range": {
+                  "startLine": 92,
+                  "startColumn": 18,
+                  "endLine": 94,
+                  "endColumn": 0
+                }
+              },
+              "originTreeScopeNodeId": 2,
+              "media": [],
+              "containerQueries": [],
+              "supports": [],
+              "layers": [],
+              "scopes": [],
+              "ruleTypes": [],
+              "startingStyles": [],
+              "navigations": []
+            },
+            "matchingSelectors": [0]
+          }
+        ],
+        "inherited": [
+          {
+            "matchedCSSRules": [
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-5",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "*",
+                        "range": {
+                          "startLine": 1,
+                          "startColumn": 0,
+                          "endLine": 1,
+                          "endColumn": 1
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 0,
+                          "components": []
+                        }
+                      },
+                      {
+                        "text": "*::before",
+                        "range": {
+                          "startLine": 2,
+                          "startColumn": 0,
+                          "endLine": 2,
+                          "endColumn": 9
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::before",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "text": "*::after",
+                        "range": {
+                          "startLine": 3,
+                          "startColumn": 0,
+                          "endLine": 3,
+                          "endColumn": 8
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::after",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "*, ::before, ::after"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-5",
+                    "cssProperties": [
+                      {
+                        "name": "box-sizing",
+                        "value": "border-box",
+                        "implicit": false,
+                        "text": "box-sizing: border-box;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 4,
+                          "startColumn": 2,
+                          "endLine": 4,
+                          "endColumn": 25
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [],
+                    "cssText": "\n  box-sizing: border-box;\n",
+                    "range": {
+                      "startLine": 3,
+                      "startColumn": 10,
+                      "endLine": 5,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              },
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-6",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "._button_xefp9_1",
+                        "range": {
+                          "startLine": 0,
+                          "startColumn": 0,
+                          "endLine": 0,
+                          "endColumn": 16
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 1,
+                          "c": 0,
+                          "components": [
+                            {
+                              "text": "._button_xefp9_1",
+                              "a": 0,
+                              "b": 1,
+                              "c": 0
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "._button_xefp9_1"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-6",
+                    "cssProperties": [
+                      {
+                        "name": "display",
+                        "value": "inline-flex",
+                        "implicit": false,
+                        "text": "display: inline-flex;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 1,
+                          "startColumn": 2,
+                          "endLine": 1,
+                          "endColumn": 23
+                        }
+                      },
+                      {
+                        "name": "align-items",
+                        "value": "center",
+                        "implicit": false,
+                        "text": "align-items: center;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 2,
+                          "startColumn": 2,
+                          "endLine": 2,
+                          "endColumn": 22
+                        }
+                      },
+                      {
+                        "name": "justify-content",
+                        "value": "center",
+                        "implicit": false,
+                        "text": "justify-content: center;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 3,
+                          "startColumn": 2,
+                          "endLine": 3,
+                          "endColumn": 26
+                        }
+                      },
+                      {
+                        "name": "border",
+                        "value": "var(--border-width-1) solid transparent",
+                        "implicit": false,
+                        "text": "border: var(--border-width-1) solid transparent;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 4,
+                          "startColumn": 2,
+                          "endLine": 4,
+                          "endColumn": 50
+                        }
+                      },
+                      {
+                        "name": "border-radius",
+                        "value": "var(--button-radius)",
+                        "implicit": false,
+                        "text": "border-radius: var(--button-radius);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 5,
+                          "startColumn": 2,
+                          "endLine": 5,
+                          "endColumn": 38
+                        }
+                      },
+                      {
+                        "name": "font-family",
+                        "value": "var(--font-family-sans)",
+                        "implicit": false,
+                        "text": "font-family: var(--font-family-sans);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 6,
+                          "startColumn": 2,
+                          "endLine": 6,
+                          "endColumn": 39
+                        }
+                      },
+                      {
+                        "name": "font-weight",
+                        "value": "var(--font-weight-semibold)",
+                        "implicit": false,
+                        "text": "font-weight: var(--font-weight-semibold);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 7,
+                          "startColumn": 2,
+                          "endLine": 7,
+                          "endColumn": 43
+                        }
+                      },
+                      {
+                        "name": "white-space",
+                        "value": "nowrap",
+                        "implicit": false,
+                        "text": "white-space: nowrap;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 8,
+                          "startColumn": 2,
+                          "endLine": 8,
+                          "endColumn": 22
+                        },
+                        "longhandProperties": [
+                          {
+                            "name": "white-space-collapse",
+                            "value": "collapse"
+                          },
+                          {
+                            "name": "text-wrap-mode",
+                            "value": "nowrap"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "cursor",
+                        "value": "pointer",
+                        "implicit": false,
+                        "text": "cursor: pointer;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 9,
+                          "startColumn": 2,
+                          "endLine": 9,
+                          "endColumn": 18
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [
+                      {
+                        "name": "border",
+                        "value": "var(--border-width-1) solid transparent"
+                      },
+                      {
+                        "name": "border-radius",
+                        "value": "var(--button-radius)"
+                      },
+                      {
+                        "name": "white-space",
+                        "value": "nowrap"
+                      }
+                    ],
+                    "cssText": "\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  border: var(--border-width-1) solid transparent;\n  border-radius: var(--button-radius);\n  font-family: var(--font-family-sans);\n  font-weight: var(--font-weight-semibold);\n  white-space: nowrap;\n  cursor: pointer;\n",
+                    "range": {
+                      "startLine": 0,
+                      "startColumn": 18,
+                      "endLine": 10,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              },
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-6",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "._primary_xefp9_20",
+                        "range": {
+                          "startLine": 19,
+                          "startColumn": 0,
+                          "endLine": 19,
+                          "endColumn": 18
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 1,
+                          "c": 0,
+                          "components": [
+                            {
+                              "text": "._primary_xefp9_20",
+                              "a": 0,
+                              "b": 1,
+                              "c": 0
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "._primary_xefp9_20"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-6",
+                    "cssProperties": [
+                      {
+                        "name": "background",
+                        "value": "var(--button-bg)",
+                        "implicit": false,
+                        "text": "background: var(--button-bg);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 20,
+                          "startColumn": 2,
+                          "endLine": 20,
+                          "endColumn": 31
+                        }
+                      },
+                      {
+                        "name": "color",
+                        "value": "var(--button-fg)",
+                        "implicit": false,
+                        "text": "color: var(--button-fg);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 21,
+                          "startColumn": 2,
+                          "endLine": 21,
+                          "endColumn": 26
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [
+                      {
+                        "name": "background",
+                        "value": "var(--button-bg)"
+                      }
+                    ],
+                    "cssText": "\n  background: var(--button-bg);\n  color: var(--button-fg);\n",
+                    "range": {
+                      "startLine": 19,
+                      "startColumn": 20,
+                      "endLine": 22,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              },
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-6",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "._md_xefp9_64",
+                        "range": {
+                          "startLine": 63,
+                          "startColumn": 0,
+                          "endLine": 63,
+                          "endColumn": 13
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 1,
+                          "c": 0,
+                          "components": [
+                            {
+                              "text": "._md_xefp9_64",
+                              "a": 0,
+                              "b": 1,
+                              "c": 0
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "._md_xefp9_64"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-6",
+                    "cssProperties": [
+                      {
+                        "name": "gap",
+                        "value": "var(--space-2)",
+                        "implicit": false,
+                        "text": "gap: var(--space-2);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 64,
+                          "startColumn": 2,
+                          "endLine": 64,
+                          "endColumn": 22
+                        }
+                      },
+                      {
+                        "name": "height",
+                        "value": "var(--control-height-md)",
+                        "implicit": false,
+                        "text": "height: var(--control-height-md);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 65,
+                          "startColumn": 2,
+                          "endLine": 65,
+                          "endColumn": 35
+                        }
+                      },
+                      {
+                        "name": "padding-inline",
+                        "value": "var(--space-4)",
+                        "implicit": false,
+                        "text": "padding-inline: var(--space-4);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 66,
+                          "startColumn": 2,
+                          "endLine": 66,
+                          "endColumn": 33
+                        }
+                      },
+                      {
+                        "name": "font-size",
+                        "value": "var(--font-size-sm)",
+                        "implicit": false,
+                        "text": "font-size: var(--font-size-sm);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 67,
+                          "startColumn": 2,
+                          "endLine": 67,
+                          "endColumn": 33
+                        }
+                      },
+                      {
+                        "name": "line-height",
+                        "value": "var(--line-height-sm)",
+                        "implicit": false,
+                        "text": "line-height: var(--line-height-sm);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 68,
+                          "startColumn": 2,
+                          "endLine": 68,
+                          "endColumn": 37
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [
+                      {
+                        "name": "gap",
+                        "value": "var(--space-2)"
+                      },
+                      {
+                        "name": "padding-inline",
+                        "value": "var(--space-4)"
+                      }
+                    ],
+                    "cssText": "\n  gap: var(--space-2);\n  height: var(--control-height-md);\n  padding-inline: var(--space-4);\n  font-size: var(--font-size-sm);\n  line-height: var(--line-height-sm);\n",
+                    "range": {
+                      "startLine": 63,
+                      "startColumn": 15,
+                      "endLine": 69,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              }
+            ]
+          },
+          {
+            "matchedCSSRules": [
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-5",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "*",
+                        "range": {
+                          "startLine": 1,
+                          "startColumn": 0,
+                          "endLine": 1,
+                          "endColumn": 1
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 0,
+                          "components": []
+                        }
+                      },
+                      {
+                        "text": "*::before",
+                        "range": {
+                          "startLine": 2,
+                          "startColumn": 0,
+                          "endLine": 2,
+                          "endColumn": 9
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::before",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "text": "*::after",
+                        "range": {
+                          "startLine": 3,
+                          "startColumn": 0,
+                          "endLine": 3,
+                          "endColumn": 8
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::after",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "*, ::before, ::after"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-5",
+                    "cssProperties": [
+                      {
+                        "name": "box-sizing",
+                        "value": "border-box",
+                        "implicit": false,
+                        "text": "box-sizing: border-box;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 4,
+                          "startColumn": 2,
+                          "endLine": 4,
+                          "endColumn": 25
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [],
+                    "cssText": "\n  box-sizing: border-box;\n",
+                    "range": {
+                      "startLine": 3,
+                      "startColumn": 10,
+                      "endLine": 5,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              }
+            ]
+          },
+          {
+            "matchedCSSRules": [
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-5",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "*",
+                        "range": {
+                          "startLine": 1,
+                          "startColumn": 0,
+                          "endLine": 1,
+                          "endColumn": 1
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 0,
+                          "components": []
+                        }
+                      },
+                      {
+                        "text": "*::before",
+                        "range": {
+                          "startLine": 2,
+                          "startColumn": 0,
+                          "endLine": 2,
+                          "endColumn": 9
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::before",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "text": "*::after",
+                        "range": {
+                          "startLine": 3,
+                          "startColumn": 0,
+                          "endLine": 3,
+                          "endColumn": 8
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::after",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "*, ::before, ::after"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-5",
+                    "cssProperties": [
+                      {
+                        "name": "box-sizing",
+                        "value": "border-box",
+                        "implicit": false,
+                        "text": "box-sizing: border-box;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 4,
+                          "startColumn": 2,
+                          "endLine": 4,
+                          "endColumn": 25
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [],
+                    "cssText": "\n  box-sizing: border-box;\n",
+                    "range": {
+                      "startLine": 3,
+                      "startColumn": 10,
+                      "endLine": 5,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              },
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-5",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "body",
+                        "range": {
+                          "startLine": 7,
+                          "startColumn": 0,
+                          "endLine": 7,
+                          "endColumn": 4
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "body",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "body"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-5",
+                    "cssProperties": [
+                      {
+                        "name": "margin",
+                        "value": "0",
+                        "implicit": false,
+                        "text": "margin: 0;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 8,
+                          "startColumn": 2,
+                          "endLine": 8,
+                          "endColumn": 12
+                        },
+                        "longhandProperties": [
+                          {
+                            "name": "margin-top",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-right",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-bottom",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-left",
+                            "value": "0px"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "background",
+                        "value": "var(--color-bg)",
+                        "implicit": false,
+                        "text": "background: var(--color-bg);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 9,
+                          "startColumn": 2,
+                          "endLine": 9,
+                          "endColumn": 30
+                        }
+                      },
+                      {
+                        "name": "color",
+                        "value": "var(--color-fg)",
+                        "implicit": false,
+                        "text": "color: var(--color-fg);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 10,
+                          "startColumn": 2,
+                          "endLine": 10,
+                          "endColumn": 25
+                        }
+                      },
+                      {
+                        "name": "font-family",
+                        "value": "var(--font-family-sans)",
+                        "implicit": false,
+                        "text": "font-family: var(--font-family-sans);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 11,
+                          "startColumn": 2,
+                          "endLine": 11,
+                          "endColumn": 39
+                        }
+                      },
+                      {
+                        "name": "font-size",
+                        "value": "var(--font-size-sm)",
+                        "implicit": false,
+                        "text": "font-size: var(--font-size-sm);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 12,
+                          "startColumn": 2,
+                          "endLine": 12,
+                          "endColumn": 33
+                        }
+                      },
+                      {
+                        "name": "line-height",
+                        "value": "var(--line-height-sm)",
+                        "implicit": false,
+                        "text": "line-height: var(--line-height-sm);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 13,
+                          "startColumn": 2,
+                          "endLine": 13,
+                          "endColumn": 37
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [
+                      {
+                        "name": "margin",
+                        "value": "0px"
+                      },
+                      {
+                        "name": "background",
+                        "value": "var(--color-bg)"
+                      }
+                    ],
+                    "cssText": "\n  margin: 0;\n  background: var(--color-bg);\n  color: var(--color-fg);\n  font-family: var(--font-family-sans);\n  font-size: var(--font-size-sm);\n  line-height: var(--line-height-sm);\n",
+                    "range": {
+                      "startLine": 7,
+                      "startColumn": 6,
+                      "endLine": 14,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              },
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-2",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": ".sb-show-main.sb-main-padded",
+                        "range": {
+                          "startLine": 48,
+                          "startColumn": 2,
+                          "endLine": 48,
+                          "endColumn": 30
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 2,
+                          "c": 0,
+                          "components": [
+                            {
+                              "text": ".sb-show-main",
+                              "a": 0,
+                              "b": 1,
+                              "c": 0
+                            },
+                            {
+                              "text": ".sb-main-padded",
+                              "a": 0,
+                              "b": 1,
+                              "c": 0
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": ".sb-show-main.sb-main-padded"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-2",
+                    "cssProperties": [
+                      {
+                        "name": "margin",
+                        "value": "0",
+                        "implicit": false,
+                        "text": "margin: 0;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 49,
+                          "startColumn": 4,
+                          "endLine": 49,
+                          "endColumn": 14
+                        },
+                        "longhandProperties": [
+                          {
+                            "name": "margin-top",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-right",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-bottom",
+                            "value": "0px"
+                          },
+                          {
+                            "name": "margin-left",
+                            "value": "0px"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "padding",
+                        "value": "1rem",
+                        "implicit": false,
+                        "text": "padding: 1rem;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 50,
+                          "startColumn": 4,
+                          "endLine": 50,
+                          "endColumn": 18
+                        },
+                        "longhandProperties": [
+                          {
+                            "name": "padding-top",
+                            "value": "1rem"
+                          },
+                          {
+                            "name": "padding-right",
+                            "value": "1rem"
+                          },
+                          {
+                            "name": "padding-bottom",
+                            "value": "1rem"
+                          },
+                          {
+                            "name": "padding-left",
+                            "value": "1rem"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "display",
+                        "value": "block",
+                        "implicit": false,
+                        "text": "display: block;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 51,
+                          "startColumn": 4,
+                          "endLine": 51,
+                          "endColumn": 19
+                        }
+                      },
+                      {
+                        "name": "box-sizing",
+                        "value": "border-box",
+                        "implicit": false,
+                        "text": "box-sizing: border-box;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 52,
+                          "startColumn": 4,
+                          "endLine": 52,
+                          "endColumn": 27
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [
+                      {
+                        "name": "margin",
+                        "value": "0px"
+                      },
+                      {
+                        "name": "padding",
+                        "value": "1rem"
+                      }
+                    ],
+                    "cssText": "\n    margin: 0;\n    padding: 1rem;\n    display: block;\n    box-sizing: border-box;\n  ",
+                    "range": {
+                      "startLine": 48,
+                      "startColumn": 32,
+                      "endLine": 53,
+                      "endColumn": 2
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              }
+            ]
+          },
+          {
+            "matchedCSSRules": [
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-5",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": "*",
+                        "range": {
+                          "startLine": 1,
+                          "startColumn": 0,
+                          "endLine": 1,
+                          "endColumn": 1
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 0,
+                          "components": []
+                        }
+                      },
+                      {
+                        "text": "*::before",
+                        "range": {
+                          "startLine": 2,
+                          "startColumn": 0,
+                          "endLine": 2,
+                          "endColumn": 9
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::before",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "text": "*::after",
+                        "range": {
+                          "startLine": 3,
+                          "startColumn": 0,
+                          "endLine": 3,
+                          "endColumn": 8
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 0,
+                          "c": 1,
+                          "components": [
+                            {
+                              "text": "::after",
+                              "a": 0,
+                              "b": 0,
+                              "c": 1
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": "*, ::before, ::after"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-5",
+                    "cssProperties": [
+                      {
+                        "name": "box-sizing",
+                        "value": "border-box",
+                        "implicit": false,
+                        "text": "box-sizing: border-box;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 4,
+                          "startColumn": 2,
+                          "endLine": 4,
+                          "endColumn": 25
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [],
+                    "cssText": "\n  box-sizing: border-box;\n",
+                    "range": {
+                      "startLine": 3,
+                      "startColumn": 10,
+                      "endLine": 5,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              },
+              {
+                "rule": {
+                  "styleSheetId": "style-sheet-17640-4",
+                  "selectorList": {
+                    "selectors": [
+                      {
+                        "text": ":root",
+                        "range": {
+                          "startLine": 13,
+                          "startColumn": 0,
+                          "endLine": 13,
+                          "endColumn": 5
+                        },
+                        "specificity": {
+                          "a": 0,
+                          "b": 1,
+                          "c": 0,
+                          "components": [
+                            {
+                              "text": ":root",
+                              "a": 0,
+                              "b": 1,
+                              "c": 0
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "text": ":root"
+                  },
+                  "origin": "regular",
+                  "style": {
+                    "styleSheetId": "style-sheet-17640-4",
+                    "cssProperties": [
+                      {
+                        "name": "--color-gray-0",
+                        "value": "#ffffff",
+                        "implicit": false,
+                        "text": "--color-gray-0: #ffffff;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 15,
+                          "startColumn": 2,
+                          "endLine": 15,
+                          "endColumn": 26
+                        }
+                      },
+                      {
+                        "name": "--color-gray-900",
+                        "value": "#0f172a",
+                        "implicit": false,
+                        "text": "--color-gray-900: #0f172a;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 25,
+                          "startColumn": 2,
+                          "endLine": 25,
+                          "endColumn": 28
+                        }
+                      },
+                      {
+                        "name": "--color-blue-600",
+                        "value": "#2563eb",
+                        "implicit": false,
+                        "text": "--color-blue-600: #2563eb;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 33,
+                          "startColumn": 2,
+                          "endLine": 33,
+                          "endColumn": 28
+                        }
+                      },
+                      {
+                        "name": "--space-1",
+                        "value": "4px",
+                        "implicit": false,
+                        "text": "--space-1: 4px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 57,
+                          "startColumn": 2,
+                          "endLine": 57,
+                          "endColumn": 17
+                        }
+                      },
+                      {
+                        "name": "--space-2",
+                        "value": "8px",
+                        "implicit": false,
+                        "text": "--space-2: 8px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 58,
+                          "startColumn": 2,
+                          "endLine": 58,
+                          "endColumn": 17
+                        }
+                      },
+                      {
+                        "name": "--space-4",
+                        "value": "16px",
+                        "implicit": false,
+                        "text": "--space-4: 16px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 60,
+                          "startColumn": 2,
+                          "endLine": 60,
+                          "endColumn": 18
+                        }
+                      },
+                      {
+                        "name": "--space-7",
+                        "value": "32px",
+                        "implicit": false,
+                        "text": "--space-7: 32px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 63,
+                          "startColumn": 2,
+                          "endLine": 63,
+                          "endColumn": 18
+                        }
+                      },
+                      {
+                        "name": "--radius-md",
+                        "value": "6px",
+                        "implicit": false,
+                        "text": "--radius-md: 6px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 68,
+                          "startColumn": 2,
+                          "endLine": 68,
+                          "endColumn": 19
+                        }
+                      },
+                      {
+                        "name": "--border-width-1",
+                        "value": "1px",
+                        "implicit": false,
+                        "text": "--border-width-1: 1px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 73,
+                          "startColumn": 2,
+                          "endLine": 73,
+                          "endColumn": 24
+                        }
+                      },
+                      {
+                        "name": "--font-family-sans",
+                        "value": "\"Inter\", sans-serif",
+                        "implicit": false,
+                        "text": "--font-family-sans: \"Inter\", sans-serif;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 77,
+                          "startColumn": 2,
+                          "endLine": 77,
+                          "endColumn": 42
+                        }
+                      },
+                      {
+                        "name": "--font-weight-semibold",
+                        "value": "600",
+                        "implicit": false,
+                        "text": "--font-weight-semibold: 600;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 80,
+                          "startColumn": 2,
+                          "endLine": 80,
+                          "endColumn": 30
+                        }
+                      },
+                      {
+                        "name": "--font-size-sm",
+                        "value": "14px",
+                        "implicit": false,
+                        "text": "--font-size-sm: 14px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 84,
+                          "startColumn": 2,
+                          "endLine": 84,
+                          "endColumn": 23
+                        }
+                      },
+                      {
+                        "name": "--line-height-sm",
+                        "value": "20px",
+                        "implicit": false,
+                        "text": "--line-height-sm: 20px;",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 90,
+                          "startColumn": 2,
+                          "endLine": 90,
+                          "endColumn": 25
+                        }
+                      },
+                      {
+                        "name": "--control-height-md",
+                        "value": "calc(var(--space-7) + var(--space-1))",
+                        "implicit": false,
+                        "text": "--control-height-md: calc(var(--space-7) + var(--space-1));",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 110,
+                          "startColumn": 2,
+                          "endLine": 110,
+                          "endColumn": 61
+                        }
+                      },
+                      {
+                        "name": "--color-bg",
+                        "value": "var(--color-gray-0)",
+                        "implicit": false,
+                        "text": "--color-bg: var(--color-gray-0);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 117,
+                          "startColumn": 2,
+                          "endLine": 117,
+                          "endColumn": 34
+                        }
+                      },
+                      {
+                        "name": "--color-fg",
+                        "value": "var(--color-gray-900)",
+                        "implicit": false,
+                        "text": "--color-fg: var(--color-gray-900);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 118,
+                          "startColumn": 2,
+                          "endLine": 118,
+                          "endColumn": 36
+                        }
+                      },
+                      {
+                        "name": "--color-primary",
+                        "value": "var(--color-blue-600)",
+                        "implicit": false,
+                        "text": "--color-primary: var(--color-blue-600);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 124,
+                          "startColumn": 2,
+                          "endLine": 124,
+                          "endColumn": 41
+                        }
+                      },
+                      {
+                        "name": "--color-primary-fg",
+                        "value": "var(--color-gray-0)",
+                        "implicit": false,
+                        "text": "--color-primary-fg: var(--color-gray-0);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 127,
+                          "startColumn": 2,
+                          "endLine": 127,
+                          "endColumn": 42
+                        }
+                      },
+                      {
+                        "name": "--button-bg",
+                        "value": "var(--color-primary)",
+                        "implicit": false,
+                        "text": "--button-bg: var(--color-primary);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 147,
+                          "startColumn": 2,
+                          "endLine": 147,
+                          "endColumn": 36
+                        }
+                      },
+                      {
+                        "name": "--button-fg",
+                        "value": "var(--color-primary-fg)",
+                        "implicit": false,
+                        "text": "--button-fg: var(--color-primary-fg);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 150,
+                          "startColumn": 2,
+                          "endLine": 150,
+                          "endColumn": 39
+                        }
+                      },
+                      {
+                        "name": "--button-radius",
+                        "value": "var(--radius-md)",
+                        "implicit": false,
+                        "text": "--button-radius: var(--radius-md);",
+                        "disabled": false,
+                        "range": {
+                          "startLine": 151,
+                          "startColumn": 2,
+                          "endLine": 151,
+                          "endColumn": 36
+                        }
+                      }
+                    ],
+                    "shorthandEntries": [],
+                    "cssText": "\n  /* Color primitives: --color-<hue>-<step> */\n  --color-gray-0: #ffffff;\n  --color-gray-50: #f8fafc;\n  --color-gray-100: #f1f5f9;\n  --color-gray-200: #e2e8f0;\n  --color-gray-300: #cbd5e1;\n  --color-gray-400: #94a3b8;\n  --color-gray-500: #64748b;\n  --color-gray-600: #475569;\n  --color-gray-700: #334155;\n  --color-gray-800: #1e293b;\n  --color-gray-900: #0f172a;\n\n  --color-blue-50: #eff6ff;\n  --color-blue-100: #dbeafe;\n  --color-blue-200: #bfdbfe;\n  --color-blue-300: #93c5fd;\n  --color-blue-400: #60a5fa;\n  --color-blue-500: #3b82f6;\n  --color-blue-600: #2563eb;\n  --color-blue-700: #1d4ed8;\n  --color-blue-800: #1e40af;\n  --color-blue-900: #1e3a8a;\n\n  --color-green-50: #f0fdf4;\n  --color-green-100: #dcfce7;\n  --color-green-500: #22c55e;\n  --color-green-600: #16a34a;\n  --color-green-700: #15803d;\n\n  --color-amber-50: #fffbeb;\n  --color-amber-100: #fef3c7;\n  --color-amber-500: #f59e0b;\n  --color-amber-600: #d97706;\n  --color-amber-700: #b45309;\n\n  --color-red-50: #fef2f2;\n  --color-red-100: #fee2e2;\n  --color-red-500: #ef4444;\n  --color-red-600: #dc2626;\n  --color-red-700: #b91c1c;\n\n  /* Spacing: --space-1..8 */\n  --space-1: 4px;\n  --space-2: 8px;\n  --space-3: 12px;\n  --space-4: 16px;\n  --space-5: 20px;\n  --space-6: 24px;\n  --space-7: 32px;\n  --space-8: 40px;\n\n  /* Radii */\n  --radius-sm: 4px;\n  --radius-md: 6px;\n  --radius-lg: 10px;\n  --radius-full: 9999px;\n\n  /* Borders */\n  --border-width-1: 1px;\n  --border-width-2: 2px;\n\n  /* Typography */\n  --font-family-sans: \"Inter\", sans-serif;\n  --font-weight-regular: 400;\n  --font-weight-medium: 500;\n  --font-weight-semibold: 600;\n  --font-weight-bold: 700;\n\n  --font-size-xs: 12px;\n  --font-size-sm: 14px;\n  --font-size-md: 16px;\n  --font-size-lg: 18px;\n  --font-size-xl: 20px;\n\n  --line-height-xs: 16px;\n  --line-height-sm: 20px;\n  --line-height-md: 24px;\n  --line-height-lg: 28px;\n  --line-height-xl: 28px;\n\n  /* Elevation */\n  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.08);\n  --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.1), 0 2px 4px -2px rgb(15 23 42 / 0.1);\n\n  /* Sizes */\n  --size-icon-sm: 16px;\n  --size-icon-md: 20px;\n  --size-icon-lg: 24px;\n  --size-dot: 6px;\n  --size-card-width: 320px;\n  --size-field-max-width: 320px;\n  --size-card-media-height: 160px;\n  --size-card-min-height: 240px;\n  --control-height-sm: 32px;\n  /* Unbindable on purpose: a calc() over two primitives (12 §2.2). */\n  --control-height-md: calc(var(--space-7) + var(--space-1));\n  --control-height-lg: 44px;\n\n  /* Motion */\n  --duration-spin: 800ms;\n\n  /* Semantic aliases (light theme) */\n  --color-bg: var(--color-gray-0);\n  --color-fg: var(--color-gray-900);\n  --color-fg-muted: var(--color-gray-500);\n  --color-surface: var(--color-gray-0);\n  --color-surface-muted: var(--color-gray-100);\n  --color-border: var(--color-gray-200);\n  --color-border-strong: var(--color-gray-300);\n  --color-primary: var(--color-blue-600);\n  --color-primary-hover: var(--color-blue-700);\n  --color-primary-active: var(--color-blue-800);\n  --color-primary-fg: var(--color-gray-0);\n  /* Unbindable on purpose: color-mix() has no Figma variable equivalent (12 §2.2). */\n  --color-primary-subtle: color-mix(in srgb, var(--color-primary) 12%, transparent);\n  --color-focus-ring: var(--color-blue-400);\n  --color-danger: var(--color-red-600);\n  --color-disabled-fg: var(--color-gray-400);\n  --color-disabled-bg: var(--color-gray-100);\n\n  --color-tone-neutral-bg: var(--color-gray-100);\n  --color-tone-neutral-fg: var(--color-gray-700);\n  --color-tone-info-bg: var(--color-blue-100);\n  --color-tone-info-fg: var(--color-blue-800);\n  --color-tone-success-bg: var(--color-green-100);\n  --color-tone-success-fg: var(--color-green-700);\n  --color-tone-warning-bg: var(--color-amber-100);\n  --color-tone-warning-fg: var(--color-amber-700);\n  --color-tone-danger-bg: var(--color-red-100);\n  --color-tone-danger-fg: var(--color-red-700);\n\n  /* Component tokens */\n  --button-bg: var(--color-primary);\n  --button-bg-hover: var(--color-primary-hover);\n  --button-bg-active: var(--color-primary-active);\n  --button-fg: var(--color-primary-fg);\n  --button-radius: var(--radius-md);\n  --input-bg: var(--color-surface);\n  --input-border: var(--color-border-strong);\n  --card-bg: var(--color-surface);\n  --card-radius: var(--radius-lg);\n  --card-body-lines: 3;\n",
+                    "range": {
+                      "startLine": 13,
+                      "startColumn": 7,
+                      "endLine": 157,
+                      "endColumn": 0
+                    }
+                  },
+                  "originTreeScopeNodeId": 2,
+                  "media": [],
+                  "containerQueries": [],
+                  "supports": [],
+                  "layers": [],
+                  "scopes": [],
+                  "ruleTypes": [],
+                  "startingStyles": [],
+                  "navigations": []
+                },
+                "matchingSelectors": [0]
+              }
+            ]
+          }
+        ]
+      },
+      "computed": {
+        "color": "rgb(255, 255, 255)",
+        "font-family": "Inter, sans-serif",
+        "font-size": "14px",
+        "font-weight": "600",
+        "background-color": "rgba(0, 0, 0, 0)",
+        "border-bottom-color": "rgb(255, 255, 255)",
+        "border-bottom-left-radius": "0px",
+        "border-bottom-right-radius": "0px",
+        "border-bottom-style": "none",
+        "border-bottom-width": "0px",
+        "border-left-color": "rgb(255, 255, 255)",
+        "border-left-style": "none",
+        "border-left-width": "0px",
+        "border-right-color": "rgb(255, 255, 255)",
+        "border-right-style": "none",
+        "border-right-width": "0px",
+        "border-top-color": "rgb(255, 255, 255)",
+        "border-top-left-radius": "0px",
+        "border-top-right-radius": "0px",
+        "border-top-style": "none",
+        "border-top-width": "0px",
+        "column-gap": "normal",
+        "display": "block",
+        "letter-spacing": "normal",
+        "line-height": "20px",
+        "padding-bottom": "0px",
+        "padding-left": "0px",
+        "padding-right": "0px",
+        "padding-top": "0px",
+        "row-gap": "normal"
+      }
+    }
+  }
+}

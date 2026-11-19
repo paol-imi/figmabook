@@ -1,6 +1,6 @@
-export { DOCS_DIR, DOCS_INDEX, renderDocs } from './emit-docs.ts';
+export { type ChapterTitles, DOCS_DIR, DOCS_INDEX, renderDocs } from './emit-docs.ts';
 export { CATALOG_MODULE_PATH, renderCatalogModule } from './emit-ts.ts';
-export { asSentence, splitTableRow, toPlainText } from './markdown.ts';
+export { asSentence, chapterTitle, splitTableRow, toPlainText } from './markdown.ts';
 export {
   type Catalog,
   type CatalogDomain,
@@ -12,6 +12,7 @@ export {
   type ParseResult,
 } from './model.ts';
 export { CATALOG_COLUMNS, parseCatalog } from './parse.ts';
+export { PLAN_DIR } from './paths.ts';
 export {
   CATALOG_SOURCE,
   CatalogError,

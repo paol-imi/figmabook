@@ -21,6 +21,7 @@ const EDITED: Readonly<Record<string, readonly string[]>> = {
     (id) => `${id} bind`,
   ),
   'token-changed': ['20:8 paint'],
+  unknown: ['12:1 vis'],
   'variant-added': ['12:90 paint,vis,bind'],
 };
 

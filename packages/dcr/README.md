@@ -1,13 +1,14 @@
 # @holotype/dcr
 
-Design Change Requests ([15](../../docs/plan/15-change-requests.md)): the deterministic request
+Design Change Requests ([15](../../internal/plan/15-change-requests.md)): the deterministic request
 a designer's branch-file edits become, for a coding agent to implement. Pure and isomorphic
 (D-35): no clock, no randomness, no network, no Node built-ins. It runs in the CLI and in the
 plugin UI. TypeBox is the source of truth (D-07); the build emits JSON Schema 2020-12 to
 `schema/`.
 
-Extraction (`extractDcr`) is not built yet (B-65). This package currently holds the schemas
-and the id, hash and order rules every producer and consumer shares (B-64).
+It holds the schemas and the id, hash and order rules every producer and consumer shares
+(B-64), and the extraction core (B-65): identification, field diff and classification.
+Screens and nearest-component scoring (B-66) and the renderers (B-67) are not built yet.
 
 ## Scripts
 
@@ -34,6 +35,41 @@ too: `DcrHeader`, `DcrItem` (one union member per kind, `DcrItemOf<K>`), `DcrCha
 `A11yAnnotation`, `InstanceVersionRef`, `SnapNode`, `SnapVariable`, `NodeGroupsSchema`,
 `FieldChange`, `SetPropsSnapshot`.
 
+## Extraction (15 §4)
+
+`extractDcr(snapshot, baselines)` → a sealed `DesignChangeRequest` (the plugin's core: no
+provenance, `DCR_PROVENANCE_MISSING` when it has items). `normalizePlugin(readback)` turns the
+plugin's read-back (`PluginReadback`) into the `FigmaSnapshot` it takes.
+
+1. **Read** `branch:meta` (`DCR_NOT_BRANCH_FILE` without it) and the registry; take the scope
+   (`changed`: managed components plus top-level frames absent from `baseFrames`; `all`,
+   `page:<name>`, `selection:<ids>`, `ready`).
+2. **Identify** (15 §4.2): managed sets by `sid`; a variant whose name values equal its `vk`'s
+   baseline values is managed, another node with that `vk` is a new variant derived from it, a
+   baseline `vk` with no managed node was removed; inside a variant, the first node with an `nk`
+   keeps it, later copies and nodes without one are added, baseline `nk`s with no node were
+   removed. Locked subtrees are skipped.
+3. **Diff** (15 §4.3): only the groups whose `ah` sub-hash differs, walked down to atomic values
+   (`layout.paddingLeft`, `paint.fills[0].color`, `text.lineHeight`). Noise filter: sizes on
+   hugging or filling axes and auto-resized text are derived and dropped. Bindings fold into the
+   value they bind (`token.before/after`); a value bound to the same variable before and after
+   moved with the variable and is reported once, as `token.changed`. Child order changes are
+   `layout.children.order`.
+4. **Classify** (15 §4.4): `component.modified` (one item per node), `variant.added` (args
+   inferred with the inverse Title Case rule), `variant.removed`, `property.added` /
+   `property.changed` (same `#id` = same property), `node.added` (with its usage tree) /
+   `node.removed`, `component.new` (structure, API, suggested files), `token.changed` (the value
+   before recovered from the variable's `ah` when one alias reproduces it) / `token.added`;
+   everything else, including frames until screens land, is `unknown` with `DCR_UNKNOWN_CHANGE`.
+5. **Tokens** (15 §4.7): a raw value is matched against the variables of the same type whose
+   Figma `scopes` allow the field (a padding after removing its border, D-16):
+   `DCR_VALUE_UNTOKENIZED` with candidates, else `DCR_VALUE_NO_TOKEN`; plus
+   `DCR_FIELD_UNMAPPABLE` and `DCR_PROPERTY_UNMAPPED`. One question per phrase, numbered `q1…`.
+6. **Seal**: stable item ids, canonical order, `dcrHash`, request id.
+
+Titles use code words (`Button · variant=secondary, size=md · padding-left/right 16 → 20`),
+designer titles Figma words and variable names, headlines (≤ 8 lines) the designer words.
+
 ## Ids and the core hash
 
 - **Item id** `dcrItemId` / `computeItemId`: `h16(canonical([kind, identity, sorted field paths]))`.
@@ -53,6 +89,9 @@ too: `DcrHeader`, `DcrItem` (one union member per kind, `DcrItemOf<K>`), `DcrCha
 
 ## Public API
 
+- **Extraction:** `extractDcr`, `DCR_EXTRACTOR_VERSION`; `normalizePlugin` with `PluginReadback`,
+  `PluginNodeRead`, `PluginVariableRead` and `SnapshotReadError`; `canonicalSnapshot`,
+  `snapshotHash` (`header.figma.snapshotHash`).
 - **Validation:** `validateDcr`, `validateFigmaSnapshot`, `validateBaselineSnapshot`,
   `validateDcrAnswers`, `validateDcrDecisions`; `checkDcrIntegrity` (ids, hash, references,
   summary, order); `checkDcrVersion` (`APPLY_IR_VERSION_UNSUPPORTED` for another major).

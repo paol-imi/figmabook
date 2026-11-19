@@ -1,0 +1,767 @@
+[
+  {
+    "id": "components-stack--row",
+    "sid": "components-stack",
+    "title": "Components/Stack",
+    "titlePath": [
+      "Components",
+      "Stack"
+    ],
+    "name": "Row",
+    "exportName": "Row",
+    "importPath": "./src/components/Stack/Stack.stories.tsx",
+    "componentPath": "./src/components/Stack/Stack.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Stack/Stack.stories.tsx",
+      "__isArgsStory": true
+    },
+    "holotype": {},
+    "argTypes": {
+      "align": {
+        "name": "align",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "start",
+            "center",
+            "end",
+            "stretch",
+            "baseline"
+          ],
+          "required": false,
+          "raw": "'start' | 'center' | 'end' | 'stretch' | 'baseline'"
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "start",
+          "center",
+          "end",
+          "stretch",
+          "baseline"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'stretch'"
+          }
+        },
+        "description": "Cross-axis alignment of the children."
+      },
+      "children": {
+        "name": "children",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "ReactNode",
+          "required": false
+        },
+        "control": false
+      },
+      "className": {
+        "name": "className",
+        "origin": "docgen-inline",
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "other",
+              "value": "undefined"
+            }
+          ],
+          "required": false,
+          "raw": "string | undefined"
+        },
+        "control": {
+          "type": "object"
+        }
+      },
+      "direction": {
+        "name": "direction",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "row",
+            "column"
+          ],
+          "required": false,
+          "raw": "'row' | 'column'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "row",
+          "column"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'column'"
+          }
+        }
+      },
+      "gap": {
+        "name": "gap",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "required": false,
+          "raw": "1 | 2 | 3 | 4 | 5 | 6 | 7 | 8"
+        },
+        "control": {
+          "type": "range",
+          "min": 1,
+          "max": 8,
+          "step": 1
+        },
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "2"
+          }
+        }
+      },
+      "justify": {
+        "name": "justify",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "start",
+            "center",
+            "end",
+            "between"
+          ],
+          "required": false,
+          "raw": "'start' | 'center' | 'end' | 'between'"
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "start",
+          "center",
+          "end",
+          "between"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'start'"
+          }
+        },
+        "description": "Main-axis distribution of the children."
+      },
+      "wrap": {
+        "name": "wrap",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Lets children flow onto more lines when they do not fit."
+      }
+    },
+    "args": {
+      "children": {
+        "$node": "react",
+        "type": ""
+      }
+    },
+    "initialArgs": {
+      "direction": "row",
+      "gap": 2,
+      "align": "center",
+      "justify": "start",
+      "wrap": false,
+      "children": {
+        "$node": "react",
+        "type": ""
+      }
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-stack",
+      "exportName": "Stack",
+      "importPath": "./src/components/Stack/Stack.tsx",
+      "storiesPath": "./src/components/Stack/Stack.stories.tsx",
+      "storyIds": [
+        "components-stack--row",
+        "components-stack--column",
+        "components-stack--wrap"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-stack--column",
+    "sid": "components-stack",
+    "title": "Components/Stack",
+    "titlePath": [
+      "Components",
+      "Stack"
+    ],
+    "name": "Column",
+    "exportName": "Column",
+    "importPath": "./src/components/Stack/Stack.stories.tsx",
+    "componentPath": "./src/components/Stack/Stack.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Stack/Stack.stories.tsx",
+      "__isArgsStory": true
+    },
+    "holotype": {},
+    "argTypes": {
+      "align": {
+        "name": "align",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "start",
+            "center",
+            "end",
+            "stretch",
+            "baseline"
+          ],
+          "required": false,
+          "raw": "'start' | 'center' | 'end' | 'stretch' | 'baseline'"
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "start",
+          "center",
+          "end",
+          "stretch",
+          "baseline"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'stretch'"
+          }
+        },
+        "description": "Cross-axis alignment of the children."
+      },
+      "children": {
+        "name": "children",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "ReactNode",
+          "required": false
+        },
+        "control": false
+      },
+      "className": {
+        "name": "className",
+        "origin": "docgen-inline",
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "other",
+              "value": "undefined"
+            }
+          ],
+          "required": false,
+          "raw": "string | undefined"
+        },
+        "control": {
+          "type": "object"
+        }
+      },
+      "direction": {
+        "name": "direction",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "row",
+            "column"
+          ],
+          "required": false,
+          "raw": "'row' | 'column'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "row",
+          "column"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'column'"
+          }
+        }
+      },
+      "gap": {
+        "name": "gap",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "required": false,
+          "raw": "1 | 2 | 3 | 4 | 5 | 6 | 7 | 8"
+        },
+        "control": {
+          "type": "range",
+          "min": 1,
+          "max": 8,
+          "step": 1
+        },
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "2"
+          }
+        }
+      },
+      "justify": {
+        "name": "justify",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "start",
+            "center",
+            "end",
+            "between"
+          ],
+          "required": false,
+          "raw": "'start' | 'center' | 'end' | 'between'"
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "start",
+          "center",
+          "end",
+          "between"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'start'"
+          }
+        },
+        "description": "Main-axis distribution of the children."
+      },
+      "wrap": {
+        "name": "wrap",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Lets children flow onto more lines when they do not fit."
+      }
+    },
+    "args": {
+      "direction": "column",
+      "gap": 4,
+      "align": "stretch",
+      "children": {
+        "$node": "react",
+        "type": ""
+      }
+    },
+    "initialArgs": {
+      "direction": "column",
+      "gap": 4,
+      "align": "stretch",
+      "justify": "start",
+      "wrap": false,
+      "children": {
+        "$node": "react",
+        "type": ""
+      }
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-stack",
+      "exportName": "Stack",
+      "importPath": "./src/components/Stack/Stack.tsx",
+      "storiesPath": "./src/components/Stack/Stack.stories.tsx",
+      "storyIds": [
+        "components-stack--row",
+        "components-stack--column",
+        "components-stack--wrap"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-stack--wrap",
+    "sid": "components-stack",
+    "title": "Components/Stack",
+    "titlePath": [
+      "Components",
+      "Stack"
+    ],
+    "name": "Wrap",
+    "exportName": "Wrap",
+    "importPath": "./src/components/Stack/Stack.stories.tsx",
+    "componentPath": "./src/components/Stack/Stack.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Stack/Stack.stories.tsx",
+      "holotype": {
+        "keepLayout": true,
+        "width": {
+          "probe": [
+            240,
+            480
+          ]
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "keepLayout": true,
+      "width": {
+        "probe": [
+          240,
+          480
+        ]
+      }
+    },
+    "argTypes": {
+      "align": {
+        "name": "align",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "start",
+            "center",
+            "end",
+            "stretch",
+            "baseline"
+          ],
+          "required": false,
+          "raw": "'start' | 'center' | 'end' | 'stretch' | 'baseline'"
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "start",
+          "center",
+          "end",
+          "stretch",
+          "baseline"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'stretch'"
+          }
+        },
+        "description": "Cross-axis alignment of the children."
+      },
+      "children": {
+        "name": "children",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "ReactNode",
+          "required": false
+        },
+        "control": false
+      },
+      "className": {
+        "name": "className",
+        "origin": "docgen-inline",
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "other",
+              "value": "undefined"
+            }
+          ],
+          "required": false,
+          "raw": "string | undefined"
+        },
+        "control": {
+          "type": "object"
+        }
+      },
+      "direction": {
+        "name": "direction",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "row",
+            "column"
+          ],
+          "required": false,
+          "raw": "'row' | 'column'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "row",
+          "column"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'column'"
+          }
+        }
+      },
+      "gap": {
+        "name": "gap",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "required": false,
+          "raw": "1 | 2 | 3 | 4 | 5 | 6 | 7 | 8"
+        },
+        "control": {
+          "type": "range",
+          "min": 1,
+          "max": 8,
+          "step": 1
+        },
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "2"
+          }
+        }
+      },
+      "justify": {
+        "name": "justify",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "start",
+            "center",
+            "end",
+            "between"
+          ],
+          "required": false,
+          "raw": "'start' | 'center' | 'end' | 'between'"
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "start",
+          "center",
+          "end",
+          "between"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'start'"
+          }
+        },
+        "description": "Main-axis distribution of the children."
+      },
+      "wrap": {
+        "name": "wrap",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Lets children flow onto more lines when they do not fit."
+      }
+    },
+    "args": {
+      "wrap": true,
+      "children": {
+        "$node": "react",
+        "type": ""
+      }
+    },
+    "initialArgs": {
+      "direction": "row",
+      "gap": 2,
+      "align": "center",
+      "justify": "start",
+      "wrap": true,
+      "children": {
+        "$node": "react",
+        "type": ""
+      }
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-stack",
+      "exportName": "Stack",
+      "importPath": "./src/components/Stack/Stack.tsx",
+      "storiesPath": "./src/components/Stack/Stack.stories.tsx",
+      "storyIds": [
+        "components-stack--row",
+        "components-stack--column",
+        "components-stack--wrap"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  }
+]

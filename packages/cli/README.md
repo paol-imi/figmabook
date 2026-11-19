@@ -1,6 +1,6 @@
 # @holotype/cli
 
-The `holotype` command (alias `holo`) and its programmatic API ([11 §3](../../docs/plan/11-ux.md)).
+The `holotype` command (alias `holo`) and its programmatic API ([11 §3](../../internal/plan/11-ux.md)).
 This version (BUILD B-13) has one command: `capture`.
 
 ## `holotype capture`
@@ -46,7 +46,7 @@ overrides come later.
 
 ## Bundle writer
 
-`src/bundle/` ([02 §5.1](../../docs/plan/02-architecture.md), [06 §4](../../docs/plan/06-ir.md)):
+`src/bundle/` ([02 §5.1](../../internal/plan/02-architecture.md), [06 §4](../../internal/plan/06-ir.md)):
 canonical JSON files, `manifest.json` first in the zip and the rest sorted, `integrity` over every
 other file, only the assets a scene refers to, fixed zip timestamps and attributes, `STORE` for
 PNG/JPEG/GIF and `DEFLATE` (level 9) for JSON and SVG. A static build's ephemeral loopback port

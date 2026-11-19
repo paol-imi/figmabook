@@ -1,5 +1,5 @@
 {
-  "dcrHash": "b5e6b7b195ff0ef2",
+  "dcrHash": "d1cfe36af948177e",
   "dcrVersion": "1.0.0",
   "diagnostics": [
     {
@@ -37,7 +37,7 @@
       }
     }
   },
-  "id": "4eb8acf57d1b3588",
+  "id": "dc58f2d0ba7afb88",
   "items": [
     {
       "acceptance": {
@@ -100,7 +100,7 @@
           }
         }
       ],
-      "designerTitle": "Button · Variant=Primary, Size=Lg · Label font size 16 → 18 (font-size/md → font-size/lg), line height 24 → 28 (line-height/md → line-height/lg)",
+      "designerTitle": "Button · Variant=Primary, Size=Lg · Label font size 16 → 18 (font/size-md → font/size-lg), line height 24 → 28 (line/height-md → line/height-lg)",
       "id": "f16113cc1b2c1367",
       "kind": "component.modified",
       "target": {

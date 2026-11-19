@@ -8,12 +8,14 @@ packages/plugin/manifest.json
 packages/plugin/src/**/*.d.css.ts
 storybook-static/
 spikes/runner/build/
-website/.vitepress/cache/
+docs/.vitepress/cache/
 *.tsbuildinfo
 
 # Tooling caches
 .turbo/
 coverage/
+# Vitest 5 writes reports, attachments and failure screenshots here
+.vitest/
 
 # Holotype local workspace (02 §5.4); committed design change requests stay tracked
 .holotype/*

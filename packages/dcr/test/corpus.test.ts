@@ -96,13 +96,18 @@ describe('published JSON Schema files (D-07)', () => {
   });
 
   const ajv = new Ajv2020({ strict: false, allErrors: true });
-  it.each(NAMES)('%s: JSON Schema accepts and rejects the same corpus as the validator', (doc) => {
-    const contents = files[DOCUMENTS[doc].schemaFile];
-    if (contents === undefined) throw new Error(`${DOCUMENTS[doc].schemaFile} is not published.`);
-    const check = ajv.compile(JSON.parse(contents));
-    for (const [name, value] of validDocs(doc)) expect(check(value), `valid/${name}`).toBe(true);
-    for (const [name, testCase] of cases<InvalidCase>('invalid', doc)) {
-      expect(check(patched(doc, testCase)), `invalid/${name}`).toBe(false);
-    }
-  });
+  // Compiling the full DCR schema with allErrors took over 5 s on a busy CI runner.
+  it.each(NAMES)(
+    '%s: JSON Schema accepts and rejects the same corpus as the validator',
+    (doc) => {
+      const contents = files[DOCUMENTS[doc].schemaFile];
+      if (contents === undefined) throw new Error(`${DOCUMENTS[doc].schemaFile} is not published.`);
+      const check = ajv.compile(JSON.parse(contents));
+      for (const [name, value] of validDocs(doc)) expect(check(value), `valid/${name}`).toBe(true);
+      for (const [name, testCase] of cases<InvalidCase>('invalid', doc)) {
+        expect(check(patched(doc, testCase)), `invalid/${name}`).toBe(false);
+      }
+    },
+    30_000,
+  );
 });

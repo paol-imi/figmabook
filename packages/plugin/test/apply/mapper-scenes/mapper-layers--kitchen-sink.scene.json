@@ -78,7 +78,7 @@
         {
           "code": "PAINT_SPREAD_BACKING_RECT",
           "fallback": "backing rectangle",
-          "message": "A shadow spread was moved to a backing rectangle.",
+          "message": "A shadow (with spread, or on a box without a visible fill) was moved to a backing rectangle.",
           "nodeKey": "root/div.raised",
           "property": "box-shadow",
           "severity": "info",

@@ -29,13 +29,13 @@
     "@holotype/layout-sim": "workspace:*",
     "@holotype/shared": "workspace:*",
     "fflate": "0.8.2",
-    "preact": "10.29.8"
+    "preact": "11.1.1"
   },
   "devDependencies": {
     "@create-figma-plugin/build": "4.0.3",
     "@figma/plugin-typings": "1.142.0",
     "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/preact": "3.2.4",
+    "@testing-library/preact": "3.2.6",
     "@testing-library/user-event": "14.6.1",
     "happy-dom": "21.0.4"
   },

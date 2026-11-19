@@ -1,6 +1,6 @@
 # @holotype/diag-gen
 
-Generates the diagnostics registry from the catalog tables of [plan 12 §6.2](../../docs/plan/12-quality.md#diagnostics), and checks that the generated output is current (BUILD B-02).
+Generates the diagnostics registry from the catalog tables of [plan 12 §6.2](../../internal/plan/12-quality.md#diagnostics), and checks that the generated output is current (BUILD B-02).
 
 | Command           | Does                                                                                                                                                          |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |

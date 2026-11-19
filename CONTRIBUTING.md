@@ -1,6 +1,6 @@
 # Contributing to Holotype
 
-Thanks for helping. The plan in [`docs/plan/`](docs/plan/README.md) is the spec. The decisions in its README §5 are binding. If your change disagrees with one, propose a change to the plan first.
+Thanks for helping. The plan in [`internal/plan/`](internal/plan/README.md) is the spec. The decisions in its README §5 are binding. If your change disagrees with one, propose a change to the plan first.
 
 ## Setup
 
@@ -30,7 +30,8 @@ To try the plugin, run `pnpm --filter @holotype/plugin build`. Then, in the Figm
 
 - **TypeScript strict, ESM only.**
 - **Respect package boundaries.** `shared`, `ir`, `layout-sim`, `mapper` and `dcr` run everywhere, including the Figma sandbox: no Node built-ins, no Node globals. `dcr` is also deterministic: no clock, no randomness, no network. Lint and `check:deps` enforce this.
-- **Diagnostics are API.** Codes come from the catalog in [plan 12 §6.2](docs/plan/12-quality.md#diagnostics): add the row there (plain-language meaning and remedy), then run `pnpm diag:gen` to regenerate `packages/shared/src/diagnostics/catalog.generated.ts` and the pages in [`docs/diagnostics/`](docs/diagnostics/README.md). `pnpm diag:check` fails on stale output and on code literals that are not in the catalog. Never rename a code; deprecate it.
+- **Diagnostics are API.** Codes come from the catalog in [plan 12 §6.2](internal/plan/12-quality.md#diagnostics): add the row there (plain-language meaning and remedy), then run `pnpm diag:gen` to regenerate `packages/shared/src/diagnostics/catalog.generated.ts` and the pages in [`docs/diagnostics/`](docs/diagnostics/README.md). `pnpm diag:check` fails on stale output and on code literals that are not in the catalog. Never rename a code; deprecate it.
+- **Docs.** `docs/` is the public documentation site (`pnpm -F @holotype/docs dev`; see [`docs/README.md`](docs/README.md)). `internal/` (plan, research, spike reports) is never published; the site must not link to it or name its files.
 - **Changesets.** Every change to a published package needs a changeset: run `pnpm changeset`.
 - **Tests.** Every behavior change comes with a Vitest test. Golden values (hashes, canonical JSON) change only on purpose.
 

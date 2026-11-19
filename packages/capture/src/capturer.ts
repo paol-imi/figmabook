@@ -25,6 +25,7 @@ export function createCapturer(options: CapturerOptions): Capturer {
     ...(options.chromiumPath === undefined ? {} : { chromiumPath: options.chromiumPath }),
     ...(options.launch === undefined ? {} : { launch: options.launch }),
     ...(options.renderTimeoutMs === undefined ? {} : { renderTimeoutMs: options.renderTimeoutMs }),
+    ...(options.renderMode === undefined ? {} : { renderMode: options.renderMode }),
     ...(options.preparePage === undefined ? {} : { preparePage: options.preparePage }),
   });
   const pool = new CapturePool<CaptureSession>(backend, {

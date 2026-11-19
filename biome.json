@@ -4,16 +4,17 @@
   "files": {
     "includes": [
       "**",
-      "!docs",
+      "!internal",
       "!tools/diag-gen/test/fixtures/**/*.md",
       "!.changeset/*.md",
-      "!website/**/*.md",
+      "!docs/**/*.md",
       "!**/dist",
       "!packages/plugin/build",
       "!packages/plugin/manifest.json",
       "!packages/ir/schema",
       "!packages/dcr/schema",
-      "!**/__snapshots__"
+      "!**/__snapshots__",
+      "!spikes/S-07/results.json"
     ]
   },
   "formatter": {

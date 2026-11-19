@@ -1,5 +1,6 @@
 import { asSentence, toPlainText } from './markdown.ts';
 import { type Catalog, type CatalogRow, catalogRows } from './model.ts';
+import { PLAN_DIR } from './paths.ts';
 
 /** Where the generated module lives, repository-relative. */
 export const CATALOG_MODULE_PATH = 'packages/shared/src/diagnostics/catalog.generated.ts';
@@ -84,7 +85,7 @@ export function renderCatalogModule(catalog: Catalog): string {
 function entry(row: CatalogRow): string[] {
   const inner = INDENT.repeat(2);
   const { chapter, file, anchor } = row.definedIn;
-  const ref = [`chapter: ${quote(chapter)}`, `path: ${quote(`docs/plan/${file}`)}`];
+  const ref = [`chapter: ${quote(chapter)}`, `path: ${quote(`${PLAN_DIR}/${file}`)}`];
   if (anchor) ref.push(`anchor: ${quote(anchor)}`);
   return [
     `${INDENT}${row.code}: {`,

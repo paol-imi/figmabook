@@ -1,10 +1,10 @@
 # @holotype/layout-sim
 
-A pure, deterministic model of Figma auto layout ([07 §6.1](../../docs/plan/07-mapping.md#verification)).
+A pure, deterministic model of Figma auto layout ([07 §6.1](../../internal/plan/07-mapping.md#verification)).
 It takes frames with their children's intrinsic sizes and returns every child's box. Three users:
 
 - the mapper checks an auto-layout hypothesis against the captured geometry within `TOL_SIM`
-  (D-15, [07 §6.2](../../docs/plan/07-mapping.md#verification));
+  (D-15, [07 §6.2](../../internal/plan/07-mapping.md#verification));
 - `figma-fake` computes geometry in tests;
 - the plugin estimates sizes before it builds.
 
@@ -81,7 +81,7 @@ linear in the tree size. Output order is pre-order (root, then each subtree in l
 
 Every rule the model relies on, from `src/assumptions.ts`. **documented** rules are stated by the
 Plugin API reference or the help center. **calibrate** rules follow the closest documented or
-CSS behaviour and are checked by the nightly T1 read-back calibration ([12](../../docs/plan/12-quality.md)).
+CSS behaviour and are checked by the nightly T1 read-back calibration ([12](../../internal/plan/12-quality.md)).
 **S-xx** rules wait for that spike. A result lists in `assumptions` every non-documented rule
 it used, so a read-back mismatch can be traced to a rule.
 

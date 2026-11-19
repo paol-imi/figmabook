@@ -1,4 +1,4 @@
-docs/plan/12-quality.md:19: summary says 6 codes, the domain headings add up to 5
-docs/plan/12-quality.md:19: summary says 3 domains, the catalog has 2 sections
-docs/plan/12-quality.md:19: summary lists domains "CAP SB NET", the sections are "SB CAP"
-docs/plan/12-quality.md:19: summary says SB 4, the SB_ heading says 3
+internal/plan/12-quality.md:19: summary says 6 codes, the domain headings add up to 5
+internal/plan/12-quality.md:19: summary says 3 domains, the catalog has 2 sections
+internal/plan/12-quality.md:19: summary lists domains "CAP SB NET", the sections are "SB CAP"
+internal/plan/12-quality.md:19: summary says SB 4, the SB_ heading says 3

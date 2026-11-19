@@ -44,7 +44,7 @@ describe('diagnostic catalog (12 §6.2)', () => {
       expect(entry.remedy, code).toMatch(/[.!?:]$/);
       expect(entry.emittedBy.length, code).toBeGreaterThan(0);
       for (const emitter of entry.emittedBy) expect(DIAGNOSTIC_EMITTERS).toContain(emitter);
-      expect(entry.definedIn.path, code).toMatch(/^docs\/plan\/\d\d-[a-z0-9-]+\.md$/);
+      expect(entry.definedIn.path, code).toMatch(/^internal\/plan\/\d\d-[a-z0-9-]+\.md$/);
       expect(['info', 'warn', 'error']).toContain(entry.severity);
     }
   });

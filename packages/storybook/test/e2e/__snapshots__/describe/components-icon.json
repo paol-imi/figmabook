@@ -1,0 +1,155 @@
+[
+  {
+    "id": "components-icon--default",
+    "sid": "components-icon",
+    "title": "Components/Icon",
+    "titlePath": [
+      "Components",
+      "Icon"
+    ],
+    "name": "Default",
+    "exportName": "Default",
+    "importPath": "./src/components/Icon/Icon.stories.tsx",
+    "componentPath": "./src/components/Icon/Icon.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Icon/Icon.stories.tsx",
+      "__isArgsStory": true
+    },
+    "holotype": {},
+    "argTypes": {
+      "className": {
+        "name": "className",
+        "origin": "docgen-inline",
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "other",
+              "value": "undefined"
+            }
+          ],
+          "required": false,
+          "raw": "string | undefined"
+        },
+        "control": {
+          "type": "object"
+        }
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "other",
+              "value": "undefined"
+            }
+          ],
+          "required": false,
+          "raw": "string | undefined"
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Accessible name. Without it the icon is decorative (`aria-hidden`)."
+      },
+      "name": {
+        "name": "name",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": true
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "description": "Which icon to draw."
+      },
+      "size": {
+        "name": "size",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            16,
+            20,
+            24
+          ],
+          "required": false,
+          "raw": "16 | 20 | 24"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          16,
+          20,
+          24
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "20"
+          }
+        },
+        "description": "Edge length in px. Mapped to the `--size-icon-*` tokens."
+      }
+    },
+    "args": {},
+    "initialArgs": {
+      "name": "star",
+      "size": 24
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-icon",
+      "exportName": "Icon",
+      "importPath": "./src/components/Icon/Icon.tsx",
+      "storiesPath": "./src/components/Icon/Icon.stories.tsx",
+      "storyIds": [
+        "components-icon--default"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  }
+]

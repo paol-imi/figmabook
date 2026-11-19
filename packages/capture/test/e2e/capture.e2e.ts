@@ -117,6 +117,47 @@ describe('portable captures (06 §2 target.storybookUrl)', () => {
   });
 });
 
+describe('render drivers (03 §5, B-40)', () => {
+  // No React `useId` in these stories: its ids count mounts per page (S-07 Q14, masked by B-41).
+  const PARITY: readonly { storyId: string; args?: Record<string, string>; globals?: Record<string, string> }[] = [
+    ...GOLDEN_STORIES.map((storyId) => ({ storyId })),
+    { storyId: 'components-button--primary', args: { label: 'Parity', variant: 'secondary' } },
+    { storyId: 'components-card--default', globals: { theme: 'dark' } },
+    { storyId: 'components-card--default' },
+    { storyId: 'micro-borders--dashed' },
+  ];
+
+  it('captures through one warm channel page per worker, hashing the same as the URL path', async () => {
+    const viaUrl = createCapturer({ storybook: fixture.storybook, workers: 1, renderMode: 'url', ...chromiumPath() });
+    const channelPages: Page[] = [];
+    const viaChannel = createCapturer({
+      storybook: fixture.storybook,
+      workers: 1,
+      ...chromiumPath(),
+      preparePage: (page) => {
+        channelPages.push(page);
+        watchLoopback(page, outside);
+      },
+    });
+    try {
+      for (const request of PARITY) {
+        const channel = expectCaptured(await viaChannel.capture(request));
+        const url = expectCaptured(await viaUrl.capture(request));
+        expect(channel.hash, request.storyId).toBe(url.hash);
+        expect(channel.warnings).toEqual([]);
+      }
+      // One page, one document: every variant after the first rendered through the channel.
+      expect(channelPages).toHaveLength(1);
+      const [page] = channelPages;
+      expect(await page?.evaluate(() => '__holotypeSbChannel' in window)).toBe(true);
+      expect(new URL(page?.url() ?? 'about:blank').pathname).toBe('/iframe.html');
+    } finally {
+      await viaChannel.close();
+      await viaUrl.close();
+    }
+  });
+});
+
 describe('CaptureDoc', () => {
   it('validates, is canonical and carries its screenshot @2x', async () => {
     const result = expectCaptured(await capturer.capture({ storyId: 'components-badge--default' }));

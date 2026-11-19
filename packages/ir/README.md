@@ -1,6 +1,6 @@
 # @holotype/ir
 
-Schemas and hashes for every Holotype document ([06](../../docs/plan/06-ir.md), D-07, D-52).
+Schemas and hashes for every Holotype document ([06](../../internal/plan/06-ir.md), D-07, D-52).
 TypeBox is the source of truth; the build emits JSON Schema 2020-12 to `schema/`. Pure and
 isomorphic: no clock, no randomness, no Node built-ins.
 

@@ -1,1 +1,1 @@
-docs/plan/12-quality.md:29: SB_INDEX_UNREACHABLE is listed twice (first at line 27)
+internal/plan/12-quality.md:29: SB_INDEX_UNREACHABLE is listed twice (first at line 27)

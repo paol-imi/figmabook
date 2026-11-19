@@ -1,1 +1,1 @@
-docs/plan/12-quality.md:29: CAP_ARG_UNKNOWN: code CAP_ARG_UNKNOWN is not in domain SB_
+internal/plan/12-quality.md:29: CAP_ARG_UNKNOWN: code CAP_ARG_UNKNOWN is not in domain SB_

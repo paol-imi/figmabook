@@ -86,6 +86,9 @@ export function fakeStorybook(closed: string[] = []): ConnectedStorybook {
     openDriver: async () => {
       throw new Error('the fake Storybook renders nothing');
     },
+    describe: async () => {
+      throw new Error('the fake Storybook describes nothing');
+    },
     close: async () => {
       closed.push('storybook');
     },

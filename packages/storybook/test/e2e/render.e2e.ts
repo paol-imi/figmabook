@@ -5,17 +5,13 @@ import { unwrap } from '@holotype/shared';
 import { type Browser, type BrowserContext, chromium, type LaunchOptions, type Page } from 'playwright';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { buildStorybook } from '../../../../fixtures/ds-react/test/support/storybook.ts';
-import {
-  type ConnectedStorybook,
-  connectStorybook,
-  type RenderDriver,
-  type RenderResult,
-  type SbError,
-} from '../../src';
+import { type ConnectedStorybook, connectStorybook, type RenderDriver } from '../../src';
+import { closeBounded, expectError, expectOk } from './support';
 
 /**
- * B-10 e2e: discovery and URL renders against a fresh static build of `fixtures/ds-react`,
- * served by the adapter itself on 127.0.0.1, in headless Chromium.
+ * B-10 e2e: discovery and URL renders (`mode: 'url'`, 03 §5.4) against a fresh static build of
+ * `fixtures/ds-react`, served by the adapter itself on 127.0.0.1, in headless Chromium. The
+ * channel loop has its own suite (`channel.e2e.ts`).
  */
 
 let outDir: string;
@@ -57,23 +53,13 @@ afterAll(async () => {
 
 beforeEach(async () => {
   page = await context.newPage();
-  driver = await storybook.openDriver(page);
+  driver = await storybook.openDriver(page, { mode: 'url' });
 });
 
 afterEach(async () => {
-  await driver.dispose();
-  await page.close();
+  // Bounded: a page stuck under load fails the test instead of hanging the hook.
+  await closeBounded(driver, page);
 });
-
-function expectOk(result: RenderResult | SbError): RenderResult {
-  if (!result.ok) throw new Error(`render failed: ${result.code} ${JSON.stringify(result.diagnostic)}`);
-  return result;
-}
-
-function expectError(result: RenderResult | SbError): SbError {
-  if (result.ok) throw new Error(`expected a failed render of ${result.storyId}`);
-  return result;
-}
 
 describe('discovery', () => {
   it('reads the fixture build: Storybook 10, index v5, React + Vite', () => {
@@ -101,7 +87,9 @@ describe('discovery', () => {
 
 describe('URL render', () => {
   it('renders components-button--primary and returns its root handle', async () => {
+    expect(driver.mode).toBe('url');
     const result = expectOk(await driver.render({ storyId: 'components-button--primary' }));
+    expect(result.via).toBe('url');
     expect(result.phase).toBe('finished');
     expect(result.url).toMatch(/iframe\.html\?id=components-button--primary&viewMode=story$/);
     expect(await result.container.evaluate((el) => el.id)).toBe('storybook-root');
@@ -198,7 +186,7 @@ describe('console watch (SB_CONSOLE_ERROR)', () => {
       freshPage.on('console', (message) => {
         if (message.location().url === faviconUrl) favicon.push(message.text());
       });
-      const freshDriver = await storybook.openDriver(freshPage);
+      const freshDriver = await storybook.openDriver(freshPage, { mode: 'url' });
       const first = expectOk(await freshDriver.render({ storyId: 'micro-flex--row' }));
       await expect.poll(() => favicon.length, { timeout: 5000 }).toBeGreaterThan(0);
       const second = expectOk(await freshDriver.render({ storyId: 'components-badge--default' }));
@@ -230,6 +218,7 @@ describe('driver lifecycle', () => {
 
   it('rejects a non-positive render timeout', async () => {
     await expect(storybook.openDriver(page, { renderTimeoutMs: 0 })).rejects.toThrow(RangeError);
+    await expect(storybook.openDriver(page, { disposeTimeoutMs: -1 })).rejects.toThrow(/disposeTimeoutMs/);
   });
 });
 
@@ -276,7 +265,7 @@ describe('render failures', () => {
   });
 
   it('reports SB_RENDER_TIMEOUT when the done event never comes', async () => {
-    const short = await storybook.openDriver(page, { renderTimeoutMs: 1500 });
+    const short = await storybook.openDriver(page, { mode: 'url', renderTimeoutMs: 1500 });
     // Hold the Button stories module: the preview boots but the story never renders.
     await page.route('**/assets/Button.stories-*.js', () => {});
     const failed = expectError(await short.render({ storyId: 'components-button--primary' }));
@@ -286,7 +275,7 @@ describe('render failures', () => {
   });
 
   it('reports SB_PREVIEW_INIT_TIMEOUT when the preview never boots', async () => {
-    const short = await storybook.openDriver(page, { renderTimeoutMs: 1500 });
+    const short = await storybook.openDriver(page, { mode: 'url', renderTimeoutMs: 1500 });
     // Hold the preview entry module: `__STORYBOOK_PREVIEW__` never appears.
     await page.route('**/assets/iframe-*.js', () => {});
     const failed = expectError(await short.render({ storyId: 'components-button--primary' }));
@@ -299,6 +288,11 @@ describe('render failures', () => {
     const failed = expectError(await driver.render({ storyId: 'components-button--primary' }));
     expect(failed.code).toBe('SB_IFRAME_UNREACHABLE');
     expect(failed.diagnostic.value).toBe('HTTP 503');
+    // dispose() is bounded and leaves a page that still answers open.
+    const started = Date.now();
+    expect(await driver.dispose()).toEqual({ forced: 'none' });
+    expect(Date.now() - started).toBeLessThan(2000);
+    expect(page.isClosed()).toBe(false);
   });
 
   it('skips args the URL cannot carry with SB_URL_ARG_UNENCODABLE', async () => {

@@ -1,0 +1,401 @@
+[
+  {
+    "id": "micro-text--single-line",
+    "sid": "micro-text",
+    "title": "Micro/Text",
+    "titlePath": [
+      "Micro",
+      "Text"
+    ],
+    "name": "Single Line",
+    "exportName": "SingleLine",
+    "importPath": "./src/micro/Text.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Text.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-text",
+      "storiesPath": "./src/micro/Text.stories.tsx",
+      "storyIds": [
+        "micro-text--single-line",
+        "micro-text--wrap-paragraph",
+        "micro-text--weights",
+        "micro-text--line-height-px",
+        "micro-text--letter-spacing",
+        "micro-text--text-transform",
+        "micro-text--mixed-inline"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-text--wrap-paragraph",
+    "sid": "micro-text",
+    "title": "Micro/Text",
+    "titlePath": [
+      "Micro",
+      "Text"
+    ],
+    "name": "Wrap Paragraph",
+    "exportName": "WrapParagraph",
+    "importPath": "./src/micro/Text.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Text.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-text",
+      "storiesPath": "./src/micro/Text.stories.tsx",
+      "storyIds": [
+        "micro-text--single-line",
+        "micro-text--wrap-paragraph",
+        "micro-text--weights",
+        "micro-text--line-height-px",
+        "micro-text--letter-spacing",
+        "micro-text--text-transform",
+        "micro-text--mixed-inline"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-text--weights",
+    "sid": "micro-text",
+    "title": "Micro/Text",
+    "titlePath": [
+      "Micro",
+      "Text"
+    ],
+    "name": "Weights",
+    "exportName": "Weights",
+    "importPath": "./src/micro/Text.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Text.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-text",
+      "storiesPath": "./src/micro/Text.stories.tsx",
+      "storyIds": [
+        "micro-text--single-line",
+        "micro-text--wrap-paragraph",
+        "micro-text--weights",
+        "micro-text--line-height-px",
+        "micro-text--letter-spacing",
+        "micro-text--text-transform",
+        "micro-text--mixed-inline"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-text--line-height-px",
+    "sid": "micro-text",
+    "title": "Micro/Text",
+    "titlePath": [
+      "Micro",
+      "Text"
+    ],
+    "name": "Line Height Px",
+    "exportName": "LineHeightPx",
+    "importPath": "./src/micro/Text.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Text.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-text",
+      "storiesPath": "./src/micro/Text.stories.tsx",
+      "storyIds": [
+        "micro-text--single-line",
+        "micro-text--wrap-paragraph",
+        "micro-text--weights",
+        "micro-text--line-height-px",
+        "micro-text--letter-spacing",
+        "micro-text--text-transform",
+        "micro-text--mixed-inline"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-text--letter-spacing",
+    "sid": "micro-text",
+    "title": "Micro/Text",
+    "titlePath": [
+      "Micro",
+      "Text"
+    ],
+    "name": "Letter Spacing",
+    "exportName": "LetterSpacing",
+    "importPath": "./src/micro/Text.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Text.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-text",
+      "storiesPath": "./src/micro/Text.stories.tsx",
+      "storyIds": [
+        "micro-text--single-line",
+        "micro-text--wrap-paragraph",
+        "micro-text--weights",
+        "micro-text--line-height-px",
+        "micro-text--letter-spacing",
+        "micro-text--text-transform",
+        "micro-text--mixed-inline"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-text--text-transform",
+    "sid": "micro-text",
+    "title": "Micro/Text",
+    "titlePath": [
+      "Micro",
+      "Text"
+    ],
+    "name": "Text Transform",
+    "exportName": "TextTransform",
+    "importPath": "./src/micro/Text.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Text.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-text",
+      "storiesPath": "./src/micro/Text.stories.tsx",
+      "storyIds": [
+        "micro-text--single-line",
+        "micro-text--wrap-paragraph",
+        "micro-text--weights",
+        "micro-text--line-height-px",
+        "micro-text--letter-spacing",
+        "micro-text--text-transform",
+        "micro-text--mixed-inline"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-text--mixed-inline",
+    "sid": "micro-text",
+    "title": "Micro/Text",
+    "titlePath": [
+      "Micro",
+      "Text"
+    ],
+    "name": "Mixed Inline",
+    "exportName": "MixedInline",
+    "importPath": "./src/micro/Text.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Text.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-text",
+      "storiesPath": "./src/micro/Text.stories.tsx",
+      "storyIds": [
+        "micro-text--single-line",
+        "micro-text--wrap-paragraph",
+        "micro-text--weights",
+        "micro-text--line-height-px",
+        "micro-text--letter-spacing",
+        "micro-text--text-transform",
+        "micro-text--mixed-inline"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  }
+]

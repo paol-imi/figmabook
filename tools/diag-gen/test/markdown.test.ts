@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   asSentence,
+  chapterTitle,
   escapeHtml,
   isDelimiterRow,
   rebasePlanLinks,
@@ -54,10 +55,38 @@ describe('escapeHtml / unescapeCell', () => {
 });
 
 describe('rebasePlanLinks', () => {
-  it('points relative links at docs/plan and leaves URLs and code alone', () => {
+  it('points relative links at the plan folder and leaves URLs and code alone', () => {
     expect(
-      rebasePlanLinks('[03](03-storybook.md#a), [here](#walk), [web](https://x.test/a), `[c](d.md)`', '12-quality.md'),
-    ).toBe('[03](../plan/03-storybook.md#a), [here](../plan/12-quality.md#walk), [web](https://x.test/a), `[c](d.md)`');
+      rebasePlanLinks(
+        '[03](03-storybook.md#a), [here](#walk), [web](https://x.test/a), [abs](/x.md), `[c](d.md)`',
+        '12-quality.md',
+        '../../internal/plan/',
+      ),
+    ).toBe(
+      '[03](../../internal/plan/03-storybook.md#a), [here](../../internal/plan/12-quality.md#walk), [web](https://x.test/a), [abs](/x.md), `[c](d.md)`',
+    );
+  });
+});
+
+describe('chapterTitle', () => {
+  it('drops the chapter number, its separator and a trailing parenthetical', () => {
+    expect(chapterTitle('# 05: Capture engine\n\nText.')).toBe('Capture engine');
+    expect(chapterTitle('# 09 · Figma plugin (package `plugin`)\n')).toBe('Figma plugin');
+    expect(chapterTitle('# 06 — Intermediate representations (package `ir`)')).toBe('Intermediate representations');
+    expect(chapterTitle('# 15 · Design change requests (Figma → AI prompt)')).toBe('Design change requests');
+    expect(chapterTitle('# 11 — UX: CLI, configuration, plugin, generated artifacts')).toBe(
+      'UX: CLI, configuration, plugin, generated artifacts',
+    );
+  });
+
+  it('reads the first level-one heading only', () => {
+    expect(chapterTitle('Intro\n\n## 1. Scope\n\n# 12 — Quality\n\n# Other')).toBe('Quality');
+  });
+
+  it('is undefined without a title', () => {
+    expect(chapterTitle('# 03\n')).toBeUndefined();
+    expect(chapterTitle('## Not a title\n')).toBeUndefined();
+    expect(chapterTitle('')).toBeUndefined();
   });
 });
 

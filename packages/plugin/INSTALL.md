@@ -2,7 +2,7 @@
 
 You need only the Figma desktop app. No terminal, no Node.js, no developer tools.
 Holotype is installed as a _development plugin_ until it is published to your
-organization ([11 §2.0](../../docs/plan/11-ux.md#install)).
+organization ([11 §2.0](../../internal/plan/11-ux.md#install)).
 
 ## What you need
 
@@ -75,4 +75,4 @@ To remove the plugin: **Figma menu ▸ Plugins ▸ Manage plugins…**, find **H
 - **The manifest `id` is a placeholder (`"holotype"`).** Before the first release, create the
   plugin once in Figma to get its real id, and put it in `package.json` → `figma-plugin.id`.
   The id is fixed forever afterwards: `clientStorage` and plugin data are keyed by it
-  ([02 §6.4](../../docs/plan/02-architecture.md)). `pack` warns while the placeholder is in use.
+  ([02 §6.4](../../internal/plan/02-architecture.md)). `pack` warns while the placeholder is in use.

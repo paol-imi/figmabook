@@ -24,10 +24,10 @@
       "dependsOn": ["^build"]
     },
     "@holotype/diag-gen#test": {
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/docs/plan/12-quality.md"]
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/internal/plan/12-quality.md"]
     },
-    "@holotype/website#build": {
-      "inputs": ["$TURBO_DEFAULT$", "!test/**", "!README.md", "$TURBO_ROOT$/docs/diagnostics/**"],
+    "@holotype/docs#build": {
+      "inputs": ["$TURBO_DEFAULT$", "!test/**", "!README.md"],
       "outputs": [".vitepress/dist/**"],
       "env": [
         "HOLOTYPE_SITE_BASE",

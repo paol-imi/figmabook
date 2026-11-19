@@ -108,12 +108,16 @@ export interface StorybookModel {
 export interface RenderRequest {
   readonly storyId: string;
   /**
-   * Arg values. On the URL path they are applied over the story's `initialArgs` (Storybook
-   * merges URL args); pass `undefined` for a key to unset it.
+   * Arg values, applied over the story's `initialArgs` (the full desired set, 03 §5.1); pass
+   * `undefined` for a key to unset it. The channel path also takes live values and markers:
+   * `{ $fromStory: storyId, arg }` is that story's `initialArgs[arg]` (a React node, say), and
+   * `{ $mapKey: key }` is `argTypes[name].mapping[key]` (03 §5.3 "In-page values").
    */
   readonly args?: Readonly<Record<string, unknown>>;
-  /** Global values, applied over `initialGlobals`. */
+  /** Global values, applied over `initialGlobals`; globals left out go back to their initial value. */
   readonly globals?: Readonly<Record<string, unknown>>;
+  /** Unmounts and mounts the story again for fresh component state (03 §5.1). Ignored on the URL path. */
+  readonly remount?: boolean;
   /** Page viewport for this render. Kept for later renders until changed. */
   readonly viewport?: { readonly width: number; readonly height: number };
   /**
@@ -123,10 +127,23 @@ export interface RenderRequest {
   readonly rootSelector?: string;
   /** `parameters.holotype.keepLayout` (03 §6.1): keep Storybook's `padded` / `centered` layout. */
   readonly keepLayout?: boolean;
+  /**
+   * `parameters.holotype.unwrap` (03 §6.2): `false` keeps decorator wrappers in the root handles,
+   * a number caps how many are unwrapped. Default `true` (all transparent wrappers).
+   */
+  readonly unwrap?: boolean | number;
+  /**
+   * Runs the stability check (03 §5.5 step 8) for this render. Default: on for the first render
+   * of each component on the driver, per {@link DriverOptions.stability}.
+   */
+  readonly checkStability?: boolean;
 }
 
 /** Which Storybook event ended the render (03 §5.2). */
 export type RenderPhase = 'finished' | 'rendered';
+
+/** How a render reached the page: the warm channel loop, a fresh document, or one URL navigation. */
+export type RenderPath = 'channel' | 'boot' | 'url';
 
 export interface RenderResult {
   readonly ok: true;
@@ -135,9 +152,16 @@ export interface RenderResult {
   readonly url: string;
   readonly renderMs: number;
   readonly phase: RenderPhase;
+  /** How the render reached the page (set by the drivers of this package). */
+  readonly via?: RenderPath;
+  /** Render attempts, the retry on a fresh document included (02 §1.3). Default 1. */
+  readonly attempts?: number;
   /** The root container (`#storybook-root`, or the `rootSelector` match). */
   readonly container: ElementHandle<Element>;
-  /** The container's displayed element children: what the story rendered (03 §6). */
+  /**
+   * What the story rendered (03 §6): the container's displayed element children, with transparent
+   * decorator wrappers unwrapped (03 §6.2). Several handles mean a fragment.
+   */
   readonly rootHandles: readonly ElementHandle<Element>[];
   /** Portals outside the container (03 §6.3). Always empty in this version. */
   readonly portalHandles: readonly ElementHandle<Element>[];
@@ -145,14 +169,16 @@ export interface RenderResult {
   readonly warnings: readonly Diagnostic[];
 }
 
-/** Codes a render can fail with. */
+/** Codes a render, or the metadata of a story (`describe`), can fail with. */
 export type SbErrorCode = Extract<
   DiagnosticCode,
   | 'SB_STORY_ERROR'
   | 'SB_PLAY_ERROR'
   | 'SB_STORY_MISSING'
   | 'SB_STORY_LOAD_FAILED'
+  | 'SB_METADATA_TIMEOUT'
   | 'SB_RENDER_TIMEOUT'
+  | 'SB_STORY_UNRENDERABLE'
   | 'SB_PREVIEW_INIT_TIMEOUT'
   | 'SB_IFRAME_UNREACHABLE'
   | 'SB_ROOT_NOT_FOUND'
@@ -167,21 +193,58 @@ export interface SbError {
   /** The error itself; `data` carries the Storybook message, stack and event where known. */
   readonly diagnostic: Diagnostic;
   readonly warnings: readonly Diagnostic[];
+  /** How the failed attempt reached the page, when it did. */
+  readonly via?: RenderPath;
+  /** Render attempts, the retry on a fresh document included (02 §1.3). Default 1. */
+  readonly attempts?: number;
 }
+
+/** How a driver renders: the channel loop on one long-lived page (03 §5.3), or one navigation per render (03 §5.4). */
+export type DriverMode = 'channel' | 'url';
 
 /** Renders story states in one Playwright page (03 §5). */
 export interface RenderDriver {
-  /** `url`: one navigation per render (03 §5.4). The channel loop comes later (B-40). */
-  readonly mode: 'url';
+  /**
+   * `channel`: one `iframe.html` page driven through the Storybook channel (03 §5.3). `url`: one
+   * navigation per render (03 §5.4), asked for or fallen back to when the preview API is missing.
+   */
+  readonly mode: DriverMode;
   /** Renders and settles one story state. Calls on one driver must not overlap. */
   render(request: RenderRequest): Promise<RenderResult | SbError>;
   /** Hard reset: leaves the preview so the next render starts from a fresh document. */
   reload(): Promise<void>;
-  /** Stops using the page. The page itself belongs to the caller and stays open. */
-  dispose(): Promise<void>;
+  /**
+   * Stops using the page, bounded in time: waits for a render still in flight and checks the page
+   * answers. The page belongs to the caller and stays open, unless it stopped answering: then it
+   * is closed (its context if need be) so the caller's own `page.close()` cannot hang, and the
+   * report says why. Idempotent.
+   */
+  // biome-ignore lint/suspicious/noConfusingVoidType: drivers that predate the report resolve with nothing.
+  dispose(): Promise<DisposeReport | void>;
 }
 
+/** What {@link RenderDriver.dispose} had to do. */
+export interface DisposeReport {
+  /**
+   * `none`: the page answered and stays open. `page` / `context`: it did not answer within
+   * `disposeTimeoutMs`, and was closed (its browser context too, for `context`). `stuck`: even
+   * closing the context did not return in time.
+   */
+  readonly forced: 'none' | 'page' | 'context' | 'stuck';
+  /** Why the page was closed. */
+  readonly reason?: string;
+}
+
+/** When the driver runs the stability check (03 §5.5 step 8). */
+export type StabilityMode = 'first-per-component' | 'always' | 'never';
+
 export interface DriverOptions {
-  /** `T.render` (03 §5.3): navigation, done event and settle together. Default 15 000 ms. */
+  /** `T.render` (03 §5.3): every step of one render attempt together. Default 15 000 ms. */
   readonly renderTimeoutMs?: number;
+  /** `url` forces the URL path (`--no-channel`). Default `channel`, with the URL path as fallback. */
+  readonly mode?: DriverMode;
+  /** Default `first-per-component`. */
+  readonly stability?: StabilityMode;
+  /** Bound of each `dispose()` step (03 §5.1). Default 5 000 ms. */
+  readonly disposeTimeoutMs?: number;
 }

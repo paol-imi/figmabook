@@ -53,7 +53,10 @@ function serializeFailed(storyId: string, scope: { vk: string; sid: string }, da
   });
 }
 
-/** The selector of the capture root as resolved (05 §13 `target.rootSelector`). */
+/**
+ * The selector of the capture root as resolved (05 §13 `target.rootSelector`): the container,
+ * then one `:nth-child` step per level down to the root (decorator wrappers unwrapped, 03 §6.2).
+ */
 async function resolvedRootSelector(render: RenderResult, root: ElementHandle<Element>, requested?: string) {
   const container =
     requested ??
@@ -62,8 +65,14 @@ async function resolvedRootSelector(render: RenderResult, root: ElementHandle<El
       [...DEFAULT_ROOT_SELECTORS],
     ));
   if (root === render.container) return container;
-  const index = await root.evaluate((el) => [...(el.parentElement?.children ?? [])].indexOf(el) + 1);
-  return `${container} > :nth-child(${index})`;
+  const steps = await root.evaluate((el, top) => {
+    const path: number[] = [];
+    for (let node: Element | null = el; node !== null && node !== top; node = node.parentElement) {
+      path.unshift([...(node.parentElement?.children ?? [])].indexOf(node) + 1);
+    }
+    return path;
+  }, render.container);
+  return [container, ...steps.map((index) => `:nth-child(${index})`)].join(' > ');
 }
 
 /**
@@ -121,6 +130,7 @@ export async function captureVariant(
     viewport,
     ...(request.rootSelector === undefined ? {} : { rootSelector: request.rootSelector }),
     ...(request.keepLayout === undefined ? {} : { keepLayout: request.keepLayout }),
+    ...(request.unwrap === undefined ? {} : { unwrap: request.unwrap }),
   });
   warnings.push(...render.warnings);
   if (!render.ok) return failure(storyId, render.diagnostic, warnings);

@@ -1,27 +1,25 @@
 name: Pages
 
-# Builds the documentation site (website/, W-01) and deploys it to GitHub Pages.
+# Builds the documentation site (docs/, W-01) and deploys it to GitHub Pages.
 # Pull requests only build it, which also fails on dead links.
 # Deploying is inert until the owner enables Pages: Settings ▸ Pages ▸ Build and deployment ▸
 # Source: GitHub Actions. Until then the build still runs and the deploy job is skipped.
 # "Run workflow" and push runs need this file on the default branch (main).
-# Setup steps: website/README.md, "Deploying to GitHub Pages".
+# Setup steps: docs/README.md, "Deploying to GitHub Pages".
 # Published Pages are public on the internet, even from a private repository.
 
 on:
   push:
     branches: [main]
     paths:
-      - website/**
-      - docs/diagnostics/**
+      - docs/**
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - .nvmrc
       - .github/workflows/pages.yml
   pull_request:
     paths:
-      - website/**
-      - docs/diagnostics/**
+      - docs/**
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - .nvmrc
@@ -50,19 +48,19 @@ jobs:
     outputs:
       deploy: ${{ steps.pages.outputs.enabled == 'true' && github.event_name != 'pull_request' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # Uses the pnpm version pinned in package.json `packageManager`.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
 
       # Only the site's dependencies: it does not import any workspace package.
       - name: Install
-        run: pnpm install --frozen-lockfile --filter @holotype/website
+        run: pnpm install --frozen-lockfile --filter @holotype/docs
 
       # Deploy only when Pages is enabled with "GitHub Actions" as its source. Choosing that
       # source in Settings > Pages creates the Pages site, so the first deploy needs no earlier
@@ -107,7 +105,7 @@ jobs:
       # The base path follows the Pages settings (project path or custom domain).
       # Without Pages, the site's default base (/figmabook/) is used.
       - name: Build
-        run: pnpm -F @holotype/website build
+        run: pnpm -F @holotype/docs build
         env:
           HOLOTYPE_SITE_BASE: ${{ steps.pages.outputs.enabled == 'true' && format('{0}/', steps.configure.outputs.base_path) || '' }}
 
@@ -115,7 +113,7 @@ jobs:
         if: steps.pages.outputs.enabled == 'true'
         uses: actions/upload-pages-artifact@v5
         with:
-          path: website/.vitepress/dist
+          path: docs/.vitepress/dist
 
   deploy:
     name: Deploy to GitHub Pages

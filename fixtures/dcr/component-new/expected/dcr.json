@@ -1,5 +1,5 @@
 {
-  "dcrHash": "e03c9a352ad64680",
+  "dcrHash": "b1fef60d19d43b89",
   "dcrVersion": "1.0.0",
   "diagnostics": [
     {
@@ -37,7 +37,7 @@
       }
     }
   },
-  "id": "a0017bd9e3d7b360",
+  "id": "89736b61e1326059",
   "items": [
     {
       "acceptance": {
@@ -270,7 +270,7 @@
       "id": "q1",
       "itemId": "0e30e356f8d24346",
       "options": ["--radius-sm", "keep 4px"],
-      "text": "Product card corner radius is 4px and not bound to a variable. One token matches: --radius-sm. Use it?"
+      "text": "Product card corner radius is 4px and is not bound to a variable. One token matches: --radius-sm. Use it?"
     },
     {
       "code": "DCR_NEAREST_COMPONENT",

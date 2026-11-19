@@ -68,11 +68,12 @@ export function escapeHtml(markdown: string): string {
 }
 
 /**
- * Rewrites relative links of markdown written in `docs/plan/<source>` so they resolve from
- * `docs/diagnostics/`: `[x](03-storybook.md)` → `[x](../plan/03-storybook.md)`, `[x](#a)` →
- * `[x](../plan/<source>#a)`. Absolute URLs and code spans are left alone.
+ * Rewrites relative links of markdown written in the plan chapter `sourceFile` so they resolve
+ * from another folder, given `planDir`, the plan folder relative to that folder with a trailing
+ * slash: `[x](03-storybook.md)` → `[x](<planDir>03-storybook.md)`, `[x](#a)` →
+ * `[x](<planDir><sourceFile>#a)`. Absolute URLs and code spans are left alone.
  */
-export function rebasePlanLinks(markdown: string, sourceFile: string): string {
+export function rebasePlanLinks(markdown: string, sourceFile: string, planDir: string): string {
   return markdown
     .split(/(`[^`]*`)/)
     .map((part, index) =>
@@ -80,10 +81,24 @@ export function rebasePlanLinks(markdown: string, sourceFile: string): string {
         ? part
         : part.replace(/\]\(([^()\s]+)\)/g, (link, target: string) => {
             if (/^[a-z][a-z0-9+.-]*:|^\//i.test(target)) return link;
-            return `](../plan/${target.startsWith('#') ? sourceFile : ''}${target})`;
+            return `](${planDir}${target.startsWith('#') ? sourceFile : ''}${target})`;
           }),
     )
     .join('');
+}
+
+/**
+ * A plan chapter's title from its first `# ` heading, without the chapter number and a
+ * trailing parenthetical: `# 05: Capture engine` → `Capture engine`, `# 09 · Figma plugin
+ * (package \`plugin\`)` → `Figma plugin`. `undefined` when there is no such heading.
+ */
+export function chapterTitle(markdown: string): string | undefined {
+  const heading = /^# (.+)$/m.exec(markdown)?.[1];
+  const title = heading
+    ?.replace(/^\d+\s*(?:[·:—–-]\s*)?/, '')
+    .replace(/\s*\([^()]*\)\s*$/, '')
+    .trim();
+  return title || undefined;
 }
 
 /** Upper-cases a leading lower-case letter and ends the text with a full stop. */

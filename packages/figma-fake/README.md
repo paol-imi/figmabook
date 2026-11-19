@@ -1,6 +1,6 @@
 # @holotype/figma-fake
 
-An in-memory Figma document behind the plugin's `FigmaPort` (BUILD §8, [09 §18](../../docs/plan/09-plugin.md#testing)).
+An in-memory Figma document behind the plugin's `FigmaPort` (BUILD §8, [09 §18](../../internal/plan/09-plugin.md#testing)).
 Applier tests in `packages/plugin` run against it instead of the real Plugin API.
 
 - **Typed by Figma.** `createFakeFigma()` satisfies `FigmaPort` (a `Pick<>` of
@@ -15,7 +15,7 @@ Applier tests in `packages/plugin` run against it instead of the real Plugin API
   `@holotype/layout-sim`) and instance contents are brought up to date synchronously, as in
   Figma, so read-back verification (09 §11) can be exercised.
 - **Records every write** in an operation log, so "a no-op re-sync makes zero writes"
-  (I-2, [10 §1](../../docs/plan/10-sync.md)) is one assertion. Derived state (layout, text size,
+  (I-2, [10 §1](../../internal/plan/10-sync.md)) is one assertion. Derived state (layout, text size,
   instance sync, variable propagation) is not logged.
 - **Fails loudly** on members it does not model yet: they throw `NotImplementedError` naming
   the work item that adds them. No test can pass on behaviour the fake does not emulate.

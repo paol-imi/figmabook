@@ -1,5 +1,5 @@
 import * as dcr from '@holotype/dcr';
-import { type DesignChangeRequest, extractDcr, type UsageSnippet } from '@holotype/dcr';
+import { type DcrItem, type DesignChangeRequest, extractDcr, type UsageSnippet } from '@holotype/dcr';
 import type { CaseInput } from './case.ts';
 import { coreBytes, requestBytes } from './expected.ts';
 import type { SnippetCase } from './schemas.ts';
@@ -9,27 +9,87 @@ import type { SnippetCase } from './schemas.ts';
  * work item that builds it lands; its tests are skipped until then, and a guard test fails
  * as soon as the function exists, so the flag is never left behind:
  *
- *   extract     extractDcr                 B-65 / B-66   plugin and CLI core extraction
+ *   extract     extractDcr                 B-65          plugin and CLI core extraction
+ *   screens     extractDcr screen items    B-66          screens, new-component nearest scoring
  *   provenance  CLI provenance attachment  B-70          origin, css, reach, varDefinition, code
  *   prompt      renderPrompt               B-67          expected/prompt.md
  *   snippet     renderSnippet              B-67          snippet/*.jsx-sketch
  *
  * To wire a stage: call it below, set its status to `ready`, run
  * `pnpm -F @holotype/fixture-dcr test`, and fix the goldens with reviewer sign-off (12 §1.2).
+ *
+ * `screens` is part of `extractDcr` (no export of its own): until it lands, a screen frame is
+ * extracted as `unknown`, and the cases in `CASE_STAGES` that need it compare only the items
+ * extraction already owns (`ownedItems`).
  */
 
-export type Stage = 'extract' | 'provenance' | 'prompt' | 'snippet';
+export type Stage = 'extract' | 'screens' | 'provenance' | 'prompt' | 'snippet';
 export type StageStatus = 'pending' | 'ready';
 
 export const STAGES: Readonly<Record<Stage, StageStatus>> = {
-  extract: 'pending',
+  extract: 'ready',
+  screens: 'pending',
   provenance: 'pending',
   prompt: 'pending',
   snippet: 'pending',
 };
 
+/**
+ * The extraction stages beyond `extract` a case's golden needs: screen items and nearest
+ * scoring (`screens`, B-66), and the usage snippets embedded in the request (`snippet`, B-67).
+ */
+export const CASE_STAGES: Readonly<Record<string, readonly Stage[]>> = {
+  'component-new': ['screens', 'snippet'],
+  injection: ['screens', 'snippet'],
+  'instance-detached': ['screens', 'snippet'],
+  'screen-usage-basic': ['screens', 'snippet'],
+};
+
+/** Whether every stage a case's golden needs is built, so its whole request can be compared. */
+export const caseReady = (name: string): boolean =>
+  STAGES.extract === 'ready' && (CASE_STAGES[name] ?? []).every((stage) => STAGES[stage] === 'ready');
+
+/** Item kinds `extract` builds (B-65); screens and instance items arrive with B-66 and B-132. */
+const EXTRACT_KINDS: ReadonlySet<DcrItem['kind']> = new Set([
+  'component.modified',
+  'variant.added',
+  'variant.removed',
+  'property.added',
+  'property.changed',
+  'node.added',
+  'node.removed',
+  'component.new',
+  'token.changed',
+  'token.added',
+]);
+
+/** Fields of an item that a pending stage fills: nearest scoring (B-66) and the snippet (B-67). */
+const PENDING_FIELDS = ['nearest', 'snippet'] as const;
+const PENDING_CODES: ReadonlySet<string> = new Set(['DCR_NEAREST_COMPONENT']);
+
+/**
+ * The part of a request that `extract` alone owns, for a case whose golden needs a pending
+ * stage: its items of the extract kinds without the pending fields, with their own questions
+ * (code, text, options; ids depend on the other items).
+ */
+export function ownedItems(request: Pick<DesignChangeRequest, 'items' | 'questions'>): unknown[] {
+  return request.items
+    .filter((item) => EXTRACT_KINDS.has(item.kind))
+    .map((item) => {
+      const out: Record<string, unknown> = { ...item };
+      for (const key of PENDING_FIELDS) delete out[key];
+      const diagnostics = (item.diagnostics ?? []).filter((d) => !PENDING_CODES.has(d.code));
+      if (diagnostics.length > 0) out.diagnostics = diagnostics;
+      else delete out.diagnostics;
+      const questions = request.questions
+        .filter((q) => q.itemId === item.id && !PENDING_CODES.has(q.code))
+        .map(({ code, text, options }) => ({ code, text, options }));
+      return { item: out, questions };
+    });
+}
+
 /** The `@holotype/dcr` export each pending stage waits for (checked by the guard tests). */
-export const STAGE_EXPORTS: Readonly<Record<Exclude<Stage, 'extract'>, string>> = {
+export const STAGE_EXPORTS: Readonly<Record<Exclude<Stage, 'extract' | 'screens'>, string>> = {
   provenance: 'attachProvenance',
   prompt: 'renderPrompt',
   snippet: 'renderSnippet',

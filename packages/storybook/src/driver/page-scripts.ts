@@ -169,12 +169,158 @@ export function findRootContainer(selectors: readonly string[]): Element | null 
   return null;
 }
 
-/** The container's displayed element children: what the story rendered. */
-export function displayedChildren(container: Element): Element[] {
+/** A decorator wrapper that was unwrapped although it paints a background (`SB_DECORATOR_PAINTS`). */
+export interface PaintedWrapper {
+  /** `nth-child` path from the root container, e.g. `:nth-child(1)`. */
+  readonly path: string;
+  readonly background: string;
+}
+
+/** What {@link resolveRoots} found. */
+export interface ResolvedRoots {
+  readonly roots: Element[];
+  /** Wrappers descended through. */
+  readonly unwrapped: number;
+  readonly painted: PaintedWrapper[];
+}
+
+/**
+ * The story's roots under `container` (03 §6.1–6.2): its displayed element children, then, while
+ * there is exactly one, down through transparent decorator wrappers. A wrapper is transparent
+ * when it has `display: contents`, or one displayed child, no text of its own, no paint, no
+ * clipping and the child's border box (±0.5 px). Known provider wrappers (`[data-theme]`,
+ * `#root-inner`, `.docs-story`) are transparent even when their box differs; one that paints a
+ * background is reported. `maxDepth` 0 keeps the children as they are.
+ */
+export function resolveRoots(container: Element, maxDepth: number): ResolvedRoots {
   const skipped = new Set(['SCRIPT', 'STYLE', 'TEMPLATE', 'LINK', 'META', 'NOSCRIPT']);
-  return Array.from(container.children).filter(
-    (child) => !skipped.has(child.tagName.toUpperCase()) && getComputedStyle(child).display !== 'none',
-  );
+  const displayed = (element: Element): Element[] =>
+    Array.from(element.children).filter(
+      (child) => !skipped.has(child.tagName.toUpperCase()) && getComputedStyle(child).display !== 'none',
+    );
+  const hasText = (element: Element): boolean =>
+    Array.from(element.childNodes).some((node) => node.nodeType === 3 && (node.textContent ?? '').trim() !== '');
+  const none = (value: string): boolean => value === '' || value === 'none';
+  const paintsBackground = (style: CSSStyleDeclaration): boolean =>
+    !/^(transparent|rgba\(0, 0, 0, 0\))$/.test(style.backgroundColor) || !none(style.backgroundImage);
+  const paints = (style: CSSStyleDeclaration): boolean => {
+    if (paintsBackground(style)) return true;
+    for (const side of ['top', 'right', 'bottom', 'left']) {
+      const width = Number.parseFloat(style.getPropertyValue(`border-${side}-width`));
+      const kind = style.getPropertyValue(`border-${side}-style`);
+      if (width > 0 && kind !== 'none' && kind !== 'hidden') return true;
+    }
+    return (
+      !none(style.boxShadow) ||
+      (Number.parseFloat(style.outlineWidth) > 0 && style.outlineStyle !== 'none') ||
+      !none(style.filter) ||
+      !none(style.getPropertyValue('backdrop-filter')) ||
+      Number.parseFloat(style.opacity) < 1 ||
+      !none(style.transform) ||
+      style.mixBlendMode !== 'normal'
+    );
+  };
+  const clips = (style: CSSStyleDeclaration): boolean =>
+    style.overflowX !== 'visible' ||
+    style.overflowY !== 'visible' ||
+    !none(style.clipPath) ||
+    !none(style.getPropertyValue('mask-image'));
+  const sameBox = (a: Element, b: Element): boolean => {
+    const ra = a.getBoundingClientRect();
+    const rb = b.getBoundingClientRect();
+    return (
+      Math.abs(ra.x - rb.x) <= 0.5 &&
+      Math.abs(ra.y - rb.y) <= 0.5 &&
+      Math.abs(ra.width - rb.width) <= 0.5 &&
+      Math.abs(ra.height - rb.height) <= 0.5
+    );
+  };
+  const step = (element: Element): string =>
+    `:nth-child(${Array.from(element.parentElement?.children ?? []).indexOf(element) + 1})`;
+
+  let roots = displayed(container);
+  let unwrapped = 0;
+  const painted: PaintedWrapper[] = [];
+  const path: string[] = [];
+  while (unwrapped < maxDepth && roots.length === 1) {
+    const element = roots[0] as Element;
+    const style = getComputedStyle(element);
+    const kids = displayed(element);
+    let transparent = false;
+    if (style.display === 'contents') transparent = kids.length > 0;
+    else if (kids.length === 1 && !hasText(element) && !clips(style)) {
+      const known = element.matches('[data-theme], #root-inner, .docs-story');
+      transparent = known || (!paints(style) && sameBox(element, kids[0] as Element));
+      if (known && paintsBackground(style)) {
+        painted.push({ path: [...path, step(element)].join(' > '), background: style.backgroundColor });
+      }
+    }
+    if (!transparent) break;
+    path.push(step(element));
+    roots = kids;
+    unwrapped += 1;
+  }
+  return { roots, unwrapped, painted };
+}
+
+/** What the stability check saw. */
+export interface StabilityReport {
+  readonly stable: boolean;
+  /** Sample pairs compared (at most `tries`). */
+  readonly tries: number;
+}
+
+/**
+ * Stability check (03 §5.5 step 8, as corrected by S-07 Q17): samples the border box of the root
+ * container and of every element under it, plus the container's markup, `intervalMs` apart; one
+ * of up to `tries` pairs must match. The plan's container rect + `body.innerHTML.length`
+ * heuristic misses roots whose children move while the markup length stays the same.
+ */
+export async function checkStability(arg: {
+  readonly selectors: readonly string[];
+  readonly tries: number;
+  readonly intervalMs: number;
+  /** Elements sampled at most, so a huge story stays cheap. */
+  readonly maxElements: number;
+}): Promise<StabilityReport> {
+  const find = (): Element | null => {
+    for (const selector of arg.selectors) {
+      const steps = selector.split('>>>').map((part) => part.trim());
+      let match: Element | null = document.querySelector(steps[0] ?? '');
+      for (const part of steps.slice(1)) match = match?.shadowRoot?.querySelector(part) ?? null;
+      if (match !== null) return match;
+    }
+    return null;
+  };
+  const sample = (): string => {
+    const root = find();
+    if (root === null) return '';
+    const rects = [root, ...Array.from(root.querySelectorAll('*'))].slice(0, arg.maxElements).map((element) => {
+      const rect = element.getBoundingClientRect();
+      return `${rect.x},${rect.y},${rect.width},${rect.height}`;
+    });
+    return `${rects.join(';')}|${root.innerHTML}`;
+  };
+  for (let attempt = 1; attempt <= arg.tries; attempt += 1) {
+    const before = sample();
+    await new Promise((resolve) => setTimeout(resolve, arg.intervalMs));
+    if (sample() === before) return { stable: true, tries: attempt };
+  }
+  return { stable: false, tries: arg.tries };
+}
+
+/** Storybook's test-runner marker (D-24): with it the `completing` phase pauses animations. */
+export const TEST_RUNNER_MARKER = 'StorybookTestRunner';
+
+/**
+ * Init script for a context whose user agent lacks {@link TEST_RUNNER_MARKER}: adds it to
+ * `navigator.userAgent` in this page, so Storybook does not wait ≈ 100 ms for animations on
+ * every render (S-07 Q7).
+ */
+export function addTestRunnerMarker(marker: string): void {
+  const agent = navigator.userAgent;
+  if (agent.includes(marker)) return;
+  Object.defineProperty(Navigator.prototype, 'userAgent', { configurable: true, get: () => `${agent} ${marker}` });
 }
 
 /**

@@ -4,7 +4,7 @@ packages:
   - fixtures/*
   - spikes
   - tests/*
-  - website
+  - docs
 
 # pnpm 10 blocks dependency lifecycle scripts by default; allow only what is needed.
 onlyBuiltDependencies:

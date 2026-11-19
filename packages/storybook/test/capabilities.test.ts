@@ -79,9 +79,23 @@ describe('checkStorybookVersion', () => {
   const caps = (version: string | null, format: 'v3' | 'v4' | 'v5' = 'v5') =>
     detectCapabilities(format, version === null ? {} : { storybookVersion: version });
 
-  it('passes Storybook 8, 9 and 10 silently', () => {
-    for (const version of ['8.6.19', '9.1.21', '10.6.7'])
-      expect(checkStorybookVersion(caps(version))).toEqual({ warnings: [] });
+  it('passes Storybook 10 silently', () => {
+    for (const version of ['10.0.0', '10.6.7']) expect(checkStorybookVersion(caps(version))).toEqual({ warnings: [] });
+  });
+
+  it('warns SB_VERSION_UNTESTED on Storybook 8 and 9 (best-effort, D-11)', () => {
+    for (const version of ['8.6.19', '9.1.21']) {
+      const { fatal, warnings } = checkStorybookVersion(caps(version));
+      expect(fatal).toBeUndefined();
+      expect(warnings).toEqual([
+        expect.objectContaining({
+          code: 'SB_VERSION_UNTESTED',
+          severity: 'warn',
+          value: version,
+          fallback: 'the Storybook 10 adapter',
+        }),
+      ]);
+    }
   });
 
   it('passes an unknown version read from index.json', () => {

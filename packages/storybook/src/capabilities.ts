@@ -88,9 +88,13 @@ export function detectCapabilities(indexFormat: IndexFormat, project: ProjectInf
   };
 }
 
+/** The Storybook major this adapter is built and tested on (D-11, BUILD B-40). */
+export const TESTED_MAJOR = 10;
+
 /**
- * Version gate (D-11): Storybook older than 8 stops the run with `SB_VERSION_UNSUPPORTED`; a
- * major newer than the newest tested one warns `SB_VERSION_UNTESTED` and goes on.
+ * Version gate (D-11): Storybook older than 8 stops the run with `SB_VERSION_UNSUPPORTED`. Any
+ * other major than {@link TESTED_MAJOR} (8 and 9 best-effort, 11 and newer) warns
+ * `SB_VERSION_UNTESTED` and goes on with the Storybook 10 adapter.
  */
 export function checkStorybookVersion(caps: SbCapabilities): { fatal?: Diagnostic; warnings: Diagnostic[] } {
   if (caps.indexFormat === 'v3' && caps.version === null) {
@@ -99,13 +103,13 @@ export function checkStorybookVersion(caps: SbCapabilities): { fatal?: Diagnosti
   const v = caps.version === null ? undefined : parseSemver(caps.version);
   if (v === undefined) return { warnings: [] };
   if (v.major < OLDEST_SUPPORTED_MAJOR) return { fatal: unsupported(caps.version ?? ''), warnings: [] };
-  if (v.major > NEWEST_TESTED_MAJOR) {
+  if (v.major !== TESTED_MAJOR) {
     return {
       warnings: [
         createDiagnostic(diagnostic('SB_VERSION_UNTESTED'), undefined, {
           value: caps.version ?? '',
-          fallback: `the Storybook ${NEWEST_TESTED_MAJOR} adapter`,
-          data: { version: caps.version, newestTestedMajor: NEWEST_TESTED_MAJOR },
+          fallback: `the Storybook ${TESTED_MAJOR} adapter`,
+          data: { version: caps.version, testedMajor: TESTED_MAJOR, newestTestedMajor: NEWEST_TESTED_MAJOR },
         }),
       ],
     };
