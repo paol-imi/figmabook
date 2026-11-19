@@ -14,6 +14,8 @@ docs/.vitepress/cache/
 # Tooling caches
 .turbo/
 coverage/
+# Vitest 5 writes reports, attachments and failure screenshots here
+.vitest/
 
 # Holotype local workspace (02 §5.4); committed design change requests stay tracked
 .holotype/*
