@@ -7,5 +7,5 @@
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment"
   },
-  "include": ["src", "test", "*.config.ts"]
+  "include": ["src"]
 }

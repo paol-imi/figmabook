@@ -1,0 +1,90 @@
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 24px;
+  text-align: center;
+  color: var(--figma-color-text, #000);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-weight: 600;
+}
+
+.danger .icon {
+  background: var(--figma-color-bg-danger, #f24822);
+  color: var(--figma-color-text-ondanger, #fff);
+}
+
+.success .icon {
+  background: var(--figma-color-bg-success, #14ae5c);
+  color: var(--figma-color-text-onsuccess, #fff);
+}
+
+.title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.danger .title {
+  color: var(--figma-color-text-danger, #dc3412);
+}
+
+.body {
+  max-width: 320px;
+  color: var(--figma-color-text-secondary, rgba(0, 0, 0, 0.7));
+  line-height: 16px;
+}
+
+.body p {
+  margin: 0 0 8px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.code {
+  font-family: var(--font-family-code, monospace);
+}
+
+.progress {
+  display: block;
+  width: 240px;
+  margin: 8px auto 0;
+  accent-color: var(--figma-color-bg-brand, #0d99ff);
+}
+
+.spinner {
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--figma-color-border, #e6e6e6);
+  border-top-color: var(--figma-color-icon-brand, #0d99ff);
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .spinner {
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

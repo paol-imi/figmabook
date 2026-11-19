@@ -16,6 +16,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "check:deps": "depcruise packages tools --config .dependency-cruiser.mjs",
+    "size": "pnpm -F @holotype/plugin size",
     "changeset": "changeset",
     "version-packages": "changeset version"
   },

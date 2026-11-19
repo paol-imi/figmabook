@@ -1,0 +1,9 @@
+.app {
+  box-sizing: border-box;
+  height: 100vh;
+  background: var(--figma-color-bg, #fff);
+  color: var(--figma-color-text, #000);
+  font-family: var(--font-family, "Inter", sans-serif);
+  font-size: 11px;
+  line-height: 16px;
+}

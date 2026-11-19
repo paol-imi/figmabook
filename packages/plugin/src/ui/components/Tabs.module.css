@@ -1,0 +1,50 @@
+/* Colors come from Figma's theme (`themeColors: true`); fallbacks are Figma's light theme. */
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.list {
+  display: flex;
+  flex: none;
+  gap: 4px;
+  padding: 8px 8px 0;
+  border-bottom: 1px solid var(--figma-color-border, #e6e6e6);
+}
+
+.tab {
+  appearance: none;
+  margin: 0 0 -1px;
+  padding: 8px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 4px 4px 0 0;
+  background: none;
+  color: var(--figma-color-text-secondary, rgba(0, 0, 0, 0.7));
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--figma-color-text, #000);
+}
+
+.tab[aria-selected="true"] {
+  border-bottom-color: var(--figma-color-border-selected, #0d99ff);
+  color: var(--figma-color-text, #000);
+}
+
+.tab:focus-visible,
+.panel:focus-visible {
+  outline: 2px solid var(--figma-color-border-selected, #0d99ff);
+  outline-offset: -2px;
+}
+
+.panel {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
