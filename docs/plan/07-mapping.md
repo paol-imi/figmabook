@@ -820,7 +820,7 @@ The token resolver ([08](08-tokens.md)) gives, per capture node and CSS property
 
 - **Pure chains only.** A value from `calc()` or `color-mix()` is not bound (`TOKEN_EXPRESSION_UNBOUND`, info), nor is a used var fallback (`TOKEN_FALLBACK_USED`, info).
 - **Value-equality fallback** (D-18, opt-in `config.tokens.matchByValue`) emits `confidence: 'value'`. It binds only when exactly one variable of the right type has that value in the current mode; ambiguity gives `TOKEN_VALUE_AMBIGUOUS`.
-- **Themes as modes.** When themes are modes ([04](04-variant-model.md), [08](08-tokens.md)), the mapper emits one variant set (not one per theme), with bindings from the default-mode capture. It then verifies that every other mode's capture resolves to the same bindings with that mode's values; a mismatch gives `TOKEN_MODE_MISMATCH` (warn), and the planner falls back to a theme VARIANT axis.
+- **Themes as modes.** When themes are modes ([04](04-variant-model.md), [08](08-tokens.md)), the mapper emits one variant set (not one per theme), with bindings from the default-mode capture. It then verifies that every other mode's capture resolves to the same bindings with that mode's values; a mismatch gives `TOKEN_MODE_UNTOKENIZED_DIFF` (warn, [08](08-tokens.md)), and the planner falls back to a theme VARIANT axis.
 
 ### 16.1 Provenance side file (branch mode, D-36)
 
@@ -891,11 +891,11 @@ The result is the `root` subtree shown in [06 §10](06-ir.md#10-example-button-b
 
 ## 19. Diagnostic codes introduced here
 
-- **Capture:** `CAP_SR_ONLY_DROPPED`, `CAP_NATIVE_CONTROL_SYNTHESIZED`.
-- **Layout:** `LAYOUT_CLIPPED_DROPPED`, `LAYOUT_FLOAT_ABSOLUTE`, `LAYOUT_WRAP_REVERSE_UNSUPPORTED`, `LAYOUT_SPACE_AROUND_APPROX`, `LAYOUT_ALIGN_SELF_WRAPPED`, `LAYOUT_GROW_RATIO_FIXED`, `LAYOUT_PERCENT_RESOLVED`, `LAYOUT_RTL_REVERSED`, `LAYOUT_IRREGULAR_GAPS`, `LAYOUT_BREAKPOINT_IN_PROBE`, `LAYOUT_GRID_MINMAX_FIXED`, `LAYOUT_GRID_AUTOFILL_FROZEN`, `LAYOUT_GRID_UNREPRESENTABLE`, `LAYOUT_SIM_MISMATCH`, `LAYOUT_ZINDEX_HOIST`, `LAYOUT_OVERFLOW_AXIS_APPROX`.
+- **Capture:** `CAP_NATIVE_CONTROL_SYNTHESIZED`. `CAP_SR_ONLY_SKIPPED` and `CAP_CLIPPED_CULLED` are emitted by capture ([05](05-capture.md)).
+- **Layout:** `LAYOUT_FLOAT_ABSOLUTE`, `LAYOUT_ZORDER_FLOW_CONFLICT`, `LAYOUT_WRAP_REVERSE_UNSUPPORTED`, `LAYOUT_SPACE_AROUND_APPROX`, `LAYOUT_ALIGN_SELF_WRAPPED`, `LAYOUT_GROW_RATIO_FIXED`, `LAYOUT_PERCENT_RESOLVED`, `LAYOUT_RTL_REVERSED`, `LAYOUT_IRREGULAR_GAPS`, `LAYOUT_BREAKPOINT_IN_PROBE`, `LAYOUT_GRID_MINMAX_FIXED`, `LAYOUT_GRID_AUTOFILL_FROZEN`, `LAYOUT_GRID_UNREPRESENTABLE`, `LAYOUT_SIM_MISMATCH`, `LAYOUT_ZINDEX_HOIST`, `LAYOUT_OVERFLOW_AXIS_APPROX`.
 - **Apply:** `APPLY_LAYOUT_RELAXED`, `APPLY_LAYOUT_FALLBACK`.
-- **Text:** `TEXT_WORD_SPACING_DROPPED`, `TEXT_CASE_BAKED`, `TEXT_OVERLINE_OVERLAY`, `TEXT_DECORATION_STYLE_APPROX`, `TEXT_SHADOW_RANGE_APPROX`, `TEXT_BASELINE_SHIFT_DROPPED`, `TEXT_OVERLAY_LOCKED`, `TEXT_LINE_MISMATCH`.
-- **Font:** `FONT_SYNTHETIC`. `FONT_MISSING` and `FONT_SUBSTITUTED` are emitted by the plugin.
+- **Text:** `TEXT_WORD_SPACING_DROPPED`, `TEXT_CASE_BAKED`, `TEXT_OVERLINE_OVERLAY`, `TEXT_DECORATION_STYLE_APPROX`, `TEXT_SHADOW_RANGE_APPROX`, `TEXT_BASELINE_SHIFT_DROPPED`, `TEXT_OVERLAY_LOCKED`. `TEXT_LINE_MISMATCH` is emitted by the plugin ([09](09-plugin.md)).
+- **Font:** none. `FONT_SYNTHETIC` is raised by capture; `FONT_MISSING` and `FONT_SUBSTITUTED` are emitted by the plugin.
 - **Paint:** `PAINT_TABLE_BORDER_APPROX`, `PAINT_CONIC_APPROX`, `PAINT_REPEATING_CAPPED`, `PAINT_DASH_APPROX`, `PAINT_BORDER_DECOMPOSED`, `PAINT_BORDER_DOMINANT`, `PAINT_BORDER_STYLE_APPROX`, `PAINT_ELLIPTICAL_RADIUS_APPROX`, `PAINT_SPREAD_BACKING_RECT`, `PAINT_FILTER_RASTERIZED`, `PAINT_SUBTREE_RASTERIZED`.
 - **SVG:** `SVG_RASTERIZED`.
 - **Planner:** `PLAN_ALIGNMENT_ANCHOR_CONFLICT`, `PLAN_ALIGNMENT_DIVERGENT`, `PLAN_ALIGNMENT_ORDER_CONFLICT`, `PLAN_PROPERTY_UNBOUND`, `PLAN_INSTANCE_PROPS_UNMAPPED`, `PLAN_INSTANCE_MISMATCH`, `PLAN_INSTANCE_CYCLE`.

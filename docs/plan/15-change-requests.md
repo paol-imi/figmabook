@@ -926,12 +926,59 @@ Mobile · empty: removes `Summary`, `Pay`; adds `<text style="--text-md">Your ca
 
 1. **Changes** screen. This is a live list grouped by component (designer view), built from the `ah` sub-hash diff, so it is cheap. Each item has an **Exclude** toggle. Excluded items are recorded in `branch:meta` as `excluded: [itemId]`, and the extractor honours them deterministically.
 2. **Scope** chips: Ready for dev (default), This page, Selection.
-3. **Preview** of the DCR in designer view, with open questions highlighted ("2 values aren't tokens").
+3. **Preview** of the DCR in designer view. It opens on the **review summary** (§7.4), then lists items with open questions highlighted ("2 values aren't tokens"), screens with their breakpoint × state grid, interactions and placeholder warnings.
 4. **Submit.** The plugin:
    - writes `branch:meta.status = submitted` and `lastDcr`;
    - sets `devStatus = READY_FOR_DEV` on submitted screens (verify that plugins can write it, S-18);
    - sends to the CLI, or offers a download or copy.
 5. A **"Submitted"** banner shows the DCR id. Further edits mark the file "changed since submit".
+6. **Approve** (only with `dcr.requireApproval`): a reviewer opens the plugin on the branch file, reads the summary and presses **Approve** or **Request changes** (§7.4).
+
+Screen specs with empty, loading, error and success states are in [11 §6](11-ux.md#plugin) (D-40).
+
+### 7.3 Usage snippet <a id="snippet"></a>
+
+`renderSnippet(tree: UsageNode[], ctx: { targets, items }): UsageSnippet` is a **pure function** in the `dcr` package that turns a usage tree into a JSX-like sketch, such as `<Button variant="primary" size="md">Save</Button>`. It is a **spec, not shipped code**: it shows which components, with which props, in which arrangement. The fence language is `jsx-sketch`, the prompt says so above every snippet, and the agent contract forbids pasting it verbatim (§8, rule 10). Pseudo-elements are lowercase (`<frame>`, `<text>`, `<image>`), so they can't be mistaken for components of the repo.
+
+```ts
+interface UsageSnippet { lang: 'jsx-sketch'; imports: string[]; code: string }
+```
+
+| Usage node | Rendered as |
+|---|---|
+| `instance` | `<ExportName prop="…">children</ExportName>`. Props sorted by name. `children` (or the TEXT arg the component maps to children) becomes the body. Args listed in `defaults` are omitted. Strings as `"…"`; numbers and objects as `{…}`; `true` as a bare attribute. Unmapped values as `prop={/* ? Figma: "Large" */}` (`DCR_PROPERTY_UNMAPPED`). SLOT args as `prop={<…/>}`, or as children |
+| `frame` | `<frame name="…" direction="row\|column\|grid" gap="--token" padding="t r b l" justify align w="fill\|hug\|<px>">`. Tokens by CSS name; raw values as `6px /* ? --radius-md */` when there are candidates |
+| `text` | `<text style="--text-token">…</text>`. Placeholders as `{/* placeholder: lorem */}`. `{{a.b}}` templates as `{a.b}` when `a.b` is an identifier path, otherwise as a comment |
+| `image` | `<image asset="<role id>" />` |
+| `new-component-ref` | `<ProposedName />`, plus a header comment naming the `component.new` item. No import line |
+
+- **Imports** come from `CodeRef` through `importSpecifier()` (§5.5): one line per module specifier, named imports sorted, lines sorted by specifier. Deprecated components are replaced by their `current` component before rendering (§4.13).
+- **Formatting.** Two-space indentation. An element whose attributes exceed 100 columns wraps one attribute per line. There are no other formatting choices.
+- **Escaping.** Designer text (`characters`, prop strings, names) is untrusted (D-38). `{`, `}`, `<` and `>` are emitted as JSX entities, control characters are stripped, strings are capped at 200 characters, and the fence is one backtick longer than the longest backtick run inside.
+- **Golden tests.** `fixtures/dcr/snippet/*.json` → `*.jsx-sketch` covers every row above. Shuffled input must give the same bytes ([12](12-quality.md#fixtures)).
+
+### 7.4 Review summary and approval <a id="review"></a>
+
+The top of `prompt.md`, and the first screen of the plugin preview, is a **review page** rendered from `DcrSummary` only. A person who never opens code (a lead, a product owner, the boss) can approve the request before the AI starts.
+
+```md
+## Review summary   DCR a41c09e2b7d35f10 · feat/price-tag · 5 items · 2 open questions
+- Button: padding 12 → 16 (Space/3 → Space/4)
+- Button: new tone Danger
+- New component PriceTag (similar to Badge)
+- Screen Checkout: Desktop, Mobile, Mobile/Empty
+- LegacyAlert → Banner (1 use)
+
+| Components changed | New components | Screens | Tokens | Placeholders | Open questions |
+|---|---|---|---|---|---|
+| Button | PriceTag | Checkout (2 breakpoints, 2 states, 5 interactions) | 1 value not a token | 1 | 2 |
+
+Approval: required before implementation (dcr.requireApproval)
+```
+
+- **Approval is optional** (`dcr.requireApproval`, default `false`). When it is on, the plugin preview shows **Approve** and **Request changes** to anyone with edit access. Approving writes `branch:meta.approval = { state: 'approved', dcrHash, at }` and `status: 'approved'`. The approver's identity is not stored (§10.2); the PR records who reviewed.
+- **Bound to one hash.** The approval holds only while the current DCR has the same `dcrHash`. Any edit gives a new hash, and the approval becomes stale (`DCR_APPROVAL_STALE`, warn).
+- **Enforced outside the DCR.** The approval lives in `branch:meta`, never in `dcr.json` or `prompt.md`, which only say *whether* approval is required (a config value). Approving therefore never changes the hash, and D-35 holds. With `requireApproval`, `holotype dcr` and MCP `design_changes` still return the summary, but they withhold the items and fail with `DCR_NOT_APPROVED` (error) until this hash is approved.
 
 ---
 
