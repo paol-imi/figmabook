@@ -50,6 +50,17 @@ Shared pieces are exported too (`SourceLocSchema`, `FieldOriginSchema`, `CodeRef
 - **Pipeline types (07 §0):** `ComponentPlan`, `ComponentMetaInput`, `TokenResolution`, `ComponentCatalog`,
   `MapperInput`, `MapperOutput`, `MapperSettings`, `sourceLocKey`.
 
+## Entries
+
+| Import              | Contains                                                                                        |
+| ------------------- | ----------------------------------------------------------------------------------------------- |
+| `@holotype/ir`      | everything above                                                                                |
+| `@holotype/ir/core` | versions, canonical JSON, number kinds, hashes and the `ah` normalizer: no schema, no validator |
+
+The Figma plugin main thread imports values from `@holotype/ir/core` only (types may come from the
+root entry): create-figma-plugin `require`s the main entry, which defeats tree shaking of the root
+entry, so one value import from it puts every TypeBox schema into `build/main.js` (D-04).
+
 ## Changing a schema
 
 After B-01, each schema change is its own small PR titled `ir: <change>` (BUILD §2.3). Edit the

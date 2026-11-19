@@ -1,5 +1,5 @@
 import { showUI } from '@create-figma-plugin/utilities';
-import { SUPPORTED_SCENE_MAJORS } from '@holotype/ir';
+import { SUPPORTED_SCENE_MAJORS } from '@holotype/ir/core';
 import { version } from '../package.json';
 import { createMainChannel, figmaUiTransport } from './channel';
 import { startHost } from './host';

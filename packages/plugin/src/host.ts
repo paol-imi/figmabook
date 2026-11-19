@@ -3,7 +3,7 @@
  * ping/pong yield (09 §3, §12). It never touches the `figma` global; `main.ts` injects
  * what it needs, so the host is tested without Figma.
  */
-import { parseMajor } from '@holotype/ir';
+import { parseMajor } from '@holotype/ir/core';
 import { APPLY_IR_VERSION_UNSUPPORTED, createDiagnostic, HolotypeError } from '@holotype/shared';
 import type { MainChannel } from './channel';
 import type { MessageOf, RegistrySummary, UiToMain } from './protocol';
