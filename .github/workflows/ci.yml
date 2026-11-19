@@ -1,21 +1,34 @@
 name: CI
 
+# PR gate and main build (BUILD §3 definition of done, B-09).
+# Every step is a plain pnpm/git command, so each one can be rerun locally as written.
+
 on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+# A new push to a PR cancels its running build; main builds always finish.
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # Turbo's local cache lives in the workspace so actions/cache can persist it between runs.
+  TURBO_CACHE_DIR: .turbo/cache
+  TURBO_TELEMETRY_DISABLED: "1"
+  STORYBOOK_DISABLE_TELEMETRY: "1"
+  FORCE_COLOR: "1"
 
 jobs:
   check:
-    name: Node ${{ matrix.node }}
+    name: Gate (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -31,8 +44,23 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: pnpm
 
+      - name: Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo/cache
+          key: turbo-gate-node${{ matrix.node }}-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            turbo-gate-node${{ matrix.node }}-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            turbo-gate-node${{ matrix.node }}-${{ runner.os }}-
+
       - name: Install
         run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
 
       - name: Lint
         run: pnpm lint
@@ -40,14 +68,146 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Test
-        run: pnpm test
+      - name: Package boundaries
+        run: pnpm check:deps
+
+      - name: Diagnostics catalog
+        run: pnpm diag:check
+
+      - name: Plugin bundle budgets
+        run: pnpm size
+
+      - name: Committed JSON Schemas are up to date
+        run: git diff --exit-code -- packages/ir/schema
+
+      - name: Generated diagnostics are up to date
+        run: |
+          pnpm diag:gen
+          git diff --exit-code
+
+      - name: No untracked build leftovers
+        run: |
+          untracked="$(git status --porcelain --untracked-files=all)"
+          if [ -n "$untracked" ]; then
+            echo "::error::The build left files that are neither committed nor ignored:"
+            echo "$untracked"
+            exit 1
+          fi
+
+  e2e:
+    name: End-to-end (Playwright, Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo/cache
+          key: turbo-e2e-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            turbo-e2e-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            turbo-e2e-${{ runner.os }}-
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Browser binaries are keyed by the lockfile, which pins the Playwright version.
+      - name: Playwright browser cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      # Runs the workspace-pinned Playwright CLI, so the browser revision matches the library.
+      # System libraries are always installed; the browser download is skipped on a cache hit.
+      - name: Install Chromium
+        run: pnpm -F @holotype/fixture-ds-react exec playwright install --with-deps chromium
 
       - name: Build
         run: pnpm build
 
-      - name: Package boundaries
-        run: pnpm check:deps
+      - name: Fixture smoke (fixtures/ds-react)
+        run: pnpm test:smoke
 
-      - name: Committed JSON Schemas are up to date
-        run: git diff --exit-code -- packages/ir/schema
+      # Every other package's `test:e2e` (today: @holotype/spikes). The fixture's `test:e2e`
+      # is an alias of the smoke run above, so it is filtered out instead of run twice.
+      - name: Package e2e
+        run: pnpm turbo run test:e2e --filter='!@holotype/fixture-ds-react'
+
+      - name: Upload Playwright traces and screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            **/test-results/**
+            **/playwright-report/**
+            **/__screenshots__/**
+            **/*.trace.zip
+            !**/node_modules/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+  artifacts:
+    name: Plugin and spikes packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo/cache
+          key: turbo-artifacts-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            turbo-artifacts-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            turbo-artifacts-${{ runner.os }}-
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build plugin and spikes
+        run: pnpm turbo run build --filter=@holotype/plugin... --filter=@holotype/spikes...
+
+      # The plugin build also enforces the bundle budgets (scripts/size.mjs).
+      - name: Pack plugin
+        run: pnpm -F @holotype/plugin run pack
+
+      - name: Read versions
+        id: versions
+        run: |
+          echo "plugin=$(node -p "require('./packages/plugin/package.json').version")" >> "$GITHUB_OUTPUT"
+          echo "spikes=$(node -p "require('./spikes/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload plugin zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: holotype-plugin-${{ steps.versions.outputs.plugin }}
+          path: packages/plugin/dist/holotype-plugin-*.zip
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload spikes zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: holotype-spikes-${{ steps.versions.outputs.spikes }}
+          path: spikes/dist/holotype-spikes*.zip
+          if-no-files-found: error
+          retention-days: 30
