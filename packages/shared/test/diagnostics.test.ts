@@ -44,13 +44,10 @@ describe('diagnostic catalog (12 §6)', () => {
 
 describe('defineDiagnostic / createDiagnosticRegistry', () => {
   it('rejects codes outside the DOMAIN_UPPER_SNAKE format', () => {
+    const spec = { severity: 'info', message: 'm', remedy: 'r', since: '0.0.0' } as const;
     // @ts-expect-error unknown domain prefix
-    expect(() =>
-      defineDiagnostic({ code: 'FOO_BAR', severity: 'info', message: 'm', remedy: 'r', since: '0.0.0' }),
-    ).toThrow(TypeError);
-    expect(() =>
-      defineDiagnostic({ code: 'CAP_lower', severity: 'info', message: 'm', remedy: 'r', since: '0.0.0' }),
-    ).toThrow(TypeError);
+    expect(() => defineDiagnostic({ ...spec, code: 'FOO_BAR' })).toThrow(TypeError);
+    expect(() => defineDiagnostic({ ...spec, code: 'CAP_lower' })).toThrow(TypeError);
   });
 
   it('rejects duplicate codes', () => {
