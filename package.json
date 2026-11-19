@@ -18,6 +18,8 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "check:deps": "depcruise packages tools --config .dependency-cruiser.mjs",
+    "diag:gen": "node --experimental-strip-types tools/diag-gen/src/cli.ts gen",
+    "diag:check": "node --experimental-strip-types tools/diag-gen/src/cli.ts check",
     "size": "pnpm -F @holotype/plugin size",
     "changeset": "changeset",
     "version-packages": "changeset version"

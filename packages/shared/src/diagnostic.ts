@@ -1,34 +1,13 @@
+import { DIAGNOSTIC_CATALOG, type DiagnosticCode, type DiagnosticDomain } from './diagnostics/catalog.generated';
 import type { DefaultSeverity, Severity } from './severity';
 import { compareSeverity } from './severity';
-
-/** Code prefixes, one per pipeline stage (12 §6.1). */
-export const DIAGNOSTIC_DOMAINS = [
-  'SB',
-  'PLAN',
-  'CAP',
-  'LAYOUT',
-  'TEXT',
-  'FONT',
-  'PAINT',
-  'SVG',
-  'TOKEN',
-  'APPLY',
-  'SYNC',
-  'NET',
-  'SEC',
-  'DCR',
-] as const;
-
-export type DiagnosticDomain = (typeof DIAGNOSTIC_DOMAINS)[number];
-
-/** A stable `UPPER_SNAKE` code with a domain prefix, e.g. `CAP_NONFINITE_VALUE`. */
-export type DiagnosticCode = `${DiagnosticDomain}_${string}`;
 
 /**
  * An emitted diagnostic. Diagnostics are data, not logs (02 §9): every fallback,
  * approximation or skip produces one, and they travel in the IR documents and reports.
  */
 export interface Diagnostic {
+  /** A catalog code for diagnostics made here; `string` because reports from other versions may carry others. */
   readonly code: string;
   readonly severity: Severity;
   /** Plain-language message, rendered from the code's template. */
@@ -98,19 +77,18 @@ type CreateArgs<M extends string> = [Placeholders<M>] extends [never]
 
 export const MAX_VALUE_LENGTH = 200;
 
-const CODE_PATTERN = new RegExp(`^(?:${DIAGNOSTIC_DOMAINS.join('|')})(?:_[A-Z0-9]+)+$`);
-
 /**
- * Declares a diagnostic code. Pure: registration happens by listing the returned
- * definition in a {@link createDiagnosticRegistry} call.
+ * Builds the definition of a catalog code from a spec. Pure: registration happens by listing
+ * the returned definition in a {@link createDiagnosticRegistry} call. The shared `registry`
+ * already holds every catalog code, built from the catalog itself; use `diagnostic(code)`.
  */
 export function defineDiagnostic<const C extends DiagnosticCode, const M extends string>(
   spec: DiagnosticSpec<C, M>,
 ): DiagnosticDef<C, M> {
-  if (!CODE_PATTERN.test(spec.code)) {
-    throw new TypeError(`Invalid diagnostic code "${spec.code}": expected DOMAIN_UPPER_SNAKE.`);
+  if (!Object.hasOwn(DIAGNOSTIC_CATALOG, spec.code)) {
+    throw new TypeError(`Unknown diagnostic code "${spec.code}": add it to the catalog (12 §6.2) first.`);
   }
-  const domain = spec.code.slice(0, spec.code.indexOf('_')) as DiagnosticDomain;
+  const domain: DiagnosticDomain = DIAGNOSTIC_CATALOG[spec.code].domain;
   return Object.freeze({ ...spec, domain, docs: `/docs/diagnostics/${spec.code}` as const });
 }
 

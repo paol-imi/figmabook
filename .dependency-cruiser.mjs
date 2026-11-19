@@ -21,9 +21,11 @@ const allowed = {
   action: ['cli', 'shared'],
   'vite-plugin': ['shared'],
   fidelity: ['ir', 'shared'],
+  'diag-gen': [],
 };
 
-const dirOf = (name) => (name === 'fidelity' ? `tools/${name}` : `packages/${name}`);
+const tools = new Set(['fidelity', 'diag-gen']);
+const dirOf = (name) => (tools.has(name) ? `tools/${name}` : `packages/${name}`);
 const src = (name) => `^${dirOf(name)}/src/`;
 const workspace = (names) => `^(${names.map(dirOf).join('|')})/`;
 

@@ -17,6 +17,8 @@ pnpm install
 | `pnpm lint`            | Biome lint and format check (`pnpm format` to fix formatting)                 |
 | `pnpm typecheck`       | `tsc` in every package, strict                                                |
 | `pnpm check:deps`      | dependency-cruiser: package boundaries from plan 02 §6.2                      |
+| `pnpm diag:gen`        | regenerates the diagnostics catalog module and docs pages from plan 12 §6.2   |
+| `pnpm diag:check`      | fails if that output is stale or a code in `packages/*/src` is not registered |
 | `pnpm build-storybook` | static build of the fixture Storybook (`fixtures/ds-react/storybook-static/`) |
 | `pnpm test:smoke`      | renders every fixture story in headless Chromium (Playwright)                 |
 
@@ -28,7 +30,7 @@ To try the plugin, run `pnpm --filter @holotype/plugin build`. Then, in the Figm
 
 - **TypeScript strict, ESM only.**
 - **Respect package boundaries.** `shared`, `ir`, `layout-sim`, `mapper` and `dcr` run everywhere, including the Figma sandbox: no Node built-ins, no Node globals. `dcr` is also deterministic: no clock, no randomness, no network. Lint and `check:deps` enforce this.
-- **Diagnostics are API.** Define new codes once, in `packages/shared/src/diagnostics.ts`, with a plain-language message and a remedy. Never rename a code; deprecate it.
+- **Diagnostics are API.** Codes come from the catalog in [plan 12 §6.2](docs/plan/12-quality.md#diagnostics): add the row there (plain-language meaning and remedy), then run `pnpm diag:gen` to regenerate `packages/shared/src/diagnostics/catalog.generated.ts` and the pages in [`docs/diagnostics/`](docs/diagnostics/README.md). `pnpm diag:check` fails on stale output and on code literals that are not in the catalog. Never rename a code; deprecate it.
 - **Changesets.** Every change to a published package needs a changeset: run `pnpm changeset`.
 - **Tests.** Every behavior change comes with a Vitest test. Golden values (hashes, canonical JSON) change only on purpose.
 

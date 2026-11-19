@@ -1,0 +1,19 @@
+{
+  "name": "@holotype/diag-gen",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Generates the diagnostics catalog module and docs pages from the tables of plan chapter 12 §6.2, and checks that they are current.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "typecheck": "tsc",
+    "test": "vitest run"
+  }
+}

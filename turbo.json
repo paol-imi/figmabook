@@ -13,6 +13,9 @@
     "test": {
       "inputs": ["$TURBO_DEFAULT$"]
     },
+    "@holotype/diag-gen#test": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/docs/plan/12-quality.md"]
+    },
     "build-storybook": {
       "inputs": ["$TURBO_DEFAULT$", "!test/**"],
       "outputs": ["storybook-static/**"]

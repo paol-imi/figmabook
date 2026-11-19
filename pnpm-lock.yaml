@@ -260,6 +260,8 @@ importers:
         specifier: 8.3.8
         version: 8.3.8(@types/node@22.20.5)(esbuild@0.27.7)
 
+  tools/diag-gen: {}
+
   tools/fidelity:
     dependencies:
       '@holotype/ir':
