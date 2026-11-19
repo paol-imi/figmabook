@@ -1,0 +1,1222 @@
+{
+  "tree": {
+    "document": {
+      "id": "0:0",
+      "type": "DOCUMENT",
+      "name": "Untitled",
+      "children": [
+        {
+          "id": "0:1",
+          "type": "PAGE",
+          "name": "Page 1",
+          "children": []
+        },
+        {
+          "id": "1:2",
+          "type": "PAGE",
+          "name": "Components",
+          "children": [
+            {
+              "id": "1:3",
+              "type": "FRAME",
+              "name": "Badge",
+              "bottomLeftRadius": 10,
+              "bottomRightRadius": 10,
+              "clipsContent": false,
+              "fills": [
+                {
+                  "blendMode": "NORMAL",
+                  "boundVariables": {},
+                  "color": {
+                    "b": 0.976471,
+                    "g": 0.960784,
+                    "r": 0.945098
+                  },
+                  "opacity": 1,
+                  "type": "SOLID",
+                  "visible": true
+                }
+              ],
+              "height": 20,
+              "sharedPluginData": {
+                "holotype": {
+                  "args": "{\"args\":{},\"globals\":{},\"state\":null,\"viewport\":{\"h\":800,\"w\":1280}}",
+                  "irh": "f43ec562268b927b",
+                  "nk": "root",
+                  "sid": "components-badge",
+                  "story": "components-badge--default",
+                  "v": "0.1",
+                  "vk": "791470562c26f81a"
+                }
+              },
+              "topLeftRadius": 10,
+              "topRightRadius": 10,
+              "width": 52.609,
+              "x": 0,
+              "y": 0,
+              "children": [
+                {
+                  "id": "1:4",
+                  "type": "TEXT",
+                  "name": "Badge",
+                  "autoRename": false,
+                  "blendMode": "NORMAL",
+                  "characters": "Badge",
+                  "height": 16,
+                  "layoutSizingHorizontal": "HUG",
+                  "layoutSizingVertical": "HUG",
+                  "sharedPluginData": {
+                    "holotype": {
+                      "irh": "6259cdcac1fef935",
+                      "nk": "root/text"
+                    }
+                  },
+                  "textStyle": [
+                    {
+                      "start": 0,
+                      "end": 5,
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Medium"
+                      },
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 16
+                      },
+                      "letterSpacing": {
+                        "unit": "PIXELS",
+                        "value": 0
+                      },
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "boundVariables": {},
+                          "color": {
+                            "b": 0.333333,
+                            "g": 0.254902,
+                            "r": 0.2
+                          },
+                          "opacity": 1,
+                          "type": "SOLID",
+                          "visible": true
+                        }
+                      ]
+                    }
+                  ],
+                  "width": 34.931999999999995,
+                  "x": 8,
+                  "y": 2
+                }
+              ]
+            },
+            {
+              "id": "1:5",
+              "type": "FRAME",
+              "name": "Flex",
+              "clipsContent": false,
+              "fills": [
+                {
+                  "blendMode": "NORMAL",
+                  "boundVariables": {},
+                  "color": {
+                    "b": 0.976471,
+                    "g": 0.960784,
+                    "r": 0.945098
+                  },
+                  "opacity": 1,
+                  "type": "SOLID",
+                  "visible": true
+                }
+              ],
+              "height": 48,
+              "sharedPluginData": {
+                "holotype": {
+                  "args": "{\"args\":{},\"globals\":{},\"state\":null,\"viewport\":{\"h\":800,\"w\":1280}}",
+                  "irh": "fcb2dc30f667e315",
+                  "nk": "root",
+                  "sid": "micro-flex",
+                  "story": "micro-flex--row",
+                  "v": "0.1",
+                  "vk": "a4f0ee12dbeac5dd"
+                }
+              },
+              "width": 1280,
+              "x": 0,
+              "y": 116,
+              "children": [
+                {
+                  "id": "1:6",
+                  "type": "FRAME",
+                  "name": "Item 1ypxr 9",
+                  "clipsContent": false,
+                  "fills": [
+                    {
+                      "blendMode": "NORMAL",
+                      "boundVariables": {},
+                      "color": {
+                        "b": 0.964706,
+                        "g": 0.509804,
+                        "r": 0.231373
+                      },
+                      "opacity": 1,
+                      "type": "SOLID",
+                      "visible": true
+                    }
+                  ],
+                  "height": 32,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "irh": "239336402981309c",
+                      "nk": "root/div._item_1ypxr_9"
+                    }
+                  },
+                  "width": 48,
+                  "x": 8,
+                  "y": 8
+                },
+                {
+                  "id": "1:7",
+                  "type": "FRAME",
+                  "name": "Item 1ypxr 9 2",
+                  "clipsContent": false,
+                  "fills": [
+                    {
+                      "blendMode": "NORMAL",
+                      "boundVariables": {},
+                      "color": {
+                        "b": 0.964706,
+                        "g": 0.509804,
+                        "r": 0.231373
+                      },
+                      "opacity": 1,
+                      "type": "SOLID",
+                      "visible": true
+                    }
+                  ],
+                  "height": 32,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "irh": "715ac0f15f2abaea",
+                      "nk": "root/div._item_1ypxr_9#2"
+                    }
+                  },
+                  "width": 48,
+                  "x": 56,
+                  "y": 8
+                },
+                {
+                  "id": "1:8",
+                  "type": "FRAME",
+                  "name": "Item 1ypxr 9 3",
+                  "clipsContent": false,
+                  "fills": [
+                    {
+                      "blendMode": "NORMAL",
+                      "boundVariables": {},
+                      "color": {
+                        "b": 0.964706,
+                        "g": 0.509804,
+                        "r": 0.231373
+                      },
+                      "opacity": 1,
+                      "type": "SOLID",
+                      "visible": true
+                    }
+                  ],
+                  "height": 32,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "irh": "e1b514cede50fa4b",
+                      "nk": "root/div._item_1ypxr_9#3"
+                    }
+                  },
+                  "width": 48,
+                  "x": 104,
+                  "y": 8
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "currentPage": "1:2",
+    "images": []
+  },
+  "ops": [
+    {
+      "method": "createPage",
+      "nodeId": "1:2",
+      "property": null,
+      "value": null
+    },
+    {
+      "method": "set",
+      "nodeId": "1:2",
+      "property": "name",
+      "value": "Components"
+    },
+    {
+      "method": "createFrame",
+      "nodeId": "1:3",
+      "property": null,
+      "value": null
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:3",
+      "property": "holotype/nk",
+      "value": "root"
+    },
+    {
+      "method": "insertChild",
+      "nodeId": "1:2",
+      "property": null,
+      "value": {
+        "child": "1:3",
+        "index": 0
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "fills",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "clipsContent",
+      "value": false
+    },
+    {
+      "method": "resizeWithoutConstraints",
+      "nodeId": "1:3",
+      "property": null,
+      "value": {
+        "height": 20,
+        "width": 52.609
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "x",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "y",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "fills",
+      "value": [
+        {
+          "blendMode": "NORMAL",
+          "boundVariables": {},
+          "color": {
+            "b": 0.976471,
+            "g": 0.960784,
+            "r": 0.945098
+          },
+          "opacity": 1,
+          "type": "SOLID",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "strokes",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "topLeftRadius",
+      "value": 10
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "topRightRadius",
+      "value": 10
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "bottomRightRadius",
+      "value": 10
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "bottomLeftRadius",
+      "value": 10
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "effects",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "opacity",
+      "value": 1
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "blendMode",
+      "value": "PASS_THROUGH"
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "visible",
+      "value": true
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "clipsContent",
+      "value": false
+    },
+    {
+      "method": "set",
+      "nodeId": "1:3",
+      "property": "name",
+      "value": "Badge"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:3",
+      "property": "holotype/sid",
+      "value": "components-badge"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:3",
+      "property": "holotype/vk",
+      "value": "791470562c26f81a"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:3",
+      "property": "holotype/irh",
+      "value": "f43ec562268b927b"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:3",
+      "property": "holotype/v",
+      "value": "0.1"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:3",
+      "property": "holotype/story",
+      "value": "components-badge--default"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:3",
+      "property": "holotype/args",
+      "value": "{\"args\":{},\"globals\":{},\"state\":null,\"viewport\":{\"h\":800,\"w\":1280}}"
+    },
+    {
+      "method": "createText",
+      "nodeId": "1:4",
+      "property": null,
+      "value": null
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:4",
+      "property": "holotype/nk",
+      "value": "root/text"
+    },
+    {
+      "method": "insertChild",
+      "nodeId": "1:3",
+      "property": null,
+      "value": {
+        "child": "1:4",
+        "index": 0
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "x",
+      "value": 8
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "y",
+      "value": 2
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "fontName",
+      "value": {
+        "family": "Inter",
+        "style": "Medium"
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "characters",
+      "value": "Badge"
+    },
+    {
+      "method": "setRangeFontName",
+      "nodeId": "1:4",
+      "property": null,
+      "value": {
+        "end": 5,
+        "start": 0,
+        "value": {
+          "family": "Inter",
+          "style": "Medium"
+        }
+      }
+    },
+    {
+      "method": "setRangeFontSize",
+      "nodeId": "1:4",
+      "property": null,
+      "value": {
+        "end": 5,
+        "start": 0,
+        "value": 12
+      }
+    },
+    {
+      "method": "setRangeLineHeight",
+      "nodeId": "1:4",
+      "property": null,
+      "value": {
+        "end": 5,
+        "start": 0,
+        "value": {
+          "unit": "PIXELS",
+          "value": 16
+        }
+      }
+    },
+    {
+      "method": "setRangeLetterSpacing",
+      "nodeId": "1:4",
+      "property": null,
+      "value": {
+        "end": 5,
+        "start": 0,
+        "value": {
+          "unit": "PIXELS",
+          "value": 0
+        }
+      }
+    },
+    {
+      "method": "setRangeFills",
+      "nodeId": "1:4",
+      "property": null,
+      "value": {
+        "end": 5,
+        "start": 0,
+        "value": [
+          {
+            "blendMode": "NORMAL",
+            "boundVariables": {},
+            "color": {
+              "b": 0.333333,
+              "g": 0.254902,
+              "r": 0.2
+            },
+            "opacity": 1,
+            "type": "SOLID",
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "textAlignHorizontal",
+      "value": "LEFT"
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "textAlignVertical",
+      "value": "TOP"
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "textAutoResize",
+      "value": "WIDTH_AND_HEIGHT"
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "effects",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "opacity",
+      "value": 1
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "blendMode",
+      "value": "NORMAL"
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "visible",
+      "value": true
+    },
+    {
+      "method": "set",
+      "nodeId": "1:4",
+      "property": "name",
+      "value": "Badge"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:4",
+      "property": "holotype/irh",
+      "value": "6259cdcac1fef935"
+    },
+    {
+      "method": "createFrame",
+      "nodeId": "1:5",
+      "property": null,
+      "value": null
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:5",
+      "property": "holotype/nk",
+      "value": "root"
+    },
+    {
+      "method": "insertChild",
+      "nodeId": "1:2",
+      "property": null,
+      "value": {
+        "child": "1:5",
+        "index": 1
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "fills",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "clipsContent",
+      "value": false
+    },
+    {
+      "method": "resizeWithoutConstraints",
+      "nodeId": "1:5",
+      "property": null,
+      "value": {
+        "height": 48,
+        "width": 1280
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "x",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "y",
+      "value": 116
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "fills",
+      "value": [
+        {
+          "blendMode": "NORMAL",
+          "boundVariables": {},
+          "color": {
+            "b": 0.976471,
+            "g": 0.960784,
+            "r": 0.945098
+          },
+          "opacity": 1,
+          "type": "SOLID",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "strokes",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "topLeftRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "topRightRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "bottomRightRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "bottomLeftRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "effects",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "opacity",
+      "value": 1
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "blendMode",
+      "value": "PASS_THROUGH"
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "visible",
+      "value": true
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "clipsContent",
+      "value": false
+    },
+    {
+      "method": "set",
+      "nodeId": "1:5",
+      "property": "name",
+      "value": "Flex"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:5",
+      "property": "holotype/sid",
+      "value": "micro-flex"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:5",
+      "property": "holotype/vk",
+      "value": "a4f0ee12dbeac5dd"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:5",
+      "property": "holotype/irh",
+      "value": "fcb2dc30f667e315"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:5",
+      "property": "holotype/v",
+      "value": "0.1"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:5",
+      "property": "holotype/story",
+      "value": "micro-flex--row"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:5",
+      "property": "holotype/args",
+      "value": "{\"args\":{},\"globals\":{},\"state\":null,\"viewport\":{\"h\":800,\"w\":1280}}"
+    },
+    {
+      "method": "createFrame",
+      "nodeId": "1:6",
+      "property": null,
+      "value": null
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:6",
+      "property": "holotype/nk",
+      "value": "root/div._item_1ypxr_9"
+    },
+    {
+      "method": "insertChild",
+      "nodeId": "1:5",
+      "property": null,
+      "value": {
+        "child": "1:6",
+        "index": 0
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "fills",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "clipsContent",
+      "value": false
+    },
+    {
+      "method": "resizeWithoutConstraints",
+      "nodeId": "1:6",
+      "property": null,
+      "value": {
+        "height": 32,
+        "width": 48
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "x",
+      "value": 8
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "y",
+      "value": 8
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "fills",
+      "value": [
+        {
+          "blendMode": "NORMAL",
+          "boundVariables": {},
+          "color": {
+            "b": 0.964706,
+            "g": 0.509804,
+            "r": 0.231373
+          },
+          "opacity": 1,
+          "type": "SOLID",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "strokes",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "topLeftRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "topRightRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "bottomRightRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "bottomLeftRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "effects",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "opacity",
+      "value": 1
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "blendMode",
+      "value": "PASS_THROUGH"
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "visible",
+      "value": true
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "clipsContent",
+      "value": false
+    },
+    {
+      "method": "set",
+      "nodeId": "1:6",
+      "property": "name",
+      "value": "Item 1ypxr 9"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:6",
+      "property": "holotype/irh",
+      "value": "239336402981309c"
+    },
+    {
+      "method": "createFrame",
+      "nodeId": "1:7",
+      "property": null,
+      "value": null
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:7",
+      "property": "holotype/nk",
+      "value": "root/div._item_1ypxr_9#2"
+    },
+    {
+      "method": "insertChild",
+      "nodeId": "1:5",
+      "property": null,
+      "value": {
+        "child": "1:7",
+        "index": 1
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "fills",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "clipsContent",
+      "value": false
+    },
+    {
+      "method": "resizeWithoutConstraints",
+      "nodeId": "1:7",
+      "property": null,
+      "value": {
+        "height": 32,
+        "width": 48
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "x",
+      "value": 56
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "y",
+      "value": 8
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "fills",
+      "value": [
+        {
+          "blendMode": "NORMAL",
+          "boundVariables": {},
+          "color": {
+            "b": 0.964706,
+            "g": 0.509804,
+            "r": 0.231373
+          },
+          "opacity": 1,
+          "type": "SOLID",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "strokes",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "topLeftRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "topRightRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "bottomRightRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "bottomLeftRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "effects",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "opacity",
+      "value": 1
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "blendMode",
+      "value": "PASS_THROUGH"
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "visible",
+      "value": true
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "clipsContent",
+      "value": false
+    },
+    {
+      "method": "set",
+      "nodeId": "1:7",
+      "property": "name",
+      "value": "Item 1ypxr 9 2"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:7",
+      "property": "holotype/irh",
+      "value": "715ac0f15f2abaea"
+    },
+    {
+      "method": "createFrame",
+      "nodeId": "1:8",
+      "property": null,
+      "value": null
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:8",
+      "property": "holotype/nk",
+      "value": "root/div._item_1ypxr_9#3"
+    },
+    {
+      "method": "insertChild",
+      "nodeId": "1:5",
+      "property": null,
+      "value": {
+        "child": "1:8",
+        "index": 2
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "fills",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "clipsContent",
+      "value": false
+    },
+    {
+      "method": "resizeWithoutConstraints",
+      "nodeId": "1:8",
+      "property": null,
+      "value": {
+        "height": 32,
+        "width": 48
+      }
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "x",
+      "value": 104
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "y",
+      "value": 8
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "fills",
+      "value": [
+        {
+          "blendMode": "NORMAL",
+          "boundVariables": {},
+          "color": {
+            "b": 0.964706,
+            "g": 0.509804,
+            "r": 0.231373
+          },
+          "opacity": 1,
+          "type": "SOLID",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "strokes",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "topLeftRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "topRightRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "bottomRightRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "bottomLeftRadius",
+      "value": 0
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "effects",
+      "value": []
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "opacity",
+      "value": 1
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "blendMode",
+      "value": "PASS_THROUGH"
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "visible",
+      "value": true
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "clipsContent",
+      "value": false
+    },
+    {
+      "method": "set",
+      "nodeId": "1:8",
+      "property": "name",
+      "value": "Item 1ypxr 9 3"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:8",
+      "property": "holotype/irh",
+      "value": "e1b514cede50fa4b"
+    }
+  ],
+  "notifications": [
+    "Imported 2 components (2 variants)."
+  ]
+}

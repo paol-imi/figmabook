@@ -1,6 +1,14 @@
 import { NotImplementedError } from '@holotype/shared';
 import type { StorybookModel } from '@holotype/storybook';
 
+export {
+  DEFAULT_VIEWPORT,
+  frameworkOf,
+  identityOf,
+  planSingleStory,
+  type SingleStoryOptions,
+} from './single-story';
+
 /** How an arg becomes part of the component (README §7, D-13). */
 export type ArgClassification = 'VARIANT' | 'BOOLEAN' | 'TEXT' | 'INSTANCE_SWAP' | 'SLOT' | 'FIXED' | 'IGNORED';
 

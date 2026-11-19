@@ -118,15 +118,33 @@ importers:
 
   packages/cli:
     dependencies:
+      '@holotype/capture':
+        specifier: workspace:*
+        version: link:../capture
       '@holotype/ir':
         specifier: workspace:*
         version: link:../ir
+      '@holotype/mapper':
+        specifier: workspace:*
+        version: link:../mapper
+      '@holotype/planner':
+        specifier: workspace:*
+        version: link:../planner
       '@holotype/shared':
         specifier: workspace:*
         version: link:../shared
+      '@holotype/storybook':
+        specifier: workspace:*
+        version: link:../storybook
       citty:
         specifier: 0.2.2
         version: 0.2.2
+      fflate:
+        specifier: 0.8.2
+        version: 0.8.2
+      playwright:
+        specifier: 1.63.0
+        version: 1.63.0
 
   packages/dcr:
     dependencies:
@@ -335,6 +353,30 @@ importers:
       playwright:
         specifier: 1.63.0
         version: 1.63.0
+
+  tests/smoke:
+    devDependencies:
+      '@figma/plugin-typings':
+        specifier: 1.142.0
+        version: 1.142.0
+      '@holotype/cli':
+        specifier: workspace:*
+        version: link:../../packages/cli
+      '@holotype/figma-fake':
+        specifier: workspace:*
+        version: link:../../packages/figma-fake
+      '@holotype/ir':
+        specifier: workspace:*
+        version: link:../../packages/ir
+      '@holotype/plugin':
+        specifier: workspace:*
+        version: link:../../packages/plugin
+      '@holotype/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      fflate:
+        specifier: 0.8.2
+        version: 0.8.2
 
   tools/diag-gen: {}
 

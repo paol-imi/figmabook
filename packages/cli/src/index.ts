@@ -1,44 +1,41 @@
-import type { BundleManifest } from '@holotype/ir';
-import { compareSeverity, type Diagnostic, NotImplementedError, type Severity } from '@holotype/shared';
-
-/** Process exit codes (02 §9). */
-export const ExitCode = Object.freeze({
-  Ok: 0,
-  /** Diagnostics at or above `--fail-on`. */
-  Diagnostics: 1,
-  /** Config or usage error. */
-  Usage: 2,
-  /** Storybook unreachable or auth failure. */
-  StorybookUnreachable: 3,
-  Internal: 4,
-});
-
-export type ExitCode = (typeof ExitCode)[keyof typeof ExitCode];
-
-/** Exit code for a finished run: 1 when any diagnostic reaches `failOn` (default `error`). */
-export function exitCodeFor(diagnostics: readonly Diagnostic[], failOn: Severity = 'error'): ExitCode {
-  return diagnostics.some((d) => compareSeverity(d.severity, failOn) >= 0) ? ExitCode.Diagnostics : ExitCode.Ok;
-}
-
-/** Resolved `holotype.config.ts` (11 §config). The schema lands with config loading. */
-export type HolotypeConfig = Readonly<Record<string, unknown>>;
-
-export interface ServeOptions {
-  /** One of the manifest's loopback ports (D-25). */
-  readonly port?: 47321 | 47322 | 47323;
-}
-
-/** Runs the full pipeline for a config: discover, plan, capture, map, export. */
-export async function run(_config: HolotypeConfig): Promise<ExitCode> {
-  throw new NotImplementedError('run', 'Phase 1');
-}
-
-/** Starts the local server the plugin pairs with (topology A). */
-export async function serve(_options: ServeOptions = {}): Promise<never> {
-  throw new NotImplementedError('serve', 'Phase 3');
-}
-
-/** Writes a bundle directory or `.holotype.zip` (topology B). */
-export async function exportBundle(_config: HolotypeConfig): Promise<BundleManifest> {
-  throw new NotImplementedError('exportBundle', 'Phase 1');
-}
+/*
+ * @holotype/cli: the `holotype` command (alias `holo`) and its programmatic API (11 §3).
+ */
+export * from './bundle';
+export { captureArgs, captureCommand, captureMain, sourceDateEpoch } from './commands/capture';
+export { type CommandOutcome, usageError, usageReport } from './commands/usage';
+export { defineConfig, type HolotypeConfig } from './config/define';
+export {
+  CONFIG_FILES,
+  type ConfigOverrides,
+  findConfigFile,
+  loadConfig,
+  mergeConfig,
+  type ResolvedConfig,
+  readConfigFile,
+  resolveConfig,
+  withoutPointer,
+} from './config/load';
+export { ExitCode, exitCodeFor } from './exit-codes';
+export { type MainDeps, main, rootCommand } from './main';
+export { displayPath, formatBytes, formatCaptureSummary, formatDiagnostic, helpLink } from './output/human';
+export { type CliIo, processIo } from './output/io';
+export { FAVICON_PATTERN, quietFavicon } from './pipeline/browser';
+export {
+  type CaptureDeps,
+  type CaptureProgress,
+  type CaptureRunOptions,
+  type CaptureRunResult,
+  checkStories,
+  configHash,
+  DEFAULT_OUTPUT_DIR,
+  isoSeconds,
+  makeRunId,
+  runCapture,
+} from './pipeline/capture';
+export { type ComponentWork, mapWork, metaInput, portableCapture, skipReason } from './pipeline/component';
+export { resolveMapperSettings } from './pipeline/settings';
+export { redactSource, resolveSource, storybookLinks } from './pipeline/source';
+export { CLI_VERSION, MAPPER_VERSION } from './pipeline/versions';
+export { exportBundle, type RunOptions, run, type ServeOptions, serve } from './run';
+export { countByCode, type RunComponent, type RunReport } from './run-report';
