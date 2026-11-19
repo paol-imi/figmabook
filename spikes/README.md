@@ -120,7 +120,7 @@ pnpm -F @holotype/spikes build     # → dist/holotype-spikes.zip (+ -<version>.
 pnpm -F @holotype/spikes test      # unit tests, UI tests and dry runs of every spike
 pnpm -F @holotype/spikes test:e2e  # Chromium checks: S-05 reference data, S-19 provenance on the ds-react dev server
 pnpm -F @holotype/spikes refs      # regenerate S-05/refs.json with headless Chromium
-pnpm build && pnpm -F @holotype/spikes s19   # S-19 coverage run → S-19/results/summary.json (docs/spikes/S-19.md)
+pnpm build && pnpm -F @holotype/spikes s19   # S-19 coverage run → S-19/results/summary.json (internal/spikes/S-19.md)
 pnpm -F @holotype/spikes s19:record          # re-record S-19/test/fixtures/button-primary.json from the dev server
 ```
 

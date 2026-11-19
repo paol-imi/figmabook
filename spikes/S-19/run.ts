@@ -2,7 +2,7 @@
  * `pnpm -F @holotype/spikes s19 [--mode dev|no-sourcemap|static|all] [--records <file>]`
  *
  * Runs the S-19 measurement on fixtures/ds-react and writes `S-19/results/summary.json`, the
- * source of the coverage tables in docs/spikes/S-19.md:
+ * source of the coverage tables in internal/spikes/S-19.md:
  * - `dev`: the dev server with `css.devSourcemap: true` (the fixture's `viteFinal`; branch mode);
  * - `no-sourcemap`: the dev server with CSS source maps off (`capture.devSourcemap: 'keep'`);
  * - `static`: a static build (library mode), where provenance is selector-only.

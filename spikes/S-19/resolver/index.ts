@@ -2,7 +2,7 @@
  * S-19 provenance resolver (05 §6.2, 15 §5): CDP matched styles + style sheet headers + Vite dev
  * source maps → per-field `file:line:col`, original selector and `var()` definition sites.
  * Pure and isomorphic; the CDP calls live in `../probe.ts`. B-45 moves this folder to
- * `packages/capture/src/cdp/` unchanged (see docs/spikes/S-19.md §7).
+ * `packages/capture/src/cdp/` unchanged (see internal/spikes/S-19.md §7).
  */
 
 export {
