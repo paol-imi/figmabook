@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM"],
+    "types": ["node"]
+  },
+  "include": [".vitepress/**/*.ts", ".vitepress/**/*.mts", "reference/**/*.ts", "test", "*.config.ts"],
+  "exclude": [".vitepress/cache", ".vitepress/dist"]
+}

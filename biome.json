@@ -7,6 +7,7 @@
       "!docs",
       "!tools/diag-gen/test/fixtures/**/*.md",
       "!.changeset/*.md",
+      "!website/**/*.md",
       "!**/dist",
       "!packages/plugin/build",
       "!packages/plugin/manifest.json",
