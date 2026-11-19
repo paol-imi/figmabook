@@ -1,0 +1,84 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`holotype capture (B-13) > prints one RunReport with --json 1`] = `
+{
+  "budgets": [],
+  "bundle": {
+    "byCode": {},
+    "components": [
+      {
+        "diagnostics": [],
+        "planner": {
+          "budget": {
+            "emitted": 1,
+            "requested": 1,
+            "strategy": "auto",
+          },
+          "droppedAxes": [],
+        },
+        "sid": "micro-flex",
+      },
+    ],
+    "kind": "holotype/report",
+    "summary": {
+      "autoLayoutCoverage": 0,
+      "components": 1,
+      "errors": 0,
+      "propertyQuality": 1,
+      "rasterizedNodes": 0,
+      "variants": 1,
+      "warnings": 0,
+    },
+  },
+  "components": [
+    {
+      "diagnostics": [],
+      "name": "Flex",
+      "properties": {},
+      "sid": "micro-flex",
+      "status": "ok",
+      "timingsMs": {
+        "capture": "<capture>",
+        "map": "<map>",
+      },
+      "variants": 1,
+    },
+  ],
+  "diagnostics": [],
+  "diagnosticsByCode": {},
+  "output": {
+    "bytes": 1972,
+    "kind": "zip",
+    "path": "<path>",
+  },
+  "reportVersion": "1",
+  "run": {
+    "command": "capture",
+    "durationMs": "<durationMs>",
+    "exitCode": 0,
+    "generator": {
+      "chromium": "<chromium>",
+      "name": "@holotype/cli",
+      "playwright": "1.63.0",
+      "version": "0.0.0",
+    },
+    "id": "20251119T100000Z-75d1c7e0",
+    "startedAt": "<startedAt>",
+    "storybook": {
+      "indexHash": "6bbc0d8ce791c462fe97ad290d05bdb7f917ef5d6b18508508203977a9a16c02",
+      "renderer": "@storybook/react",
+      "source": "static:<dir>",
+      "version": "10.6.7",
+    },
+    "surface": "cli",
+  },
+  "totals": {
+    "autoLayoutCoverage": 0,
+    "components": 1,
+    "failed": 0,
+    "nodes": 4,
+    "ok": 1,
+    "variants": 1,
+  },
+}
+`;

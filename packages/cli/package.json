@@ -10,6 +10,11 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./config": {
+      "@holotype/source": "./src/config.ts",
+      "types": "./dist/config.d.ts",
+      "default": "./dist/config.js"
+    },
     "./package.json": "./package.json"
   },
   "bin": {
@@ -27,11 +32,18 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts"
   },
   "dependencies": {
+    "@holotype/capture": "workspace:*",
     "@holotype/ir": "workspace:*",
+    "@holotype/mapper": "workspace:*",
+    "@holotype/planner": "workspace:*",
     "@holotype/shared": "workspace:*",
-    "citty": "0.2.2"
+    "@holotype/storybook": "workspace:*",
+    "citty": "0.2.2",
+    "fflate": "0.8.2",
+    "playwright": "1.63.0"
   }
 }

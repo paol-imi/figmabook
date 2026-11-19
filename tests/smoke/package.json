@@ -1,0 +1,25 @@
+{
+  "name": "@holotype/smoke",
+  "version": "0.0.0",
+  "private": true,
+  "description": "L0 smoke (BUILD B-15, demo D1): the CLI captures fixture stories into a bundle and the plugin's real import and apply code builds it in figma-fake.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "typecheck": "tsc",
+    "test:smoke": "vitest run",
+    "demo": "node --disable-warning=ExperimentalWarning scripts/demo.ts"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "1.142.0",
+    "@holotype/cli": "workspace:*",
+    "@holotype/figma-fake": "workspace:*",
+    "@holotype/ir": "workspace:*",
+    "@holotype/plugin": "workspace:*",
+    "@holotype/shared": "workspace:*",
+    "fflate": "0.8.2"
+  }
+}
