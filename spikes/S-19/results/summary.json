@@ -1,0 +1,3222 @@
+{
+  "format": "holotype-s19-coverage/1",
+  "chromium": "153.0.8010.12",
+  "modes": {
+    "dev": {
+      "stories": 46,
+      "nodes": 360,
+      "byComponent": [
+        {
+          "key": "components-badge",
+          "fields": 238,
+          "resolved": 238,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 236,
+          "chainResolved": 236,
+          "chainComplete": 236,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 236,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "components-button",
+          "fields": 348,
+          "resolved": 316,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 32,
+          "withVar": 310,
+          "chainResolved": 310,
+          "chainComplete": 310,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 342,
+          "valueMismatch": 0,
+          "reasons": {
+            "user-agent": 32
+          }
+        },
+        {
+          "key": "components-card",
+          "fields": 426,
+          "resolved": 396,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 30,
+          "withVar": 396,
+          "chainResolved": 396,
+          "chainComplete": 396,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 420,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6,
+            "user-agent": 24
+          }
+        },
+        {
+          "key": "components-input",
+          "fields": 222,
+          "resolved": 216,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 6,
+          "withVar": 216,
+          "chainResolved": 216,
+          "chainComplete": 216,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 216,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6
+          }
+        },
+        {
+          "key": "components-stack",
+          "fields": 658,
+          "resolved": 642,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 16,
+          "withVar": 642,
+          "chainResolved": 642,
+          "chainComplete": 642,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 658,
+          "valueMismatch": 0,
+          "reasons": {
+            "user-agent": 16
+          }
+        },
+        {
+          "key": "micro-backgrounds",
+          "fields": 6,
+          "resolved": 6,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 6,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "micro-borders",
+          "fields": 126,
+          "resolved": 126,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 126,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "micro-flex",
+          "fields": 184,
+          "resolved": 184,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 184,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "micro-text",
+          "fields": 122,
+          "resolved": 122,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 120,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "all",
+          "fields": 2330,
+          "resolved": 2246,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 84,
+          "withVar": 1800,
+          "chainResolved": 1800,
+          "chainComplete": 1800,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 2308,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 12,
+            "user-agent": 72
+          }
+        }
+      ],
+      "byGroup": [
+        {
+          "key": "border",
+          "fields": 414,
+          "resolved": 414,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 312,
+          "chainResolved": 312,
+          "chainComplete": 312,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 408,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "fill",
+          "fields": 188,
+          "resolved": 188,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 82,
+          "chainResolved": 82,
+          "chainComplete": 82,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 186,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "gap",
+          "fields": 258,
+          "resolved": 258,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 236,
+          "chainResolved": 236,
+          "chainComplete": 236,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 258,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "padding",
+          "fields": 430,
+          "resolved": 358,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 72,
+          "withVar": 278,
+          "chainResolved": 278,
+          "chainComplete": 278,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 430,
+          "valueMismatch": 0,
+          "reasons": {
+            "user-agent": 72
+          }
+        },
+        {
+          "key": "radius",
+          "fields": 398,
+          "resolved": 398,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 384,
+          "chainResolved": 384,
+          "chainComplete": 384,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 398,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "text",
+          "fields": 642,
+          "resolved": 630,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 12,
+          "withVar": 508,
+          "chainResolved": 508,
+          "chainComplete": 508,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 628,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 12
+          }
+        },
+        {
+          "key": "all",
+          "fields": 2330,
+          "resolved": 2246,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 84,
+          "withVar": 1800,
+          "chainResolved": 1800,
+          "chainComplete": 1800,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 2308,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 12,
+            "user-agent": 72
+          }
+        }
+      ],
+      "byTheme": [
+        {
+          "key": "dark",
+          "fields": 1165,
+          "resolved": 1123,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 42,
+          "withVar": 900,
+          "chainResolved": 900,
+          "chainComplete": 900,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 1154,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6,
+            "user-agent": 36
+          }
+        },
+        {
+          "key": "light",
+          "fields": 1165,
+          "resolved": 1123,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 42,
+          "withVar": 900,
+          "chainResolved": 900,
+          "chainComplete": 900,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 1154,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6,
+            "user-agent": 36
+          }
+        },
+        {
+          "key": "all",
+          "fields": 2330,
+          "resolved": 2246,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 84,
+          "withVar": 1800,
+          "chainResolved": 1800,
+          "chainComplete": 1800,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 2308,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 12,
+            "user-agent": 72
+          }
+        }
+      ],
+      "diagnostics": {},
+      "cost": {
+        "matchedCalls": 356,
+        "matchedMsPerCall": 9.11,
+        "resolveMsPerField": 0.141
+      },
+      "unmatched": [],
+      "captureFailures": [],
+      "failures": [
+        {
+          "storyId": "components-button--disabled",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--disabled",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--disabled",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--disabled",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--ghost",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--ghost",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--ghost",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--ghost",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--large",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--large",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--large",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--large",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--loading",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--loading",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--loading",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--loading",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--primary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--primary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--primary",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--primary",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--secondary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--secondary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--secondary",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--secondary",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--small",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--small",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--small",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--small",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--with-icon",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--with-icon",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--with-icon",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--with-icon",
+          "theme": "dark",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "dark",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "dark",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "dark",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "dark",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-input--default",
+          "theme": "light",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-input--default",
+          "theme": "dark",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-input--disabled",
+          "theme": "light",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-input--disabled",
+          "theme": "dark",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-input--with-error",
+          "theme": "light",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-input--with-error",
+          "theme": "dark",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-stack--column",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--column",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--column",
+          "theme": "dark",
+          "path": "div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--column",
+          "theme": "dark",
+          "path": "div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:2",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:2",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "dark",
+          "path": "div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "dark",
+          "path": "div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "dark",
+          "path": "div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "dark",
+          "path": "div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "dark",
+          "path": "div:0>button:2",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "dark",
+          "path": "div:0>button:2",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        }
+      ]
+    },
+    "no-sourcemap": {
+      "stories": 46,
+      "nodes": 180,
+      "byComponent": [
+        {
+          "key": "components-badge",
+          "fields": 119,
+          "resolved": 0,
+          "approximateOk": 119,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 118,
+          "chainResolved": 118,
+          "chainComplete": 118,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 118,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "components-button",
+          "fields": 174,
+          "resolved": 0,
+          "approximateOk": 158,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 16,
+          "withVar": 155,
+          "chainResolved": 155,
+          "chainComplete": 155,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 171,
+          "valueMismatch": 0,
+          "reasons": {
+            "user-agent": 16
+          }
+        },
+        {
+          "key": "components-card",
+          "fields": 213,
+          "resolved": 0,
+          "approximateOk": 198,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 15,
+          "withVar": 198,
+          "chainResolved": 198,
+          "chainComplete": 198,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 210,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 3,
+            "user-agent": 12
+          }
+        },
+        {
+          "key": "components-input",
+          "fields": 111,
+          "resolved": 0,
+          "approximateOk": 108,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 3,
+          "withVar": 108,
+          "chainResolved": 108,
+          "chainComplete": 108,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 108,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 3
+          }
+        },
+        {
+          "key": "components-stack",
+          "fields": 329,
+          "resolved": 0,
+          "approximateOk": 321,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 8,
+          "withVar": 321,
+          "chainResolved": 321,
+          "chainComplete": 321,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 329,
+          "valueMismatch": 0,
+          "reasons": {
+            "user-agent": 8
+          }
+        },
+        {
+          "key": "micro-backgrounds",
+          "fields": 3,
+          "resolved": 0,
+          "approximateOk": 3,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 3,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "micro-borders",
+          "fields": 63,
+          "resolved": 0,
+          "approximateOk": 63,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 63,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "micro-flex",
+          "fields": 92,
+          "resolved": 0,
+          "approximateOk": 92,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 92,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "micro-text",
+          "fields": 61,
+          "resolved": 0,
+          "approximateOk": 61,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 60,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "all",
+          "fields": 1165,
+          "resolved": 0,
+          "approximateOk": 1123,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 42,
+          "withVar": 900,
+          "chainResolved": 900,
+          "chainComplete": 900,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 1154,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6,
+            "user-agent": 36
+          }
+        }
+      ],
+      "byGroup": [
+        {
+          "key": "border",
+          "fields": 207,
+          "resolved": 0,
+          "approximateOk": 207,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 156,
+          "chainResolved": 156,
+          "chainComplete": 156,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 204,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "fill",
+          "fields": 94,
+          "resolved": 0,
+          "approximateOk": 94,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 41,
+          "chainResolved": 41,
+          "chainComplete": 41,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 93,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "gap",
+          "fields": 129,
+          "resolved": 0,
+          "approximateOk": 129,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 118,
+          "chainResolved": 118,
+          "chainComplete": 118,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 129,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "padding",
+          "fields": 215,
+          "resolved": 0,
+          "approximateOk": 179,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 36,
+          "withVar": 139,
+          "chainResolved": 139,
+          "chainComplete": 139,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 215,
+          "valueMismatch": 0,
+          "reasons": {
+            "user-agent": 36
+          }
+        },
+        {
+          "key": "radius",
+          "fields": 199,
+          "resolved": 0,
+          "approximateOk": 199,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 0,
+          "withVar": 192,
+          "chainResolved": 192,
+          "chainComplete": 192,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 199,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "text",
+          "fields": 321,
+          "resolved": 0,
+          "approximateOk": 315,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 6,
+          "withVar": 254,
+          "chainResolved": 254,
+          "chainComplete": 254,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 314,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6
+          }
+        },
+        {
+          "key": "all",
+          "fields": 1165,
+          "resolved": 0,
+          "approximateOk": 1123,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 42,
+          "withVar": 900,
+          "chainResolved": 900,
+          "chainComplete": 900,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 1154,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6,
+            "user-agent": 36
+          }
+        }
+      ],
+      "byTheme": [
+        {
+          "key": "light",
+          "fields": 1165,
+          "resolved": 0,
+          "approximateOk": 1123,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 42,
+          "withVar": 900,
+          "chainResolved": 900,
+          "chainComplete": 900,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 1154,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6,
+            "user-agent": 36
+          }
+        },
+        {
+          "key": "all",
+          "fields": 1165,
+          "resolved": 0,
+          "approximateOk": 1123,
+          "approximateWrong": 0,
+          "selectorOnly": 0,
+          "unresolved": 42,
+          "withVar": 900,
+          "chainResolved": 900,
+          "chainComplete": 900,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 1154,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6,
+            "user-agent": 36
+          }
+        }
+      ],
+      "diagnostics": {
+        "DCR_PROVENANCE_NO_SOURCEMAP": 10
+      },
+      "cost": {
+        "matchedCalls": 178,
+        "matchedMsPerCall": 7.76,
+        "resolveMsPerField": 0.067
+      },
+      "unmatched": [],
+      "captureFailures": [],
+      "failures": [
+        {
+          "storyId": "components-button--disabled",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--disabled",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--ghost",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--ghost",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--large",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--large",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--loading",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--loading",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--primary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--primary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--secondary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--secondary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--small",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--small",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--with-icon",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--with-icon",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-input--default",
+          "theme": "light",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-input--disabled",
+          "theme": "light",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-input--with-error",
+          "theme": "light",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-stack--column",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--column",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:2",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:2",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        }
+      ]
+    },
+    "static": {
+      "stories": 46,
+      "nodes": 180,
+      "byComponent": [
+        {
+          "key": "components-badge",
+          "fields": 119,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 119,
+          "unresolved": 0,
+          "withVar": 118,
+          "chainResolved": 118,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 118,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "components-button",
+          "fields": 174,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 158,
+          "unresolved": 16,
+          "withVar": 155,
+          "chainResolved": 155,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 171,
+          "valueMismatch": 0,
+          "reasons": {
+            "user-agent": 16
+          }
+        },
+        {
+          "key": "components-card",
+          "fields": 213,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 198,
+          "unresolved": 15,
+          "withVar": 198,
+          "chainResolved": 198,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 210,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 3,
+            "user-agent": 12
+          }
+        },
+        {
+          "key": "components-input",
+          "fields": 111,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 108,
+          "unresolved": 3,
+          "withVar": 108,
+          "chainResolved": 108,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 108,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 3
+          }
+        },
+        {
+          "key": "components-stack",
+          "fields": 329,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 321,
+          "unresolved": 8,
+          "withVar": 321,
+          "chainResolved": 321,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 329,
+          "valueMismatch": 0,
+          "reasons": {
+            "user-agent": 8
+          }
+        },
+        {
+          "key": "micro-backgrounds",
+          "fields": 3,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 3,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 1,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "micro-borders",
+          "fields": 63,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 63,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 63,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "micro-flex",
+          "fields": 92,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 92,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 92,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "micro-text",
+          "fields": 61,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 61,
+          "unresolved": 0,
+          "withVar": 0,
+          "chainResolved": 0,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 60,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "all",
+          "fields": 1165,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 1123,
+          "unresolved": 42,
+          "withVar": 900,
+          "chainResolved": 900,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 1152,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6,
+            "user-agent": 36
+          }
+        }
+      ],
+      "byGroup": [
+        {
+          "key": "border",
+          "fields": 207,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 207,
+          "unresolved": 0,
+          "withVar": 156,
+          "chainResolved": 156,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 204,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "fill",
+          "fields": 94,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 94,
+          "unresolved": 0,
+          "withVar": 41,
+          "chainResolved": 41,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 91,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "gap",
+          "fields": 129,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 129,
+          "unresolved": 0,
+          "withVar": 118,
+          "chainResolved": 118,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 129,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "padding",
+          "fields": 215,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 179,
+          "unresolved": 36,
+          "withVar": 139,
+          "chainResolved": 139,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 215,
+          "valueMismatch": 0,
+          "reasons": {
+            "user-agent": 36
+          }
+        },
+        {
+          "key": "radius",
+          "fields": 199,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 199,
+          "unresolved": 0,
+          "withVar": 192,
+          "chainResolved": 192,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 199,
+          "valueMismatch": 0,
+          "reasons": {}
+        },
+        {
+          "key": "text",
+          "fields": 321,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 315,
+          "unresolved": 6,
+          "withVar": 254,
+          "chainResolved": 254,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 314,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6
+          }
+        },
+        {
+          "key": "all",
+          "fields": 1165,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 1123,
+          "unresolved": 42,
+          "withVar": 900,
+          "chainResolved": 900,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 1152,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6,
+            "user-agent": 36
+          }
+        }
+      ],
+      "byTheme": [
+        {
+          "key": "light",
+          "fields": 1165,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 1123,
+          "unresolved": 42,
+          "withVar": 900,
+          "chainResolved": 900,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 1152,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6,
+            "user-agent": 36
+          }
+        },
+        {
+          "key": "all",
+          "fields": 1165,
+          "resolved": 0,
+          "approximateOk": 0,
+          "approximateWrong": 0,
+          "selectorOnly": 1123,
+          "unresolved": 42,
+          "withVar": 900,
+          "chainResolved": 900,
+          "chainComplete": 0,
+          "wrongFile": 0,
+          "wrongSelector": 0,
+          "valueMatch": 1152,
+          "valueMismatch": 0,
+          "reasons": {
+            "not-declared": 6,
+            "user-agent": 36
+          }
+        }
+      ],
+      "diagnostics": {
+        "DCR_PROVENANCE_MINIFIED": 9
+      },
+      "cost": {
+        "matchedCalls": 178,
+        "matchedMsPerCall": 7.61,
+        "resolveMsPerField": 0.066
+      },
+      "unmatched": [],
+      "captureFailures": [],
+      "failures": [
+        {
+          "storyId": "components-button--disabled",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--disabled",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--ghost",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--ghost",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--large",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--large",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--loading",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--loading",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--primary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--primary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--secondary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--secondary",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--small",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--small",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--with-icon",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-button--with-icon",
+          "theme": "light",
+          "path": "button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--default",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--long-text",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-card--with-media",
+          "theme": "light",
+          "path": "article:0>div:0>div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-input--default",
+          "theme": "light",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-input--disabled",
+          "theme": "light",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-input--with-error",
+          "theme": "light",
+          "path": "div:0>p:0>#text:0",
+          "property": "font-weight",
+          "status": "unresolved",
+          "reason": "not-declared",
+          "valueCheck": "unknown"
+        },
+        {
+          "storyId": "components-stack--column",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--column",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:0",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:1",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:1",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:2",
+          "property": "padding-top",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-start: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        },
+        {
+          "storyId": "components-stack--row",
+          "theme": "light",
+          "path": "div:0>button:2",
+          "property": "padding-bottom",
+          "status": "unresolved",
+          "reason": "user-agent",
+          "declaration": "padding-block-end: 1px",
+          "selector": {
+            "served": "button"
+          },
+          "valueCheck": "match"
+        }
+      ]
+    }
+  }
+}
