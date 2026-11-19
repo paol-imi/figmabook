@@ -71,7 +71,7 @@ exports[`holotype capture > prints one RunReport with --json 1`] = `
   "diagnostics": [],
   "diagnosticsByCode": {},
   "output": {
-    "bytes": 3311,
+    "bytes": 3303,
     "kind": "zip",
     "path": "<cwd>/smoke.holotype.zip",
   },
