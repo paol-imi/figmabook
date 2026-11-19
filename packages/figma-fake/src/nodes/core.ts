@@ -1,4 +1,5 @@
 import { figmaError, unsupported } from '../errors';
+import { checkEntrySize, checkKey, checkNamespace, checkValue } from '../plugin-data';
 import { bindState, live, type NodeState, stateOfNode } from '../state';
 import { deepFreeze } from '../values';
 import { detachNode } from './tree';
@@ -10,32 +11,39 @@ import { detachNode } from './tree';
 // biome-ignore lint/suspicious/noExplicitAny: TS2545 requires a `...args: any[]` mixin constructor.
 export type Ctor<T = NodeCore> = new (...args: any[]) => T;
 
-/** Plugin data entries are limited to 100 kB including namespace or plugin id and key (typings:6531-6537, 6553-6560). */
-export const PLUGIN_DATA_LIMIT = 100_000;
+/**
+ * Plugin data of a node as Figma returns it: an instance sublayer "reads back the main
+ * component's keys" (10 §2.1), so a key it does not set itself comes from the node it mirrors.
+ */
+function chain(state: NodeState): NodeState[] {
+  const out: NodeState[] = [];
+  for (let node: NodeState | null = state; node; node = node.source) out.push(node);
+  return out;
+}
 
-const encoder = new TextEncoder();
-
-function checkEntrySize(api: string, owner: string, key: string, value: string): void {
-  const size = encoder.encode(owner).length + encoder.encode(key).length + encoder.encode(value).length;
-  if (size > PLUGIN_DATA_LIMIT) {
-    throw figmaError(api, `Plugin data entry is too large: ${size} bytes (limit ${PLUGIN_DATA_LIMIT} bytes)`);
+function readPrivate(state: NodeState, key: string): string {
+  for (const node of chain(state)) {
+    const value = node.pluginData.get(key);
+    if (value !== undefined) return value;
   }
+  return '';
 }
 
-/** "The namespace must be at least 3 alphanumeric characters" (typings:6553-6556). */
-function checkNamespace(api: string, namespace: unknown): string {
-  if (typeof namespace !== 'string' || !/^[A-Za-z0-9]{3,}$/.test(namespace)) {
-    throw figmaError(api, `Invalid namespace "${String(namespace)}": it must be at least 3 alphanumeric characters`);
+function readShared(state: NodeState, namespace: string, key: string): string {
+  for (const node of chain(state)) {
+    const value = node.sharedPluginData.get(namespace)?.get(key);
+    if (value !== undefined) return value;
   }
-  return namespace;
+  return '';
 }
 
-function checkKey(api: string, key: unknown): void {
-  if (typeof key !== 'string') throw figmaError(api, 'Expected "key" to be a string');
+/** Keys of the node and of the nodes it mirrors, own keys first. */
+export function privateKeysOf(state: NodeState): string[] {
+  return [...new Set(chain(state).flatMap((node) => [...node.pluginData.keys()]))];
 }
 
-function checkValue(api: string, value: unknown): void {
-  if (typeof value !== 'string') throw figmaError(api, 'Expected "value" to be a string');
+export function sharedKeysOf(state: NodeState, namespace: string): string[] {
+  return [...new Set(chain(state).flatMap((node) => [...(node.sharedPluginData.get(namespace)?.keys() ?? [])]))];
 }
 
 /**
@@ -88,14 +96,19 @@ export class NodeCore {
   remove(): void {
     const state = live(this);
     if (state.type === 'DOCUMENT') throw figmaError('remove', 'Cannot remove the document');
+    // An instance's layers come from its main component (hide them instead).
+    if (state.inInstance) throw figmaError('remove', 'Cannot remove a node inside an instance');
     if (state.type === 'PAGE') {
       const pages = state.parent?.children ?? [];
       if (pages.length <= 1) throw figmaError('remove', 'Cannot remove the last page of a document');
       if (state.ctx.currentPage === state) state.ctx.currentPage = pages.find((p) => p !== state) ?? state;
     }
-    state.ctx.record(state, 'remove');
     detachNode(state);
-    for (const node of [state, ...state.descendants()]) node.removed = true;
+    for (const node of [state, ...state.descendants()]) {
+      node.removed = true;
+      if (node.type === 'INSTANCE') node.ctx.instances.delete(node);
+    }
+    state.ctx.record(state, 'remove');
   }
 
   /** Each call replaces all relaunch data; descriptions are limited to 1000 characters (typings:6429-6447). */
@@ -129,7 +142,7 @@ export class NodeCore {
 
   getPluginData(key: string): string {
     checkKey('getPluginData', key);
-    return live(this).pluginData.get(key) ?? '';
+    return readPrivate(live(this), key);
   }
 
   /** Setting `''` removes the key (typings:6531-6533). */
@@ -144,13 +157,13 @@ export class NodeCore {
   }
 
   getPluginDataKeys(): string[] {
-    return [...live(this).pluginData.keys()];
+    return privateKeysOf(live(this));
   }
 
   getSharedPluginData(namespace: string, key: string): string {
     checkNamespace('getSharedPluginData', namespace);
     checkKey('getSharedPluginData', key);
-    return live(this).sharedPluginData.get(namespace)?.get(key) ?? '';
+    return readShared(live(this), namespace, key);
   }
 
   /** Public data under a namespace; `''` removes the key (typings:6547-6574). */
@@ -170,7 +183,7 @@ export class NodeCore {
 
   getSharedPluginDataKeys(namespace: string): string[] {
     checkNamespace('getSharedPluginDataKeys', namespace);
-    return [...(live(this).sharedPluginData.get(namespace)?.keys() ?? [])];
+    return sharedKeysOf(live(this), namespace);
   }
 
   // DevResourcesMixin (typings:6581-6627): not modelled.

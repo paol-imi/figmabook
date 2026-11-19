@@ -7,8 +7,10 @@
  *
  * The port grows additively (BUILD §2.3): each fake item adds the members it needs.
  * B-06 holds the "Global" row of BUILD §8.1; node members (BaseNode … Text rows) come with
- * the node types these functions return. The rest of 09 §4 (variables, styles, library
- * imports, `teamLibrary`) is added by B-54, B-139 and B-142 together with its fake.
+ * the node types these functions return. B-54 adds `createComponentFromNode` (09 §4, icon
+ * extraction from SVG frames, 09 §6.2) and the variables subset of BUILD §8.1. The rest of
+ * 09 §4 (styles, library imports, `teamLibrary`, modes) is added by B-139 and B-142 together
+ * with its fake.
  */
 export type FigmaPort = Pick<
   PluginAPI,
@@ -23,6 +25,7 @@ export type FigmaPort = Pick<
   | 'createPage'
   | 'createSection'
   | 'combineAsVariants'
+  | 'createComponentFromNode'
   // Images (09 §6.3).
   | 'createImage'
   | 'getImageByHash'
@@ -41,5 +44,16 @@ export type FigmaPort = Pick<
   | 'notify'
   | 'mixed'
 > & {
+  /** Local variables, one mode per collection (BUILD §8.1 "Variables (subset)", 08 §8). */
+  variables: Pick<
+    VariablesAPI,
+    | 'createVariableCollection'
+    | 'createVariable'
+    | 'createVariableAlias'
+    | 'getLocalVariablesAsync'
+    | 'getLocalVariableCollectionsAsync'
+    | 'getVariableByIdAsync'
+    | 'setBoundVariableForPaint'
+  >;
   clientStorage: Pick<ClientStorageAPI, 'getAsync' | 'setAsync'>;
 };

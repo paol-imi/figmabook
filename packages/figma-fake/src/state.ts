@@ -1,7 +1,10 @@
+import type { InstanceRegistry } from './components/registry';
+import type { PropertyDef, PropertyRefs, PropertyValue } from './components/types';
 import { figmaError } from './errors';
 import type { FontStore } from './fonts';
 import { TextModel } from './text-model';
 import { deepFreeze } from './values';
+import type { VariableStore } from './variables/store';
 
 /** The node types the fake can create (BUILD §8.1). */
 export type FakeNodeType =
@@ -14,16 +17,24 @@ export type FakeNodeType =
   | 'RECTANGLE'
   | 'ELLIPSE'
   | 'VECTOR'
-  | 'TEXT';
+  | 'TEXT'
+  | 'INSTANCE';
 
-/** Types that carry `AutoLayoutMixin` and `BaseFrameMixin` (typings:9430-9485, 11175, 11200). */
-export const FRAME_LIKE: ReadonlySet<FakeNodeType> = new Set(['FRAME', 'COMPONENT', 'COMPONENT_SET']);
+/** Types that carry `AutoLayoutMixin` and `BaseFrameMixin` (typings:9430-9485, 11175, 11200, 11244). */
+export const FRAME_LIKE: ReadonlySet<FakeNodeType> = new Set(['FRAME', 'COMPONENT', 'COMPONENT_SET', 'INSTANCE']);
 
 /**
  * Container parents: the nodes `relativeTransform` is relative to. "canvas nodes, frame nodes,
  * component nodes, and instance nodes" (typings:7350-7352); sections position their children too.
  */
-const CONTAINERS: ReadonlySet<FakeNodeType> = new Set(['PAGE', 'FRAME', 'COMPONENT', 'COMPONENT_SET', 'SECTION']);
+const CONTAINERS: ReadonlySet<FakeNodeType> = new Set([
+  'PAGE',
+  'FRAME',
+  'COMPONENT',
+  'COMPONENT_SET',
+  'SECTION',
+  'INSTANCE',
+]);
 
 const IDENTITY: Transform = [
   [1, 0, 0],
@@ -32,14 +43,39 @@ const IDENTITY: Transform = [
 
 /**
  * What a node needs from its document: fonts, the plugin id that scopes private plugin data,
- * the current page, node registration and the operation log. `FakeContext` implements it.
+ * the current page, node registration, the operation log and the derived-state engine (layout,
+ * instance propagation). `FakeContext` implements it.
  */
 export interface DocumentContext {
   readonly fonts: FontStore;
   readonly pluginId: string;
   currentPage: NodeState;
+  /** The document node. */
+  readonly root: NodeState;
+  /** `figma.skipInvisibleInstanceChildren` (typings:80-109). */
+  readonly skipInvisibleInstanceChildren: boolean;
+  /** Instances by main component, for propagation and `getInstancesAsync`. */
+  readonly instances: InstanceRegistry<NodeState>;
+  /** Resolves variable aliases (component property values, bindings). */
+  readonly variables: VariableStore;
+  /** The id of the next node of `type`. */
+  nextId(type: FakeNodeType): string;
+  /** The `#id` suffix of the next component property. */
+  nextPropertyId(): string;
+  /** A node by id, removed or not. */
+  nodeById(id: string): NodeState | null;
   register(state: NodeState): void;
+  /**
+   * Records a write and brings derived state up to date: layout, text size and instance
+   * contents (Figma updates them synchronously after every write).
+   */
   record(node: NodeState | null, method: string, property?: string | null, value?: unknown): void;
+  /** Marks a node whose layout or instance mirrors may be out of date; the next `record` settles it. */
+  touch(state: NodeState): void;
+  /** True while a variable binding writes its value: such writes are not logged and do not unbind. */
+  readonly silent: boolean;
+  /** Runs `fn` with {@link silent} set. */
+  silently<T>(fn: () => T): T;
 }
 
 /** The public objects that represent one node, set by each concrete node class. */
@@ -49,6 +85,8 @@ export interface NodeViews {
   container: (BaseNode & ChildrenMixin) | null;
   page: PageNode | null;
   component: ComponentNode | null;
+  instance: InstanceNode | null;
+  text: TextNode | null;
   document: DocumentNode | null;
 }
 
@@ -57,7 +95,16 @@ export interface NodeViews {
  * internal and never reachable through the Plugin API surface.
  */
 export class NodeState {
-  readonly views: NodeViews = { node: null, scene: null, container: null, page: null, component: null, document: null };
+  readonly views: NodeViews = {
+    node: null,
+    scene: null,
+    container: null,
+    page: null,
+    component: null,
+    instance: null,
+    text: null,
+    document: null,
+  };
   removed = false;
   parent: NodeState | null = null;
   children: NodeState[] = [];
@@ -173,6 +220,28 @@ export class NodeState {
   leadingTrim: LeadingTrim = 'NONE';
   textWrapStyle: TextWrapStyle = 'AUTO';
 
+  // InstanceNode (typings:11244-11330) and instance sublayers (10 §2.1)
+  /** The component an instance reflects. */
+  mainComponent: NodeState | null = null;
+  /** For an instance sublayer: the node it mirrors (in the main component, or in a nested instance there). */
+  source: NodeState | null = null;
+  /** For an instance sublayer: the top-level instance it belongs to. */
+  owner: NodeState | null = null;
+  /** For a nested instance: its main was swapped, so its children mirror `mainComponent`, not `source`. */
+  swapped = false;
+  /** Values copied from the source at the last sync, to tell overrides from inherited values. */
+  mirror: Map<string, unknown> | null = null;
+  /** Component property values set on this instance with `setProperties` (typings:11283-11290). */
+  propertyValues = new Map<string, PropertyValue>();
+
+  // ComponentPropertiesMixin (typings:9717-9766) and SceneNodeMixin.componentPropertyReferences
+  /** Property definitions; only on component sets and components outside a set. VARIANT ones are derived from names. */
+  propertyDefs = new Map<string, PropertyDef>();
+  propertyRefs: PropertyRefs | null = null;
+
+  // Variable bindings of node fields (SceneNodeMixin.boundVariables, typings:6700-6740)
+  bindings = new Map<string, VariableAlias>();
+
   constructor(
     readonly ctx: DocumentContext,
     readonly type: FakeNodeType,
@@ -194,6 +263,17 @@ export class NodeState {
   /** Frame-like with any auto layout (stack or grid). */
   get isAutoLayout(): boolean {
     return this.isFrameLike && this.layoutMode !== 'NONE';
+  }
+
+  /** A node inside an instance (not the instance itself): its structure belongs to the main component. */
+  get inInstance(): boolean {
+    return this.owner !== null;
+  }
+
+  /** Whether this node is a hidden instance sublayer or below one (typings:80-109). */
+  get hiddenInInstance(): boolean {
+    for (let node: NodeState | null = this; node?.owner; node = node.parent) if (!node.visible) return true;
+    return false;
   }
 
   /** Direct child of an auto-layout frame. */
@@ -295,6 +375,14 @@ export class NodeState {
   get componentView(): ComponentNode {
     return required(this.views.component, this, 'component');
   }
+
+  get instanceView(): InstanceNode {
+    return required(this.views.instance, this, 'instance');
+  }
+
+  get textView(): TextNode {
+    return required(this.views.text, this, 'text node');
+  }
 }
 
 function required<T>(view: T | null, state: NodeState, what: string): T {
@@ -335,5 +423,12 @@ export function stateOfNode(node: object): NodeState {
 export function live(node: object): NodeState {
   const state = stateOfNode(node);
   if (state.removed) throw figmaError('get', `The node with id "${state.id}" does not exist`);
+  // "Accessing a property on an existing node object for an invisible node will throw an error" (typings:97).
+  if (state.ctx.skipInvisibleInstanceChildren && state.hiddenInInstance) {
+    throw figmaError(
+      'get',
+      `The node with id "${state.id}" is an invisible instance sublayer and figma.skipInvisibleInstanceChildren is true`,
+    );
+  }
   return state;
 }

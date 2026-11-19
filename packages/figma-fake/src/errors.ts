@@ -28,9 +28,9 @@ export function setterName(property: string): string {
  * A member the slice does not model yet. It fails loudly instead of returning a plausible
  * value, so a test can never pass on behaviour the fake does not emulate.
  *
- * @param member `Type.member`, e.g. `FrameNode.exportAsync`.
+ * @param member `Type.member`, e.g. `InstanceNode.overrides`.
  * @param item the work item that adds it (BUILD §8).
  */
-export function unsupported(member: string, item = 'B-54'): never {
+export function unsupported(member: string, item: 'B-111' | 'B-125' | 'B-139' | 'B-142' | 'hardening'): never {
   throw new NotImplementedError(`figma-fake: ${member}`, item);
 }

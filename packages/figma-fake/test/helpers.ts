@@ -29,3 +29,10 @@ export function stack(figma: FakeFigma, mode: 'HORIZONTAL' | 'VERTICAL' = 'HORIZ
 }
 
 export const RED: SolidPaint = { type: 'SOLID', color: { r: 1, g: 0, b: 0 } };
+
+/** `list[index]`, failing the test when it is missing. */
+export function at<T>(list: readonly T[], index: number): T {
+  const item = list[index];
+  if (item === undefined) throw new Error(`expected an item at index ${index} of ${list.length}`);
+  return item;
+}

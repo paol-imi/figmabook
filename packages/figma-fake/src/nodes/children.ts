@@ -1,6 +1,6 @@
 import { figmaError, unsupported } from '../errors';
 import { live, type NodeState, stateOfNode } from '../state';
-import { type Ctor, NodeCore } from './core';
+import { type Ctor, NodeCore, privateKeysOf, sharedKeysOf } from './core';
 import { attachNode } from './tree';
 
 /**
@@ -33,16 +33,38 @@ export function matchesCriteria(state: NodeState, criteria: Criteria): boolean {
   if (criteria.types && !criteria.types.includes(state.type)) return false;
   if (criteria.pluginData) {
     const keys = criteria.pluginData.keys;
-    if (state.pluginData.size === 0) return false;
-    if (keys && !keys.some((key) => state.pluginData.has(key))) return false;
+    const present = privateKeysOf(state);
+    if (present.length === 0) return false;
+    if (keys && !keys.some((key) => present.includes(key))) return false;
   }
   if (criteria.sharedPluginData) {
-    const entries = state.sharedPluginData.get(criteria.sharedPluginData.namespace);
-    if (!entries || entries.size === 0) return false;
+    const present = sharedKeysOf(state, criteria.sharedPluginData.namespace);
+    if (present.length === 0) return false;
     const keys = criteria.sharedPluginData.keys;
-    if (keys && !keys.some((key) => entries.has(key))) return false;
+    if (keys && !keys.some((key) => present.includes(key))) return false;
   }
   return true;
+}
+
+/**
+ * Children and descendants as traversal sees them: with `skipInvisibleInstanceChildren`, invisible
+ * nodes inside instances and their descendants are left out (typings:80-109).
+ */
+function listed(state: NodeState): NodeState[] {
+  if (!state.ctx.skipInvisibleInstanceChildren) return state.children;
+  return state.children.filter((child) => !child.hiddenInInstance);
+}
+
+function listedDescendants(state: NodeState): NodeState[] {
+  const out: NodeState[] = [];
+  const walk = (node: NodeState) => {
+    for (const child of listed(node)) {
+      out.push(child);
+      walk(child);
+    }
+  };
+  walk(state);
+  return out;
 }
 
 function hasCriteriaType<T extends NodeType[]>(
@@ -59,7 +81,7 @@ export function WithChildren<B extends Ctor>(Base: B) {
     get children(): ReadonlyArray<SceneNode> {
       const state = live(this);
       checkLoaded('children', state);
-      return Object.freeze(state.children.map((child) => child.sceneView));
+      return Object.freeze(listed(state).map((child) => child.sceneView));
     }
 
     appendChild(child: SceneNode): void {
@@ -81,7 +103,7 @@ export function WithChildren<B extends Ctor>(Base: B) {
     findChildren(callback?: (node: SceneNode) => boolean): SceneNode[] {
       const state = live(this);
       checkLoaded('findChildren', state);
-      const children = state.children.map((child) => child.sceneView);
+      const children = listed(state).map((child) => child.sceneView);
       return callback ? children.filter(callback) : children;
     }
 
@@ -93,7 +115,7 @@ export function WithChildren<B extends Ctor>(Base: B) {
     findAll(callback?: (node: SceneNode) => boolean): SceneNode[] {
       const state = live(this);
       checkLoaded('findAll', state);
-      const nodes = state.descendants().map((node) => node.sceneView);
+      const nodes = listedDescendants(state).map((node) => node.sceneView);
       return callback ? nodes.filter(callback) : nodes;
     }
 
@@ -104,8 +126,7 @@ export function WithChildren<B extends Ctor>(Base: B) {
     findAllWithCriteria<T extends NodeType[]>(criteria: FindAllCriteria<T>): Array<{ type: T[number] } & SceneNode> {
       const state = live(this);
       checkLoaded('findAllWithCriteria', state);
-      return state
-        .descendants()
+      return listedDescendants(state)
         .map((node) => node.sceneView)
         .filter((node) => hasCriteriaType(node, criteria));
     }

@@ -1,6 +1,16 @@
+import { referencesOf, setReferences } from '../components/properties';
 import { figmaError, unsupported } from '../errors';
+import { exportNode } from '../export';
 import { live } from '../state';
 import { checkBoolean, deepFreeze, normalizeConstraints } from '../values';
+import {
+  bindNodeField,
+  bindTextRange,
+  boundVariablesOf,
+  isNodeField,
+  isTextField,
+  variableArg,
+} from '../variables/bindings';
 import type { Ctor } from './core';
 import { assign } from './props';
 
@@ -98,32 +108,50 @@ export function WithScene<B extends Ctor>(Base: B) {
       return [];
     }
 
+    /** `null` unless the node is a component or instance sublayer (typings:6682-6690). */
     get componentPropertyReferences():
       | { [nodeProperty in 'visible' | 'characters' | 'mainComponent']?: string }
       | null {
-      live(this);
-      return null;
+      return referencesOf(live(this));
     }
 
-    set componentPropertyReferences(_value:
+    /** Binds fields to the containing component's properties (09 §8.1); names must exist with the matching type. */
+    set componentPropertyReferences(value:
       | {
           [nodeProperty in 'visible' | 'characters' | 'mainComponent']?: string;
         }
       | null) {
-      unsupported('componentPropertyReferences');
+      const state = live(this);
+      state.propertyRefs = setReferences(state, value);
+      state.ctx.record(state, 'set', 'componentPropertyReferences', value);
     }
 
-    /** No variables exist before B-54, so no node has bindings. */
+    /** Variables bound to the node's fields, paints and component properties (typings:6700-6716). */
     get boundVariables(): NonNullable<SceneNodeMixin['boundVariables']> {
-      live(this);
-      return {};
+      return boundVariablesOf(live(this));
     }
 
+    /**
+     * Binds `field` to `variable`, or unbinds it with `null` (typings:6717-6740). Text fields bind
+     * the whole text; node fields must exist on the node and take the variable's type.
+     */
     setBoundVariable(
-      _field: VariableBindableNodeField | VariableBindableTextField,
-      _variable: string | Variable | null,
+      field: VariableBindableNodeField | VariableBindableTextField,
+      variable: string | Variable | null,
     ): void {
-      unsupported('setBoundVariable');
+      const state = live(this);
+      const api = 'setBoundVariable';
+      const store = state.ctx.variables;
+      const target = variableArg(api, store, variable);
+      if (isTextField(field)) {
+        if (!state.text) throw figmaError(api, `"${field}" can only be bound on text nodes`);
+        bindTextRange(state, store, 0, state.text.characters.length, field, target);
+      } else if (isNodeField(field)) {
+        bindNodeField(this, state, store, field, target);
+      } else {
+        throw figmaError(api, `Invalid field "${String(field)}"`);
+      }
+      state.ctx.record(state, api, field, target ? target.id : null);
     }
 
     get resolvedVariableModes(): { [collectionId: string]: string } {
@@ -137,7 +165,7 @@ export function WithScene<B extends Ctor>(Base: B) {
   };
 }
 
-/** `ExportMixin` (typings:9040-9139). The PNG placeholder of `exportAsync` is B-54. */
+/** `ExportMixin` (typings:9040-9139); `exportAsync` returns a placeholder (`export.ts`). */
 export function WithExport<B extends Ctor>(Base: B) {
   return class extends Base implements ExportMixin {
     get exportSettings(): ReadonlyArray<ExportSettings> {
@@ -149,16 +177,21 @@ export function WithExport<B extends Ctor>(Base: B) {
       assign(this, 'exportSettings', deepFreeze(structuredClone([...value])));
     }
 
-    exportAsync(
-      _settings?:
+    exportAsync(settings?: ExportSettings): Promise<Uint8Array>;
+    exportAsync(settings: ExportSettingsSVGString): Promise<string>;
+    exportAsync(settings: ExportSettingsREST): Promise<object>;
+    exportAsync(settings: ExportSettingsMP4 | ExportSettingsGIF | ExportSettingsWEBM): Promise<Uint8Array>;
+    /** A deterministic placeholder of the node's export (BUILD §8.1 "Export"; see `export.ts`). */
+    async exportAsync(
+      settings?:
         | ExportSettings
         | ExportSettingsSVGString
         | ExportSettingsREST
         | ExportSettingsMP4
         | ExportSettingsGIF
         | ExportSettingsWEBM,
-    ): Promise<never> {
-      return unsupported('exportAsync');
+    ): Promise<Uint8Array | string | object> {
+      return exportNode(live(this), settings);
     }
   };
 }

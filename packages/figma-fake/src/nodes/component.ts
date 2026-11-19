@@ -1,9 +1,20 @@
 import { createHash } from 'node:crypto';
-import { figmaError, unsupported } from '../errors';
-import { live, type NodeState } from '../state';
+import {
+  addProperty,
+  definitionsOf,
+  deleteProperty,
+  editProperty,
+  parseVariantName,
+  requireOwner,
+  variantPropertiesOf,
+} from '../components/properties';
+import { figmaError } from '../errors';
+import { live } from '../state';
 import { checkString, deepFreeze } from '../values';
 import type { Ctor } from './core';
 import { assign } from './props';
+
+export { parseVariantName, variantPropertiesOf };
 
 /** `PublishableMixin` (typings:9364-9414) for components and component sets. */
 export function WithPublishable<B extends Ctor>(Base: B) {
@@ -56,60 +67,61 @@ export function WithPublishable<B extends Ctor>(Base: B) {
   };
 }
 
-/** Parses a variant name such as `Size=Large, State=Hover` (typings:9670-9715). */
-export function parseVariantName(name: string): Record<string, string> | null {
-  const properties: Record<string, string> = {};
-  for (const part of name.split(',')) {
-    const at = part.indexOf('=');
-    if (at <= 0) return null;
-    properties[part.slice(0, at).trim()] = part.slice(at + 1).trim();
-  }
-  return properties;
-}
-
-export function variantPropertiesOf(state: NodeState): { [property: string]: string } | null {
-  if (state.parent?.type !== 'COMPONENT_SET') return null;
-  return parseVariantName(state.name);
-}
-
-/** `VariantMixin` (typings:9670-9716): `null` for components outside a component set. */
+/**
+ * `VariantMixin` (typings:9670-9716): `null` for components outside a component set; an instance
+ * reports its main component's values.
+ */
 export function WithVariant<B extends Ctor>(Base: B) {
   return class extends Base implements VariantMixin {
     get variantProperties(): { [property: string]: string } | null {
-      return variantPropertiesOf(live(this));
+      const state = live(this);
+      const component = state.type === 'INSTANCE' ? state.mainComponent : state;
+      return component ? variantPropertiesOf(component) : null;
     }
   };
 }
 
-/** `ComponentPropertiesMixin` (typings:9717-9766): component properties are B-54. */
+/** `ComponentPropertiesMixin` (typings:9717-9766), on component sets and components (see `components/properties.ts`). */
 export function WithComponentProperties<B extends Ctor>(Base: B) {
   return class extends Base implements ComponentPropertiesMixin {
     get componentPropertyDefinitions(): ComponentPropertyDefinitions {
-      return unsupported('componentPropertyDefinitions');
+      const state = live(this);
+      requireOwner('componentPropertyDefinitions', state);
+      return definitionsOf(state);
     }
 
     addComponentProperty(
-      _propertyName: string,
-      _type: ComponentPropertyType,
-      _defaultValue: string | boolean | VariableAlias,
-      _options?: ComponentPropertyOptions,
+      propertyName: string,
+      type: ComponentPropertyType,
+      defaultValue: string | boolean | VariableAlias,
+      options?: ComponentPropertyOptions,
     ): string {
-      return unsupported('addComponentProperty');
+      const state = live(this);
+      const name = addProperty(state, propertyName, type, defaultValue, options);
+      state.ctx.record(state, 'addComponentProperty', null, { name, type, defaultValue, options: options ?? null });
+      return name;
     }
 
     editComponentProperty(
-      _propertyName: string,
-      _newValue: {
+      propertyName: string,
+      newValue: {
         name?: string;
         defaultValue?: string | boolean | VariableAlias;
         preferredValues?: InstanceSwapPreferredValue[];
+        description?: string;
+        slotSettings?: SlotSettings;
       },
     ): string {
-      return unsupported('editComponentProperty');
+      const state = live(this);
+      const name = editProperty(state, propertyName, newValue);
+      state.ctx.record(state, 'editComponentProperty', propertyName, newValue);
+      return name;
     }
 
-    deleteComponentProperty(_propertyName: string): void {
-      unsupported('deleteComponentProperty');
+    deleteComponentProperty(propertyName: string): void {
+      const state = live(this);
+      deleteProperty(state, propertyName);
+      state.ctx.record(state, 'deleteComponentProperty', propertyName, null);
     }
   };
 }

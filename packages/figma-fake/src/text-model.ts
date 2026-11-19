@@ -22,6 +22,8 @@ export interface CharStyle {
   readonly letterSpacing: LetterSpacing;
   readonly fills: readonly Paint[];
   readonly hyperlink: HyperlinkTarget | null;
+  /** Variables bound to this character's fields (`setRangeBoundVariable`, typings:9977-9990). */
+  readonly boundVariables: Readonly<{ [field in VariableBindableTextField]?: VariableAlias }>;
 }
 
 export type StyleField = keyof CharStyle;
@@ -43,6 +45,7 @@ export const DEFAULT_CHAR_STYLE: CharStyle = deepFreeze({
     { type: 'SOLID', visible: true, opacity: 1, blendMode: 'NORMAL', color: { r: 0, g: 0, b: 0 }, boundVariables: {} },
   ],
   hyperlink: null,
+  boundVariables: {},
 });
 
 /** The text content and its styles. `styles.length === characters.length` always holds. */
