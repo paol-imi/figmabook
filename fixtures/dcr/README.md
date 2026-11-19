@@ -70,18 +70,26 @@ and id. A second check extracts at two file versions and expects the same `dcrHa
 The pipeline is called in one place, `src/pipeline.ts`. Each stage is `pending` until its item lands,
 and its tests are skipped until then:
 
-| Stage        | Function              | Item       | While pending                                  |
-| ------------ | --------------------- | ---------- | ---------------------------------------------- |
-| `extract`    | `extractDcr`          | B-65, B-66 | extraction goldens skipped                     |
-| `provenance` | CLI provenance attach | B-70       | goldens compared on the core only (`dcrCore`)  |
-| `prompt`     | `renderPrompt`        | B-67       | `expected/prompt.md` is a placeholder; skipped |
-| `snippet`    | `renderSnippet`       | B-67       | `snippet/*.jsx-sketch` skipped                 |
+| Stage        | Function                  | Item | While pending                                                |
+| ------------ | ------------------------- | ---- | ------------------------------------------------------------ |
+| `extract`    | `extractDcr`              | B-65 | ready                                                        |
+| `screens`    | `extractDcr` screen items | B-66 | the cases in `CASE_STAGES` compare only `ownedItems`         |
+| `provenance` | CLI provenance attach     | B-70 | goldens compared on the core only (`dcrCore`)                |
+| `prompt`     | `renderPrompt`            | B-67 | `expected/prompt.md` is a placeholder; skipped               |
+| `snippet`    | `renderSnippet`           | B-67 | `snippet/*.jsx-sketch` skipped; cases with snippets as above |
 
-A guard test fails as soon as a stage's function exists (for `extract`, as soon as `extractDcr` stops
-throwing `NotImplementedError`), so the flag is never left behind. To wire one: call it in
-`src/pipeline.ts`, set `STAGES.<stage> = 'ready'`, run the tests, and update the goldens that disagree
-with reviewer sign-off (12 §1.2). What runs now, before any stage: schema validation of every input and
-expected file, the realism checks, `checkDcrIntegrity` of every golden, and the shuffle invariants.
+A guard test fails as soon as a stage exists (for `screens`, as soon as `extractDcr` emits a `screen`
+item; for the others, as soon as `@holotype/dcr` exports the function), so the flag is never left
+behind. To wire one: call it in `src/pipeline.ts`, set `STAGES.<stage> = 'ready'`, run the tests, and
+update the goldens that disagree with reviewer sign-off (12 §1.2).
+
+`CASE_STAGES` lists the cases whose golden needs a pending stage (`component-new`, `injection`,
+`instance-detached`, `screen-usage-basic`: screens, nearest scoring and snippets). Until those stages
+land, a case is still run three times and must give identical bytes, and the items extraction already
+owns (`ownedItems`: the component, variant, property, layer, new-component and token items, without
+`nearest`, `snippet` and their questions) must equal the golden's. Every other case is compared whole.
+Always: schema validation of every input and expected file, the realism checks, `checkDcrIntegrity` of
+every golden, and the shuffle invariants.
 
 ### What a shuffle changes
 
@@ -141,5 +149,5 @@ one-chunk registry. The read-back conventions they assume are those of the plugi
 `seededRandom`, `SHUFFLE_SEEDS`; `canonicalSnapshot`, `canonicalBaselines`, `canonicalProvenance`,
 `snapshotHash`, `configHash`, `appliedHashOf`, `readBranchMeta`, `readRegistry`; `requestBytes`,
 `coreBytes`, `formatGolden`, `pendingPrompt`; `sealCase`, `sealInput`, `sealExpected`; `STAGES`,
-`runPipeline`, `extract`, `comparedBytes`, `renderPrompt`, `renderSnippet`, `formatSketch`; and the
+`CASE_STAGES`, `caseReady`, `ownedItems`, `runPipeline`, `extract`, `comparedBytes`, `renderPrompt`, `renderSnippet`, `formatSketch`; and the
 schemas of `config.json`, `branch:meta`, the registry, `provenance.json` and the snippet goldens.

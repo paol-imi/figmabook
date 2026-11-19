@@ -1,12 +1,16 @@
 import { createHash } from 'node:crypto';
+import { dcrCore, sortDcr } from '@holotype/dcr';
 import { NotImplementedError } from '@holotype/shared';
 import { describe, expect, it } from 'vitest';
 import {
+  CASE_STAGES,
+  caseReady,
   comparedBytes,
   dcrExports,
   extract,
   listCases,
   loadCase,
+  ownedItems,
   renderPrompt,
   requestBytes,
   runPipeline,
@@ -36,6 +40,16 @@ describe('pipeline stages', () => {
     },
   );
 
+  it.runIf(pending('screens'))(
+    'screens is pending: extractDcr emits no screen item yet (flip STAGES.screens when B-66 lands)',
+    () => {
+      const screens = Object.keys(CASE_STAGES).filter((name) => CASE_STAGES[name]?.includes('screens'));
+      for (const name of screens) {
+        expect(extract(loadCase(name).input).items.some((item) => item.kind === 'screen')).toBe(false);
+      }
+    },
+  );
+
   for (const [stage, name] of Object.entries(STAGE_EXPORTS) as Array<[keyof typeof STAGE_EXPORTS, string]>) {
     it.runIf(pending(stage))(
       `${stage} is pending: @holotype/dcr has no ${name} yet (wire it in src/pipeline.ts)`,
@@ -53,17 +67,29 @@ describe.each(cases)('%s', (name) => {
     return { outputs, expected };
   };
 
-  it.skipIf(pending('extract'))(
-    '3 runs (as is, 2 seeded shuffles) give byte-identical output equal to expected/dcr.json',
+  const ready = caseReady(name);
+
+  it.skipIf(pending('extract'))('3 runs (as is, 2 seeded shuffles) give byte-identical output', () => {
+    const { outputs } = runs();
+    const digests = outputs.map((output) => sha256(requestBytes(output)));
+    expect(new Set(digests).size).toBe(1);
+  });
+
+  it.skipIf(!ready)('every run equals expected/dcr.json, with its dcrHash and id', () => {
+    const { outputs, expected } = runs();
+    for (const output of outputs) {
+      expect(comparedBytes(output)).toBe(comparedBytes(expected.dcr));
+      expect(output.dcrHash).toBe(expected.dcr.dcrHash);
+      expect(output.id).toBe(expected.dcr.id);
+    }
+  });
+
+  it.runIf(STAGES.extract === 'ready' && !ready)(
+    `the items extraction owns equal the golden's (waits for: ${(CASE_STAGES[name] ?? []).join(', ')})`,
     () => {
       const { outputs, expected } = runs();
-      const digests = outputs.map((output) => sha256(requestBytes(output)));
-      expect(new Set(digests).size).toBe(1);
-      for (const output of outputs) {
-        expect(comparedBytes(output)).toBe(comparedBytes(expected.dcr));
-        expect(output.dcrHash).toBe(expected.dcr.dcrHash);
-        expect(output.id).toBe(expected.dcr.id);
-      }
+      const owned = (request: Parameters<typeof dcrCore>[0]) => ownedItems(dcrCore(sortDcr(request)));
+      for (const output of outputs) expect(owned(output)).toEqual(owned(expected.dcr));
     },
   );
 
@@ -74,8 +100,11 @@ describe.each(cases)('%s', (name) => {
     const second = at('1002');
     expect(first.header.figma.fileVersion).toBe('1001');
     expect(second.dcrHash).toBe(first.dcrHash);
-    expect(first.dcrHash).toBe(expected.dcr.dcrHash);
-    expect(second.items.map((item) => item.id)).toEqual(expected.dcr.items.map((item) => item.id));
+    expect(second.items.map((item) => item.id)).toEqual(first.items.map((item) => item.id));
+    if (ready) {
+      expect(first.dcrHash).toBe(expected.dcr.dcrHash);
+      expect(second.items.map((item) => item.id)).toEqual(expected.dcr.items.map((item) => item.id));
+    }
   });
 
   const prompt = loadCase(name).expected.prompt;

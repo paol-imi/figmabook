@@ -1,4 +1,3 @@
-import { NotImplementedError } from '@holotype/shared';
 import { describe, expect, it } from 'vitest';
 import {
   cloneJson,
@@ -6,8 +5,6 @@ import {
   DCR_ITEM_KINDS,
   type DcrItemOf,
   type DesignChangeRequest,
-  extractDcr,
-  type FigmaSnapshot,
   itemOrderKey,
   SLICE_ITEM_KINDS,
   sortDcr,
@@ -63,12 +60,5 @@ describe('canonical order (15 §4.9)', () => {
     const before = JSON.stringify(dcr);
     sortDcr(dcr);
     expect(JSON.stringify(dcr)).toBe(before);
-  });
-});
-
-describe('extractDcr', () => {
-  it('is not built yet (B-65)', () => {
-    const snapshot = validDoc('figma-snapshot', 'price-tag-branch.json') as FigmaSnapshot;
-    expect(() => extractDcr(snapshot, [])).toThrow(NotImplementedError);
   });
 });

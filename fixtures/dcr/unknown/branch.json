@@ -27,7 +27,7 @@
         "axes": "[{\"key\":\"arg:variant\",\"name\":\"Variant\",\"values\":[\"Primary\",\"Secondary\",\"Ghost\"]},{\"key\":\"arg:size\",\"name\":\"Size\",\"values\":[\"Md\",\"Sm\",\"Lg\"]}]",
         "props": "{\"arg:label\":\"Label#13:0\",\"arg:showIcon\":\"Show icon#13:1\"}",
         "irh": "f6f16c72aa6ca7e6",
-        "ah": "08f44b07b5901a2508f44b07b5901a2508f44b07b5901a2508f44b07b5901a25ba4cd466d414592408f44b07b5901a2508f44b07b5901a25",
+        "ah": "08f44b07b5901a2508f44b07b5901a2508f44b07b5901a2508f44b07b5901a25dd1ca1fbe8c3000408f44b07b5901a2508f44b07b5901a25",
         "v": "1.0",
         "fp": "b2386d3ecfc5f8d0",
         "status": "synced"

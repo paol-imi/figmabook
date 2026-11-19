@@ -1,5 +1,5 @@
 {
-  "dcrHash": "ff48545ab4999377",
+  "dcrHash": "ecf02789d36c5cc6",
   "dcrVersion": "1.0.0",
   "diagnostics": [
     {
@@ -24,7 +24,7 @@
     "figma": {
       "fileKey": "Qm8xT2dsReactBr",
       "kind": "figma-branch",
-      "snapshotHash": "4ab63205f75646e0"
+      "snapshotHash": "836ccbf9e27c1e9c"
     },
     "repo": "github.com/acme/ds-react",
     "scope": {
@@ -37,7 +37,7 @@
       }
     }
   },
-  "id": "1ef3754d461d5670",
+  "id": "331696ce889883b1",
   "items": [
     {
       "acceptance": {
