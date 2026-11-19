@@ -1,0 +1,19 @@
+{
+  "base": "annotated-example.json",
+  "why": "parameters.holotype.layout became grid (16 \u00a719).",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/components/components-button/layout",
+      "value": {
+        "columns": ["State"]
+      }
+    }
+  ],
+  "expect": [
+    {
+      "path": "/components/components-button/layout",
+      "kind": "unknown-key"
+    }
+  ]
+}

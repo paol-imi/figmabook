@@ -1,0 +1,16 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/variants/0/root/fallback/children/root~1ghost",
+      "value": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1
+      }
+    }
+  ],
+  "expect": ["fallback-children"]
+}

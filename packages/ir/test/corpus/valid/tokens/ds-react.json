@@ -1,0 +1,273 @@
+{
+  "kind": "holotype/tokens",
+  "tokensVersion": "0.1.0",
+  "irh": "cbad76f20785f045",
+  "collections": [
+    {
+      "key": "col:primitives",
+      "name": "Primitives",
+      "modes": [
+        {
+          "key": "mode:default",
+          "name": "Default",
+          "source": {}
+        }
+      ],
+      "defaultMode": "mode:default",
+      "hiddenFromPublishing": true
+    },
+    {
+      "key": "col:theme",
+      "name": "Theme",
+      "modes": [
+        {
+          "key": "mode:light",
+          "name": "Light",
+          "source": {
+            "global": "theme",
+            "value": "light"
+          }
+        },
+        {
+          "key": "mode:dark",
+          "name": "Dark",
+          "source": {
+            "global": "theme",
+            "value": "dark",
+            "selector": "[data-theme=\"dark\"]"
+          }
+        }
+      ],
+      "defaultMode": "mode:light"
+    }
+  ],
+  "variables": [
+    {
+      "key": "var:color/blue-500",
+      "collection": "col:primitives",
+      "name": "color/blue-500",
+      "type": "COLOR",
+      "valuesByMode": {
+        "mode:default": {
+          "kind": "color",
+          "r": 0.231,
+          "g": 0.51,
+          "b": 0.965,
+          "a": 1
+        }
+      },
+      "scopes": [],
+      "codeSyntax": {
+        "WEB": "var(--color-blue-500)"
+      },
+      "provenance": {
+        "cssName": "--color-blue-500",
+        "declaredAt": ["src/tokens/tokens.css:4"],
+        "usedBy": 2
+      }
+    },
+    {
+      "key": "var:button/bg",
+      "collection": "col:theme",
+      "name": "button/bg",
+      "type": "COLOR",
+      "valuesByMode": {
+        "mode:light": {
+          "kind": "alias",
+          "variable": "var:color/blue-500"
+        },
+        "mode:dark": {
+          "kind": "color",
+          "r": 0.376,
+          "g": 0.647,
+          "b": 0.98,
+          "a": 1
+        }
+      },
+      "scopes": ["FRAME_FILL", "SHAPE_FILL", "STROKE_COLOR"],
+      "codeSyntax": {
+        "WEB": "var(--button-bg)"
+      },
+      "description": "Primary button background",
+      "provenance": {
+        "cssName": "--button-bg",
+        "declaredAt": [":root", "[data-theme=\"dark\"]"],
+        "usedBy": 12
+      },
+      "match": {
+        "kind": "library",
+        "key": "c0ffeec0ffeec0ffeec0ffeec0ffeec0ffeec0ff",
+        "by": "codeSyntax"
+      }
+    },
+    {
+      "key": "var:button/fg",
+      "collection": "col:theme",
+      "name": "button/fg",
+      "type": "COLOR",
+      "valuesByMode": {
+        "mode:light": {
+          "kind": "color",
+          "r": 1,
+          "g": 1,
+          "b": 1,
+          "a": 1
+        },
+        "mode:dark": {
+          "kind": "color",
+          "r": 0.06,
+          "g": 0.09,
+          "b": 0.16,
+          "a": 1
+        }
+      },
+      "scopes": ["TEXT_FILL"],
+      "codeSyntax": {
+        "WEB": "var(--button-fg)"
+      },
+      "provenance": {
+        "cssName": "--button-fg",
+        "declaredAt": [":root"],
+        "usedBy": 12
+      }
+    },
+    {
+      "key": "var:space/4",
+      "collection": "col:primitives",
+      "name": "space/4",
+      "type": "FLOAT",
+      "valuesByMode": {
+        "mode:default": {
+          "kind": "float",
+          "value": 16
+        }
+      },
+      "scopes": ["GAP", "WIDTH_HEIGHT"],
+      "codeSyntax": {
+        "WEB": "var(--space-4)"
+      },
+      "provenance": {
+        "cssName": "--space-4",
+        "declaredAt": [":root"],
+        "usedBy": 30
+      }
+    },
+    {
+      "key": "var:space/2",
+      "collection": "col:primitives",
+      "name": "space/2",
+      "type": "FLOAT",
+      "valuesByMode": {
+        "mode:default": {
+          "kind": "float",
+          "value": 8
+        }
+      },
+      "scopes": ["GAP"],
+      "codeSyntax": {
+        "WEB": "var(--space-2)"
+      },
+      "provenance": {
+        "cssName": "--space-2",
+        "declaredAt": [":root"],
+        "usedBy": 18
+      }
+    },
+    {
+      "key": "var:font/family",
+      "collection": "col:primitives",
+      "name": "font/family",
+      "type": "STRING",
+      "valuesByMode": {
+        "mode:default": {
+          "kind": "string",
+          "value": "Inter"
+        }
+      },
+      "scopes": ["FONT_FAMILY"],
+      "codeSyntax": {
+        "WEB": "var(--font-family)"
+      },
+      "provenance": {
+        "cssName": "--font-family",
+        "declaredAt": [":root"],
+        "usedBy": 4
+      }
+    },
+    {
+      "key": "var:flag/dense",
+      "collection": "col:theme",
+      "name": "flag/dense",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "mode:light": {
+          "kind": "boolean",
+          "value": false
+        },
+        "mode:dark": {
+          "kind": "boolean",
+          "value": false
+        }
+      },
+      "scopes": [],
+      "codeSyntax": {
+        "WEB": "var(--flag-dense)"
+      },
+      "provenance": {
+        "cssName": "--flag-dense",
+        "declaredAt": [":root"],
+        "usedBy": 0
+      }
+    }
+  ],
+  "textStyles": [
+    {
+      "key": "text:heading/sm",
+      "name": "Heading/Small",
+      "range": {
+        "font": {
+          "family": "Inter",
+          "weight": 700,
+          "italic": false,
+          "styleCandidates": ["Bold"],
+          "fallbackFamily": "Inter",
+          "isCustom": false
+        },
+        "fontSize": 16,
+        "lineHeight": {
+          "unit": "PIXELS",
+          "value": 24
+        },
+        "letterSpacing": {
+          "unit": "PIXELS",
+          "value": 0
+        },
+        "textCase": "ORIGINAL",
+        "decoration": "NONE"
+      }
+    }
+  ],
+  "effectStyles": [
+    {
+      "key": "effect:shadow/md",
+      "name": "Shadow/Medium",
+      "effects": [
+        {
+          "type": "DROP_SHADOW",
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 0.1
+          },
+          "offset": {
+            "x": 0,
+            "y": 2
+          },
+          "radius": 8,
+          "spread": 0
+        }
+      ]
+    }
+  ]
+}

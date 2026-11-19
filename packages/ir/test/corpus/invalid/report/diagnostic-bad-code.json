@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "Diagnostic codes are DOMAIN_UPPER_SNAKE.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/components/0/diagnostics/0/code",
+      "value": "dropped"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/components/0/diagnostics/0/code",
+      "kind": "invalid"
+    }
+  ]
+}

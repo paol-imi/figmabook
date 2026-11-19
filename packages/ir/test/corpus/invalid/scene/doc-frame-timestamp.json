@@ -1,0 +1,25 @@
+{
+  "base": "button.json",
+  "why": "No timestamps in hashed content.",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/docFrame",
+      "value": {
+        "title": "Button",
+        "description": "",
+        "axisLabels": {
+          "columns": [],
+          "rows": []
+        },
+        "generatedAt": "2026-11-19T10:00:00Z"
+      }
+    }
+  ],
+  "expect": [
+    {
+      "path": "/docFrame/generatedAt",
+      "kind": "invalid"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "base": "ds-react.json",
+  "why": "codeSyntax.WEB is the library match key.",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/variables/0/codeSyntax"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/variables/0/codeSyntax",
+      "kind": "invalid"
+    }
+  ]
+}

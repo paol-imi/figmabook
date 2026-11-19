@@ -1,0 +1,17 @@
+{
+  "base": "ds-react.json",
+  "why": "Variable types are the Figma set.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variables/0/type",
+      "value": "NUMBER"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/variables/0/type",
+      "kind": "invalid"
+    }
+  ]
+}

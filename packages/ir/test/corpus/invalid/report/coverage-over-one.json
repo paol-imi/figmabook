@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "Coverage is a 0..1 ratio.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/summary/autoLayoutCoverage",
+      "value": 1.2
+    }
+  ],
+  "expect": [
+    {
+      "path": "/summary/autoLayoutCoverage",
+      "kind": "invalid"
+    }
+  ]
+}

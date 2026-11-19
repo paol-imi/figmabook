@@ -34,8 +34,7 @@ use a specific Chromium binary; turbo passes it and `PLAYWRIGHT_BROWSERS_PATH` t
 - `src/components/*`: `Button`, `Badge`, `Input`, `Card`, `Stack`, `Icon`. Each has a CSS module that uses
   token values only (checked by `test/unit/tokens.test.ts`).
 - `src/micro/*`: plain-markup micro-fixtures, one CSS feature per story (flex, borders, backgrounds, text).
-- `src/holotype-params.ts`: the `parameters.holotype` authoring type (04 §9 plus `implements`, `replacedBy`).
-  Swap for the `@holotype/ir` export once B-01 lands.
+- `src/holotype-params.ts`: the `parameters.holotype` authoring type, re-exported from `@holotype/ir` (04 §9).
 - `.storybook/preview.tsx`: the `theme` global (light/dark), applied as `data-theme` on `<html>` (03 §8).
   Every story is tagged `figma`; `components-icon--gallery` opts out with `!figma`.
 - Inter 400/500/600/700 (Latin) is self-hosted from `@fontsource/inter`; icons come from `lucide` (ISC).
@@ -46,10 +45,10 @@ use a specific Chromium binary; turbo passes it and `PLAYWRIGHT_BROWSERS_PATH` t
 Tests address stories by id (BUILD §2.3). `test/story-ids.json` lists every id; it may only grow.
 Add stories in new files and never rename an export or a title. `parameters.holotype` usages:
 
-| Where                        | Usage                                                            |
-| ---------------------------- | ---------------------------------------------------------------- |
-| Button meta                  | `args` hints for variant/size/label/showIcon, `states`, `layout` |
-| Badge meta                   | `args` hints with Figma names `Tone`, `Dot`                      |
-| `components-stack--wrap`     | `keepLayout`, `width: { probe: [240, 480] }`                     |
-| `components-card--long-text` | `textMode: 'locked-lines'`                                       |
-| Card meta                    | `slots.actions` → `[data-slot=actions]`                          |
+| Where                        | Usage                                                          |
+| ---------------------------- | -------------------------------------------------------------- |
+| Button meta                  | `args` hints for variant/size/label/showIcon, `states`, `grid` |
+| Badge meta                   | `args` hints with Figma names `Tone`, `Dot`                    |
+| `components-stack--wrap`     | `keepLayout`, `width: { probe: [240, 480] }`                   |
+| `components-card--long-text` | `textMode: 'locked-lines'`                                     |
+| Card meta                    | `slots.actions` → `[data-slot=actions]`                        |

@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "A component has at least one variant.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants",
+      "value": []
+    }
+  ],
+  "expect": [
+    {
+      "path": "/variants",
+      "kind": "invalid"
+    }
+  ]
+}

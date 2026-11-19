@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Holotype run report (BundleReport)",
+  "title": "Holotype bundle report (BundleReport)",
   "type": "object",
   "required": [
     "kind",
@@ -76,6 +76,7 @@
         ],
         "properties": {
           "sid": {
+            "minLength": 1,
             "type": "string"
           },
           "diagnostics": {
@@ -151,6 +152,42 @@
             "properties": {
               "reason": {
                 "type": "string"
+              }
+            }
+          },
+          "planner": {
+            "type": "object",
+            "required": [
+              "budget",
+              "droppedAxes"
+            ],
+            "properties": {
+              "budget": {
+                "type": "object",
+                "required": [
+                  "requested",
+                  "emitted",
+                  "strategy"
+                ],
+                "properties": {
+                  "requested": {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "emitted": {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "strategy": {
+                    "type": "string"
+                  }
+                }
+              },
+              "droppedAxes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               }
             }
           }

@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "A field origin names at least one CSS property.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/nodes/5e1b0c77a9d24f03/root/fields/layout.itemSpacing/css",
+      "value": []
+    }
+  ],
+  "expect": [
+    {
+      "path": "/nodes/5e1b0c77a9d24f03/root/fields/layout.itemSpacing/css",
+      "kind": "invalid"
+    }
+  ]
+}

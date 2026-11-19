@@ -5,6 +5,8 @@
   "required": [
     "kind",
     "bundleVersion",
+    "runId",
+    "createdAt",
     "sceneVersion",
     "features",
     "generator",
@@ -14,7 +16,8 @@
     "components",
     "assets",
     "fonts",
-    "totals"
+    "totals",
+    "integrity"
   ],
   "properties": {
     "kind": {
@@ -24,6 +27,14 @@
     "bundleVersion": {
       "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
       "description": "Semantic version",
+      "type": "string"
+    },
+    "runId": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "createdAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$",
       "type": "string"
     },
     "sceneVersion": {
@@ -69,6 +80,10 @@
             "type": "string"
           },
           {
+            "const": "tokens-motion",
+            "type": "string"
+          },
+          {
             "const": "text-styles",
             "type": "string"
           },
@@ -90,6 +105,10 @@
           },
           {
             "const": "prototype-reactions",
+            "type": "string"
+          },
+          {
+            "const": "library-refs",
             "type": "string"
           }
         ]
@@ -180,6 +199,7 @@
           ],
           "properties": {
             "sha": {
+              "pattern": "^[0-9a-f]{7,64}$",
               "type": "string"
             },
             "ref": {
@@ -199,6 +219,7 @@
       ],
       "properties": {
         "hash": {
+          "minLength": 1,
           "type": "string"
         }
       }
@@ -216,7 +237,8 @@
           "bytes",
           "variants",
           "nodes",
-          "dependencies"
+          "dependencies",
+          "status"
         ],
         "properties": {
           "sid": {
@@ -237,6 +259,8 @@
             "type": "string"
           },
           "file": {
+            "minLength": 1,
+            "pattern": "^(?![A-Za-z]:)(?!/)(?!(?:.*/)?\\.\\.(?:/|$))[^\\\\\\u0000]+$",
             "type": "string"
           },
           "bytes": {
@@ -255,6 +279,34 @@
             "type": "array",
             "items": {
               "type": "string"
+            }
+          },
+          "status": {
+            "anyOf": [
+              {
+                "const": "ok",
+                "type": "string"
+              },
+              {
+                "const": "partial",
+                "type": "string"
+              },
+              {
+                "const": "failed",
+                "type": "string"
+              }
+            ]
+          },
+          "plan": {
+            "type": "object",
+            "required": [
+              "planHash"
+            ],
+            "properties": {
+              "planHash": {
+                "pattern": "^[0-9a-f]{16}$",
+                "type": "string"
+              }
             }
           }
         }
@@ -312,6 +364,7 @@
         ],
         "properties": {
           "family": {
+            "minLength": 1,
             "type": "string"
           },
           "styles": {
@@ -380,6 +433,267 @@
         "assetBytes": {
           "minimum": 0,
           "type": "integer"
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "required": [
+        "algo",
+        "files"
+      ],
+      "properties": {
+        "algo": {
+          "const": "sha256",
+          "type": "string"
+        },
+        "files": {
+          "additionalProperties": false,
+          "type": "object",
+          "patternProperties": {
+            "^(?![A-Za-z]:)(?!/)(?!(?:.*/)?\\.\\.(?:/|$))[^\\\\\\u0000]+$": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "nkMigrations": {
+      "type": "object",
+      "patternProperties": {
+        "^(.*)$": {
+          "type": "object",
+          "patternProperties": {
+            "^(.*)$": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "libraryComponents": {
+      "type": "object",
+      "patternProperties": {
+        "^(.*)$": {
+          "minLength": 1,
+          "type": "string"
+        }
+      }
+    },
+    "branch": {
+      "type": "object",
+      "required": [
+        "repo",
+        "branch",
+        "baseCommit",
+        "dirty",
+        "dcrConfig",
+        "configHash"
+      ],
+      "properties": {
+        "repo": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "branch": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "baseCommit": {
+          "pattern": "^[0-9a-f]{7,64}$",
+          "type": "string"
+        },
+        "dirty": {
+          "type": "boolean"
+        },
+        "dcrConfig": {
+          "type": "object",
+          "required": [
+            "scope",
+            "requireApproval",
+            "targets",
+            "screens",
+            "content",
+            "a11y",
+            "deprecations"
+          ],
+          "properties": {
+            "scope": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "const": "changed",
+                      "type": "string"
+                    },
+                    {
+                      "const": "ready",
+                      "type": "string"
+                    },
+                    {
+                      "const": "all",
+                      "type": "string"
+                    }
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "^page:(.*)$"
+                }
+              ]
+            },
+            "requireApproval": {
+              "type": "boolean"
+            },
+            "targets": {
+              "type": "object",
+              "required": [
+                "components"
+              ],
+              "properties": {
+                "components": {
+                  "type": "object",
+                  "properties": {
+                    "package": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "screens": {
+                  "type": "object",
+                  "required": [
+                    "repo",
+                    "path"
+                  ],
+                  "properties": {
+                    "repo": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "screens": {
+              "type": "object",
+              "required": [
+                "separator",
+                "groupBySection",
+                "breakpoints",
+                "states",
+                "base",
+                "expectStates"
+              ],
+              "properties": {
+                "separator": {
+                  "type": "string"
+                },
+                "groupBySection": {
+                  "type": "boolean"
+                },
+                "breakpoints": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^(.*)$": {
+                      "minimum": 0,
+                      "type": "number"
+                    }
+                  }
+                },
+                "states": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^(.*)$": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "base": {
+                  "anyOf": [
+                    {
+                      "const": "widest",
+                      "type": "string"
+                    },
+                    {
+                      "const": "narrowest",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "expectStates": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "content": {
+              "type": "object",
+              "required": [
+                "placeholders",
+                "i18n"
+              ],
+              "properties": {
+                "placeholders": {
+                  "type": "array",
+                  "items": {
+                    "description": "A string, or \"/pattern/flags\" for a regular expression",
+                    "type": "string"
+                  }
+                },
+                "i18n": {
+                  "anyOf": [
+                    {
+                      "const": "auto",
+                      "type": "string"
+                    },
+                    {
+                      "const": "none",
+                      "type": "string"
+                    },
+                    {
+                      "const": "keys",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            "a11y": {
+              "type": "object",
+              "required": [
+                "categories"
+              ],
+              "properties": {
+                "categories": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "deprecations": {
+              "type": "object",
+              "patternProperties": {
+                "^(.*)$": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "configHash": {
+          "pattern": "^[0-9a-f]{16}$",
+          "type": "string"
         }
       }
     }

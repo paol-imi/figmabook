@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "Radii are non-negative.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/0/root/radius/tl",
+      "value": -1
+    }
+  ],
+  "expect": [
+    {
+      "path": "/variants/0/root/radius/tl",
+      "kind": "invalid"
+    }
+  ]
+}

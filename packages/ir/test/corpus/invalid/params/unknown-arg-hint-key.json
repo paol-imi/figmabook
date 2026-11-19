@@ -1,0 +1,17 @@
+{
+  "base": "button-meta.json",
+  "why": "Arg hints are strict.",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/args/label/kind",
+      "value": "text"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/args/label/kind",
+      "kind": "unknown-key"
+    }
+  ]
+}

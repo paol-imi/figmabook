@@ -1,0 +1,97 @@
+{
+  "storybook": {
+    "source": "./storybook-static",
+    "dev": { "url": "http://localhost:6006", "command": "storybook dev -p 6006 --no-open", "autoStart": true },
+    "auth": {
+      "storageState": ".holotype/auth/storageState.json",
+      "headersFromEnv": { "CF-Access-Client-Id": "CF_ID" }
+    },
+    "refs": []
+  },
+  "include": ["components/**", "patterns/**"],
+  "exclude": ["**/internal/**", "**/*--playground"],
+  "defaults": {
+    "strategy": "auto",
+    "budget": { "max": 256, "warn": 128, "hardLimit": 1024, "maxProbes": 120 },
+    "states": { "include": ["default", "hover", "focus-visible", "active"], "mode": "force" },
+    "viewport": { "width": 1280, "height": 800 },
+    "viewports": {
+      "sizes": { "mobile": { "width": 390, "height": 844 }, "desktop": { "width": 1440, "height": 900 } }
+    },
+    "rootSelector": "#storybook-root",
+    "unwrap": true,
+    "portal": "auto"
+  },
+  "components": {
+    "components-button": {
+      "name": "Button",
+      "args": {
+        "variant": { "as": "variant", "order": "options" },
+        "size": { "as": "variant" },
+        "label": { "as": "text" },
+        "iconLeading": { "as": "instance-swap" },
+        "loading": { "as": "variant" }
+      },
+      "fixed": { "children": "Button" },
+      "excludeCombos": [{ "Variant": "link", "Size": "lg" }],
+      "grid": { "columns": ["State"], "rows": ["Variant", "Size"] },
+      "conflicts": "keep"
+    },
+    "components-icon": { "split": true }
+  },
+  "capture": {
+    "dpr": 2,
+    "locale": "en-US",
+    "timezone": "UTC",
+    "clock": "2026-01-01T00:00:00Z",
+    "devSourcemap": "force"
+  },
+  "mapper": { "borderModel": "padding-plus-border", "exactBorders": false, "exactRadii": false },
+  "layout": { "autoLayout": "verified", "tolerancePx": 0.6, "textWrap": "reflow" },
+  "naming": {
+    "layers": ["data-holotype-name", "data-figma-name", "data-testid", "component", "aria", "semantic", "class"],
+    "stripClassPatterns": ["/^css-[a-z0-9]+$/", "/^sc-/", "/^[a-z]+:[\\w-]+$/"]
+  },
+  "tokens": {
+    "enabled": true,
+    "include": "referenced",
+    "includePatterns": ["--color-*", "--space-*", "--radius-*", "--font-*", "--shadow-*"],
+    "ignore": ["/^--_/"],
+    "naming": "dash-groups",
+    "collections": "tiered",
+    "modes": [{ "name": "Light", "globals": { "theme": "light" } }, { "name": "Dark", "globals": { "theme": "dark" } }],
+    "modeOverflow": "variant-axis",
+    "themeFallback": "variant-axis",
+    "bindByValue": false
+  },
+  "fonts": { "map": { "Acme Sans": "Inter", "Acme Mono": { "family": "JetBrains Mono" } }, "fallback": "Inter" },
+  "figma": {
+    "page": "Components",
+    "sections": "by-root-title",
+    "docFrames": true,
+    "docSections": ["description", "properties", "diagnostics"],
+    "iconsPage": "Icons",
+    "deprecatedPage": "Deprecated",
+    "grid": { "maxColumns": 8, "gap": 24, "padding": 32 }
+  },
+  "sync": { "orphans": "remove", "undo": "per-component" },
+  "dcr": {
+    "scope": "changed",
+    "requireApproval": false,
+    "targets": { "components": { "package": "@acme/ui" } },
+    "screens": {
+      "separator": " / ",
+      "groupBySection": true,
+      "breakpoints": { "Mobile": 0, "Tablet": 768, "Desktop": 1280 },
+      "base": "widest",
+      "expectStates": []
+    },
+    "content": { "placeholders": ["/^XX+$/", "/^\\[.*\\]$/"], "i18n": "auto" },
+    "deprecations": { "components-legacyalert": "components-banner" }
+  },
+  "verify": { "visual": "advisory", "tolerance": { "px": 0.5, "color": 0.001 }, "regressions": true },
+  "output": { "dir": ".holotype/out", "report": ["json", "html"] },
+  "cache": { "dir": ".holotype/cache" },
+  "telemetry": false,
+  "redaction": { "inputs": "password", "text": "off" }
+}

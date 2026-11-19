@@ -1,0 +1,17 @@
+{
+  "base": "button-meta.json",
+  "why": "budget.hardLimit is a number.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/budget/hardLimit",
+      "value": "1024"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/budget/hardLimit",
+      "kind": "invalid"
+    }
+  ]
+}

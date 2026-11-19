@@ -1,0 +1,11 @@
+{
+  "base": "branch.json",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/branch/configHash",
+      "value": "0000000000000000"
+    }
+  ],
+  "expect": ["branch-config-hash"]
+}

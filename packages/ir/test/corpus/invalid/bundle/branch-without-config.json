@@ -1,0 +1,16 @@
+{
+  "base": "branch.json",
+  "why": "A branch block carries the resolved dcr config (D-50).",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/branch/dcrConfig"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/branch/dcrConfig",
+      "kind": "invalid"
+    }
+  ]
+}

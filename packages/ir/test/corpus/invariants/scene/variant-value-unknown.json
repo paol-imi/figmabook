@@ -1,0 +1,11 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/0/values/arg:size",
+      "value": "Huge"
+    }
+  ],
+  "expect": ["variant-values"]
+}

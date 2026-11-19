@@ -35,7 +35,7 @@ const meta = {
       },
       // States are hardening: the slice planner reads and ignores them (PLAN_FEATURE_DOWNGRADED).
       states: { include: ['default', 'hover', 'focus-visible', 'active'], foldBooleans: ['disabled', 'loading'] },
-      layout: { columns: ['Size'], rows: ['Variant'] },
+      grid: { columns: ['Size'], rows: ['Variant'] },
     } satisfies HolotypeParams,
   },
 } satisfies Meta<typeof Button>;

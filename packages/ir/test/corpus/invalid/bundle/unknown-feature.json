@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "Features are a closed set per major.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/features/0",
+      "value": "teleport"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/features/0",
+      "kind": "invalid"
+    }
+  ]
+}

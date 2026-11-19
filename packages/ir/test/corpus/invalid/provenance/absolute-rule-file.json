@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "Rule files are repo-relative.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/nodes/5e1b0c77a9d24f03/root/fields/layout.padding.l/rule/file",
+      "value": "/home/dev/ui/Button.module.css"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/nodes/5e1b0c77a9d24f03/root/fields/layout.padding.l/rule/file",
+      "kind": "invalid"
+    }
+  ]
+}

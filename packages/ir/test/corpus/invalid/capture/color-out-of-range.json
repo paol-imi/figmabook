@@ -1,0 +1,17 @@
+{
+  "base": "button-primary.json",
+  "why": "Colors are 0..1 floats.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/root/computed/color/r",
+      "value": 1.5
+    }
+  ],
+  "expect": [
+    {
+      "path": "/root/computed/color/r",
+      "kind": "invalid"
+    }
+  ]
+}

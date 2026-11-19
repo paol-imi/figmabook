@@ -1,0 +1,10 @@
+{
+  "base": "branch.json",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/source/git"
+    }
+  ],
+  "expect": ["branch-git"]
+}

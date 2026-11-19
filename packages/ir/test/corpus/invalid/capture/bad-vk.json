@@ -1,0 +1,17 @@
+{
+  "base": "button-primary.json",
+  "why": "Variant keys are 16 lowercase hex characters.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/target/vk",
+      "value": "5E1B-0C77"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/target/vk",
+      "kind": "invalid"
+    }
+  ]
+}

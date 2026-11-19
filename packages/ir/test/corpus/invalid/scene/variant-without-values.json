@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "A VARIANT property lists at least one value.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/properties/0/values",
+      "value": []
+    }
+  ],
+  "expect": [
+    {
+      "path": "/properties/0/values",
+      "kind": "invalid"
+    }
+  ]
+}

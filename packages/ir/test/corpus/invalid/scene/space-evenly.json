@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "SPACE_EVENLY is never emitted (07 \u00a7flex).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/0/root/layout/primaryAxisAlignItems",
+      "value": "SPACE_EVENLY"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/variants/0/root/layout/primaryAxisAlignItems",
+      "kind": "invalid"
+    }
+  ]
+}

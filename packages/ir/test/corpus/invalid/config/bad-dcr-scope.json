@@ -1,0 +1,17 @@
+{
+  "base": "annotated-example.json",
+  "why": "dcr.scope is changed, ready, all or page:<name>.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/dcr/scope",
+      "value": "selection:1:2"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/dcr/scope",
+      "kind": "invalid"
+    }
+  ]
+}

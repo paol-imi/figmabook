@@ -1,0 +1,17 @@
+{
+  "base": "annotated-example.json",
+  "why": "`conflicts` is valid in components[sid] only (16 \u00a76).",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/defaults/conflicts",
+      "value": "keep"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/defaults/conflicts",
+      "kind": "unknown-key"
+    }
+  ]
+}

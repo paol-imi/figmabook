@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "File hashes are full sha256.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/integrity/files/tokens.json",
+      "value": "c47b"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/integrity/files/tokens.json",
+      "kind": "invalid"
+    }
+  ]
+}

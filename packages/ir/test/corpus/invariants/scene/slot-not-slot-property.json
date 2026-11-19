@@ -1,0 +1,11 @@
+{
+  "base": "card-kitchen-sink.json",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/0/root/children/3/slot/propKey",
+      "value": "arg:icon"
+    }
+  ],
+  "expect": ["prop-ref"]
+}

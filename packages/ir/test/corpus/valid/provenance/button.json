@@ -1,0 +1,41 @@
+{
+  "kind": "holotype/provenance",
+  "v": 1,
+  "sid": "components-button",
+  "nodes": {
+    "5e1b0c77a9d24f03": {
+      "root": {
+        "dom": {
+          "path": "button:0",
+          "tag": "button",
+          "classes": ["_btn_x7a3", "_primary_k2l9"],
+          "loc": { "file": "src/components/Button/Button.tsx", "line": 42, "col": 7 }
+        },
+        "fields": {
+          "layout.padding.l": {
+            "css": ["border-left-width", "padding-left"],
+            "authored": "var(--space-3)",
+            "selector": ".btn",
+            "rule": { "file": "src/components/Button/Button.module.css", "line": 14, "col": 3 },
+            "varChain": ["--btn-pad-x", "--space-3"],
+            "transform": "border-included"
+          },
+          "fills.0": {
+            "css": ["background-color"],
+            "authored": "var(--button-bg)",
+            "selector": ".primary",
+            "varChain": ["--button-bg"],
+            "transform": "none"
+          },
+          "layout.itemSpacing": { "css": ["gap"] }
+        }
+      },
+      "root/label": {
+        "dom": { "path": "button:0>span:1", "tag": "span" },
+        "fields": {
+          "text.ranges.0.fontSize": { "css": ["font-size"], "authored": "0.875rem", "transform": "percent-resolved" }
+        }
+      }
+    }
+  }
+}
