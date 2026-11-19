@@ -29,5 +29,8 @@
     "@holotype/layout-sim": "workspace:*",
     "@holotype/ir": "workspace:*",
     "@holotype/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "fast-check": "4.10.3"
   }
 }
