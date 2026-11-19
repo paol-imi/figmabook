@@ -20,7 +20,7 @@
     "node": ">=22.12"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "typecheck": "tsc",
     "test": "vitest run",
     "test:e2e": "vitest run --config vitest.e2e.config.ts"

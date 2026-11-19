@@ -5,14 +5,14 @@ Thanks for helping. The plan in [`docs/plan/`](docs/plan/README.md) is the spec.
 ## Setup
 
 ```sh
-nvm use            # Node 24 (any Node ≥22.12 works)
+nvm use            # Node 24 (building needs Node ≥22.18; the packages run on ≥22.12)
 corepack enable    # pnpm version from package.json `packageManager`
 pnpm install
 ```
 
 | Command                | What it does                                                                  |
 | ---------------------- | ----------------------------------------------------------------------------- |
-| `pnpm build`           | builds every package (tsup; create-figma-plugin for the plugin)               |
+| `pnpm build`           | builds every package (tsdown; create-figma-plugin for the plugin)             |
 | `pnpm test`            | runs Vitest in every package                                                  |
 | `pnpm lint`            | Biome lint and format check (`pnpm format` to fix formatting)                 |
 | `pnpm typecheck`       | `tsc` in every package, strict                                                |

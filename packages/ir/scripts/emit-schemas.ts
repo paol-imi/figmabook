@@ -1,5 +1,5 @@
 // Writes the committed JSON Schema files (06 §7). Run by `pnpm build`, which first bundles
-// this script from source (tsup.emit.config.ts) into dist/.emit/, so no prior workspace
+// this script from source (tsdown.emit.config.ts) into dist/.emit/, so no prior workspace
 // build is needed. Paths are relative to that bundle.
 import { mkdir, readdir, rm, writeFile } from 'node:fs/promises';
 import { jsonSchemaFiles } from '../src/json-schema';

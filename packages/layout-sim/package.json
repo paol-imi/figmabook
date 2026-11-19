@@ -21,7 +21,7 @@
     "node": ">=22.12"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "typecheck": "tsc && tsc -p test",
     "test": "vitest run"
   },
