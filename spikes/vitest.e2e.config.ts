@@ -1,5 +1,5 @@
 import { defineProject, mergeConfig } from 'vitest/config';
-import { serializerVitePlugin } from '../packages/capture/scripts/serializer.ts';
+import { serializerPlugin } from '../packages/capture/scripts/serializer.ts';
 import shared from '../vitest.shared.ts';
 
 /**
@@ -10,7 +10,7 @@ import shared from '../vitest.shared.ts';
 export default mergeConfig(
   shared,
   defineProject({
-    plugins: [serializerVitePlugin()],
+    plugins: [serializerPlugin()],
     test: { name: 'spikes-e2e', include: ['S-*/test/**/*.e2e.test.ts'], testTimeout: 60_000, hookTimeout: 180_000 },
   }),
 );
