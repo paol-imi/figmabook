@@ -317,9 +317,9 @@ The story title changed, so `sid` changed. Candidates are pairs of (registry `si
 
 | Evidence | Weight |
 |---|---|
-| same `componentPath` (index.json), or same `importPath` + overlapping `exportNames` | 0.5 |
+| same `componentPath` (index.json), or same `importPath` + `exportName` | 0.5 |
 | same `displayName` / docgen component name | 0.2 |
-| Jaccard(axes ∪ property args) | 0.15 |
+| Jaccard(axes ∪ property keys) | 0.15 |
 | default-variant structural similarity: Jaccard of `nk` sets | 0.15 |
 
 - score ≥ 0.85 → proposed **rename**, pre-checked in the plan.
@@ -371,7 +371,7 @@ A mapped pair is reconciled **in place**: the old ComponentNode gets the new `vk
 ```ts
 interface ApplyPlan {
   id: string; createdAt: string;
-  bundle: { fingerprint: string; irVersion: string; storybookVersion?: string };
+  bundle: { bundleFp: string; sceneVersion: string; storybookVersion?: string };   // 06 #bundle-fingerprint
   registryRev: number;                                  // optimistic concurrency (§14)
   summary: { create: number; update: number; unchanged: number; deprecate: number; undeprecate: number;
              rename: number; conflicts: number; breaking: number };
@@ -387,7 +387,7 @@ interface ComponentChange {
   conflicts: Conflict[];
   breaking: BreakingChange[];                           // §8.3
   impact?: { localInstances: number; overridesAtRisk: number };   // computed lazily on expand (getInstancesAsync is costly)
-  preview?: { vk: string; beforeExport?: 'lazy'; afterAsset: string /*sha of bundle screenshot*/ }[];
+  preview?: { vk: string; beforeAsset?: string /*previous capture*/; afterAsset: string /*new capture*/; figmaNow?: 'lazy' }[];   // §8.2
   diagnostics: { error: number; warn: number; info: number };
   decision: { apply: boolean; conflictPolicy: ConflictPolicy };     // defaults (§9.2), user-editable
 }
@@ -440,7 +440,7 @@ The mismatch report includes *which groups* differ, by comparing the per-group s
 
 | Policy | Granularity | Effect |
 |---|---|---|
-| `overwrite` | component or node | write code values; the designer's managed-property changes are lost (old values are logged in the report) |
+| `overwrite` ("Take code") | component or node | write code values; the designer's managed-property changes are lost (old values are logged in the report, `SYNC_CONFLICT_OVERWRITTEN`) |
 | `keep` | component or node | skip writing this node's managed properties **and its subtree**; record `keep[nk] = irhAtDecision` on the set |
 | `fork` | component | before overwriting, duplicate the set (`set.clone()`) into section "Forks", strip all `holotype` keys from the clone (so it becomes unmanaged), rename it `<name> (designer copy <date>)`, then overwrite the original |
 
@@ -474,7 +474,24 @@ In a **branch file** (root `branch:meta` with `mode: 'proposal'`, D-32/D-33), a 
 
 - The apply plan shows proposals in their own "Proposals" group (count only, no decision needed), not under Conflicts.
 - `lock` still works: a locked subtree is designer-owned and excluded from the DCR.
-- **Merging back.** When a Figma-native branch is merged into the main file, `branch:meta` and `base:*` must not survive in the main file. `branch:meta.fileKey` records the branch file's own key. In a file whose `figma.fileKey` differs (a merged branch, or a duplicate of a branch file), the plugin ignores `branch:meta`, runs in library mode, and the next library sync clears both keys (sets them to `''`). The file is then back under D-29 (verify how branch merges carry shared plugin data, S-17).
+- **Never merged** (D-47). When the PR merges, the branch is archived; the main library is updated only by re-sync from code (§13). If a branch is merged anyway, the library sees `branch:meta`/`base:*` residue: see §9.6.
+- **Copy detection.** If `branch:meta.fileKey` (when set) differs from `figma.fileKey`, or the root `fileId` differs from `branch:meta.fileId`, proposal mode is off and the plugin shows `DCR_BRANCH_FILE_COPIED` ([09 §20.1](09-plugin.md#branch-identity)). It never switches silently.
+
+<a id="update-from-main"></a>
+- **Update from main.** Figma's "Update from main" pulls main-library changes into the branch. It is detected when a managed node's `irh` differs from its baseline's `irh` without an `ah` mismatch. Banner: "This branch was updated from the main library. Merge `main` into `<branch>` in git, then run `holotype branch refresh`. Until then, N components may differ from your branch's code." Those nodes are excluded from proposals until the refresh. S-17 checks how plugin data behaves on update.
+
+<a id="branch-residue"></a>
+### 9.6 Library file with branch residue
+
+A library file can carry branch residue (`branch:meta` or `base:*` without `mode: 'proposal'`, [09 §20.5](09-plugin.md#branch-residue)) when a branch was merged against D-47. On sync in such a file:
+
+1. Emit `SYNC_BRANCH_RESIDUE` (warn): "This library contains leftovers of a merged branch. Review the cleanup list, then Re-sync."
+2. Show a **Merged-branch cleanup** step before the plan. It lists:
+   - leftover screens (top-level frames and sections that are not managed);
+   - draft components (no `sid`);
+   - designer edits on managed nodes, shown as conflicts (D-29);
+   - the keys `base:*`, `request:*` and `branch:meta`.
+3. Actions: **[Remove leftovers]** removes the keys only. Each listed item also has Keep / Remove.
 
 ---
 
@@ -483,13 +500,9 @@ In a **branch file** (root `branch:meta` with `mode: 'proposal'`, D-32/D-33), a 
 
 ### 10.1 Hashes
 
-The mapper computes them ([06](06-ir.md#hashing)):
+Defined in [06 §6](06-ir.md#hashing); the mapper computes them. The plugin only compares.
 
-- `node.irh = h16(canonical(ownManagedProps(node)) + children.map(c => c.irh).join(''))`
-- `variant.irh = root.irh`
-- `component.irh = h16(variants' irh in vk order + axes + properties + docs + name)`
-
-Bindings and token *names* are part of `ownManagedProps`, but token *values* are not. A token value change is applied once to the variable, and nodes don't change.
+Bindings and token *names* are part of a node's `irh`, but token *values* are not. A token value change is applied once to the variable, and nodes don't change.
 
 ### 10.2 Epochs
 
@@ -517,7 +530,7 @@ A no-op sync touches nothing (I-2). The fake-backed test asserts an empty op-log
 | K-5 | Component property values live on the instance, keyed by property id | Plugin API (`componentProperties`) | prefer TEXT/BOOLEAN props over raw overrides (D-13) |
 | K-6 | Nested instance overrides are fragile across variant changes | forum bug reports | report impact; S-02 measures it |
 
-### 11.1 S-02 test matrix (must be run before Phase 4 exit)
+### 11.1 S-02 test matrix (Phase 0 spike, [14](14-roadmap.md#phase-0); its results gate the Phase 4a design and the slice's in-place apply)
 
 The matrix is mutations on the main component (rows) × override kinds on an instance (columns). Each cell gets ✅ kept / ❌ lost / ⚠ partially kept, recorded both **in the same file** and **across files** (library publish → consumer update).
 
@@ -593,7 +606,7 @@ The test-suite runs in two layers:
 | T-18 | Component removed from code | moved to "Deprecated"; un-deprecated when restored | L + F |
 | T-19 | Crash after 3 of 10 components (fault injection in the fake) | resume completes; no duplicates; registry repaired | L |
 | T-20 | Two sessions plan concurrently | the second apply sees `rev` changed → `SYNC_STALE_PLAN`, re-plan | L |
-| T-21 | Duplicate set (designer copy-pasted a managed set) | `SYNC_DUPLICATE_SID`; the copy is offered for unmanaging | L |
+| T-21 | Duplicate set (designer copy-pasted a managed set) | `SYNC_DUPLICATE_SID`; the copy is offered Detach from Holotype | L |
 | T-22 | Library consumer file: update after T-02/T-04/T-07/T-11 | overrides per the S-02 matrix expectations | F |
 | T-23 | Plugin `applierEpoch` bump | every node re-written once; then a no-op | L |
 | T-24 | `nkMigrations` in the bundle | keys renamed; no recreation | L |
@@ -607,9 +620,9 @@ The test-suite runs in two layers:
 
 - **No publishing via API.** Neither the Plugin API nor the REST API can publish a library. After a sync, the plugin shows "Publish library to propagate N changes" and offers **"Copy release notes"**: generated from the plan, grouped Breaking, Added, Changed, ready to paste into Figma's publish dialog. Copying happens in the UI via a textarea + `document.execCommand('copy')` fallback (verify, S-06).
 - **Consumer files** get the changes when they accept library updates. Override survival there follows the same rules (S-02, cross-file column). Breaking changes are flagged before applying (§8.3).
-- **One managing file per component.** `holotype.config.ts` → `figma.files: [{ name: 'Core', include: ['inputs/**', 'buttons/**'] }, { name: 'Patterns', include: ['patterns/**'] }]`, and the bundle can be scoped per file (`holotype export --file Core`).
-- **Cross-file nested instances**, e.g. Patterns using Core's Button: the Core file's registry exports `sid → published component key` (the "Export keys" action writes `keys.json` back to the CLI over the local server). Patterns' bundle then references `libraryComponents[sid] = key`, resolved with `importComponentByKeyAsync` ([09 §5.1](09-plugin.md#preflight)). The library must be published and enabled in the consuming file.
-- **Branches (D-32).** Branch files are Figma-native branches of the main library file, one per git feature branch: sync into the branch, review, merge. Plugin data merges with the branch (verify, S-02). A duplicated file is the fallback only for accounts without branching. Details in [15](15-change-requests.md).
+- **One managing file per component.** `figma.files` ([16](16-config.md#figma)) assigns components to files (e.g. Core and Patterns), and the bundle can be scoped per file (`holotype export --file Core`).
+- **Cross-file nested instances**, e.g. Patterns using Core's Button: the Core file's registry exports `sid → published component key` (the "Export keys" action, entry point Settings ▸ Library maintenance, [11](11-ux.md#plugin-ia), writes `keys.json` back to the CLI over the local server). Patterns' bundle then carries them in `BundleManifest.libraryComponents` ([06 §4.2](06-ir.md#bundlemanifest)), resolved with `importComponentByKeyAsync` ([09 §5.1](09-plugin.md#preflight)). The library must be published and enabled in the consuming file.
+- **Branches (D-32, D-47).** Branch files are Figma-native branches of the main library file, one per git feature branch. They are **never merged**: when the PR merges, the branch is archived, and the library is re-synced from `main` by a maintainer (open the library ▸ Holotype ▸ N Outdated ▸ Re-sync ▸ Publish). CI only publishes the bundle; Figma has no write API outside plugins. How plugin data behaves on branch creation and "Update from main" is spike S-17. A duplicated file is the fallback only for accounts without branching. Details in [15](15-change-requests.md).
 
 ---
 
@@ -624,21 +637,25 @@ Figma is multiplayer, and two people may sync the same file.
 2. **Optimistic check.** The plan records `registryRev`. At apply start, a changed `rev` gives `SYNC_STALE_PLAN` and an automatic re-plan. Finalize writes `rev + 1`.
 3. **Duplicate detection.** After apply, or at the next index, more than one set with the same `sid` gives `SYNC_DUPLICATE_SID` (warn).
    - The set referenced by the registry (`setId`) wins.
-   - For the others, the plugin offers to **unmanage** them (strip `holotype` keys, append " (copy)"), never to delete them.
+   - For the others, the plugin offers **Detach from Holotype** (strip `holotype` keys, append " (copy)", §9.4), never to delete them.
    - This also catches designers copy-pasting managed sets.
 
 ---
 
+<a id="status"></a>
 ## 15. Sync status & update discovery
 
-| Status | Condition | Shown as |
-|---|---|---|
-| `synced` | set `irh` = bundle `irh`, `fp` current, no open conflicts | ✓ |
-| `outdated` | the bundle (or the latest known source) has a different `irh` | ↻ N variants changed |
-| `conflict` | the last plan left conflicts unresolved, or `kept-stale` markers exist | ⚠ |
-| `partial` / `failed` | the last apply was cancelled or errored ([09 §13](09-plugin.md#resume)) | ⟳ resume |
-| `deprecated` | removed from code | ⊘ |
-| `locked` | set-level lock | 🔒 |
+Labels and icons follow the shared status vocabulary in [11](11-ux.md#status-vocabulary). The sync conditions:
+
+| Status | Condition |
+|---|---|
+| `synced` | set `irh` = bundle `irh`, `fp` current, no open conflicts |
+| `outdated` | the bundle (or the latest known source) has a different `irh` |
+| `conflict` | the last plan left conflicts unresolved, or `kept-stale` markers exist |
+| `partial` | the last apply was cancelled ([09 §12](09-plugin.md#schedule)); the next sync resumes |
+| `failed` | the last apply errored ([09 §13](09-plugin.md#resume)); the next sync resumes |
+| `deprecated` | removed from code |
+| `locked` | set-level lock ("Keep as designed", §9.4) |
 
 **How the plugin learns about new versions.** The plugin can't run in the background; checks happen when it opens.
 
@@ -650,7 +667,8 @@ Figma is multiplayer, and two people may sync the same file.
 
 Statuses are recomputed and written to the registry only (not to nodes) until a sync runs.
 
-- **Outside Figma.** `holotype status --figma-file <key>` (CLI, using a Figma REST token) reads the file's root shared plugin data via `GET /v1/files/:key?plugin_data=shared&depth=1` and compares it with the local bundle (verify REST support for root plugin data; spike S-18, which absorbs the proposed S-14, [14](14-roadmap.md#phase-0)). The GitHub Action uses this to comment "Figma library is 4 components behind" on PRs ([02](02-architecture.md#topologies)).
+- **Outside Figma.** `holotype status --figma-file <key>` reads the file's root shared plugin data with `GET /v1/files/:key?depth=1&plugin_data=shared` and compares it with the local bundle (spike S-18, which absorbs the proposed S-14, [14](14-roadmap.md#phase-0)). Locally it uses the user's read-only token (`NET_FIGMA_TOKEN_MISSING` without one); CI uses a **plan access token**, because personal tokens expire after at most 90 days ([13 §3](13-security-legal.md#secrets)). The GitHub Action uses this to comment "Figma library is 4 components behind" on PRs ([02](02-architecture.md#topologies)).
+- **Large libraries.** REST reads use two passes: `depth=2` to list sets, then `GET /v1/files/:key/nodes?ids=…&plugin_data=shared` in batches. Results are cached by file `version`.
 - The doc frame badge and the relaunch button ("Re-sync from Storybook") give designers a one-click path.
 
 ---
@@ -675,16 +693,19 @@ Statuses are recomputed and written to the registry only (not to nodes) until a 
 | `SYNC_LEASE_HELD` | warn | another session holds the sync lease |
 | `SYNC_STALE_PLAN` | info | registry changed since planning; re-planned |
 | `SYNC_UNMANAGED_AFFECTS_LAYOUT` | info | an unmanaged designer layer caused a layout fallback |
+| `SYNC_OVERRIDE_NOT_RESTORED` | warn | an instance override could not be restored after a type change (§5.3) |
+| `SYNC_CONFLICT_OVERWRITTEN` | warn | a designer edit was overwritten under the `overwrite` policy; the old value is in the report (§9.2) |
+| `SYNC_BRANCH_RESIDUE` | warn | library file carries `branch:meta`/`base:*` from a merged branch; cleanup offered (§9.6) |
 
 ---
 
 ## 17. Open questions / spikes
 
-1. **S-02** (critical, Phase 4 gate): the full §11.1 matrix, same-file and cross-file. In particular:
+1. **S-02** (critical; Phase 0 spike, [14](14-roadmap.md#phase-0); gates the Phase 4a design): the full §11.1 matrix, same-file and cross-file. In particular:
    - whether `insertChild` reparenting keeps override identity;
    - whether `set.appendChild(component)` keeps links;
-   - whether moving a set across pages keeps library keys;
-   - whether plugin data survives branch merges.
-2. **S-06:** lease propagation latency in multiplayer; `getInstancesAsync` cost on large files (bounds the plan's lazy `impact`); clipboard copy from the plugin UI.
-3. **S-18** (absorbs the proposed S-14): REST read of root shared plugin data for CI status checks (`plugin_data=shared` on the document node), plus the DCR's REST field coverage ([15 §12](15-change-requests.md#phasing)).
-4. Whether hashing per-group `ah` by reading `getStyledTextSegments` is fast enough on text-heavy components (part of S-06).
+   - whether moving a set across pages keeps library keys.
+2. **S-17:** whether shared plugin data (`branch:meta`, `base:*`, `request:*`) survives branch creation and "Update from main" (§9.5).
+3. **S-06:** lease propagation latency in multiplayer; `getInstancesAsync` cost on large files (bounds the plan's lazy `impact`); clipboard copy from the plugin UI.
+4. **S-18** (absorbs the proposed S-14): REST read of root shared plugin data for CI status checks (`plugin_data=shared` on the document node at `depth=1`), plus the DCR's REST field coverage ([15 §12](15-change-requests.md#phasing)).
+5. Whether hashing per-group `ah` by reading `getStyledTextSegments` is fast enough on text-heavy components (part of S-06).

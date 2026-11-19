@@ -147,7 +147,7 @@ The plugin chooses the mode from `branch:meta.mode`. A main library file never h
 | Add a value to a variant axis, or a new BOOLEAN/TEXT/INSTANCE_SWAP/SLOT property | `property.added` / `property.changed` | compared with the baseline `props` / `axes` set keys ([10 §2.1](10-sync.md#keys)) |
 | Add or remove a layer inside a managed variant | `node.added` / `node.removed` | an added layer has no `nk`, or carries a duplicated `nk` (the copy is the later one in canonical order) |
 | Create a new local component or component set | `component.new` | no `holotype/sid` |
-| Compose screens from instances, frames and text | `screen` | only in scope (Ready for dev, a page, or a selection). Frames of the same screen at other widths or states are grouped into one item (§4.10) |
+| Compose screens from instances, frames and text | `screen` | only in scope (by default: frames created after link, §4.6). Frames of the same screen at other widths or states are grouped into one item (§4.10) |
 | Wire prototype interactions (on click → navigate / overlay / back; hover / pressed via *Change to*) | `screen.interactions[]` | read from `reactions` (§4.11) |
 | Annotate copy or accessibility (role, label, focus order) | `screen.content` / `screen.a11y` | annotation category *Accessibility* (configurable, §4.12) |
 | Use an instance of an older library version, or of a deprecated component | `instance.outdated` / `instance.deprecated` | not a request to rebuild the old look: the agent uses the current component (§4.13) |
@@ -534,7 +534,7 @@ Provenance needs source maps, so **branch workflows capture from the Vite dev se
 | CSS rule location | `CSS.getMatchedStylesForNode` → `rule.styleSheetId` + `style.range` (start line and column within the served stylesheet) | CDP, in use ([05 §6.2](05-capture.md)); range capture is new |
 | Original file | Vite injects dev CSS as `<style>`; the CLI forces `css.devSourcemap: true` in branch mode ([`capture.devSourcemap`](16-config.md#capture)). Inline sheets resolve via `ownerNode` → `data-vite-dev-id` and the inline source map, with `style.range` offset by `header.startLine/startColumn`; linked sheets use the `CSS.styleSheetAdded` header (`sourceURL`, `sourceMapURL`). Otherwise `DCR_PROVENANCE_NO_SOURCEMAP` (warn) | S-19 |
 | CSS modules | hashed class `_btn_x7a3` → the original `.btn` selector, via the source map | S-19 |
-| Tailwind v4 | utility classes on the element; theme values are CSS variables (`--spacing`, `--color-*`), so `var()` chains work. Provenance = the **class list + JSX location**; a value change becomes a utility suggestion `p-3 → p-4`, derived deterministically from the theme scale | adapter, Phase 7 |
+| Tailwind v4 | utility classes on the element; theme values are CSS variables (`--spacing`, `--color-*`), so `var()` chains work. Provenance = the **class list + JSX location**; a value change becomes a utility suggestion `p-3 → p-4`, derived deterministically from the theme scale | adapter, automation (M7) |
 | CSS-in-JS (emotion, styled-components) | injected sheets; source maps only if the babel/SWC plugin emits them | best-effort |
 | JSX location | React 19 removed `_debugSource`. The optional dev-only Vite plugin **`@holotype/vite-plugin`** injects `data-holotype-loc="src/components/Button/Button.tsx:42:7"` on host JSX elements, the same technique as locator-style inspectors. Capture reads it into `CSource.loc` | hardening (the slice uses CSS-rule provenance only) |
 | `var()` chain | already captured (`CVarChain`, [06 §2.1](06-ir.md)) | in use |
@@ -1151,7 +1151,7 @@ After a passing verify, `holotype branch refresh` re-syncs the branch file from 
 
 ### 10.1 Figma token
 
-- REST needs a Figma personal access token (or OAuth later) with **read-only** file scope (`file_content:read`; verify the scope names, S-18).
+- REST needs a **read-only** Figma token: a personal access token with `file_content:read` locally (max 90 days), a plan access token in CI ([13 §3](13-security-legal.md#secrets)). Missing → `NET_FIGMA_TOKEN_MISSING`; expiring → `NET_FIGMA_TOKEN_EXPIRING`.
 - It is read from `FIGMA_TOKEN`, or from the OS keychain via `holotype login --figma`. It is never put in the config (`SEC_SECRET_IN_CONFIG`), never on argv (`SEC_SECRET_ON_ARGV`), and never in DCR files.
 - It is only sent to `api.figma.com`.
 
@@ -1159,7 +1159,7 @@ After a passing verify, `holotype branch refresh` re-syncs the branch file from 
 
 - **Nothing new.** The CLI reads the Figma file via the Figma API and code from the local repo. DCR files stay in the repo.
 - **The AI is the user's choice.** If the agent is a cloud model, the prompt, the referenced code and the images go to that provider under the user's own agreement. The docs and the Submit screen say so plainly.
-- The plugin sends DCRs only to the local CLI on loopback ([13](13-security-legal.md)).
+- The plugin writes submitted requests into the file (`request:*` shared plugin data and a named version, D-48, D-49), where anyone with file access can read them. It sends DCRs over the network only to the local CLI on loopback, when paired ([13 §2.5](13-security-legal.md#dcr)).
 - Designer identities (comment authors, annotation authors, approvers) are **never** stored (`DcrNote.author: never`; `branch:meta.approval` has no identity field).
 - `open-url` interaction targets are kept as text and never fetched.
 
@@ -1181,13 +1181,13 @@ Designer-authored strings are untrusted: layer, frame, section and component nam
 
 | Code | Severity | Meaning | Remedy |
 |---|---|---|---|
-| `DCR_NOT_BRANCH_FILE` | error | no `branch:meta`; this file is a library file | `holotype branch link` |
+| `DCR_NOT_BRANCH_FILE` | error | no `branch:meta`; this file is a library file (branch mismatches are `DCR_GIT_BRANCH_MISMATCH`) | `holotype branch link` |
 | `DCR_BASELINE_MISSING` | error | no embedded snapshot and no CLI-cache baseline for a variant | `holotype branch refresh` |
 | `DCR_BASELINE_EXTERNAL` | warn | snapshot over budget, kept in CLI cache only; REST-only extraction incomplete | run `dcr` on the machine that generated it, or raise the budget |
 | `DCR_BASELINE_SHIFTED` | warn | code changed a node the designer also edited (after refresh) | review both values in the item |
 | `DCR_BASELINE_DIRTY` | info | baseline generated from a dirty working tree | commit before `branch start` |
-| `DCR_SNAPSHOT_PARITY` | warn | plugin and REST snapshots differ for the same version | report; the plugin path is preferred |
-| `DCR_SCOPE_EMPTY` | info | nothing in scope (e.g. no frame Ready for dev) | change scope |
+| `DCR_SNAPSHOT_PARITY` | warn | plugin and REST snapshots differ for the same version, or the pulled core hash ≠ `lastDcr.hash` (both hashes shown) | report; the plugin path is preferred |
+| `DCR_SCOPE_EMPTY` | info | nothing in scope (e.g. no change since link, or no frame Ready for dev with scope `ready`) | change scope |
 | `DCR_NODE_AMBIGUOUS` | info | duplicated `nk`/`vk` resolved by canonical order | — |
 | `DCR_REMOTE_COMPONENT_UNRESOLVED` | warn | library instance key not in registry `keys.json` | export keys from the library file |
 | `DCR_PROPERTY_UNMAPPED` | warn | instance property value has no arg mapping | open question |
@@ -1198,7 +1198,7 @@ Designer-authored strings are untrusted: layer, frame, section and component nam
 | `DCR_PROVENANCE_MISSING` | warn | no rule/file location (CDP or source map unavailable, or plugin-only extraction) | capture from the dev server via the CLI |
 | `DCR_PROVENANCE_MINIFIED` | info | locations only in built CSS (static build) | use the dev server for branch mode |
 | `DCR_UNKNOWN_CHANGE` | warn | change not classifiable | listed raw |
-| `DCR_TOO_LARGE` | warn | more than 200 items; split by component (`--split`) | — |
+| `DCR_TOO_LARGE` | warn | more than 200 items | split by component (`--split`, §7.1) |
 | `DCR_NOTE_SUSPICIOUS` | info | designer text looks like instructions (still fenced) | — |
 | `DCR_VERIFY_PARTIAL` | warn | some items partial; follow-up DCR written | iterate |
 | `DCR_VERIFY_PENDING` | error | items with no implementation found | iterate |
@@ -1218,10 +1218,17 @@ Designer-authored strings are untrusted: layer, frame, section and component nam
 | `DCR_IMPORT_UNRESOLVED` | warn | no import specifier for a component used in a screen (no `exportName`, or no package for a separate screens repo) (§5.5) | set `dcr.targets.components.package`, or export the component |
 | `DCR_NOT_APPROVED` | error | `dcr.requireApproval` is on and this `dcrHash` isn't approved (§7.4) | approve in the plugin preview |
 | `DCR_APPROVAL_STALE` | warn | the approval was for an earlier `dcrHash`; the file changed since | re-approve |
+| `DCR_GIT_BRANCH_MISMATCH` | error | the request's branch differs from the CLI's current git branch | "Run `git switch <branch>`, then retry. Or download the request." |
+| `DCR_BRANCH_FILE_COPIED` | warn | `figma.fileKey`/`fileId` differs from `branch:meta` (a copy of a branch file) | "This is a copy of branch file <branch>. [Link this copy] [Treat as library]" |
+| `DCR_CONFIG_DRIFT` | warn | local `dcr` config hash differs from `branch:meta.dcrConfig` | "This branch file uses older request settings. Run `holotype branch refresh`." |
+| `DCR_PROVENANCE_STALE` | warn | a location could not be remapped from `baseCommit` to HEAD (§5.6) | "Code moved since this file was built. Run `holotype branch refresh`." |
+| `DCR_PROVENANCE_NO_SOURCEMAP` | warn | dev-server stylesheet without `sourceMapURL` / `data-vite-dev-id` (§5.1) | "Enable `css.devSourcemap` (Holotype does this automatically in branch mode); check custom Vite config." |
+| `DCR_NO_SUBMITTED_REQUEST` | error | `dcr --pull` found no `branch:meta.lastDcr` | "Nothing was submitted from this file yet. Ask the designer to press Submit." |
+| `DCR_VERIFY_REGRESSED` | warn | a non-target variant of a touched component no longer matches its baseline (§9.1) | "Scope the change to the listed variants." |
 
 **Reused codes:**
 - `SYNC_DUPLICATE_SID`, `SYNC_LOCKED_SKIPPED`, `SYNC_MANAGED_NODE_DELETED`, `SYNC_LEASE_HELD`;
-- `NET_SERVER_UNREACHABLE`;
+- `NET_SERVER_UNREACHABLE`, `NET_FIGMA_TOKEN_MISSING`, `NET_FIGMA_TOKEN_EXPIRING`;
 - `SEC_SECRET_IN_CONFIG`, `SEC_SECRET_ON_ARGV`;
 - `APPLY_IR_VERSION_UNSUPPORTED`, for a DCR whose `dcrVersion` major is newer.
 
@@ -1233,12 +1240,13 @@ In proposal mode, `SYNC_CONFLICT` is **not** emitted for designer edits. They ar
 
 | Phase | Scope | Depends on |
 |---|---|---|
-| **4.5: DCR MVP** (right after M4) | branch link/start/refresh; proposal mode; embedded baseline; `dcr` package (plugin + REST sources); items `component.modified`, `variant.added`, `property.*`, `node.*`, `component.new`, `screen` (usage with existing components, grouped by breakpoint and state, with snippets, interactions, copy vs placeholder, and accessibility annotations), `instance.outdated` / `instance.deprecated`; `targets`; review summary + optional approval; CSS-rule provenance from the dev server; `prompt.md`; CLI `dcr`, `login --figma`; MCP `design_changes`, `dcr_item`, `dcr_item_assets`, `list_dcrs`; plugin Changes / Submit preview + Copy prompt; golden tests | Phase 4 (identity, `ah`), S-15…S-19 |
-| **5 (tokens)** | `token.*` items; untokenized-value questions with candidates | Phase 5 |
-| **6 (composition)** | INSTANCE_SWAP / SLOT reverse mapping; `instance.deviation` / `instance.detached`; nearest-component scoring with composition | Phase 6 |
-| **7 (automation)** | MCP `verify_dcr` (the other DCR tools ship in 4.5, [14](14-roadmap.md)); `holotype verify` + follow-up DCRs; "Swap drafts for library components"; JSX locations via `@holotype/vite-plugin`; Tailwind adapter; CI comment "DCR a41c… : 7/9 implemented" | Phase 7 |
+| **Loop slice L3–L5** ([14](14-roadmap.md#loop-slice)) | branch start/link/refresh with file hand-off; proposal mode; `base:*`; Changes; kinds `component.modified`, `variant.added`, `property.added`/`changed`, `component.new`, `screen` usage; questions; `prompt.md`; CSS-rule provenance; Submit with version + request in file; `dcr import`, `dcr --pull` (if the S-18 subset passes); verify v1; agent-eval; bake-off | Phase 4a, S-02, S-16, S-17, S-18 subset, S-19 (CSS modules) |
+| **H-E** ([14](14-roadmap.md#hardening)) | approval; targets split; screen grouping; interactions; content/a11y; `instance.*`; REST parity; `--reextract`; MCP server + DCR tools; `@holotype/vite-plugin`; topology A; usage-only DCR for consumer files | Loop slice |
+| **Tokens (H-F)** | `token.*` items | full tokens (08) |
+| **Composition (M6)** | INSTANCE_SWAP / SLOT reverse mapping; `instance.detached` / `instance.deviation` | Phase 6 |
+| **Automation (M7)** | MCP `verify_dcr`; CI comments ("DCR a41c… : 7/9 implemented"); Tailwind adapter | Phase 7 |
 
-The MVP DCR moves the product's flagship promise to M4.5. It needs about 12 engineer-weeks ([14](14-roadmap.md)), mostly the `dcr` package (including screen grouping, snippets and the review summary), the REST normalizer and provenance.
+Effort and staffing: [14 §staffing](14-roadmap.md#staffing).
 
 **Spikes** (scheduled in [14 Phase 0](14-roadmap.md#phase-0); the canonical rows live there):
 
@@ -1246,7 +1254,7 @@ The MVP DCR moves the product's flagship promise to M4.5. It needs about 12 engi
 |---|---|---|---|---|
 | **S-15** | Can a design file resolve instances of library components to our `sid`? Can `getSharedPluginData` be read on remote main components, or is component key → registry needed? Is `detachedInfo` reliable? | two files (library + consumer), plugin + REST | the resolution path chosen; `keys.json` format | 2 d |
 | **S-16** | Does the round trip instance properties → args → re-render → same instance hold for VARIANT/BOOLEAN/TEXT/INSTANCE_SWAP/SLOT and nested instances? | fixture components, scripted | reversibility table; `valueMap` gaps | 3 d |
-| **S-17** | Can a Figma file or branch be created automatically (Figma MCP tools, REST, plan-gated features)? Do branches merge shared plugin data? | try each path on Pro and Organization plans | supported creation path(s), or the manual flow | 2 d |
+| **S-17** | Can a Figma file or branch be created automatically (Figma MCP tools, REST, plan-gated features)? Does shared plugin data survive branch creation and "Update from main"? | on the Organization account: Create branch in the UI; REST `POST /v1/files/:key/duplicate`; MCP `create_new_file`; Update from main | supported creation path(s), or the manual flow; update-from-main behaviour | 2 d |
 | **S-18** | Does REST `GET /v1/files/:key?plugin_data=shared` return every field the normalizer needs (groups, `componentProperties`, overrides, `boundVariables`, `devStatus`, annotations with categories, prototype `interactions`/`reactions` including `CHANGE_TO` on interactive components, Section membership)? Is REST↔plugin snapshot parity achievable? Can plugins write `devStatus`? Does REST read root shared plugin data (`branch:meta`, registry) for CI status (absorbs S-14)? | the same file through both paths, diffed | field coverage table; the parity fixture | 3 d |
 | **S-19** | CSS provenance: do CDP `styleSheetId` + ranges plus Vite dev source maps give original file:line for plain CSS, CSS modules, Tailwind v4 and emotion? Does JSX-location injection work with React 19 + Vite? | the react-vite fixture repo, the dev server | provenance coverage per styling approach; the plugin prototype | 3 d |
 
@@ -1254,31 +1262,21 @@ S-14 (REST read of root shared plugin data for CI status, [10 §15](10-sync.md))
 
 ---
 
-## 13. Decisions proposed for the README
+## 13. Decisions
 
-| ID | Decision |
-|---|---|
-| D-32 | **Branch files** (decided, README §5). There is one Figma file per git feature branch: a Figma-native branch of the main library file, with a duplicated file as the fallback for accounts without branching. The link is stored in root `branch:meta` and in `.holotype/branches/` |
-| D-33 | **Proposal mode.** In branch files, designer edits to managed nodes are proposals, not conflicts. Library files keep D-29 |
-| D-34 | **Embedded baseline.** In proposal mode, the applier stores a compressed, normalized applied snapshot per variant (`base:*`, same normalizer as `ah`). The DCR is diffed against that snapshot, never against the Scene IR's intent |
-| D-35 | **Deterministic DCR.** The extraction is a pure function with no LLM, clock or randomness, using canonical JSON, stable item ids and asset bytes outside the hash. The same file version and baseline give a byte-identical `dcr.json` and `prompt.md` |
-| D-36 | **Provenance.** Branch mode captures from the Vite dev server with source maps. The mapper records field → CSS origin in `provenance/<sid>.json`. An optional `@holotype/vite-plugin` adds JSX locations |
-| D-37 | **Agent contract.** Stories are mandatory for every new or changed item, tagged `parameters.holotype.implements`. `holotype verify` is the acceptance test. DCRs and verify reports are committed with the PR |
-| D-38 | **Designer text is untrusted data** in prompts: always fenced or escaped, never inside instructions |
-| D-41 | **Screen grouping.** Frames are grouped into one `screen` item by `Screen / Breakpoint / State` names and Figma Sections, classified by vocabulary (§4.10). Configurable in `dcr.screens` |
-| D-42 | **Usage snippets are specs.** `renderSnippet` is pure and golden-tested; its `jsx-sketch` output names real components and props but is never shipped code (§7.3) |
-| D-43 | **Targets.** The DCR header names `targets.components` and an optional `targets.screens` repo. The default is the same repo; with separate repos, screens import only from the published package (§5.5) |
-| D-44 | **Approval is optional and hash-bound.** `branch:meta.approval` approves one `dcrHash`; it is never part of the DCR, so approving doesn't change the hash (§7.4) |
-| D-45 | **Old instances are not requests.** Outdated or deprecated instances in a mock produce `instance.outdated` / `instance.deprecated` items that point at the current component; the old look is never rebuilt (§4.13) |
+Adopted; see [README §5](README.md#decisions) D-32…D-58. The text there is canonical. Decisions added by the review that shape this chapter:
+
+D-46 Loop-first roadmap · D-47 Figma branches are never merged into the library · D-48 Submit freezes a Figma version · D-49 Cross-machine hand-off · D-50 DCR hash core and shared config · D-51 One config schema owner · D-52 Contract owners and canonical numerics · D-53 Runtime and plugin identity · D-54 Agent outcome is measured · D-55 Verify v1 decides in Scene space · D-56 Reviewer input and iterations stay outside the hash · D-57 Default DCR scope is `changed` · D-58 Local transport (topology A, hardening).
 
 ---
 
 ## 14. Open questions
 
 1. ~~Which Figma plan does the team use?~~ Answered (D-32): the account has Organization/Enterprise features, so Figma-native branches are the default; duplicated files stay as the fallback. Open part: branch creation is UI-only unless S-17 finds an API.
-2. **Who edits branch files:** designers only, or also the feature developer? It changes how much the Submit preview has to explain. The default assumes both, with the designer view as the default and code details behind a toggle.
+2. ~~Who edits branch files?~~ Answered: designers. The designer view is the default; code details sit behind a toggle.
 3. Should screens without stories be verifiable? One option is a story generated by the agent as part of the contract ("page stories").
-4. Should excluded items and declined decisions sync back to Figma as annotations, so designers see why something wasn't built?
-5. With multiple DCRs per branch (iterative submits), should DCRs be cumulative (everything vs baseline) or incremental (since the last submit)? Proposed: **cumulative**, with item ids stable, so verify status carries over.
+4. Partly answered: declined rows show "Won't build: <reason>" in Changes. Open: should excluded items and declined decisions also be written back to Figma as annotations?
+5. ~~Cumulative or incremental requests?~~ Answered: **cumulative** (D-56), with stable item ids, so verify status carries over.
 6. **Where do screens live?** In the UI repo next to the components, or in a separate app repo that consumes the published package? Both are supported through `header.targets` (§5.5). Default: **same repo** (`targets.screens` absent). With a separate app repo, open parts are: whether the app repo runs its own Storybook (needed for screen verify), and how the agent gets a pre-release of the package (workspace link, `pnpm link`, or a canary publish).
 7. Should breakpoint names default to the repo's own breakpoints (read from CSS `@media` rules or Tailwind's `screens`), rather than the fixed Mobile/Tablet/Desktop table?
+8. **Where do screens go after the branch is archived?** They have no long-term home in Figma. The committed `.holotype/requests/<id>/` (prompt, assets) is the record. An optional "Move screens to product file" step is hardening. For screen-heavy work, use option B (a duplicated file with the library enabled).

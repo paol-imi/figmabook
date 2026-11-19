@@ -1,76 +1,137 @@
 # 14 — Roadmap: phases, spikes, milestones, risks
 
-> Assumptions for estimates: **3 engineers** (E1 capture/Storybook, E2 mapper/layout/text, E3 plugin/sync/UX), plus ~0.3 FTE design/UX review from M2. Estimates are in **engineer-weeks (ew)**, include tests and docs, and carry ±30% uncertainty until Phase 0 closes. Calendar estimates assume parallel work: ~12–14 months from start to launch (M8; private distribution, D-39), including Phase 4.5 (DCR MVP, [15](15-change-requests.md)).
+<a id="staffing"></a>
+
+> **Staffing.** Estimates assume **one owner plus AI coding agents** (about three agents in parallel worktrees). Each phase lists two numbers: **agent-weeks** (pure packages with fixtures: `ir`, `dcr`, `mapper`, `planner`, `layout-sim`, CLI) and **owner-hours in Figma** (spikes, demo checks, usability sessions), which are the bottleneck. `figma-fake` and op-log replay ([12 §4.4.4](12-quality.md)) land in L0 so agents iterate without Figma. Estimates carry ±30% until the slice spikes close. Calendar: M-Loop at about week 16–20; hardening to M5 about 6–8 months after start; M8 later. Work items, sizes and waves are in [BUILD](BUILD.md); its names and weeks match this chapter (D-46).
 
 ---
 
 ## Overview
 
 ```
-Phase:  0 ──► 1 ──► 2 ──┬──► 3 ──► 4 ──► 4.5 ──┬──► 6 ──► 7 ──► 8
-                        │                      │
-                        └──► (5 can start after 3, in parallel with 4 / 4.5) ┘
-Milestones: M0   M1    M2      M3     M4   M4.5    M5     M6    M7    M8
+Slice:      L0 ──► L1 ──► L2 ──► L3 ──► L4 ──► L5 = M-Loop (D6)
+Hardening:  (after the slice item it extends)  H-A→M1  H-B→M2  H-C→M3  H-D→M4  H-E→M4.5  H-F/H-G→M5
+After:      composition (M6) ──► automation (M7) ──► private org plugin (M8) ──► public track (optional)
 ```
 
-| Phase | Theme | Effort (ew) | Calendar (3 eng.) | Milestone |
-|---|---|---|---|---|
-| 0 | Foundations & spikes | 15 | 5–6 wk | M0 |
-| 1 | Pixel-correct snapshot | 15 | 5–6 wk | M1 |
-| 2 | Native structure | 20 | 7 wk | M2 |
-| 3 | Components & variants | 20 | 7 wk | M3 |
-| 4 | Sync | 15 | 5–6 wk | M4 |
-| 4.5 | **DCR MVP (flagship)** | 12 | 4–5 wk | M4.5 |
-| 5 | Tokens | 12 | 4–5 wk (parallel with 4 / 4.5) | M5 |
-| 6 | Composition | 12 | 4–5 wk | M6 |
-| 7 | Automation | 15 | 5–6 wk | M7 |
-| 8 | Launch (private org plugin) | 10 | 4 wk | M8 |
-| | **Total** | **~146 ew** | | |
+| Track | Theme | Agent-weeks | Owner-hours in Figma | Calendar | Milestone | Previous estimate (ew, 3 engineers) |
+|---|---|---|---|---|---|---|
+| L0 | Skeleton and slice spikes | 10 | 15 (slice spike kits, D1) | wk 0–4 | D1 | Phase 0: 15 |
+| L1 | Components | 14 | 6 (S-02 follow-up, D2) | wk 4–9 | D2 | part of Phases 1, 3, 4 |
+| L2 | Tokens and layout | 7 | 4 (D3) | wk 9–12 | D3 | part of Phases 2, 5 |
+| L3 | Branch file | 5 | 4 (D4 with the designer) | wk 12–14 | D4 | part of Phase 4.5 |
+| L4 | DCR | 8 | 6 (D5 with the designer) | wk 14–17 | D5 | part of Phase 4.5 |
+| L5 | Loop: verify, agent eval, bake-off | 7 | 10 (D6, bake-off review) | wk 17–20 | **M-Loop** | part of Phase 7 |
+| | **Slice total** | **~51** | **~45 h** | **~16–20 wk** | | |
+| H-A | Fidelity | 10 | 10 (spike kits S-03, S-04, S-09) | after L1 | M1 | Phase 1: 15 |
+| H-B | Native structure | 14 | 8 (S-10, designer review) | after L2 | M2 | Phase 2: 20 |
+| H-C | Variants at scale | 12 | 8 (S-06 step 2, S-08) | after L1 | M3 | Phase 3: 20 |
+| H-D | Sync UX (Phase 4b) | 10 | 10 (conflict and rename sessions) | after L1 | M4 | Phase 4: 15 |
+| H-E | DCR complete | 10 | 10 (S-15, S-18, usability) | after M-Loop | M4.5 | Phase 4.5: 12 |
+| H-F, H-G | Tokens complete, compatibility | 8 | 6 (S-12 modes) | after L2 | M5 | Phase 5: 12 |
+| | Composition | 10 | 8 (S-13, S-16 subset) | after M-Loop | M6 | Phase 6: 12 |
+| | Automation | 12 | 6 | after M5 | M7 | Phase 7: 15 |
+| | Private org plugin | 6 | 10 (acceptance) | after M7 | M8 | Phase 8: 10 |
+| | **Total** | **~133** | **~136 h** | | | ~146 ew |
 
-Phase 0 grows by 3 ew for spikes S-15…S-19 (13 days), and Phase 4.5 adds 12 ew: +15 ew against the previous ~131 ew.
+Agent-weeks and engineer-weeks are not comparable one to one; the old column is kept for reference only. Hardening groups run in parallel on idle agents once the slice item they extend is merged, but slice items are always dispatched first.
+
+---
+
+<a id="loop-slice"></a>
+
+## Loop slice (L0–L5)
+
+**Goal:** the owner and one designer run the whole loop (git branch → Figma branch file → designer edits → Submit → DCR → AI agent → `holotype verify`) on a React + Vite + Storybook 10 repo by about week 16–20 (D-46). The scope table and item ids are in [BUILD §4](BUILD.md#loop-slice); a summary:
+
+| Area | In the slice |
+|---|---|
+| Storybook | SB 10.x, react-vite, static build and dev server; `args`/`argTypes`/`parameters.holotype` |
+| Variants | stories-as-variants plus declared args; VARIANT, BOOLEAN, TEXT; one budget check ([04](04-variant-model.md)) |
+| Capture and mapper | light DOM + open shadow, solid paints, borders, radius, simple shadows, Latin text, inline SVG, PNG/JPEG; flex → auto layout with verification and fallback (D-15); cross-variant alignment |
+| Tokens | subset: CSS custom properties → one collection, default mode, exact `var()` bindings ([08 §0](08-tokens.md)) |
+| Plugin | file import (topology B); fonts preflight; identity keys + `irh`/`ah`; idempotent keyed in-place apply |
+| Branch file | `branch start\|link\|refresh`; proposal mode; `branch:meta`; embedded baseline `base:*`; Changes list |
+| DCR | the kinds below; `prompt.md`; plugin extraction + CLI provenance attach |
+| Verify | `holotype verify` v1 (D-55) |
+
+| Milestone | Weeks | Demo |
+|---|---|---|
+| **L0** Skeleton | 0–4 | **D1:** a story appears in Figma as frames and text |
+| **L1** Components | 4–9 | **D2:** component sets with VARIANT/BOOLEAN/TEXT; re-import makes 0 writes |
+| **L2** Tokens and layout | 9–12 | **D3:** auto layout and variables bound to `var()` values |
+| **L3** Branch file | 12–14 | **D4:** a designer edit shows up in the Changes tab of a branch file |
+| **L4** DCR | 14–17 | **D5:** Submit gives a `prompt.md` with provenance |
+| **L5** Loop | 17–20 | **D6:** the full loop with a real AI agent = **M-Loop** |
+
+Explicit scope statements:
+- **Phase 4 is split.** **4a** (identity keys, `irh`/`ah`, S-02 rules, idempotent keyed in-place apply, proposal-mode preservation) is in L1. **4b** (Diff and Conflicts screens, take/fork, renames, deprecation, consumer-file retention) is H-D.
+- **Tokens subset in L2** ([08 §0](08-tokens.md)). Modes, styles and library matching are H-F.
+- **DCR kinds in L4:** `component.modified`, `variant.added`, `property.added`/`property.changed`, `component.new`, `screen` usage (one variant per screen); questions for untokenized or unmappable values; `prompt.md` with the agent contract; plugin extraction + CLI provenance attach (CSS rules only; `@holotype/vite-plugin` is hardening).
+- **Hand-off in L4.** Submit saves a version and writes the request into the file (D-48, D-49). `holotype dcr import <request.zip>` is the guaranteed path. `holotype dcr --pull` lands in L4/L5 if the S-18 root-plugin-data check passes.
+- **Verify v1 in L5** (D-55): field and token checks, Scene-space checks for `variant.added`/`component.new`, argTypes for `property.*`, `implements` story discovery, regression check; visual similarity is advisory.
+- **Agent-eval corpus and bake-off in L5** ([12](12-quality.md#agent-eval), [12](12-quality.md#bake-off), D-54).
+- **Scope valves** if the slice slips ([BUILD §10.2](BUILD.md#ordering)): drop `component.new` and `screen` from the first D6 run (keep `component.modified`, `variant.added`, `property.changed`); keep tokens to colors and spacing only.
+
+<a id="m-loop"></a>
+
+### M-Loop exit criteria
+
+1. The owner and a designer run the loop of [BUILD §4.3](BUILD.md#loop-slice) on a real branch with a real agent. `holotype verify` exits 0, and a human PR review finds no unrelated changes outside provenance files and new component directories.
+2. Designer acceptance: 10–15 real components accepted by the owner and the designer.
+3. Determinism: every `fixtures/dcr` case is byte-identical across 3 shuffled runs; the plugin core hash equals the CLI's recomputed hash (D-50).
+4. Agent-eval run with ≥2 agents; first-pass verify rate ≥70% (README §4).
+5. Bake-off done and recorded (D-54).
+6. Usability at D4, D5 and D6 with the designer (submit, hand off across two machines; D-40).
+
+Until M-Loop the slice's own checks gate; the hardening exit criteria below never block it.
 
 ---
 
 <a id="phase-0"></a>
 
-## Phase 0 — Foundations & spikes (M0)
+## Phase 0 — Foundations and slice spikes (L0)
 
-**Goal:** a working skeleton and evidence for every decision marked 🟡 or "(verify)" in README §5 and the chapters.
+**Goal:** a working skeleton (L0, demo D1) and evidence for every slice-relevant decision marked 🟡 or "(verify)" in README §5. Other spikes are scheduled with the hardening group that needs them.
 
 **Deliverables:**
 - Monorepo per D-04 with all packages from README §6 as empty, building, tested skeletons; CI (lint, typecheck, unit, schema emission check); changesets; MIT license headers (D-02).
 - `ir`: TypeBox schemas v0 for Capture IR, Scene IR, bundle manifest, report ([06](06-ir.md)); canonical JSON + hashing with property tests.
 - `shared`: diagnostics registry scaffold + docs page check ([12](12-quality.md#diagnostics)).
-- `plugin`: create-figma-plugin scaffold, manifest with `documentAccess: "dynamic-page"`, candidate `networkAccess`, a "spike runner" UI that executes spike scripts and exports results JSON.
-- `fixtures/`: first 30 micro-fixtures + React golden Button/Input/Card in a SB 10 sandbox.
+- `plugin`: create-figma-plugin scaffold, manifest with `documentAccess: "dynamic-page"`, candidate `networkAccess`.
+- **Spike runner:** a **separate "Holotype Spikes" dev plugin** with its own manifest id (the product plugin's id is fixed forever). It runs spike scripts and exports results JSON. Spike kits exist for all 15 Figma spikes ([BUILD §9](BUILD.md#spike-kit)).
+- `figma-fake` and op-log replay ([12 §4.4.4](12-quality.md)), so agents iterate without Figma.
+- `fixtures/ds-react`: first 30 micro-fixtures + React golden Button/Input/Card on Storybook 10.
 - **Spike reports** in `docs/spikes/S-xx.md`, each ending with a decision update to README §5.
+
+**Spike order.** Slice spikes first: S-02, S-05, S-06 step 1, S-12 (Organization account only), S-16, S-17, S-18 subset, S-19 on CSS modules, S-07 on SB 10 only. The rest are hardening spikes, scheduled with the track that needs them: S-01 full matrix with topology A (H-E); S-03 and S-04 with H-A; S-09 icon fonts with H-A; S-10 grid with H-B; S-06 step 2 and S-08 with H-C; S-15 with H-E; S-11 `use_figma` with automation; S-13 with composition.
 
 ### Spikes
 
 | ID | Question | Method | Success criteria / output | Timebox | Unblocks |
 |---|---|---|---|---|---|
-| **S-01** | Can the plugin UI reach a loopback server under Chrome Local Network Access (142+, "Apps on device" in 145) in: Figma desktop (macOS/Windows), Chrome, Edge, Safari, Firefox? fetch **and** WebSocket? Do fixed ports in `allowedDomains` with `reasoning` pass? Does PNA preflight (`Access-Control-Allow-Private-Network`) matter? | Minimal plugin with manifest listing `http://127.0.0.1:47321-47323` (three explicit entries) + `ws://`; tiny Hono server with `ACAO:*`; test matrix of client × OS × permission state; inspect console/CSP errors; compare with published "Cursor Talk to Figma MCP" manifest pattern | Matrix table; recommended manifest entries; UX copy for each failure mode; decide whether WS or HTTP long-poll/SSE is the streaming default | 4 d | D-25, D-10, [02](02-architecture.md) protocol, [11](11-ux.md) §6.11 |
+| **S-01** | Can the plugin UI reach a loopback server under Chrome Local Network Access (142+, "Apps on device" in 145) in: Figma desktop (macOS/Windows), Chrome, Edge, Safari, Firefox? fetch **and** WebSocket? Do fixed ports in `allowedDomains` with `reasoning` pass? Does PNA preflight (`Access-Control-Allow-Private-Network`) matter? | Minimal plugin with manifest listing `http://127.0.0.1:47321-47323` (three explicit entries) + `ws://`; tiny Hono server with `ACAO:*`; inspect console/CSP errors; compare with published "Cursor Talk to Figma MCP" manifest pattern. Desktop app on the owner's and designer's OS first; browser rows optional (dev plugins load from local files; browsers may need a private org publish). Record fetch and WebSocket separately per Chrome version; classification uses the HTTP probe only | Matrix table; recommended manifest entries; UX copy for each failure mode; decide whether WS or HTTP long-poll/SSE is the streaming default | 4 d | D-25, D-10, [02](02-architecture.md) protocol, [11](11-ux.md) §6.11 |
 | **S-02** | Which in-place mutations of a main component preserve instance overrides (fill, text, visibility, nested instance swap, component property values) — locally and via library publish? | Build a component with 15 child types; create instances with every override kind; apply a mutation matrix: property edits, reorder (`insertChild`), rename, reparent, delete+recreate same name, change layoutMode, add/remove sibling, change variant property names/values, swap nested main component, `swapComponent` vs `mainComponent=`; verify override survival programmatically (`instance.overrides`, values) both in-file and after library publish/update in a consumer file | Survival matrix (mutation × override kind × local/library); codified "safe mutation" rules → `plugin` reconciler constraints and `figma-fake` contract | 5 d | D-19, [10](10-sync.md) |
 | **S-03** | Exact conventions: `gradientTransform` space (identity = left→right?), radial center/radius, ANGULAR origin & direction vs CSS conic; multiple-shadow stacking order vs CSS; `LAYER_BLUR` and `BACKGROUND_BLUR` radius vs CSS σ (is ×2 right?); spread behaviour on frames | Micro-fixtures rendered in Chromium; same params built in Figma; T2 pixel compare across parameter sweeps; fit factors | Verified formulas checked into `mapper` with tests; ≤1% pixel error on sweep fixtures | 3 d | [07](07-mapping.md) visuals |
 | **S-04** | Text parity Chromium vs Figma: advance-width drift, line-break agreement, `line-height: normal` resolution, baseline placement, letter-spacing %, for Inter, Roboto, SF/system, Noto CJK, a variable font | 300 paragraphs × widths × sizes; compare line breaks and per-line boxes (T1); measure needed width buffer distribution | Drift distribution; default buffer policy; whether `locked-lines` must be default for some fonts; baseline offset correction table if needed | 5 d | D-17 |
 | **S-05** | Border/stroke model: INSIDE stroke + `padding+border` with `strokesIncludedInLayout:false` vs `true`; per-side weights in auto layout; dash phase; outline | Fixture sweep; T1 box compare and T2 pixels; editing ergonomics review with a designer | Choose default (D-16 confirmed or flipped); documented edge cases | 2 d | D-16 |
-| **S-06** | Plugin performance at scale: build 1k and 5k variants (20–200 nodes), `combineAsVariants` cost vs set size, `addComponentProperty` binding cost, memory growth over repeated applies, time-slicing overhead, `exportAsync` throughput | Synthetic Scene IR generator; harness timing + `performance.memory` where available; vary batch sizes and slice lengths | Measured curves; practical max variants per set (sets the default budget, [04](04-variant-model.md)); slicing params; confirm README §4 build-throughput target or revise | 4 d | perf budgets, budget defaults |
+| **S-06** | **Step 1 (slice):** `setTimeout` and `crypto.subtle` in main, `postMessage` size, `figma.fileKey` with `enablePrivatePluginApi`, blob download from the UI. **Step 2 (hardening):** plugin performance at scale: build 1k and 5k variants (20–200 nodes), `combineAsVariants` cost vs set size, `addComponentProperty` binding cost, memory growth over repeated applies, time-slicing overhead, `exportAsync` throughput | Synthetic Scene IR generator; harness timing + `performance.memory` where available; vary batch sizes and slice lengths | Measured curves; practical max variants per set (sets the default budget, [04](04-variant-model.md)); slicing params; confirm README §4 build-throughput target or revise | 4 d | perf budgets, budget defaults |
 | **S-07** | Storybook render loop robustness, deep on 10.6 plus 11-beta, with 8.6 / 9.1 as smoke only (D-11): `loadStory`, `setCurrentStory`, `updateStoryArgs` with non-serializable values, `updateGlobals`, readiness events (`storyFinished ?? storyRendered`), `StorybookTestRunner` UA animation snapping, SB11 `docgenServer` + `manifests/components.json` argTypes merge | Generated react-vite sandboxes (D-26); scripted 200-variant loop; failure injection (story throws, play fails) | Adapter compatibility layer spec; per-version quirks list; throughput numbers | 5 d | D-11, [03](03-storybook.md) |
 | **S-08** | Pseudo-state strategies on real DSs: CDP `CSS.forcePseudoState` (target + ancestors) vs Playwright real interaction vs pseudo-states addon global; CSS-in-JS late rules; JS-driven hover (Radix `data-state`, MUI ripple) | Run all three on MUI, shadcn and the React golden fixtures (Shoelace post-M5, D-26); diff renders | Per-strategy success rates; default strategy ordering & auto-detection heuristics (e.g. hover handlers present ⇒ interact) | 3 d | D-14 |
 | **S-09** | `createNodeFromSvg` fidelity (gradients, clipPath, mask, `<use>`, stroke alignment, `<text>`) and icon-font → outline pipeline (opentype.js/fontkit + harfbuzzjs ligatures) | SVG corpus from 3 icon sets + DS icons; T2 compare; outline extraction for Material Symbols / Font Awesome | Rules for when to rasterize; icon-font converter prototype; diagnostics list | 3 d | [05](05-capture.md), [07](07-mapping.md) |
-| **S-10** | Figma GRID auto layout vs CSS grid: FLEX(fr)/FIXED/HUG tracks, gaps, spans, alignment, HUG containers (Update 120+), defaults for plugin-created grids (FIXED container, FLEX tracks) | Grid micro-fixtures; build with `layoutMode:'GRID'`, `setGridChildPosition`; T1 compare | Supported-subset table; `layout-sim` grid model calibrated | 3 d | [07](07-mapping.md) grid |
+| **S-10** | Figma GRID auto layout vs CSS grid: FLEX(fr)/FIXED/HUG tracks, gaps, spans, alignment, HUG containers (Update 120+), defaults for plugin-created grids (FIXED container, FLEX tracks); `SPACE_EVENLY`/`SPACE_AROUND` render parity (D-15) | Grid micro-fixtures; build with `layoutMode:'GRID'`, `setGridChildPosition`; T1 compare | Supported-subset table; `layout-sim` grid model calibrated | 3 d | [07](07-mapping.md) grid |
 | **S-11** | Can Figma MCP `use_figma` run our applier server-side for CI harness or headless builds? Input size limits, execution time, images (`upload_assets`), fonts (account-uploaded only), determinism, pricing outlook | Bundle applier into a self-contained script; drive via remote MCP from a Node client; apply 10 fixtures; read back boxes; compare to desktop results | Feasibility verdict; limits table; harness design if viable; ToS/terms review note ([13](13-security-legal.md)) | 3 d | [12](12-quality.md) §4.4, Phase 7 MCP |
-| **S-12** | Variables: bindable-field coverage in practice (padding, gap, radius, typography, effects), `setExplicitVariableModeForCollection`, mode limits per plan, `codeSyntax.WEB` matching and `importVariableByKeyAsync` against a team library, aliases across collections; `documentationLinks` on sets | Test file on Starter/Pro/Org bot accounts; scripted bindings; library publish + consume | Coverage matrix; plan-limit handling (`TOKEN_MODE_LIMIT` fallback); library-matching algorithm confirmed | 3 d | D-18, [08](08-tokens.md) |
-| **S-13** | Nested component detection: React fiber `type` ↔ Storybook `component` refs (dev & prod builds); structural-hash fallback accuracy. Vue `__vueParentComponent.type`, Angular `ng.getComponent` and custom-element tags + CEM are post-M5 (D-26) | React + Vite golden fixtures with nesting (Card→Button→Icon), dev & static builds | Detection precision/recall per build mode; prop-extraction reliability (`memoizedProps`); decision on default enablement | 3 d | D-21, [09](09-plugin.md) |
+| **S-12** | Variables: bindable-field coverage in practice (padding, gap, radius, typography, effects), `setExplicitVariableModeForCollection`, mode limits per plan, `codeSyntax.WEB` matching and `importVariableByKeyAsync` against a team library, aliases across collections | On the user's Organization account only (no Starter/Pro bot accounts); scripted bindings; library publish + consume. `documentationLinks` holds one link (known) | Coverage matrix; plan-limit handling (`TOKEN_MODE_LIMIT` fallback); library-matching algorithm confirmed | 3 d | D-18, [08](08-tokens.md) |
+| **S-13** | Nested component detection: React fiber `type` ↔ Storybook `component` refs (dev & prod builds); structural-hash fallback accuracy. Vue `__vueParentComponent.type`, Angular `ng.getComponent` and custom-element tags + CEM are post-M5 (D-26) | React + Vite golden fixtures with nesting (Card→Button→Icon), dev & static builds; plus the Figma SLOT API: `createSlot`, SLOT `addComponentProperty` once per set, `slotContentId` binding (typings gap), `SlotSettings` (`stretchChildOnInsert`, `displayEmptyByDefault`), GRID frames cannot be slots, INSTANCE_SWAP `preferredValues` with local keys | Detection precision/recall per build mode; prop-extraction reliability (`memoizedProps`); decision on default enablement; SLOT API notes | 4 d | D-21, [09](09-plugin.md) |
 | **S-15** | Cross-file instance resolution: can a consumer or branch file resolve instances of library components to our `sid`/`vk`/`irh`? Is `getSharedPluginData` readable on remote main components (`getMainComponentAsync`), or is component key → registry `keys.json` needed? Is `detachedInfo` reliable? Can an outdated library instance be detected? | Library file + consumer file (and a Figma branch); instances before and after a library publish; read through the plugin and REST | Resolution path chosen; `keys.json` format; outdated-detection rule (`irh` vs registry) | 2 d | [15 §4.2, §4.13](15-change-requests.md#instance-versions) |
 | **S-16** | Override → args round trip: does instance properties → args → re-render → same instance hold for VARIANT / BOOLEAN / TEXT / INSTANCE_SWAP / SLOT and nested instances? Which overrides fall outside properties (`instance.deviation`)? | Fixture components with every property kind; scripted: set properties, reverse-map, re-render the story, rebuild, compare | Reversibility table; `valueMap` gaps; snippet prop rendering confirmed | 3 d | [15 §4.5, §7.3](15-change-requests.md#snippet) |
-| **S-17** | Automated Figma branch creation: can a branch (or file) be created without the UI (REST, Figma MCP, plan-gated features)? Do branches carry shared plugin data (`branch:meta`, `base:*`) on creation, update from main, and merge? | Try each path on the user's Organization account; create, edit, update and merge a branch with plugin data on root and variants | Supported creation path, or the manual UI flow with copy; plugin-data behaviour on merge (feeds [10 §9.5](10-sync.md#proposal-mode)) | 2 d | D-32, [15 §2](15-change-requests.md#branch-model) |
-| **S-18** | Headless REST diff + shared plugin data (**absorbs S-14**, proposed in [10 §15](10-sync.md)): does `GET /v1/files/:key?plugin_data=shared` return root and node shared plugin data (registry, `branch:meta`, `base:*`) and every field the normalizer needs (groups, `componentProperties`, overrides, `boundVariables`, `devStatus`, annotations + categories, `interactions`/`reactions` incl. `CHANGE_TO`, Sections)? Is REST ↔ plugin snapshot parity byte-exact? Can plugins write `devStatus`? Token scope names | The same file through both paths, diffed; a CI-status read on the document node at `depth=1` | Field coverage table; the `parity` fixture ([12 §2.4](12-quality.md#dcr-fixtures)); CI status path for `holotype status` | 3 d | D-34, D-35, [15 §4.1, §4.11](15-change-requests.md#interactions), [10 §15](10-sync.md) |
-| **S-19** | CSS provenance via CDP + Vite source maps: do `rule.styleSheetId` + `style.range` and `CSS.styleSheetAdded` `sourceURL`/`sourceMapURL` map to the original file:line for plain CSS, CSS modules (de-hashed selectors), Tailwind v4 and emotion in the Vite dev server? Does `data-holotype-loc` injection work with React 19 + Vite? | The react-vite fixture repo on the dev server; compare resolved locations with ground truth; prototype `@holotype/vite-plugin` | Coverage per styling approach; resolver + plugin prototype; `DCR_PROVENANCE_*` thresholds | 3 d | D-36, [05 §6.2](05-capture.md), [15 §5](15-change-requests.md#provenance) |
+| **S-17** | Automated Figma branch creation: can a branch (or file) be created without the UI? Do branches carry shared plugin data (`branch:meta`, `base:*`) on creation and on update from main (plugin data, and the UX of `irh` drift)? What happens if someone merges? | On the user's Organization account only. Try REST `POST /v1/files/:key/duplicate` (Enterprise + private OAuth app, `file_duplicate:write`) and MCP `create_new_file` for the duplicated-file fallback; create, edit, update and (test only) merge a branch with plugin data on root and variants | Supported creation path, or the manual UI flow with copy; plugin-data behaviour on create, update and (test-only) merge, since Holotype never merges (D-47; feeds [10 §9.5](10-sync.md#proposal-mode)) | 2 d | D-32, [15 §2](15-change-requests.md#branch-model) |
+| **S-18** | Headless REST diff + shared plugin data (**absorbs S-14**, proposed in [10 §15](10-sync.md)). Known facts: `devStatus` is writable only on top-level nodes, REST annotations are capped at one per node, and `interactions` and `componentPropertyDefinitions` are exposed. Open: **subset (slice):** does `plugin_data=shared` at `depth=1` on the document node return root shared plugin data (`request:*`, `branch:meta`; needed for `dcr --pull` and `holotype status`), and do images resolve at `?version=`? **Rest (hardening):** REST ↔ plugin field parity for the normalizer (groups, `componentProperties`, overrides, `boundVariables`, `reactions` incl. `CHANGE_TO`, Sections) | The same file through both paths, diffed; a read on the document node at `depth=1` | Root-data and version check (slice); field coverage table and the `parity` fixture ([12 §2.4](12-quality.md#dcr-fixtures)) (hardening) | 3 d | D-34, D-35, [15 §4.1, §4.11](15-change-requests.md#interactions), [10 §15](10-sync.md) |
+| **S-19** | CSS provenance via CDP + Vite source maps: do `rule.styleSheetId` + `style.range` and `CSS.styleSheetAdded` `sourceURL`/`sourceMapURL` map to the original file:line for plain CSS, CSS modules (de-hashed selectors), Tailwind v4 and emotion in the Vite dev server? Does `data-holotype-loc` injection work with React 19 + Vite? | The react-vite fixture repo on the dev server with `css.devSourcemap: true` via `viteFinal`; inline sheets via `ownerNode` → `data-vite-dev-id`; subtract `startLine/startColumn`; compare resolved locations with ground truth; prototype `@holotype/vite-plugin` (hardening). Slice: CSS modules only | Coverage per styling approach; resolver + plugin prototype; `DCR_PROVENANCE_*` thresholds; `DCR_PROVENANCE_NO_SOURCEMAP` when a sheet has no source map | 3 d | D-36, [05 §6.2](05-capture.md), [15 §5](15-change-requests.md#provenance) |
 
 S-14 was proposed in [10 §15](10-sync.md) and never got a separate slot. Its question (REST read of root shared plugin data for CI status) is part of S-18, and the id is retired.
 
-**Exit criteria (M0):** all 18 spike reports merged (S-01…S-13, S-15…S-19); README §5 updated (every 🟡 resolved or re-dated); CI green; one micro-fixture flows CLI → bundle → plugin as a rectangle-only smoke test.
+**L0 exit:** slice spike reports merged; D1 demo (a story appears in Figma as frames and text); README §5 updated for slice-relevant 🟡 items; CI green. Remaining spike reports are hardening milestones.
 
 ---
 
