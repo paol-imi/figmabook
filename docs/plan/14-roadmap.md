@@ -300,7 +300,7 @@ Code Connect generation stays here; the bake-off uses hand-written Code Connect 
 
 ### Public track (optional, post-M8)
 
-Only if the project goes public: docs site (getting started, config reference generated from TypeBox, diagnostics pages, recipes, migration guide from story.to.design with the `parameters.s2d.variantProperties` reader, [04](04-variant-model.md)); published benchmarks ([12](12-quality.md) §4.5); Community listing (D-39: trademark-compliant title, privacy policy, submit ≥3 weeks before the target date); trademark search and repo rename ([13](13-security-legal.md#publishing)); the Action, registry and addon once a second team exists. Risks R9 and R10 belong here.
+Only if the project goes public: publish the docs site (W-01 already builds it from `website/` with VitePress and a Pages workflow that stays inert until Pages is enabled; it grows here with getting started, config reference generated from TypeBox, diagnostics pages, recipes, migration guide from story.to.design with the `parameters.s2d.variantProperties` reader, [04](04-variant-model.md)); published benchmarks ([12](12-quality.md) §4.5); Community listing (D-39: trademark-compliant title, privacy policy, submit ≥3 weeks before the target date); trademark search and repo rename ([13](13-security-legal.md#publishing)); the Action, registry and addon once a second team exists. Risks R9 and R10 belong here.
 
 ---
 
