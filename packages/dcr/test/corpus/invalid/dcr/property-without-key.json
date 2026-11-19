@@ -1,0 +1,16 @@
+{
+  "base": "all-kinds.json",
+  "why": "property.* items name the property key, so ids differ per property.",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/items/1/target/key"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/1/target/key",
+      "kind": "invalid"
+    }
+  ]
+}

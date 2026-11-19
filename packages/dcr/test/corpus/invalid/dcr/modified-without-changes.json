@@ -1,0 +1,16 @@
+{
+  "base": "worked-example.json",
+  "why": "A component.modified item exists only because fields changed.",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/items/0/changes"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/0/changes",
+      "kind": "invalid"
+    }
+  ]
+}

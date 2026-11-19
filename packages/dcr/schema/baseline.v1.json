@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Holotype baseline snapshot (BaselineSnapshot)",
+  "type": "object",
+  "required": [
+    "v",
+    "vk",
+    "sid",
+    "baseCommit",
+    "baselineFp",
+    "nodes",
+    "order"
+  ],
+  "properties": {
+    "v": {
+      "const": 1,
+      "type": "number"
+    },
+    "vk": {
+      "pattern": "^[0-9a-f]{16}$",
+      "type": "string"
+    },
+    "sid": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "baseCommit": {
+      "pattern": "^[0-9a-f]{7,64}$",
+      "type": "string"
+    },
+    "baselineFp": {
+      "pattern": "^[0-9a-f]{16}$",
+      "type": "string"
+    },
+    "nodes": {
+      "type": "object",
+      "patternProperties": {
+        "^(.*)$": {
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "geom": {
+              "description": "Any JSON value"
+            },
+            "layout": {
+              "description": "Any JSON value"
+            },
+            "paint": {
+              "description": "Any JSON value"
+            },
+            "text": {
+              "description": "Any JSON value"
+            },
+            "vis": {
+              "description": "Any JSON value"
+            },
+            "bind": {
+              "description": "Any JSON value"
+            },
+            "inst": {
+              "description": "Any JSON value"
+            }
+          }
+        }
+      }
+    },
+    "order": {
+      "type": "object",
+      "patternProperties": {
+        "^(.*)$": {
+          "type": "array",
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          }
+        }
+      }
+    },
+    "props": {
+      "type": "object",
+      "required": [
+        "axes",
+        "properties"
+      ],
+      "properties": {
+        "axes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "key",
+              "values"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "key": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "properties": {
+          "type": "object",
+          "patternProperties": {
+            "^(.*)$": {
+              "type": "object",
+              "required": [
+                "id",
+                "type"
+              ],
+              "properties": {
+                "id": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": {
+                  "anyOf": [
+                    {
+                      "const": "VARIANT",
+                      "type": "string"
+                    },
+                    {
+                      "const": "BOOLEAN",
+                      "type": "string"
+                    },
+                    {
+                      "const": "TEXT",
+                      "type": "string"
+                    },
+                    {
+                      "const": "INSTANCE_SWAP",
+                      "type": "string"
+                    },
+                    {
+                      "const": "SLOT",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "default": {
+                  "description": "Any JSON value"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

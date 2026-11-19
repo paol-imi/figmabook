@@ -15,18 +15,24 @@
   },
   "files": [
     "dist",
-    "src"
+    "!dist/.emit",
+    "src",
+    "schema"
   ],
   "engines": {
     "node": ">=22.12"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsup --config tsup.emit.config.ts --silent && node dist/.emit/emit-schemas.js",
     "typecheck": "tsc && tsc -p test",
     "test": "vitest run"
   },
   "dependencies": {
     "@holotype/ir": "workspace:*",
-    "@holotype/shared": "workspace:*"
+    "@holotype/shared": "workspace:*",
+    "@sinclair/typebox": "~0.34.52"
+  },
+  "devDependencies": {
+    "ajv": "8.17.1"
   }
 }

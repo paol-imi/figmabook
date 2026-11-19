@@ -1,0 +1,19 @@
+{
+  "kind": "holotype/dcr-decisions",
+  "v": 1,
+  "dcrId": "bc5502e848d108d2",
+  "decisions": [
+    {
+      "itemId": "9f190f511ff04bea",
+      "questionId": "q2",
+      "outcome": "chosen",
+      "choice": "new component",
+      "reason": "Badge has no slot for an icon and a price; extending it would change its API for every user."
+    },
+    {
+      "itemId": "f6ad55006974cd7f",
+      "outcome": "not-implemented",
+      "reason": "The Order confirmation route does not exist yet; added a placeholder handler instead."
+    }
+  ]
+}

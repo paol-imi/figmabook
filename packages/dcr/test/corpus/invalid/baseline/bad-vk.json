@@ -1,0 +1,17 @@
+{
+  "base": "button-md-primary.json",
+  "why": "vk is 16 lowercase hex.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/vk",
+      "value": "Size=md"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/vk",
+      "kind": "invalid"
+    }
+  ]
+}

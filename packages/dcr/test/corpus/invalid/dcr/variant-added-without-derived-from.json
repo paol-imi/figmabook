@@ -1,0 +1,16 @@
+{
+  "base": "worked-example.json",
+  "why": "A new variant says which variant it was derived from (15 §4.2).",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/items/1/derivedFrom"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/1/derivedFrom",
+      "kind": "invalid"
+    }
+  ]
+}

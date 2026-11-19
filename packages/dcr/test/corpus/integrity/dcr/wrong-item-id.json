@@ -1,0 +1,12 @@
+{
+  "base": "worked-example.json",
+  "why": "Item ids follow from kind, target and field paths (15 §4.9).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/1/target/figmaNodeId",
+      "value": "12:89"
+    }
+  ],
+  "expect": ["/items/1/id", "/dcrHash"]
+}

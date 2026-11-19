@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "dcrVersion is semver.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/dcrVersion",
+      "value": "v1"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/dcrVersion",
+      "kind": "invalid"
+    }
+  ]
+}

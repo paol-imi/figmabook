@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Question codes are DCR_ catalog codes.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/questions/0/code",
+      "value": "VALUE_UNTOKENIZED"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/questions/0/code",
+      "kind": "invalid"
+    }
+  ]
+}

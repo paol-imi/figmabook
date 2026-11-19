@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Figma node ids look like 12:40.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/0/target/figmaNodeId",
+      "value": "12-40"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/0/target/figmaNodeId",
+      "kind": "invalid"
+    }
+  ]
+}

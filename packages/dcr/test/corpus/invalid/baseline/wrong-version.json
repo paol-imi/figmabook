@@ -1,0 +1,17 @@
+{
+  "base": "button-md-primary.json",
+  "why": "Baselines are v1.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/v",
+      "value": 2
+    }
+  ],
+  "expect": [
+    {
+      "path": "/v",
+      "kind": "invalid"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "kind": "holotype/figma-snapshot",
+  "v": 1,
+  "source": "plugin",
+  "fileKey": "AbC123",
+  "scope": { "kind": "changed" },
+  "pages": [
+    { "id": "0:1", "name": "Components", "topLevel": ["12:1", "40:2"] },
+    { "id": "0:2", "name": "Screens", "topLevel": ["60:2"] }
+  ],
+  "nodes": {
+    "12:1": {
+      "id": "12:1",
+      "type": "COMPONENT_SET",
+      "name": "Button",
+      "parent": "0:1",
+      "children": ["12:40", "12:88"],
+      "data": { "sid": "components-button", "nk": "set" },
+      "groups": {},
+      "component": {
+        "propertyDefs": {
+          "Tone": { "type": "VARIANT", "variantOptions": ["Primary", "Danger"] },
+          "Size": { "type": "VARIANT", "variantOptions": ["md"] }
+        }
+      }
+    },
+    "12:40": {
+      "id": "12:40",
+      "type": "COMPONENT",
+      "name": "Tone=Primary, Size=md",
+      "parent": "12:1",
+      "children": [],
+      "data": { "sid": "components-button", "vk": "3b9a0c1d2e3f4a5b", "nk": "root" },
+      "groups": {
+        "layout": {
+          "layoutMode": "HORIZONTAL",
+          "paddingLeft": 17,
+          "paddingRight": 17,
+          "paddingTop": 8,
+          "paddingBottom": 8,
+          "itemSpacing": 8
+        },
+        "paint": { "fills": [{ "type": "SOLID", "color": { "r": 0.1451, "g": 0.3882, "b": 0.9216 } }] },
+        "bind": { "paddingLeft": "VariableID:1:24", "paddingRight": "VariableID:1:24" }
+      },
+      "component": { "setId": "12:1", "variantValues": { "Tone": "Primary", "Size": "md" } }
+    },
+    "12:88": {
+      "id": "12:88",
+      "type": "COMPONENT",
+      "name": "Tone=Danger, Size=md",
+      "parent": "12:1",
+      "children": [],
+      "data": { "sid": "components-button", "vk": "3b9a0c1d2e3f4a5b", "nk": "root" },
+      "groups": {
+        "paint": { "fills": [{ "type": "SOLID", "color": { "r": 0.8627, "g": 0.149, "b": 0.149 } }] }
+      },
+      "component": { "setId": "12:1", "variantValues": { "Tone": "Danger", "Size": "md" } }
+    },
+    "40:2": {
+      "id": "40:2",
+      "type": "COMPONENT",
+      "name": "Price tag",
+      "parent": "0:1",
+      "children": ["40:3"],
+      "data": {},
+      "groups": { "geom": { "cornerRadius": 6 } },
+      "annotations": [{ "label": "Use for prices in lists", "category": "Development" }]
+    },
+    "40:3": {
+      "id": "40:3",
+      "type": "INSTANCE",
+      "name": "Icon",
+      "parent": "40:2",
+      "data": {},
+      "groups": {},
+      "instance": { "mainId": "90:1", "properties": {}, "overrides": [] }
+    },
+    "60:2": {
+      "id": "60:2",
+      "type": "FRAME",
+      "name": "Checkout / Desktop",
+      "parent": "0:2",
+      "children": ["60:9"],
+      "data": {},
+      "groups": { "geom": { "width": 1440, "height": 900 } },
+      "devStatus": "READY_FOR_DEV"
+    },
+    "60:9": {
+      "id": "60:9",
+      "type": "INSTANCE",
+      "name": "LegacyAlert",
+      "parent": "60:2",
+      "data": {},
+      "groups": {},
+      "instance": {
+        "mainKey": "4f1c9a7e2b3d",
+        "properties": {
+          "Kind": { "type": "VARIANT", "value": "Info" },
+          "Message#3:1": { "type": "TEXT", "value": "Free shipping over €50" }
+        },
+        "overrides": [{ "id": "I60:9;3:2", "fields": ["characters"] }]
+      }
+    }
+  },
+  "variables": {
+    "VariableID:1:24": {
+      "id": "VariableID:1:24",
+      "name": "Space/4",
+      "collection": "Tokens",
+      "resolvedType": "FLOAT",
+      "valuesByMode": { "1:0": 16 },
+      "codeSyntax": { "WEB": "var(--space-4)" },
+      "data": { "tok": "--space-4" }
+    }
+  },
+  "rootData": { "branch:meta": "{\"v\":2,\"branch\":\"feat/price-tag\"}" }
+}

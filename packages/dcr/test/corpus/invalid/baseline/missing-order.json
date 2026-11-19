@@ -1,0 +1,16 @@
+{
+  "base": "button-md-primary.json",
+  "why": "Child order is part of the baseline.",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/order"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/order",
+      "kind": "invalid"
+    }
+  ]
+}

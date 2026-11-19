@@ -1,0 +1,12 @@
+{
+  "base": "worked-example.json",
+  "why": "Summary question count matches.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/summary/questions",
+      "value": 3
+    }
+  ],
+  "expect": ["/summary/questions", "/dcrHash"]
+}

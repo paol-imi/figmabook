@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Paths stay inside the repo (15 §10.3).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/2/suggested/dir",
+      "value": "../outside"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/2/suggested/dir",
+      "kind": "invalid"
+    }
+  ]
+}

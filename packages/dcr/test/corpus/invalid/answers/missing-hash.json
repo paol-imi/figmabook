@@ -1,0 +1,16 @@
+{
+  "base": "worked-example.json",
+  "why": "Answers bind to one dcrHash (D-56).",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/dcrHash"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/dcrHash",
+      "kind": "invalid"
+    }
+  ]
+}

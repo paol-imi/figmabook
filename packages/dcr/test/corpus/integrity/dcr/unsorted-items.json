@@ -1,0 +1,69 @@
+{
+  "base": "worked-example.json",
+  "why": "Items are in canonical order (15 §4.9); the hash does not depend on it.",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/items/4"
+    },
+    {
+      "op": "add",
+      "path": "/items/0",
+      "value": {
+        "id": "da07fd155d3dd7d2",
+        "kind": "instance.deprecated",
+        "title": "LegacyAlert is deprecated: use Banner (1 occurrence)",
+        "designerTitle": "Legacy alert → Banner (1 use)",
+        "target": {
+          "sid": "components-legacyalert",
+          "vk": "aa01b2c3d4e5f607",
+          "figmaNodeId": "60:9"
+        },
+        "instanceRef": {
+          "used": {
+            "sid": "components-legacyalert",
+            "vk": "aa01b2c3d4e5f607",
+            "irh": "41f2a3b4c5d6e7f8",
+            "values": {
+              "Kind": "Info"
+            }
+          },
+          "current": {
+            "sid": "components-banner",
+            "vk": "bb02c3d4e5f60718",
+            "code": {
+              "sid": "components-banner",
+              "exportName": "Banner",
+              "importPath": "src/components/Banner/Banner.tsx",
+              "storiesPath": "src/components/Banner/Banner.stories.tsx",
+              "storyIds": ["components-banner--info"],
+              "package": "@acme/ui"
+            }
+          },
+          "argMap": {
+            "kind": "tone",
+            "message": "children"
+          },
+          "occurrences": [
+            {
+              "screenItemId": "f6ad55006974cd7f",
+              "key": "Checkout:0/Banner:1"
+            }
+          ]
+        },
+        "acceptance": {
+          "type": "usage",
+          "usage": {
+            "mustImport": ["components-banner"],
+            "mustNotImport": ["components-legacyalert"]
+          },
+          "story": "optional"
+        },
+        "assets": {
+          "after": "da07fd155d3dd7d2:after"
+        }
+      }
+    }
+  ],
+  "expect": [""]
+}

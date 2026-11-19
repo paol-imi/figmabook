@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Headings are 1-6 (15 §4.12).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/3/screen/variants/0/a11y/0/heading",
+      "value": 7
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/3/screen/variants/0/a11y/0/heading",
+      "kind": "invalid"
+    }
+  ]
+}

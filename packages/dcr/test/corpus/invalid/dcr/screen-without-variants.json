@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "A screen item has at least one variant.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/3/screen/variants",
+      "value": []
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/3/screen/variants",
+      "kind": "invalid"
+    }
+  ]
+}

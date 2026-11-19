@@ -1,0 +1,12 @@
+{
+  "base": "worked-example.json",
+  "why": "Occurrences point at screen items.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/4/instanceRef/occurrences/0/screenItemId",
+      "value": "9f190f511ff04bea"
+    }
+  ],
+  "expect": ["/items/4/instanceRef/occurrences/0/screenItemId", "/dcrHash"]
+}

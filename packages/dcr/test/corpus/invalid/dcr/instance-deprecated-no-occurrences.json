@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "One item lists every occurrence (15 §4.13).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/4/instanceRef/occurrences",
+      "value": []
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/4/instanceRef/occurrences",
+      "kind": "invalid"
+    }
+  ]
+}

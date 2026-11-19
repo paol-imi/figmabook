@@ -1,0 +1,12 @@
+{
+  "base": "worked-example.json",
+  "why": "Question ids are unique.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/questions/1/id",
+      "value": "q1"
+    }
+  ],
+  "expect": ["/questions/1/id"]
+}

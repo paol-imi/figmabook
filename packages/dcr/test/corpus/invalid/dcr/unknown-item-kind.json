@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Item kinds are a closed set within a major (15 §4.4).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/0/kind",
+      "value": "component.changed"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/0",
+      "kind": "invalid"
+    }
+  ]
+}
