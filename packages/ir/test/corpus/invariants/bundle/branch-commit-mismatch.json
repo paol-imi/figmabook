@@ -1,0 +1,11 @@
+{
+  "base": "branch.json",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/branch/baseCommit",
+      "value": "aaaaaaa"
+    }
+  ],
+  "expect": ["branch-git"]
+}

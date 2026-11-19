@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "createdAt is ISO 8601.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/createdAt",
+      "value": "yesterday"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/createdAt",
+      "kind": "invalid"
+    }
+  ]
+}

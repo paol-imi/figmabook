@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "@figma/plugin-typings"],
+    "allowJs": true,
+    "checkJs": true
+  },
+  "include": [".", "../src", "../scripts", "../*.config.ts"]
+}

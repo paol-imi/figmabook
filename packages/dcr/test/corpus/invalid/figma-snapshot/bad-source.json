@@ -1,0 +1,17 @@
+{
+  "base": "price-tag-branch.json",
+  "why": "Snapshots come from the plugin or REST.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/source",
+      "value": "mcp"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/source",
+      "kind": "invalid"
+    }
+  ]
+}

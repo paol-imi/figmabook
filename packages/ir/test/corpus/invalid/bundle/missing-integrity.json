@@ -1,0 +1,16 @@
+{
+  "base": "button.json",
+  "why": "integrity is required (02 \u00a75.1).",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/integrity"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/integrity",
+      "kind": "invalid"
+    }
+  ]
+}

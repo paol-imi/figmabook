@@ -1,0 +1,2431 @@
+{
+  "kind": "holotype/capture",
+  "captureVersion": "0.1.0",
+  "engine": {
+    "name": "@holotype/capture",
+    "version": "0.0.0",
+    "chromium": "141.0.7390.37",
+    "playwright": "1.56.1"
+  },
+  "target": {
+    "storybookUrl": "http://127.0.0.1:6006/iframe.html",
+    "storyId": "micro-paint--swatches",
+    "sid": "micro-paint",
+    "vk": "ac22c096f1a58da4",
+    "args": {},
+    "globals": {},
+    "state": null,
+    "viewport": {
+      "w": 1280,
+      "h": 800
+    },
+    "dpr": 2,
+    "colorScheme": "light",
+    "rootSelector": "#storybook-root"
+  },
+  "timing": {
+    "renderMs": 10,
+    "settleMs": 5,
+    "serializeMs": 1
+  },
+  "rootRect": {
+    "x": 0,
+    "y": 0,
+    "w": 380,
+    "h": 260
+  },
+  "root": {
+    "id": "c24",
+    "type": "element",
+    "source": {
+      "tag": "div",
+      "path": "div:0",
+      "classes": ["swatches"]
+    },
+    "borderBox": {
+      "x": 0,
+      "y": 0,
+      "w": 380,
+      "h": 260
+    },
+    "children": [
+      {
+        "id": "c1",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:0",
+          "testId": "per-side"
+        },
+        "borderBox": {
+          "x": 10,
+          "y": 10,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 0
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [2, 2, 4, 2],
+            "style": ["solid", "solid", "solid", "solid"],
+            "color": [
+              {
+                "r": 1,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 1,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 1,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 1,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c2",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:1",
+          "testId": "dashed"
+        },
+        "borderBox": {
+          "x": 70,
+          "y": 10,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 1
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [2, 2, 2, 2],
+            "style": ["dashed", "dashed", "dashed", "dashed"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0.5,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0.5,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0.5,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0.5,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c3",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:2",
+          "testId": "dotted"
+        },
+        "borderBox": {
+          "x": 130,
+          "y": 10,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 2
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [1, 0, 1, 0],
+            "style": ["dotted", "none", "dotted", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 1,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 1,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 1,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 1,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c4",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:3",
+          "testId": "double"
+        },
+        "borderBox": {
+          "x": 190,
+          "y": 10,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 3
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [3, 3, 3, 3],
+            "style": ["double", "double", "double", "double"],
+            "color": [
+              {
+                "r": 1,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 1,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 1,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 1,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c5",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:4",
+          "testId": "elliptical"
+        },
+        "borderBox": {
+          "x": 250,
+          "y": 10,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 4
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [20, 0, 20, 0],
+            "v": [10, 0, 10, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0.5,
+              "b": 0,
+              "a": 1,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c6",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:5",
+          "testId": "pill"
+        },
+        "borderBox": {
+          "x": 310,
+          "y": 10,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 5
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [100, 100, 100, 100],
+            "v": [100, 100, 100, 100]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 1,
+              "a": 1,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c7",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:6",
+          "testId": "overflow-x"
+        },
+        "borderBox": {
+          "x": 10,
+          "y": 70,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 6
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "hidden",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 1,
+              "g": 0,
+              "b": 0,
+              "a": 1,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c8",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:7",
+          "testId": "multiply"
+        },
+        "borderBox": {
+          "x": 70,
+          "y": 70,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 7
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 0.5,
+          "mixBlendMode": "multiply",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 1,
+              "g": 0,
+              "b": 0,
+              "a": 1,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c9",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:8",
+          "testId": "plus-lighter"
+        },
+        "borderBox": {
+          "x": 130,
+          "y": 70,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 8
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "plus-lighter",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 1,
+              "a": 1,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c10",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:9",
+          "testId": "invisible"
+        },
+        "borderBox": {
+          "x": 190,
+          "y": 70,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 9
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 0,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0.5,
+              "b": 0,
+              "a": 1,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c13",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:10",
+          "testId": "hidden"
+        },
+        "borderBox": {
+          "x": 250,
+          "y": 70,
+          "w": 40,
+          "h": 40
+        },
+        "children": [
+          {
+            "id": "c11",
+            "type": "element",
+            "source": {
+              "tag": "div",
+              "path": "div:0>div:10>div:0",
+              "testId": "shown"
+            },
+            "borderBox": {
+              "x": 260,
+              "y": 80,
+              "w": 20,
+              "h": 20
+            },
+            "children": [],
+            "paint": {
+              "stackingContext": false,
+              "zIndex": "auto",
+              "layer": "block",
+              "domIndex": 10
+            },
+            "computed": {
+              "display": "block",
+              "position": "static",
+              "boxSizing": "border-box",
+              "visibility": "visible",
+              "zIndex": "auto",
+              "opacity": 1,
+              "mixBlendMode": "normal",
+              "isolation": "auto",
+              "overflowX": "visible",
+              "overflowY": "visible",
+              "padding": [0, 0, 0, 0],
+              "border": {
+                "width": [0, 0, 0, 0],
+                "style": ["none", "none", "none", "none"],
+                "color": [
+                  {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1,
+                    "space": "srgb"
+                  },
+                  {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1,
+                    "space": "srgb"
+                  },
+                  {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1,
+                    "space": "srgb"
+                  },
+                  {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1,
+                    "space": "srgb"
+                  }
+                ]
+              },
+              "margin": [0, 0, 0, 0],
+              "radius": {
+                "h": [0, 0, 0, 0],
+                "v": [0, 0, 0, 0]
+              },
+              "background": {
+                "color": {
+                  "r": 1,
+                  "g": 0,
+                  "b": 0,
+                  "a": 1,
+                  "space": "srgb"
+                },
+                "layers": [],
+                "clip": ["border-box"]
+              },
+              "boxShadow": [],
+              "size": {
+                "width": 40,
+                "height": 40,
+                "minW": "auto",
+                "maxW": "none",
+                "minH": "auto",
+                "maxH": "none"
+              },
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            }
+          },
+          {
+            "id": "c12",
+            "type": "text",
+            "source": {
+              "tag": "span",
+              "path": "div:0>div:10>span:1"
+            },
+            "borderBox": {
+              "x": 250,
+              "y": 70,
+              "w": 30,
+              "h": 16
+            },
+            "text": {
+              "characters": "Hidden",
+              "runs": [
+                {
+                  "start": 0,
+                  "end": 6,
+                  "styleId": "s"
+                }
+              ],
+              "lines": [
+                {
+                  "top": 70,
+                  "height": 16,
+                  "startChar": 0,
+                  "endChar": 6,
+                  "left": 250,
+                  "width": 30
+                }
+              ],
+              "whiteSpace": "normal",
+              "textOverflow": "clip",
+              "lineClamp": null,
+              "wrap": "wrap",
+              "textAlign": "left",
+              "indent": 0
+            },
+            "children": [],
+            "paint": {
+              "stackingContext": false,
+              "zIndex": "auto",
+              "layer": "inline",
+              "domIndex": 11
+            }
+          }
+        ],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 12
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "hidden",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 1,
+              "a": 1,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c14",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:11",
+          "testId": "p3"
+        },
+        "borderBox": {
+          "x": 310,
+          "y": 70,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 13
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 1,
+              "b": 0,
+              "a": 1,
+              "space": "display-p3",
+              "original": "color(display-p3 0 1 0)"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c15",
+        "type": "replaced",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:12",
+          "testId": "raster"
+        },
+        "borderBox": {
+          "x": 10,
+          "y": 130,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 14
+        },
+        "replaced": {
+          "kind": "raster",
+          "asset": {
+            "sha": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          },
+          "reason": "canvas"
+        }
+      },
+      {
+        "id": "c16",
+        "type": "replaced",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:13",
+          "testId": "img-none"
+        },
+        "borderBox": {
+          "x": 70,
+          "y": 130,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 15
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        },
+        "replaced": {
+          "kind": "img",
+          "asset": {
+            "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "natural": {
+            "w": 80,
+            "h": 80
+          },
+          "objectFit": "none",
+          "objectPosition": "50% 50%"
+        }
+      },
+      {
+        "id": "c17",
+        "type": "replaced",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:14",
+          "testId": "img-fill"
+        },
+        "borderBox": {
+          "x": 130,
+          "y": 130,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 16
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        },
+        "replaced": {
+          "kind": "img",
+          "asset": {
+            "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "natural": {
+            "w": 80,
+            "h": 80
+          },
+          "objectFit": "fill",
+          "objectPosition": "50% 50%"
+        }
+      },
+      {
+        "id": "c18",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:15",
+          "testId": "effects"
+        },
+        "borderBox": {
+          "x": 190,
+          "y": 130,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 17
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0.5,
+              "b": 0,
+              "a": 1,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [
+            {
+              "inset": false,
+              "x": 0,
+              "y": 2,
+              "blur": 4,
+              "spread": 0,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 0.2,
+                "space": "srgb"
+              }
+            }
+          ],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          },
+          "filter": "blur(2px)",
+          "clipPath": "circle(50%)"
+        },
+        "transform": [[0.7071, 0.7071, 0], [-0.7071, 0.7071, 0]]
+      },
+      {
+        "id": "c20",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:16"
+        },
+        "borderBox": {
+          "x": 250,
+          "y": 130,
+          "w": 40,
+          "h": 40
+        },
+        "children": [
+          {
+            "id": "c19",
+            "type": "element",
+            "source": {
+              "tag": "div",
+              "path": "div:0>div:16>div:0",
+              "testId": "spliced"
+            },
+            "borderBox": {
+              "x": 250,
+              "y": 130,
+              "w": 40,
+              "h": 40
+            },
+            "children": [],
+            "paint": {
+              "stackingContext": false,
+              "zIndex": "auto",
+              "layer": "block",
+              "domIndex": 18
+            },
+            "computed": {
+              "display": "block",
+              "position": "static",
+              "boxSizing": "border-box",
+              "visibility": "visible",
+              "zIndex": "auto",
+              "opacity": 1,
+              "mixBlendMode": "normal",
+              "isolation": "auto",
+              "overflowX": "visible",
+              "overflowY": "visible",
+              "padding": [0, 0, 0, 0],
+              "border": {
+                "width": [0, 0, 0, 0],
+                "style": ["none", "none", "none", "none"],
+                "color": [
+                  {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1,
+                    "space": "srgb"
+                  },
+                  {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1,
+                    "space": "srgb"
+                  },
+                  {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1,
+                    "space": "srgb"
+                  },
+                  {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1,
+                    "space": "srgb"
+                  }
+                ]
+              },
+              "margin": [0, 0, 0, 0],
+              "radius": {
+                "h": [0, 0, 0, 0],
+                "v": [0, 0, 0, 0]
+              },
+              "background": {
+                "color": {
+                  "r": 1,
+                  "g": 0,
+                  "b": 0,
+                  "a": 1,
+                  "space": "srgb"
+                },
+                "layers": [],
+                "clip": ["border-box"]
+              },
+              "boxShadow": [],
+              "size": {
+                "width": 40,
+                "height": 40,
+                "minW": "auto",
+                "maxW": "none",
+                "minH": "auto",
+                "maxH": "none"
+              },
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            }
+          }
+        ],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 19
+        },
+        "computed": {
+          "display": "contents",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c21",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:17",
+          "testId": "sr-only",
+          "srOnly": true
+        },
+        "borderBox": {
+          "x": 310,
+          "y": 130,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 20
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 1,
+              "g": 0,
+              "b": 0,
+              "a": 1,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c22",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:18",
+          "testId": "zero"
+        },
+        "borderBox": {
+          "x": 10,
+          "y": 190,
+          "w": 0,
+          "h": 0
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 21
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "auto",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 1,
+              "g": 0,
+              "b": 0,
+              "a": 1,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 0,
+            "height": 0,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      },
+      {
+        "id": "c23",
+        "type": "element",
+        "source": {
+          "tag": "div",
+          "path": "div:0>div:19",
+          "testId": "isolated"
+        },
+        "borderBox": {
+          "x": 70,
+          "y": 190,
+          "w": 40,
+          "h": 40
+        },
+        "children": [],
+        "paint": {
+          "stackingContext": false,
+          "zIndex": "auto",
+          "layer": "block",
+          "domIndex": 22
+        },
+        "computed": {
+          "display": "block",
+          "position": "static",
+          "boxSizing": "border-box",
+          "visibility": "visible",
+          "zIndex": "auto",
+          "opacity": 1,
+          "mixBlendMode": "normal",
+          "isolation": "isolate",
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [0, 0, 0, 0],
+          "border": {
+            "width": [0, 0, 0, 0],
+            "style": ["none", "none", "none", "none"],
+            "color": [
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              },
+              {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1,
+                "space": "srgb"
+              }
+            ]
+          },
+          "margin": [0, 0, 0, 0],
+          "radius": {
+            "h": [0, 0, 0, 0],
+            "v": [0, 0, 0, 0]
+          },
+          "background": {
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 1,
+              "a": 1,
+              "space": "srgb"
+            },
+            "layers": [],
+            "clip": ["border-box"]
+          },
+          "boxShadow": [],
+          "size": {
+            "width": 40,
+            "height": 40,
+            "minW": "auto",
+            "maxW": "none",
+            "minH": "auto",
+            "maxH": "none"
+          },
+          "color": {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        }
+      }
+    ],
+    "paint": {
+      "stackingContext": false,
+      "zIndex": "auto",
+      "layer": "block",
+      "domIndex": 23
+    },
+    "computed": {
+      "display": "block",
+      "position": "static",
+      "boxSizing": "border-box",
+      "visibility": "visible",
+      "zIndex": "auto",
+      "opacity": 1,
+      "mixBlendMode": "normal",
+      "isolation": "auto",
+      "overflowX": "visible",
+      "overflowY": "visible",
+      "padding": [0, 0, 0, 0],
+      "border": {
+        "width": [0, 0, 0, 0],
+        "style": ["none", "none", "none", "none"],
+        "color": [
+          {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          },
+          {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          },
+          {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          },
+          {
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "a": 1,
+            "space": "srgb"
+          }
+        ]
+      },
+      "margin": [0, 0, 0, 0],
+      "radius": {
+        "h": [0, 0, 0, 0],
+        "v": [0, 0, 0, 0]
+      },
+      "background": {
+        "color": {
+          "r": 1,
+          "g": 1,
+          "b": 1,
+          "a": 1,
+          "space": "srgb"
+        },
+        "layers": [],
+        "clip": ["border-box"]
+      },
+      "boxShadow": [],
+      "size": {
+        "width": 380,
+        "height": 260,
+        "minW": "auto",
+        "maxW": "none",
+        "minH": "auto",
+        "maxH": "none"
+      },
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1,
+        "space": "srgb"
+      }
+    }
+  },
+  "portals": [],
+  "textStyles": {
+    "s": {
+      "cssFamily": "Inter, system-ui, sans-serif",
+      "used": [
+        {
+          "family": "Inter",
+          "postScriptName": "Inter-Regular",
+          "isCustom": true,
+          "glyphCount": 10
+        }
+      ],
+      "weight": 400,
+      "italic": false,
+      "stretch": "100%",
+      "size": 14,
+      "lineHeightPx": 20,
+      "lineHeightSource": "explicit",
+      "letterSpacingPx": 0,
+      "wordSpacingPx": 0,
+      "transform": "none",
+      "smallCaps": false,
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1,
+        "space": "srgb"
+      }
+    }
+  },
+  "assets": {
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb": {
+      "mime": "image/png",
+      "bytes": 1024,
+      "natural": {
+        "w": 80,
+        "h": 80
+      }
+    },
+    "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc": {
+      "mime": "image/png",
+      "bytes": 2048
+    }
+  },
+  "fonts": [],
+  "customProperties": {
+    "declarations": []
+  },
+  "diagnostics": []
+}

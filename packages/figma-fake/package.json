@@ -1,0 +1,37 @@
+{
+  "name": "@holotype/figma-fake",
+  "version": "0.0.0",
+  "private": true,
+  "description": "In-memory implementation of the plugin's FigmaPort interface, for tests.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@holotype/layout-sim": "workspace:*",
+    "@holotype/ir": "workspace:*",
+    "@holotype/shared": "workspace:*",
+    "@holotype/plugin": "workspace:*"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "1.142.0"
+  }
+}

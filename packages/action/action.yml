@@ -1,0 +1,17 @@
+name: Holotype
+description: Export a Storybook as a Holotype bundle, or extract a Design Change Request, in CI.
+inputs:
+  command:
+    description: The holotype command to run, e.g. `export` or `dcr`.
+    required: true
+  args:
+    description: Extra arguments for the command, separated by whitespace.
+    required: false
+    default: ""
+  working-directory:
+    description: Directory that holds holotype.config.ts.
+    required: false
+    default: "."
+runs:
+  using: node24
+  main: dist/index.js

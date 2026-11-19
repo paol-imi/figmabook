@@ -1,0 +1,787 @@
+{
+  "dependencies": [],
+  "diagnostics": [],
+  "irh": "9cb717357724825f",
+  "kind": "holotype/scene-component",
+  "meta": {
+    "description": "Card fixture.",
+    "descriptionSource": "parameters",
+    "exportName": "Card",
+    "framework": "react",
+    "importPath": "src/Card.tsx",
+    "kind": "component",
+    "links": [
+      {
+        "label": "Storybook",
+        "url": "http://127.0.0.1:6006/?path=/docs/components-card--docs"
+      }
+    ],
+    "name": "Card",
+    "storyIds": [
+      "components-card--default"
+    ],
+    "titlePath": [
+      "Components",
+      "Card"
+    ]
+  },
+  "properties": [],
+  "sceneVersion": "0.1.0",
+  "setLayout": {
+    "columnsBy": [],
+    "gap": {
+      "x": 24,
+      "y": 24
+    },
+    "labels": false,
+    "mode": "grid",
+    "padding": 32,
+    "rowsBy": []
+  },
+  "sid": "components-card",
+  "variants": [
+    {
+      "diagnostics": [],
+      "grid": {
+        "col": 0,
+        "row": 0
+      },
+      "irh": "1c4b5ca855a61b86",
+      "provenance": {
+        "args": {},
+        "captureHash": "15d812c5cb844b54",
+        "globals": {},
+        "state": null,
+        "storyId": "components-card--default",
+        "viewport": {
+          "h": 800,
+          "w": 1280
+        }
+      },
+      "root": {
+        "children": [
+          {
+            "children": [
+              {
+                "expect": {
+                  "h": 24,
+                  "w": 120,
+                  "x": 17,
+                  "y": 17
+                },
+                "irh": "d06e0fbcf736b4ec",
+                "kind": "text",
+                "name": "Heading",
+                "nk": "root/div.card__header/h3",
+                "size": {
+                  "h": 24,
+                  "w": 120
+                },
+                "source": {
+                  "path": "div:0>div:0>h3:0",
+                  "tag": "h3"
+                },
+                "text": {
+                  "alignH": "LEFT",
+                  "alignV": "TOP",
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "characters": "Card title",
+                  "lines": [
+                    {
+                      "endChar": 10,
+                      "startChar": 0
+                    }
+                  ],
+                  "ranges": [
+                    {
+                      "decoration": "NONE",
+                      "end": 10,
+                      "fills": [
+                        {
+                          "color": {
+                            "b": 0.153,
+                            "g": 0.094,
+                            "r": 0.067
+                          },
+                          "opacity": 1,
+                          "type": "SOLID"
+                        }
+                      ],
+                      "font": {
+                        "fallbackFamily": "Inter",
+                        "family": "Inter",
+                        "isCustom": true,
+                        "italic": false,
+                        "postScriptName": "Inter-SemiBold",
+                        "styleCandidates": [
+                          "Semi Bold",
+                          "SemiBold",
+                          "DemiBold",
+                          "Demi Bold",
+                          "Bold",
+                          "ExtraBold",
+                          "Extra Bold",
+                          "UltraBold",
+                          "Black",
+                          "Heavy",
+                          "Medium",
+                          "Regular",
+                          "Normal",
+                          "Book",
+                          "Roman",
+                          "Light",
+                          "ExtraLight",
+                          "Extra Light",
+                          "UltraLight",
+                          "Thin",
+                          "Hairline"
+                        ],
+                        "weight": 600
+                      },
+                      "fontSize": 18,
+                      "letterSpacing": {
+                        "unit": "PIXELS",
+                        "value": 0
+                      },
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 24
+                      },
+                      "start": 0,
+                      "textCase": "ORIGINAL"
+                    }
+                  ],
+                  "widthBuffer": {
+                    "max": 4
+                  },
+                  "wrapMode": "reflow"
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              {
+                "expect": {
+                  "h": 16,
+                  "w": 16,
+                  "x": 287,
+                  "y": 21
+                },
+                "irh": "d5a7ce1fae5ab7eb",
+                "kind": "svg",
+                "name": "Card icon",
+                "nk": "root/div.card__header/card-icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "source": {
+                  "path": "div:0>div:0>svg:1",
+                  "tag": "svg"
+                },
+                "svg": {
+                  "asset": {
+                    "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  },
+                  "unwrap": true
+                },
+                "visible": true,
+                "xy": {
+                  "x": 270,
+                  "y": 4
+                }
+              }
+            ],
+            "clipsContent": false,
+            "expect": {
+              "h": 24,
+              "w": 286,
+              "x": 17,
+              "y": 17
+            },
+            "fills": [],
+            "irh": "e4594f3bc0bd4c3f",
+            "kind": "frame",
+            "name": "Header",
+            "nk": "root/div.card__header",
+            "size": {
+              "h": 24,
+              "w": 286
+            },
+            "source": {
+              "path": "div:0>div:0",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 17,
+              "y": 17
+            }
+          },
+          {
+            "expect": {
+              "h": 40,
+              "w": 286,
+              "x": 17,
+              "y": 53
+            },
+            "irh": "293b03a8e568d8ab",
+            "kind": "text",
+            "name": "Paragraph",
+            "nk": "root/p",
+            "size": {
+              "h": 40,
+              "w": 286
+            },
+            "source": {
+              "path": "div:0>p:1",
+              "tag": "p"
+            },
+            "text": {
+              "alignH": "LEFT",
+              "alignV": "TOP",
+              "autoResize": "HEIGHT",
+              "characters": "A short description that wraps onto two lines.",
+              "lines": [
+                {
+                  "endChar": 25,
+                  "startChar": 0
+                },
+                {
+                  "endChar": 46,
+                  "startChar": 25
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "NONE",
+                  "end": 46,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0.388,
+                        "g": 0.333,
+                        "r": 0.294
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": false,
+                    "postScriptName": "Inter-Regular",
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 0,
+                  "textCase": "ORIGINAL"
+                }
+              ],
+              "widthBuffer": {
+                "max": 3.5
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 17,
+              "y": 53
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 1,
+              "w": 318,
+              "x": 1,
+              "y": 105
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0.922,
+                  "g": 0.906,
+                  "r": 0.898
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "86c29a15a43cce04",
+            "kind": "frame",
+            "name": "Divider",
+            "nk": "root/div.card__divider",
+            "size": {
+              "h": 1,
+              "w": 318
+            },
+            "source": {
+              "path": "div:0>div:2",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 1,
+              "y": 105
+            }
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "expect": {
+                      "h": 16,
+                      "w": 40,
+                      "x": 25,
+                      "y": 158
+                    },
+                    "irh": "60871f7ef2db2688",
+                    "kind": "text",
+                    "name": "Alpha",
+                    "nk": "root/div.card__footer/div.chip/span",
+                    "size": {
+                      "h": 16,
+                      "w": 40
+                    },
+                    "source": {
+                      "path": "div:0>div:5>div:0>span:0",
+                      "tag": "span"
+                    },
+                    "text": {
+                      "alignH": "CENTER",
+                      "alignV": "TOP",
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "characters": "Alpha",
+                      "lines": [
+                        {
+                          "endChar": 5,
+                          "startChar": 0
+                        }
+                      ],
+                      "ranges": [
+                        {
+                          "decoration": "NONE",
+                          "end": 5,
+                          "fills": [
+                            {
+                              "color": {
+                                "b": 0.859,
+                                "g": 0.255,
+                                "r": 0.216
+                              },
+                              "opacity": 1,
+                              "type": "SOLID"
+                            }
+                          ],
+                          "font": {
+                            "fallbackFamily": "Inter",
+                            "family": "Inter",
+                            "isCustom": true,
+                            "italic": false,
+                            "postScriptName": "Inter-Medium",
+                            "styleCandidates": [
+                              "Medium",
+                              "Regular",
+                              "Normal",
+                              "Book",
+                              "Roman",
+                              "Light",
+                              "ExtraLight",
+                              "Extra Light",
+                              "UltraLight",
+                              "Thin",
+                              "Hairline",
+                              "SemiBold",
+                              "Semi Bold",
+                              "DemiBold",
+                              "Demi Bold",
+                              "Bold",
+                              "ExtraBold",
+                              "Extra Bold",
+                              "UltraBold",
+                              "Black",
+                              "Heavy"
+                            ],
+                            "weight": 500
+                          },
+                          "fontSize": 12,
+                          "letterSpacing": {
+                            "unit": "PIXELS",
+                            "value": 0
+                          },
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 16
+                          },
+                          "start": 0,
+                          "textCase": "ORIGINAL"
+                        }
+                      ],
+                      "widthBuffer": {
+                        "max": 3
+                      },
+                      "wrapMode": "reflow"
+                    },
+                    "visible": true,
+                    "xy": {
+                      "x": 8,
+                      "y": 4
+                    }
+                  }
+                ],
+                "clipsContent": false,
+                "expect": {
+                  "h": 24,
+                  "w": 56,
+                  "x": 17,
+                  "y": 154
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 1,
+                      "g": 0.949,
+                      "r": 0.933
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "d7854a40096b278c",
+                "kind": "frame",
+                "name": "Chip",
+                "nk": "root/div.card__footer/div.chip",
+                "radius": {
+                  "bl": 12,
+                  "br": 12,
+                  "tl": 12,
+                  "tr": 12
+                },
+                "size": {
+                  "h": 24,
+                  "w": 56
+                },
+                "source": {
+                  "path": "div:0>div:5>div:0",
+                  "tag": "div"
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              {
+                "children": [
+                  {
+                    "expect": {
+                      "h": 16,
+                      "w": 40,
+                      "x": 89,
+                      "y": 158
+                    },
+                    "irh": "3086f1ca5885a2e3",
+                    "kind": "text",
+                    "name": "Beta",
+                    "nk": "root/div.card__footer/div.chip#2/span",
+                    "size": {
+                      "h": 16,
+                      "w": 40
+                    },
+                    "source": {
+                      "path": "div:0>div:5>div:1>span:0",
+                      "tag": "span"
+                    },
+                    "text": {
+                      "alignH": "CENTER",
+                      "alignV": "TOP",
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "characters": "Beta",
+                      "lines": [
+                        {
+                          "endChar": 4,
+                          "startChar": 0
+                        }
+                      ],
+                      "ranges": [
+                        {
+                          "decoration": "NONE",
+                          "end": 4,
+                          "fills": [
+                            {
+                              "color": {
+                                "b": 0.859,
+                                "g": 0.255,
+                                "r": 0.216
+                              },
+                              "opacity": 1,
+                              "type": "SOLID"
+                            }
+                          ],
+                          "font": {
+                            "fallbackFamily": "Inter",
+                            "family": "Inter",
+                            "isCustom": true,
+                            "italic": false,
+                            "postScriptName": "Inter-Medium",
+                            "styleCandidates": [
+                              "Medium",
+                              "Regular",
+                              "Normal",
+                              "Book",
+                              "Roman",
+                              "Light",
+                              "ExtraLight",
+                              "Extra Light",
+                              "UltraLight",
+                              "Thin",
+                              "Hairline",
+                              "SemiBold",
+                              "Semi Bold",
+                              "DemiBold",
+                              "Demi Bold",
+                              "Bold",
+                              "ExtraBold",
+                              "Extra Bold",
+                              "UltraBold",
+                              "Black",
+                              "Heavy"
+                            ],
+                            "weight": 500
+                          },
+                          "fontSize": 12,
+                          "letterSpacing": {
+                            "unit": "PIXELS",
+                            "value": 0
+                          },
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 16
+                          },
+                          "start": 0,
+                          "textCase": "ORIGINAL"
+                        }
+                      ],
+                      "widthBuffer": {
+                        "max": 3
+                      },
+                      "wrapMode": "reflow"
+                    },
+                    "visible": true,
+                    "xy": {
+                      "x": 8,
+                      "y": 4
+                    }
+                  }
+                ],
+                "clipsContent": false,
+                "expect": {
+                  "h": 24,
+                  "w": 56,
+                  "x": 81,
+                  "y": 154
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 1,
+                      "g": 0.949,
+                      "r": 0.933
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "af91a46f90022c92",
+                "kind": "frame",
+                "name": "Chip 2",
+                "nk": "root/div.card__footer/div.chip#2",
+                "radius": {
+                  "bl": 12,
+                  "br": 12,
+                  "tl": 12,
+                  "tr": 12
+                },
+                "size": {
+                  "h": 24,
+                  "w": 56
+                },
+                "source": {
+                  "path": "div:0>div:5>div:1",
+                  "tag": "div"
+                },
+                "visible": true,
+                "xy": {
+                  "x": 64,
+                  "y": 0
+                }
+              }
+            ],
+            "clipsContent": false,
+            "expect": {
+              "h": 24,
+              "w": 120,
+              "x": 17,
+              "y": 154
+            },
+            "fills": [],
+            "irh": "53531a8ea16effa4",
+            "kind": "frame",
+            "name": "Footer",
+            "nk": "root/div.card__footer",
+            "size": {
+              "h": 24,
+              "w": 120
+            },
+            "source": {
+              "path": "div:0>div:5",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 17,
+              "y": 154
+            }
+          },
+          {
+            "expect": {
+              "h": 64,
+              "w": 104,
+              "x": 200,
+              "y": 120
+            },
+            "fills": [
+              {
+                "asset": {
+                  "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                },
+                "scaleMode": "FILL",
+                "type": "IMAGE"
+              }
+            ],
+            "irh": "79c06f4dda5f7980",
+            "kind": "image",
+            "name": "Product photo",
+            "nk": "root/product-photo",
+            "radius": {
+              "bl": 8,
+              "br": 8,
+              "tl": 8,
+              "tr": 8
+            },
+            "size": {
+              "h": 64,
+              "w": 104
+            },
+            "source": {
+              "path": "div:0>img:6",
+              "tag": "img"
+            },
+            "visible": true,
+            "xy": {
+              "x": 200,
+              "y": 120
+            }
+          }
+        ],
+        "clipsContent": true,
+        "expect": {
+          "h": 200,
+          "w": 320,
+          "x": 0,
+          "y": 0
+        },
+        "fills": [
+          {
+            "color": {
+              "b": 1,
+              "g": 1,
+              "r": 1
+            },
+            "opacity": 1,
+            "type": "SOLID"
+          }
+        ],
+        "irh": "74394b2613fd9370",
+        "kind": "component",
+        "name": "Card",
+        "nk": "root",
+        "radius": {
+          "bl": 12,
+          "br": 12,
+          "tl": 12,
+          "tr": 12
+        },
+        "size": {
+          "h": 200,
+          "w": 320
+        },
+        "source": {
+          "component": "Card",
+          "path": "div:0",
+          "tag": "div"
+        },
+        "strokes": {
+          "align": "INSIDE",
+          "paints": [
+            {
+              "color": {
+                "b": 0.922,
+                "g": 0.906,
+                "r": 0.898
+              },
+              "opacity": 1,
+              "type": "SOLID"
+            }
+          ],
+          "weight": {
+            "b": 1,
+            "l": 1,
+            "r": 1,
+            "t": 1
+          }
+        },
+        "visible": true
+      },
+      "values": {},
+      "vk": "08c400da60133f29"
+    }
+  ]
+}

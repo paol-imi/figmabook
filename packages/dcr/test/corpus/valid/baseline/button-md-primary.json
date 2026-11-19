@@ -1,0 +1,29 @@
+{
+  "v": 1,
+  "vk": "3b9a0c1d2e3f4a5b",
+  "sid": "components-button",
+  "baseCommit": "9f3c2e1",
+  "baselineFp": "b7e1d24c0a9f3e85",
+  "nodes": {
+    "root": {
+      "geom": { "width": 96, "height": 36 },
+      "layout": {
+        "layoutMode": "HORIZONTAL",
+        "paddingLeft": 13,
+        "paddingRight": 13,
+        "paddingTop": 8,
+        "paddingBottom": 8,
+        "itemSpacing": 8
+      },
+      "paint": { "fills": [{ "type": "SOLID", "color": { "r": 0.1451, "g": 0.3882, "b": 0.9216 } }] },
+      "text": {},
+      "vis": { "opacity": 1 },
+      "bind": { "paddingLeft": "VariableID:1:23", "paddingRight": "VariableID:1:23" },
+      "inst": {}
+    },
+    "root/label": {
+      "text": { "characters": "Button", "fontSize": 14 }
+    }
+  },
+  "order": { "root": ["root/label"] }
+}

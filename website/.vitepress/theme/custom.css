@@ -1,0 +1,59 @@
+/* Brand colours. Light values first; dark mode overrides below. */
+:root {
+  --vp-c-brand-1: #0f766e;
+  --vp-c-brand-2: #0d9488;
+  --vp-c-brand-3: #14b8a6;
+  --vp-c-brand-soft: rgba(20, 184, 166, 0.14);
+  --vp-home-hero-name-color: var(--vp-c-brand-1);
+}
+
+.dark {
+  --vp-c-brand-1: #5eead4;
+  --vp-c-brand-2: #2dd4bf;
+  --vp-c-brand-3: #14b8a6;
+  --vp-c-brand-soft: rgba(45, 212, 191, 0.16);
+}
+
+/* Pre-release notice on the home page. */
+.ht-status {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 6px 14px 6px 6px;
+  border: 1px solid var(--vp-c-warning-2);
+  border-radius: 14px;
+  background: var(--vp-c-warning-soft);
+  color: var(--vp-c-text-1);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.ht-status-label {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--vp-c-warning-2);
+  color: var(--vp-c-white);
+  font-weight: 600;
+}
+
+.dark .ht-status-label {
+  color: var(--vp-c-black);
+}
+
+/* Codes in reference tables stay on one line. */
+.vp-doc table code {
+  white-space: nowrap;
+}
+
+/* Diagnostics pages: the code is the title, and the facts table has no header. */
+.vp-doc h1 > code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+.vp-doc table:has(thead th:first-child:empty) thead {
+  display: none;
+}

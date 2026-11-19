@@ -1,0 +1,17 @@
+{
+  "base": "all-kinds.json",
+  "why": "Token keys are CSS custom properties.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/9/target/key",
+      "value": "space-4"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/9/target/key",
+      "kind": "invalid"
+    }
+  ]
+}

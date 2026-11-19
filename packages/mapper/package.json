@@ -1,0 +1,36 @@
+{
+  "name": "@holotype/mapper",
+  "version": "0.0.0",
+  "description": "Pure Capture IR to Scene IR mapping: layout inference, text, visuals, alignment, naming, token binding. Isomorphic.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc && tsc -p test",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@holotype/layout-sim": "workspace:*",
+    "@holotype/ir": "workspace:*",
+    "@holotype/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "fast-check": "4.10.3"
+  }
+}

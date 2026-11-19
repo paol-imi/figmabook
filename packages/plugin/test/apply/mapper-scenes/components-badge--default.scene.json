@@ -1,0 +1,205 @@
+{
+  "dependencies": [],
+  "diagnostics": [],
+  "irh": "32e4a06b9ff55485",
+  "kind": "holotype/scene-component",
+  "meta": {
+    "description": "Badge fixture.",
+    "descriptionSource": "parameters",
+    "exportName": "Badge",
+    "framework": "react",
+    "importPath": "src/Badge.tsx",
+    "kind": "component",
+    "links": [
+      {
+        "label": "Storybook",
+        "url": "http://127.0.0.1:6006/?path=/docs/components-badge--docs"
+      }
+    ],
+    "name": "Badge",
+    "storyIds": [
+      "components-badge--default"
+    ],
+    "titlePath": [
+      "Components",
+      "Badge"
+    ]
+  },
+  "properties": [],
+  "sceneVersion": "0.1.0",
+  "setLayout": {
+    "columnsBy": [],
+    "gap": {
+      "x": 24,
+      "y": 24
+    },
+    "labels": false,
+    "mode": "grid",
+    "padding": 32,
+    "rowsBy": []
+  },
+  "sid": "components-badge",
+  "variants": [
+    {
+      "diagnostics": [],
+      "grid": {
+        "col": 0,
+        "row": 0
+      },
+      "irh": "a596c8ca3439d6f5",
+      "provenance": {
+        "args": {},
+        "captureHash": "ff9140c87d9fccff",
+        "globals": {},
+        "state": null,
+        "storyId": "components-badge--default",
+        "viewport": {
+          "h": 800,
+          "w": 1280
+        }
+      },
+      "root": {
+        "children": [
+          {
+            "expect": {
+              "h": 16,
+              "w": 36.609,
+              "x": 8,
+              "y": 2
+            },
+            "irh": "6259cdcac1fef935",
+            "kind": "text",
+            "name": "Badge",
+            "nk": "root/text",
+            "size": {
+              "h": 16,
+              "w": 36.609
+            },
+            "source": {
+              "path": "span:0>#text:0",
+              "tag": "#text"
+            },
+            "text": {
+              "alignH": "LEFT",
+              "alignV": "TOP",
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "characters": "Badge",
+              "lines": [
+                {
+                  "endChar": 5,
+                  "startChar": 0
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "NONE",
+                  "end": 5,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0.333333,
+                        "g": 0.254902,
+                        "r": 0.2
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": false,
+                    "italic": false,
+                    "styleCandidates": [
+                      "Medium",
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 500
+                  },
+                  "fontSize": 12,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 16
+                  },
+                  "start": 0,
+                  "textCase": "ORIGINAL"
+                }
+              ],
+              "widthBuffer": {
+                "max": 3
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 8,
+              "y": 2
+            }
+          }
+        ],
+        "clipsContent": false,
+        "expect": {
+          "h": 20,
+          "w": 52.609,
+          "x": 0,
+          "y": 0
+        },
+        "fills": [
+          {
+            "color": {
+              "b": 0.976471,
+              "g": 0.960784,
+              "r": 0.945098
+            },
+            "opacity": 1,
+            "type": "SOLID"
+          }
+        ],
+        "irh": "f43ec562268b927b",
+        "kind": "component",
+        "name": "Badge",
+        "nk": "root",
+        "radius": {
+          "bl": 10,
+          "br": 10,
+          "tl": 10,
+          "tr": 10
+        },
+        "size": {
+          "h": 20,
+          "w": 52.609
+        },
+        "source": {
+          "path": "span:0",
+          "tag": "span"
+        },
+        "visible": true
+      },
+      "values": {},
+      "vk": "791470562c26f81a"
+    }
+  ]
+}

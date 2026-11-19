@@ -1,0 +1,36 @@
+{
+  "name": "@holotype/layout-sim",
+  "version": "0.0.0",
+  "description": "Model of Figma's auto-layout and grid algorithm, used by mapper verification and figma-fake. Isomorphic.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc && tsc -p test",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@holotype/ir": "workspace:*",
+    "@holotype/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "esbuild": "0.27.7",
+    "fast-check": "4.10.3"
+  }
+}

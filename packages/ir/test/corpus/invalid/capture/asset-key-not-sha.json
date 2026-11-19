@@ -1,0 +1,20 @@
+{
+  "base": "button-primary.json",
+  "why": "Assets are keyed by sha256.",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/assets/logo.png",
+      "value": {
+        "mime": "image/png",
+        "bytes": 1
+      }
+    }
+  ],
+  "expect": [
+    {
+      "path": "/assets/logo.png",
+      "kind": "unknown-key"
+    }
+  ]
+}

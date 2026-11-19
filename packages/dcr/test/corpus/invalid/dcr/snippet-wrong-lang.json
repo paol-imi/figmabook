@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Snippets are jsx-sketch, never code to paste (D-42).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/3/screen/variants/0/snippet/lang",
+      "value": "jsx"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/3/screen/variants/0/snippet/lang",
+      "kind": "invalid"
+    }
+  ]
+}

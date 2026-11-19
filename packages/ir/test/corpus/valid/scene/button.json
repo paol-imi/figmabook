@@ -1,0 +1,624 @@
+{
+  "kind": "holotype/scene-component",
+  "sceneVersion": "0.1.0",
+  "sid": "components-button",
+  "irh": "a9638f9ab2dc7d6c",
+  "meta": {
+    "name": "Button",
+    "titlePath": ["Components", "Button"],
+    "description": "Primary UI component for user interaction",
+    "descriptionSource": "manifest",
+    "links": [
+      {
+        "label": "Storybook",
+        "url": "http://localhost:6006/?path=/docs/components-button--docs"
+      }
+    ],
+    "storyIds": ["components-button--primary", "components-button--secondary"],
+    "importPath": "src/components/Button/Button.tsx",
+    "exportName": "Button",
+    "framework": "react",
+    "kind": "component-set"
+  },
+  "properties": [
+    {
+      "type": "VARIANT",
+      "key": "arg:variant",
+      "name": "Variant",
+      "values": ["Primary", "Secondary"],
+      "defaultValue": "Primary",
+      "source": {
+        "kind": "arg",
+        "argName": "variant",
+        "classification": "VARIANT",
+        "evidence": "render-diff",
+        "valueMap": [
+          {
+            "figma": "Primary",
+            "arg": "primary"
+          },
+          {
+            "figma": "Secondary",
+            "arg": "secondary"
+          }
+        ]
+      }
+    },
+    {
+      "type": "VARIANT",
+      "key": "arg:size",
+      "name": "Size",
+      "values": ["Small", "Medium", "Large"],
+      "defaultValue": "Medium",
+      "source": {
+        "kind": "arg",
+        "argName": "size",
+        "classification": "VARIANT",
+        "evidence": "render-diff"
+      }
+    },
+    {
+      "type": "VARIANT",
+      "key": "state",
+      "name": "State",
+      "values": ["Default", "Hover"],
+      "defaultValue": "Default",
+      "source": {
+        "kind": "state",
+        "classification": "VARIANT",
+        "evidence": "render-diff"
+      }
+    },
+    {
+      "type": "TEXT",
+      "key": "arg:label",
+      "name": "Label",
+      "defaultValue": "Button",
+      "source": {
+        "kind": "arg",
+        "argName": "label",
+        "classification": "TEXT",
+        "evidence": "render-diff"
+      }
+    },
+    {
+      "type": "BOOLEAN",
+      "key": "arg:showIcon",
+      "name": "Show icon",
+      "defaultValue": false,
+      "source": {
+        "kind": "arg",
+        "argName": "showIcon",
+        "classification": "BOOLEAN",
+        "evidence": "render-diff"
+      }
+    }
+  ],
+  "setLayout": {
+    "mode": "grid",
+    "columnsBy": ["arg:size", "state"],
+    "rowsBy": ["arg:variant"],
+    "gap": {
+      "x": 24,
+      "y": 24
+    },
+    "padding": 32,
+    "labels": true
+  },
+  "dependencies": ["icons-star"],
+  "variants": [
+    {
+      "vk": "5e1b0c77a9d24f03",
+      "irh": "c5d924955775c14c",
+      "values": {
+        "arg:variant": "Primary",
+        "arg:size": "Medium",
+        "state": "Default"
+      },
+      "provenance": {
+        "storyId": "components-button--primary",
+        "args": {
+          "variant": "primary",
+          "size": "medium",
+          "label": "Button",
+          "showIcon": false
+        },
+        "globals": {},
+        "state": null,
+        "viewport": {
+          "w": 1280,
+          "h": 800
+        },
+        "captureHash": "c0ffee0000000001"
+      },
+      "grid": {
+        "row": 0,
+        "col": 0
+      },
+      "root": {
+        "nk": "root",
+        "kind": "component",
+        "name": "Variant=Primary, Size=Medium, State=Default",
+        "irh": "447a7b848ada6a6a",
+        "size": {
+          "w": 96,
+          "h": 40
+        },
+        "expect": {
+          "x": 0,
+          "y": 0,
+          "w": 96,
+          "h": 40
+        },
+        "visible": true,
+        "fills": [
+          {
+            "type": "SOLID",
+            "color": {
+              "r": 0.231,
+              "g": 0.51,
+              "b": 0.965
+            },
+            "opacity": 1,
+            "bind": {
+              "key": "var:button/bg",
+              "confidence": "chain"
+            }
+          }
+        ],
+        "radius": {
+          "tl": 8,
+          "tr": 8,
+          "br": 8,
+          "bl": 8
+        },
+        "layout": {
+          "mode": "HORIZONTAL",
+          "padding": {
+            "t": 10,
+            "r": 16,
+            "b": 10,
+            "l": 16
+          },
+          "itemSpacing": 8,
+          "wrap": false,
+          "primaryAxisAlignItems": "CENTER",
+          "counterAxisAlignItems": "CENTER",
+          "primaryAxisSizingMode": "AUTO",
+          "counterAxisSizingMode": "AUTO",
+          "strokesIncludedInLayout": false,
+          "itemReverseZIndex": false,
+          "verified": {
+            "simulator": "0.3.0",
+            "maxDelta": 0.12,
+            "tolerance": 0.6,
+            "responsive": "single-snapshot"
+          }
+        },
+        "fallback": {
+          "size": {
+            "w": 96,
+            "h": 40
+          },
+          "children": {
+            "root/icon-leading": {
+              "x": 16,
+              "y": 12,
+              "w": 16,
+              "h": 16
+            },
+            "root/label": {
+              "x": 16,
+              "y": 10,
+              "w": 64,
+              "h": 20
+            }
+          }
+        },
+        "bind": {
+          "paddingLeft": {
+            "key": "var:space/4",
+            "confidence": "chain"
+          },
+          "paddingRight": {
+            "key": "var:space/4",
+            "confidence": "chain"
+          },
+          "itemSpacing": {
+            "key": "var:space/2",
+            "confidence": "chain"
+          }
+        },
+        "children": [
+          {
+            "nk": "root/icon-leading",
+            "kind": "instance",
+            "name": "Icon",
+            "irh": "8cc3f50b5b73551e",
+            "size": {
+              "w": 16,
+              "h": 16
+            },
+            "expect": {
+              "x": 16,
+              "y": 12,
+              "w": 16,
+              "h": 16
+            },
+            "visible": false,
+            "child": {
+              "positioning": "AUTO",
+              "sizingH": "FIXED",
+              "sizingV": "FIXED"
+            },
+            "instance": {
+              "component": {
+                "kind": "local",
+                "sid": "icons-star"
+              },
+              "properties": {},
+              "match": {
+                "method": "structural",
+                "maxDelta": 0
+              }
+            },
+            "propRefs": {
+              "visible": "arg:showIcon"
+            }
+          },
+          {
+            "nk": "root/label",
+            "kind": "text",
+            "name": "Label",
+            "irh": "c75794273ac11602",
+            "size": {
+              "w": 64,
+              "h": 20
+            },
+            "expect": {
+              "x": 16,
+              "y": 10,
+              "w": 64,
+              "h": 20
+            },
+            "visible": true,
+            "child": {
+              "positioning": "AUTO",
+              "sizingH": "HUG",
+              "sizingV": "HUG",
+              "intent": {
+                "h": "content"
+              }
+            },
+            "text": {
+              "characters": "Button",
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "alignH": "CENTER",
+              "alignV": "TOP",
+              "wrapMode": "reflow",
+              "widthBuffer": {
+                "max": 2
+              },
+              "lines": [
+                {
+                  "startChar": 0,
+                  "endChar": 6
+                }
+              ],
+              "ranges": [
+                {
+                  "start": 0,
+                  "end": 6,
+                  "font": {
+                    "family": "Inter",
+                    "postScriptName": "Inter-SemiBold",
+                    "weight": 600,
+                    "italic": false,
+                    "styleCandidates": ["Semi Bold", "SemiBold", "DemiBold"],
+                    "fallbackFamily": "Inter",
+                    "isCustom": true
+                  },
+                  "fontSize": 14,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "textCase": "ORIGINAL",
+                  "decoration": "NONE",
+                  "fills": [
+                    {
+                      "type": "SOLID",
+                      "color": {
+                        "r": 1,
+                        "g": 1,
+                        "b": 1
+                      },
+                      "opacity": 1,
+                      "bind": {
+                        "key": "var:button/fg",
+                        "confidence": "chain"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "propRefs": {
+              "characters": "arg:label"
+            },
+            "source": {
+              "path": "button:0>span:1",
+              "tag": "span"
+            }
+          }
+        ],
+        "source": {
+          "path": "button:0",
+          "tag": "button",
+          "component": "Button"
+        }
+      },
+      "diagnostics": []
+    },
+    {
+      "vk": "8a03e71bc4f05d92",
+      "irh": "0984d5192f419727",
+      "values": {
+        "arg:variant": "Secondary",
+        "arg:size": "Medium",
+        "state": "Default"
+      },
+      "provenance": {
+        "storyId": "components-button--secondary",
+        "args": {
+          "variant": "secondary",
+          "size": "medium",
+          "label": "Button",
+          "showIcon": false
+        },
+        "globals": {},
+        "state": null,
+        "viewport": {
+          "w": 1280,
+          "h": 800
+        },
+        "captureHash": "c0ffee0000000002"
+      },
+      "grid": {
+        "row": 1,
+        "col": 0
+      },
+      "root": {
+        "nk": "root",
+        "kind": "component",
+        "name": "Variant=Secondary, Size=Medium, State=Default",
+        "irh": "ac042df18a4ce562",
+        "size": {
+          "w": 96,
+          "h": 40
+        },
+        "expect": {
+          "x": 0,
+          "y": 0,
+          "w": 96,
+          "h": 40
+        },
+        "visible": true,
+        "fills": [],
+        "strokes": {
+          "paints": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.231,
+                "g": 0.51,
+                "b": 0.965
+              },
+              "opacity": 1,
+              "bind": {
+                "key": "var:button/bg",
+                "confidence": "chain"
+              }
+            }
+          ],
+          "align": "INSIDE",
+          "weight": {
+            "t": 1,
+            "r": 1,
+            "b": 1,
+            "l": 1
+          }
+        },
+        "radius": {
+          "tl": 8,
+          "tr": 8,
+          "br": 8,
+          "bl": 8
+        },
+        "layout": {
+          "mode": "HORIZONTAL",
+          "padding": {
+            "t": 10,
+            "r": 16,
+            "b": 10,
+            "l": 16
+          },
+          "itemSpacing": 8,
+          "wrap": false,
+          "primaryAxisAlignItems": "CENTER",
+          "counterAxisAlignItems": "CENTER",
+          "primaryAxisSizingMode": "AUTO",
+          "counterAxisSizingMode": "AUTO",
+          "strokesIncludedInLayout": false,
+          "itemReverseZIndex": false,
+          "verified": {
+            "simulator": "0.3.0",
+            "maxDelta": 0.1,
+            "tolerance": 0.6,
+            "responsive": "single-snapshot"
+          }
+        },
+        "fallback": {
+          "size": {
+            "w": 96,
+            "h": 40
+          },
+          "children": {
+            "root/icon-leading": {
+              "x": 16,
+              "y": 12,
+              "w": 16,
+              "h": 16
+            },
+            "root/label": {
+              "x": 16,
+              "y": 10,
+              "w": 64,
+              "h": 20
+            }
+          }
+        },
+        "bind": {
+          "paddingLeft": {
+            "key": "var:space/4",
+            "confidence": "chain"
+          },
+          "paddingRight": {
+            "key": "var:space/4",
+            "confidence": "chain"
+          },
+          "itemSpacing": {
+            "key": "var:space/2",
+            "confidence": "chain"
+          }
+        },
+        "children": [
+          {
+            "nk": "root/icon-leading",
+            "kind": "instance",
+            "name": "Icon",
+            "irh": "8cc3f50b5b73551e",
+            "size": {
+              "w": 16,
+              "h": 16
+            },
+            "expect": {
+              "x": 16,
+              "y": 12,
+              "w": 16,
+              "h": 16
+            },
+            "visible": false,
+            "child": {
+              "positioning": "AUTO",
+              "sizingH": "FIXED",
+              "sizingV": "FIXED"
+            },
+            "instance": {
+              "component": {
+                "kind": "local",
+                "sid": "icons-star"
+              },
+              "properties": {},
+              "match": {
+                "method": "structural",
+                "maxDelta": 0
+              }
+            },
+            "propRefs": {
+              "visible": "arg:showIcon"
+            }
+          },
+          {
+            "nk": "root/label",
+            "kind": "text",
+            "name": "Label",
+            "irh": "887adcad4a790252",
+            "size": {
+              "w": 64,
+              "h": 20
+            },
+            "expect": {
+              "x": 16,
+              "y": 10,
+              "w": 64,
+              "h": 20
+            },
+            "visible": true,
+            "child": {
+              "positioning": "AUTO",
+              "sizingH": "HUG",
+              "sizingV": "HUG"
+            },
+            "text": {
+              "characters": "Button",
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "alignH": "CENTER",
+              "alignV": "TOP",
+              "wrapMode": "reflow",
+              "widthBuffer": {
+                "max": 2
+              },
+              "lines": [
+                {
+                  "startChar": 0,
+                  "endChar": 6
+                }
+              ],
+              "ranges": [
+                {
+                  "start": 0,
+                  "end": 6,
+                  "font": {
+                    "family": "Inter",
+                    "postScriptName": "Inter-SemiBold",
+                    "weight": 600,
+                    "italic": false,
+                    "styleCandidates": ["Semi Bold", "SemiBold", "DemiBold"],
+                    "fallbackFamily": "Inter",
+                    "isCustom": true
+                  },
+                  "fontSize": 14,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "textCase": "ORIGINAL",
+                  "decoration": "NONE",
+                  "fills": [
+                    {
+                      "type": "SOLID",
+                      "color": {
+                        "r": 0.231,
+                        "g": 0.51,
+                        "b": 0.965
+                      },
+                      "opacity": 1,
+                      "bind": {
+                        "key": "var:button/bg",
+                        "confidence": "chain"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "propRefs": {
+              "characters": "arg:label"
+            }
+          }
+        ]
+      },
+      "diagnostics": []
+    }
+  ],
+  "diagnostics": []
+}

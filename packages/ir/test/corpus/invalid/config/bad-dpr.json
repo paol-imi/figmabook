@@ -1,0 +1,17 @@
+{
+  "base": "annotated-example.json",
+  "why": "capture.dpr is 1, 2 or 3.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/capture/dpr",
+      "value": 4
+    }
+  ],
+  "expect": [
+    {
+      "path": "/capture/dpr",
+      "kind": "invalid"
+    }
+  ]
+}

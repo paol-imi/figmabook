@@ -1,0 +1,28 @@
+{
+  "name": "@holotype/shared",
+  "version": "0.0.0",
+  "description": "Diagnostics registry, Result type and Logger interface shared by every Holotype package. Isomorphic, no dependencies.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc && tsc -p test",
+    "test": "vitest run"
+  }
+}

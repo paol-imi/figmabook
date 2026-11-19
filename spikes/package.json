@@ -1,0 +1,31 @@
+{
+  "name": "@holotype/spikes",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Holotype Spikes: a separate development Figma plugin that runs the Figma spikes of BUILD \u00a79 and returns paste-back JSON results.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "node --experimental-strip-types --disable-warning=ExperimentalWarning runner/scripts/build.ts",
+    "refs": "node --experimental-strip-types --disable-warning=ExperimentalWarning runner/scripts/refs.ts",
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "0.34.52",
+    "fflate": "0.8.3",
+    "preact": "10.29.8"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "1.142.0",
+    "@holotype/figma-fake": "workspace:*",
+    "@testing-library/preact": "3.2.6",
+    "esbuild": "0.27.7",
+    "happy-dom": "21.0.4",
+    "playwright": "1.63.0"
+  }
+}

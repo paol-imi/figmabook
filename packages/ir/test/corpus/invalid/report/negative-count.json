@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "Counts are non-negative integers.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/byCode/PLAN_AXIS_DROPPED_BUDGET",
+      "value": -1
+    }
+  ],
+  "expect": [
+    {
+      "path": "/byCode/PLAN_AXIS_DROPPED_BUDGET",
+      "kind": "invalid"
+    }
+  ]
+}

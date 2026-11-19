@@ -1,0 +1,29 @@
+{
+  "kind": "holotype/apply-report",
+  "applyId": "a-5d1e2f",
+  "fileKey": null,
+  "fileId": "f-8c7b6a",
+  "components": [
+    {
+      "sid": "components-button",
+      "setId": "12:40",
+      "componentKey": "9a8b7c6d5e4f",
+      "status": "synced",
+      "variants": [
+        { "vk": "5e1b0c77a9d24f03", "nodeId": "12:41", "readback": { "maxDelta": 0 } },
+        { "vk": "8a03e71bc4f05d92", "nodeId": "12:52", "readback": { "maxDelta": 0.25 } }
+      ]
+    },
+    { "sid": "components-card", "setId": "14:2", "status": "skipped", "variants": [] }
+  ],
+  "diagnostics": [
+    {
+      "code": "APPLY_LAYOUT_RELAXED",
+      "severity": "warn",
+      "message": "HUG was relaxed to FIXED on one container.",
+      "sid": "components-button",
+      "nodeKey": "root",
+      "variantKey": "8a03e71bc4f05d92"
+    }
+  ]
+}

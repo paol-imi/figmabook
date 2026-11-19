@@ -1,0 +1,1160 @@
+{
+  "dependencies": [],
+  "diagnostics": [],
+  "irh": "c82560780b3bbc28",
+  "kind": "holotype/scene-component",
+  "meta": {
+    "description": "Swatches fixture.",
+    "descriptionSource": "parameters",
+    "exportName": "Swatches",
+    "framework": "react",
+    "importPath": "src/Swatches.tsx",
+    "kind": "component",
+    "links": [
+      {
+        "label": "Storybook",
+        "url": "http://127.0.0.1:6006/?path=/docs/micro-paint--docs"
+      }
+    ],
+    "name": "Swatches",
+    "storyIds": [
+      "micro-paint--swatches"
+    ],
+    "titlePath": [
+      "Components",
+      "Swatches"
+    ]
+  },
+  "properties": [],
+  "sceneVersion": "0.1.0",
+  "setLayout": {
+    "columnsBy": [],
+    "gap": {
+      "x": 24,
+      "y": 24
+    },
+    "labels": false,
+    "mode": "grid",
+    "padding": 32,
+    "rowsBy": []
+  },
+  "sid": "micro-paint",
+  "variants": [
+    {
+      "diagnostics": [
+        {
+          "code": "CAP_CSS_UNSUPPORTED",
+          "data": {
+            "property": "transform"
+          },
+          "fallback": "left out of the Figma layer",
+          "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
+          "nodeKey": "root/effects",
+          "property": "transform",
+          "severity": "warn",
+          "sid": "micro-paint",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "CAP_CSS_UNSUPPORTED",
+          "data": {
+            "property": "filter"
+          },
+          "fallback": "left out of the Figma layer",
+          "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
+          "nodeKey": "root/effects",
+          "property": "filter",
+          "severity": "warn",
+          "sid": "micro-paint",
+          "value": "blur(2px)",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "CAP_CSS_UNSUPPORTED",
+          "data": {
+            "property": "clip-path"
+          },
+          "fallback": "left out of the Figma layer",
+          "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
+          "nodeKey": "root/effects",
+          "property": "clip-path",
+          "severity": "warn",
+          "sid": "micro-paint",
+          "value": "circle(50%)",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "LAYOUT_OVERFLOW_AXIS_APPROX",
+          "fallback": "clipped on both axes",
+          "message": "Overflow hidden on one axis only; Figma clips both.",
+          "nodeKey": "root/overflow-x",
+          "property": "overflow-x",
+          "severity": "warn",
+          "sid": "micro-paint",
+          "value": "hidden",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_BLEND_UNSUPPORTED",
+          "fallback": "normal",
+          "message": "A blend mode (e.g. `plus-lighter`) has no exact Figma match.",
+          "nodeKey": "root/plus-lighter",
+          "property": "mix-blend-mode",
+          "severity": "warn",
+          "sid": "micro-paint",
+          "value": "plus-lighter",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_BORDER_DECOMPOSED",
+          "fallback": "one vector per side",
+          "message": "Per-side border colors or styles became four vector layers.",
+          "nodeKey": "root/per-side",
+          "property": "border-color",
+          "severity": "info",
+          "sid": "micro-paint",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_BORDER_STYLE_APPROX",
+          "fallback": "solid stroke",
+          "message": "A `double`/`groove`/`ridge`/`inset`/`outset` border was approximated.",
+          "nodeKey": "root/double",
+          "property": "border-style",
+          "severity": "info",
+          "sid": "micro-paint",
+          "value": "double",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_COLOR_GAMUT_MAPPED",
+          "fallback": "channels clipped to sRGB",
+          "message": "An out-of-sRGB color was gamut-mapped.",
+          "nodeKey": "root/p3",
+          "property": "background-color",
+          "severity": "info",
+          "sid": "micro-paint",
+          "value": "color(display-p3 0 1 0)",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_DASH_APPROX",
+          "message": "Dashed borders use a Figma dash pattern; corners phase differently.",
+          "nodeKey": "root/dashed",
+          "property": "border-style",
+          "severity": "info",
+          "sid": "micro-paint",
+          "value": "dashed",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_ELLIPTICAL_RADIUS_APPROX",
+          "fallback": "the smaller radius",
+          "message": "Elliptical corner radii used the smaller radius.",
+          "nodeKey": "root/elliptical",
+          "property": "border-radius",
+          "severity": "warn",
+          "sid": "micro-paint",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_SUBTREE_RASTERIZED",
+          "data": {
+            "reason": "canvas"
+          },
+          "message": "A subtree was captured as an image (`data.reason`); layers inside are not editable.",
+          "nodeKey": "root/raster",
+          "severity": "warn",
+          "sid": "micro-paint",
+          "variantKey": "ac22c096f1a58da4"
+        }
+      ],
+      "grid": {
+        "col": 0,
+        "row": 0
+      },
+      "irh": "72147c2b8f304dfa",
+      "provenance": {
+        "args": {},
+        "captureHash": "75eb5f60d1269a59",
+        "globals": {},
+        "state": null,
+        "storyId": "micro-paint--swatches",
+        "viewport": {
+          "h": 800,
+          "w": 1280
+        }
+      },
+      "root": {
+        "children": [
+          {
+            "children": [
+              {
+                "expect": {
+                  "h": 2,
+                  "w": 40,
+                  "x": 10,
+                  "y": 10
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0,
+                      "g": 0,
+                      "r": 1
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "bb9d52a1b4f04dea",
+                "kind": "vector",
+                "name": "Border top",
+                "nk": "root/per-side/border-t",
+                "size": {
+                  "h": 2,
+                  "w": 40
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 0 0 L 40 0 L 38 2 L 2 2 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              {
+                "expect": {
+                  "h": 40,
+                  "w": 2,
+                  "x": 48,
+                  "y": 10
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0,
+                      "g": 0,
+                      "r": 1
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "f50b9d8da0d56dae",
+                "kind": "vector",
+                "name": "Border right",
+                "nk": "root/per-side/border-r",
+                "size": {
+                  "h": 40,
+                  "w": 2
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 2 0 L 2 40 L 0 36 L 0 2 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 38,
+                  "y": 0
+                }
+              },
+              {
+                "expect": {
+                  "h": 4,
+                  "w": 40,
+                  "x": 10,
+                  "y": 46
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 1,
+                      "g": 0,
+                      "r": 0
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "a2a056110e52bcaf",
+                "kind": "vector",
+                "name": "Border bottom",
+                "nk": "root/per-side/border-b",
+                "size": {
+                  "h": 4,
+                  "w": 40
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 40 4 L 0 4 L 2 0 L 38 0 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 36
+                }
+              },
+              {
+                "expect": {
+                  "h": 40,
+                  "w": 2,
+                  "x": 10,
+                  "y": 10
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0,
+                      "g": 0,
+                      "r": 1
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "2f404334d1f0f2ab",
+                "kind": "vector",
+                "name": "Border left",
+                "nk": "root/per-side/border-l",
+                "size": {
+                  "h": 40,
+                  "w": 2
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 0 40 L 0 0 L 2 2 L 2 36 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 0
+                }
+              }
+            ],
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 10,
+              "y": 10
+            },
+            "fills": [],
+            "irh": "c355ada0b909c6c0",
+            "kind": "frame",
+            "name": "Per side",
+            "nk": "root/per-side",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:0",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 10,
+              "y": 10
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 70,
+              "y": 10
+            },
+            "fills": [],
+            "irh": "f3c42e72ee07a19c",
+            "kind": "frame",
+            "name": "Dashed",
+            "nk": "root/dashed",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:1",
+              "tag": "div"
+            },
+            "strokes": {
+              "align": "INSIDE",
+              "dashPattern": [
+                4,
+                2
+              ],
+              "paints": [
+                {
+                  "color": {
+                    "b": 0,
+                    "g": 0.5,
+                    "r": 0
+                  },
+                  "opacity": 1,
+                  "type": "SOLID"
+                }
+              ],
+              "weight": {
+                "b": 2,
+                "l": 2,
+                "r": 2,
+                "t": 2
+              }
+            },
+            "visible": true,
+            "xy": {
+              "x": 70,
+              "y": 10
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 130,
+              "y": 10
+            },
+            "fills": [],
+            "irh": "4ba6a60959c53c86",
+            "kind": "frame",
+            "name": "Dotted",
+            "nk": "root/dotted",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:2",
+              "tag": "div"
+            },
+            "strokes": {
+              "align": "INSIDE",
+              "cap": "ROUND",
+              "dashPattern": [
+                0,
+                2
+              ],
+              "paints": [
+                {
+                  "color": {
+                    "b": 1,
+                    "g": 0,
+                    "r": 0
+                  },
+                  "opacity": 1,
+                  "type": "SOLID"
+                }
+              ],
+              "weight": {
+                "b": 1,
+                "l": 0,
+                "r": 0,
+                "t": 1
+              }
+            },
+            "visible": true,
+            "xy": {
+              "x": 130,
+              "y": 10
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 190,
+              "y": 10
+            },
+            "fills": [],
+            "irh": "197a0bc3e4af6400",
+            "kind": "frame",
+            "name": "Double",
+            "nk": "root/double",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:3",
+              "tag": "div"
+            },
+            "strokes": {
+              "align": "INSIDE",
+              "paints": [
+                {
+                  "color": {
+                    "b": 0,
+                    "g": 0,
+                    "r": 1
+                  },
+                  "opacity": 1,
+                  "type": "SOLID"
+                }
+              ],
+              "weight": {
+                "b": 3,
+                "l": 3,
+                "r": 3,
+                "t": 3
+              }
+            },
+            "visible": true,
+            "xy": {
+              "x": 190,
+              "y": 10
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 250,
+              "y": 10
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0,
+                  "g": 0.5,
+                  "r": 0
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "30906d0a3a6d9083",
+            "kind": "frame",
+            "name": "Elliptical",
+            "nk": "root/elliptical",
+            "radius": {
+              "bl": 0,
+              "br": 10,
+              "tl": 10,
+              "tr": 0
+            },
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:4",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 250,
+              "y": 10
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 310,
+              "y": 10
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 1,
+                  "g": 0,
+                  "r": 0
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "95fdf1356386b083",
+            "kind": "frame",
+            "name": "Pill",
+            "nk": "root/pill",
+            "radius": {
+              "bl": 20,
+              "br": 20,
+              "tl": 20,
+              "tr": 20
+            },
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:5",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 310,
+              "y": 10
+            }
+          },
+          {
+            "clipsContent": true,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 10,
+              "y": 70
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0,
+                  "g": 0,
+                  "r": 1
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "446819d75c3bdbc6",
+            "kind": "frame",
+            "name": "Overflow x",
+            "nk": "root/overflow-x",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:6",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 10,
+              "y": 70
+            }
+          },
+          {
+            "blendMode": "MULTIPLY",
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 70,
+              "y": 70
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0,
+                  "g": 0,
+                  "r": 1
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "62a1e21b5bf6d736",
+            "kind": "frame",
+            "name": "Multiply",
+            "nk": "root/multiply",
+            "opacity": 0.5,
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:7",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 70,
+              "y": 70
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 130,
+              "y": 70
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 1,
+                  "g": 0,
+                  "r": 0
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "c24bdbe8448699a0",
+            "kind": "frame",
+            "name": "Plus lighter",
+            "nk": "root/plus-lighter",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:8",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 130,
+              "y": 70
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 190,
+              "y": 70
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0,
+                  "g": 0.5,
+                  "r": 0
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "044fbf0f99603487",
+            "kind": "frame",
+            "name": "Invisible",
+            "nk": "root/invisible",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:9",
+              "tag": "div"
+            },
+            "visible": false,
+            "xy": {
+              "x": 190,
+              "y": 70
+            }
+          },
+          {
+            "children": [
+              {
+                "clipsContent": false,
+                "expect": {
+                  "h": 20,
+                  "w": 20,
+                  "x": 260,
+                  "y": 80
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0,
+                      "g": 0,
+                      "r": 1
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "8cb206624c495f9b",
+                "kind": "frame",
+                "name": "Shown",
+                "nk": "root/hidden/shown",
+                "size": {
+                  "h": 20,
+                  "w": 20
+                },
+                "source": {
+                  "path": "div:0>div:10>div:0",
+                  "tag": "div"
+                },
+                "visible": true,
+                "xy": {
+                  "x": 10,
+                  "y": 10
+                }
+              }
+            ],
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 250,
+              "y": 70
+            },
+            "fills": [],
+            "irh": "b9b4735fbd4447df",
+            "kind": "frame",
+            "name": "Hidden",
+            "nk": "root/hidden",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:10",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 250,
+              "y": 70
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 310,
+              "y": 70
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0,
+                  "g": 1,
+                  "r": 0
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "24e4f7fecf899316",
+            "kind": "frame",
+            "name": "P3",
+            "nk": "root/p3",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:11",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 310,
+              "y": 70
+            }
+          },
+          {
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 10,
+              "y": 130
+            },
+            "fills": [
+              {
+                "asset": {
+                  "sha": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+                },
+                "scaleMode": "FILL",
+                "type": "IMAGE"
+              }
+            ],
+            "irh": "55e9484802dd78f1",
+            "kind": "image",
+            "name": "Raster",
+            "nk": "root/raster",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:12",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 10,
+              "y": 130
+            }
+          },
+          {
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 70,
+              "y": 130
+            },
+            "fills": [
+              {
+                "asset": {
+                  "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                },
+                "imageTransform": [
+                  [
+                    0.5,
+                    0,
+                    0.25
+                  ],
+                  [
+                    0,
+                    0.5,
+                    0.25
+                  ]
+                ],
+                "scaleMode": "CROP",
+                "type": "IMAGE"
+              }
+            ],
+            "irh": "fc0b2cbb19737993",
+            "kind": "image",
+            "name": "Img none",
+            "nk": "root/img-none",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:13",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 70,
+              "y": 130
+            }
+          },
+          {
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 130,
+              "y": 130
+            },
+            "fills": [
+              {
+                "asset": {
+                  "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                },
+                "imageTransform": [
+                  [
+                    1,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    1,
+                    0
+                  ]
+                ],
+                "scaleMode": "CROP",
+                "type": "IMAGE"
+              }
+            ],
+            "irh": "5ea272ac8bbb3c51",
+            "kind": "image",
+            "name": "Img fill",
+            "nk": "root/img-fill",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:14",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 130,
+              "y": 130
+            }
+          },
+          {
+            "clipsContent": false,
+            "effects": [
+              {
+                "color": {
+                  "a": 0.2,
+                  "b": 0,
+                  "g": 0,
+                  "r": 0
+                },
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "radius": 4,
+                "spread": 0,
+                "type": "DROP_SHADOW"
+              }
+            ],
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 190,
+              "y": 130
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0,
+                  "g": 0.5,
+                  "r": 0
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "da24a8346ebe0004",
+            "kind": "frame",
+            "name": "Effects",
+            "nk": "root/effects",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:15",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 190,
+              "y": 130
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 250,
+              "y": 130
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0,
+                  "g": 0,
+                  "r": 1
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "f193621643043261",
+            "kind": "frame",
+            "name": "Spliced",
+            "nk": "root/spliced",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:16>div:0",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 250,
+              "y": 130
+            }
+          },
+          {
+            "blendMode": "NORMAL",
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 40,
+              "x": 70,
+              "y": 190
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 1,
+                  "g": 0,
+                  "r": 0
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "6558c852e390f3db",
+            "kind": "frame",
+            "name": "Isolated",
+            "nk": "root/isolated",
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "source": {
+              "path": "div:0>div:19",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 70,
+              "y": 190
+            }
+          }
+        ],
+        "clipsContent": false,
+        "expect": {
+          "h": 260,
+          "w": 380,
+          "x": 0,
+          "y": 0
+        },
+        "fills": [
+          {
+            "color": {
+              "b": 1,
+              "g": 1,
+              "r": 1
+            },
+            "opacity": 1,
+            "type": "SOLID"
+          }
+        ],
+        "irh": "b5ae34d7fffc65c4",
+        "kind": "component",
+        "name": "Swatches",
+        "nk": "root",
+        "size": {
+          "h": 260,
+          "w": 380
+        },
+        "source": {
+          "path": "div:0",
+          "tag": "div"
+        },
+        "visible": true
+      },
+      "values": {},
+      "vk": "ac22c096f1a58da4"
+    }
+  ]
+}

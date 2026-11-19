@@ -1,0 +1,17 @@
+{
+  "base": "button-meta.json",
+  "why": "States are the pseudo-class set plus default.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/states/include/1",
+      "value": "pressed"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/states/include/1",
+      "kind": "invalid"
+    }
+  ]
+}

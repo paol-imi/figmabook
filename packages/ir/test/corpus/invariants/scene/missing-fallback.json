@@ -1,0 +1,10 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/variants/0/root/fallback"
+    }
+  ],
+  "expect": ["fallback-required"]
+}

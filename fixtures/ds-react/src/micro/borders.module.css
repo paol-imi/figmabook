@@ -1,0 +1,51 @@
+/* Micro-fixtures: borders, outlines and corner radii (12 §2.2). Literal values on purpose. */
+
+.box {
+  width: 120px;
+  height: 64px;
+  background: #ffffff;
+}
+
+.uniform {
+  border: 2px solid #0f172a;
+}
+
+.perSideWidths {
+  border-style: solid;
+  border-color: #0f172a;
+  border-width: 1px 4px 8px 2px;
+}
+
+.perSideColors {
+  border-width: 3px;
+  border-style: solid;
+  border-color: #ef4444 #22c55e #3b82f6 #f59e0b;
+}
+
+.dashed {
+  border: 2px dashed #475569;
+}
+
+.outlineOffset {
+  border: 1px solid #cbd5e1;
+  outline: 2px solid #2563eb;
+  outline-offset: 4px;
+}
+
+.radiusPerCorner {
+  border: 1px solid #0f172a;
+  border-radius: 0 8px 16px 24px;
+}
+
+.radiusOverflow {
+  overflow: hidden;
+  border-radius: 16px;
+  background: #e2e8f0;
+}
+
+.overflowChild {
+  width: 160px;
+  height: 40px;
+  margin: -8px 0 0 -16px;
+  background: #2563eb;
+}

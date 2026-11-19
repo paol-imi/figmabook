@@ -1,0 +1,16 @@
+{
+  "base": "minimal.json",
+  "why": "storybook.source is required (16 \u00a71).",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/storybook/source"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/storybook/source",
+      "kind": "invalid"
+    }
+  ]
+}

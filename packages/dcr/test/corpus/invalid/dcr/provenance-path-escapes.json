@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Provenance paths are repo-relative (15 §10.3).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/0/changes/0/origin/rule/file",
+      "value": "/etc/passwd"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/0/changes/0/origin/rule/file",
+      "kind": "invalid"
+    }
+  ]
+}

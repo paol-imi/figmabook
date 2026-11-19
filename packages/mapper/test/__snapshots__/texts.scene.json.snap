@@ -1,0 +1,1151 @@
+{
+  "dependencies": [],
+  "diagnostics": [],
+  "irh": "506c127f5f5035f6",
+  "kind": "holotype/scene-component",
+  "meta": {
+    "description": "Texts fixture.",
+    "descriptionSource": "parameters",
+    "exportName": "Texts",
+    "framework": "react",
+    "importPath": "src/Texts.tsx",
+    "kind": "component",
+    "links": [
+      {
+        "label": "Storybook",
+        "url": "http://127.0.0.1:6006/?path=/docs/micro-text--docs"
+      }
+    ],
+    "name": "Texts",
+    "storyIds": [
+      "micro-text--styles"
+    ],
+    "titlePath": [
+      "Components",
+      "Texts"
+    ]
+  },
+  "properties": [],
+  "sceneVersion": "0.1.0",
+  "setLayout": {
+    "columnsBy": [],
+    "gap": {
+      "x": 24,
+      "y": 24
+    },
+    "labels": false,
+    "mode": "grid",
+    "padding": 32,
+    "rowsBy": []
+  },
+  "sid": "micro-text",
+  "variants": [
+    {
+      "diagnostics": [
+        {
+          "code": "CAP_CSS_UNSUPPORTED",
+          "data": {
+            "property": "text-decoration-line"
+          },
+          "fallback": "left out of the Figma layer",
+          "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
+          "nodeKey": "root/fancy",
+          "property": "text-decoration-line",
+          "severity": "warn",
+          "sid": "micro-text",
+          "value": "overline",
+          "variantKey": "c2cf11684d4b6956"
+        },
+        {
+          "code": "TEXT_DECORATION_STYLE_APPROX",
+          "fallback": "solid",
+          "message": "A `double`/`dashed` underline became solid.",
+          "nodeKey": "root/fancy",
+          "property": "text-decoration-style",
+          "severity": "info",
+          "sid": "micro-text",
+          "value": "dashed",
+          "variantKey": "c2cf11684d4b6956"
+        },
+        {
+          "code": "TEXT_OPENTYPE_UNSUPPORTED",
+          "message": "OpenType features (e.g. `tnum`) cannot be written through the Plugin API.",
+          "nodeKey": "root/fancy",
+          "property": "font-feature-settings",
+          "severity": "warn",
+          "sid": "micro-text",
+          "value": "liga 0, tnum 1",
+          "variantKey": "c2cf11684d4b6956"
+        },
+        {
+          "code": "TEXT_WORD_SPACING_DROPPED",
+          "message": "`word-spacing` has no Figma equivalent and was dropped.",
+          "nodeKey": "root/fancy",
+          "property": "word-spacing",
+          "severity": "warn",
+          "sid": "micro-text",
+          "value": "2px",
+          "variantKey": "c2cf11684d4b6956"
+        }
+      ],
+      "grid": {
+        "col": 0,
+        "row": 0
+      },
+      "irh": "dea95df1826dd5ea",
+      "provenance": {
+        "args": {},
+        "captureHash": "36fb019471e95652",
+        "globals": {},
+        "state": null,
+        "storyId": "micro-text--styles",
+        "viewport": {
+          "h": 800,
+          "w": 1280
+        }
+      },
+      "root": {
+        "children": [
+          {
+            "expect": {
+              "h": 20,
+              "w": 200,
+              "x": 8,
+              "y": 8
+            },
+            "irh": "742bc0fa2d286b9f",
+            "kind": "text",
+            "name": "Runs",
+            "nk": "root/runs",
+            "size": {
+              "h": 20,
+              "w": 200
+            },
+            "source": {
+              "path": "div:0>p:0",
+              "tag": "p"
+            },
+            "text": {
+              "alignH": "LEFT",
+              "alignV": "TOP",
+              "autoResize": "HEIGHT",
+              "characters": "Hello bold world",
+              "lines": [
+                {
+                  "endChar": 16,
+                  "startChar": 0
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "NONE",
+                  "end": 6,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": false,
+                    "postScriptName": "Inter-Regular",
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 0,
+                  "textCase": "ORIGINAL"
+                },
+                {
+                  "decoration": "NONE",
+                  "end": 10,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": false,
+                    "postScriptName": "Inter-Bold",
+                    "styleCandidates": [
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Medium",
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline"
+                    ],
+                    "weight": 700
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 6,
+                  "textCase": "ORIGINAL"
+                },
+                {
+                  "decoration": "NONE",
+                  "end": 16,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": false,
+                    "postScriptName": "Inter-Regular",
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 10,
+                  "textCase": "ORIGINAL"
+                }
+              ],
+              "widthBuffer": {
+                "max": 3.5
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 8,
+              "y": 8
+            }
+          },
+          {
+            "effects": [
+              {
+                "color": {
+                  "a": 0.3,
+                  "b": 0,
+                  "g": 0,
+                  "r": 0
+                },
+                "offset": {
+                  "x": 0,
+                  "y": 1
+                },
+                "radius": 0,
+                "spread": 0,
+                "type": "DROP_SHADOW"
+              }
+            ],
+            "expect": {
+              "h": 20,
+              "w": 200,
+              "x": 8,
+              "y": 36
+            },
+            "irh": "de4839edaade6b9e",
+            "kind": "text",
+            "name": "Fancy",
+            "nk": "root/fancy",
+            "size": {
+              "h": 20,
+              "w": 200
+            },
+            "source": {
+              "path": "div:0>p:1",
+              "tag": "p"
+            },
+            "text": {
+              "alignH": "LEFT",
+              "alignV": "TOP",
+              "autoResize": "HEIGHT",
+              "characters": "Label",
+              "lines": [
+                {
+                  "endChar": 5,
+                  "startChar": 0
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "UNDERLINE",
+                  "decorationColor": {
+                    "color": {
+                      "b": 0,
+                      "g": 0,
+                      "r": 1
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  },
+                  "decorationStyle": "SOLID",
+                  "decorationThickness": 1,
+                  "end": 5,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": false,
+                    "postScriptName": "Inter-Regular",
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0.5
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "openTypeFeatures": {
+                    "liga": false,
+                    "tnum": true
+                  },
+                  "start": 0,
+                  "textCase": "UPPER"
+                }
+              ],
+              "widthBuffer": {
+                "max": 3.5
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 8,
+              "y": 36
+            }
+          },
+          {
+            "expect": {
+              "h": 20,
+              "w": 200,
+              "x": 8,
+              "y": 64
+            },
+            "irh": "c09aba96ab449f4e",
+            "kind": "text",
+            "name": "Ellipsis",
+            "nk": "root/ellipsis",
+            "size": {
+              "h": 20,
+              "w": 200
+            },
+            "source": {
+              "path": "div:0>p:2",
+              "tag": "p"
+            },
+            "text": {
+              "alignH": "LEFT",
+              "alignV": "TOP",
+              "autoResize": "NONE",
+              "characters": "A very long label that is cut off",
+              "lines": [
+                {
+                  "endChar": 33,
+                  "startChar": 0
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "NONE",
+                  "end": 33,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": false,
+                    "postScriptName": "Inter-Regular",
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 0,
+                  "textCase": "ORIGINAL"
+                }
+              ],
+              "truncation": {
+                "maxLines": 1
+              },
+              "widthBuffer": {
+                "max": 3.5
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 8,
+              "y": 64
+            }
+          },
+          {
+            "expect": {
+              "h": 40,
+              "w": 200,
+              "x": 8,
+              "y": 92
+            },
+            "irh": "6c468ae2e1094e73",
+            "kind": "text",
+            "name": "Clamp",
+            "nk": "root/clamp",
+            "size": {
+              "h": 40,
+              "w": 200
+            },
+            "source": {
+              "path": "div:0>p:3",
+              "tag": "p"
+            },
+            "text": {
+              "alignH": "LEFT",
+              "alignV": "TOP",
+              "autoResize": "NONE",
+              "characters": "Two lines at most, then the rest is hidden behind an ellipsis",
+              "lines": [
+                {
+                  "endChar": 30,
+                  "startChar": 0
+                },
+                {
+                  "endChar": 61,
+                  "startChar": 30
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "NONE",
+                  "end": 61,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": false,
+                    "postScriptName": "Inter-Regular",
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 0,
+                  "textCase": "ORIGINAL"
+                }
+              ],
+              "truncation": {
+                "maxLines": 2
+              },
+              "widthBuffer": {
+                "max": 3.5
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 8,
+              "y": 92
+            }
+          },
+          {
+            "expect": {
+              "h": 40,
+              "w": 200,
+              "x": 8,
+              "y": 140
+            },
+            "irh": "5c3fb24fad797eec",
+            "kind": "text",
+            "name": "Centered",
+            "nk": "root/centered",
+            "size": {
+              "h": 40,
+              "w": 200
+            },
+            "source": {
+              "path": "div:0>p:4",
+              "tag": "p"
+            },
+            "text": {
+              "alignH": "CENTER",
+              "alignV": "CENTER",
+              "autoResize": "NONE",
+              "characters": "Middle",
+              "lines": [
+                {
+                  "endChar": 6,
+                  "startChar": 0
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "NONE",
+                  "end": 6,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": false,
+                    "postScriptName": "Inter-Regular",
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 0,
+                  "textCase": "ORIGINAL"
+                }
+              ],
+              "widthBuffer": {
+                "max": 3.5
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 8,
+              "y": 140
+            }
+          },
+          {
+            "expect": {
+              "h": 20,
+              "w": 200,
+              "x": 8,
+              "y": 188
+            },
+            "irh": "16eb1985205b9246",
+            "kind": "text",
+            "name": "Link",
+            "nk": "root/link",
+            "size": {
+              "h": 20,
+              "w": 200
+            },
+            "source": {
+              "path": "div:0>p:5",
+              "tag": "p"
+            },
+            "text": {
+              "alignH": "LEFT",
+              "alignV": "TOP",
+              "autoResize": "HEIGHT",
+              "characters": "Read the docs",
+              "lines": [
+                {
+                  "endChar": 13,
+                  "startChar": 0
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "NONE",
+                  "end": 13,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Noto Serif",
+                    "family": "Georgia",
+                    "isCustom": false,
+                    "italic": true,
+                    "styleCandidates": [
+                      "Regular Italic",
+                      "Normal Italic",
+                      "Book Italic",
+                      "Roman Italic",
+                      "Italic",
+                      "Regular Oblique",
+                      "Normal Oblique",
+                      "Book Oblique",
+                      "Roman Oblique",
+                      "Oblique",
+                      "Medium Italic",
+                      "Medium Oblique",
+                      "Light Italic",
+                      "Light Oblique",
+                      "ExtraLight Italic",
+                      "Extra Light Italic",
+                      "UltraLight Italic",
+                      "ExtraLight Oblique",
+                      "Extra Light Oblique",
+                      "UltraLight Oblique",
+                      "Thin Italic",
+                      "Hairline Italic",
+                      "Thin Oblique",
+                      "Hairline Oblique",
+                      "SemiBold Italic",
+                      "Semi Bold Italic",
+                      "DemiBold Italic",
+                      "Demi Bold Italic",
+                      "SemiBold Oblique",
+                      "Semi Bold Oblique",
+                      "DemiBold Oblique",
+                      "Demi Bold Oblique",
+                      "Bold Italic",
+                      "Bold Oblique",
+                      "ExtraBold Italic",
+                      "Extra Bold Italic",
+                      "UltraBold Italic",
+                      "ExtraBold Oblique",
+                      "Extra Bold Oblique",
+                      "UltraBold Oblique",
+                      "Black Italic",
+                      "Heavy Italic",
+                      "Black Oblique",
+                      "Heavy Oblique"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 14,
+                  "hyperlink": "https://example.com/docs",
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 0,
+                  "textCase": "ORIGINAL"
+                }
+              ],
+              "widthBuffer": {
+                "max": 3.5
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 8,
+              "y": 188
+            }
+          },
+          {
+            "expect": {
+              "h": 20,
+              "w": 200,
+              "x": 8,
+              "y": 216
+            },
+            "irh": "8f0c341b54923a94",
+            "kind": "text",
+            "name": "Caps",
+            "nk": "root/caps",
+            "size": {
+              "h": 20,
+              "w": 200
+            },
+            "source": {
+              "path": "div:0>p:6",
+              "tag": "p"
+            },
+            "text": {
+              "alignH": "LEFT",
+              "alignV": "TOP",
+              "autoResize": "HEIGHT",
+              "characters": "Small caps",
+              "lines": [
+                {
+                  "endChar": 10,
+                  "startChar": 0
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "STRIKETHROUGH",
+                  "decorationStyle": "SOLID",
+                  "end": 10,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": true,
+                    "postScriptName": "Inter-Italic",
+                    "styleCandidates": [
+                      "Italic",
+                      "Regular Italic",
+                      "Normal Italic",
+                      "Book Italic",
+                      "Roman Italic",
+                      "Regular Oblique",
+                      "Normal Oblique",
+                      "Book Oblique",
+                      "Roman Oblique",
+                      "Oblique",
+                      "Medium Italic",
+                      "Medium Oblique",
+                      "Light Italic",
+                      "Light Oblique",
+                      "ExtraLight Italic",
+                      "Extra Light Italic",
+                      "UltraLight Italic",
+                      "ExtraLight Oblique",
+                      "Extra Light Oblique",
+                      "UltraLight Oblique",
+                      "Thin Italic",
+                      "Hairline Italic",
+                      "Thin Oblique",
+                      "Hairline Oblique",
+                      "SemiBold Italic",
+                      "Semi Bold Italic",
+                      "DemiBold Italic",
+                      "Demi Bold Italic",
+                      "SemiBold Oblique",
+                      "Semi Bold Oblique",
+                      "DemiBold Oblique",
+                      "Demi Bold Oblique",
+                      "Bold Italic",
+                      "Bold Oblique",
+                      "ExtraBold Italic",
+                      "Extra Bold Italic",
+                      "UltraBold Italic",
+                      "ExtraBold Oblique",
+                      "Extra Bold Oblique",
+                      "UltraBold Oblique",
+                      "Black Italic",
+                      "Heavy Italic",
+                      "Black Oblique",
+                      "Heavy Oblique"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 0,
+                  "textCase": "SMALL_CAPS"
+                }
+              ],
+              "widthBuffer": {
+                "max": 3.5
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 8,
+              "y": 216
+            }
+          },
+          {
+            "expect": {
+              "h": 20,
+              "w": 200,
+              "x": 8,
+              "y": 244
+            },
+            "irh": "60d20de62ed16317",
+            "kind": "text",
+            "name": "Balanced",
+            "nk": "root/balanced",
+            "size": {
+              "h": 20,
+              "w": 200
+            },
+            "source": {
+              "path": "div:0>p:7",
+              "tag": "p"
+            },
+            "text": {
+              "alignH": "LEFT",
+              "alignV": "TOP",
+              "autoResize": "HEIGHT",
+              "characters": "A balanced heading",
+              "lines": [
+                {
+                  "endChar": 18,
+                  "startChar": 0
+                }
+              ],
+              "paragraphIndent": 12,
+              "ranges": [
+                {
+                  "decoration": "NONE",
+                  "end": 18,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": false,
+                    "postScriptName": "Inter-Regular",
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 0,
+                  "textCase": "ORIGINAL"
+                }
+              ],
+              "widthBuffer": {
+                "max": 3.5
+              },
+              "wrapMode": "reflow",
+              "wrapStyle": "BALANCE"
+            },
+            "visible": true,
+            "xy": {
+              "x": 8,
+              "y": 244
+            }
+          }
+        ],
+        "clipsContent": false,
+        "expect": {
+          "h": 272,
+          "w": 220,
+          "x": 0,
+          "y": 0
+        },
+        "fills": [
+          {
+            "color": {
+              "b": 1,
+              "g": 1,
+              "r": 1
+            },
+            "opacity": 1,
+            "type": "SOLID"
+          }
+        ],
+        "irh": "6dde8321f990bde2",
+        "kind": "component",
+        "name": "Texts",
+        "nk": "root",
+        "size": {
+          "h": 272,
+          "w": 220
+        },
+        "source": {
+          "path": "div:0",
+          "tag": "div"
+        },
+        "visible": true
+      },
+      "values": {},
+      "vk": "c2cf11684d4b6956"
+    }
+  ]
+}

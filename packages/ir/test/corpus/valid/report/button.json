@@ -1,0 +1,33 @@
+{
+  "kind": "holotype/report",
+  "summary": {
+    "components": 2,
+    "variants": 13,
+    "warnings": 1,
+    "errors": 0,
+    "autoLayoutCoverage": 0.92,
+    "propertyQuality": 1,
+    "rasterizedNodes": 0
+  },
+  "byCode": { "PLAN_AXIS_DROPPED_BUDGET": 1 },
+  "components": [
+    {
+      "sid": "components-button",
+      "diagnostics": [
+        {
+          "code": "PLAN_AXIS_DROPPED_BUDGET",
+          "severity": "warn",
+          "message": "Axis Theme was pinned to its default to stay within the budget.",
+          "sid": "components-button",
+          "property": "theme",
+          "fallback": "pinned to Light"
+        }
+      ],
+      "planner": {
+        "budget": { "requested": 48, "emitted": 12, "strategy": "auto" },
+        "droppedAxes": ["global:theme"]
+      }
+    },
+    { "sid": "components-legacy", "diagnostics": [], "skipped": { "reason": "tag !figma" } }
+  ]
+}

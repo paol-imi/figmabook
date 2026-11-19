@@ -1,0 +1,12 @@
+{
+  "base": "worked-example.json",
+  "why": "new-component-ref points at a component.new item.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/3/screen/variants/0/structure/0/children/2/children/1/itemId",
+      "value": "f6ad55006974cd7f"
+    }
+  ],
+  "expect": ["/items/3/screen/variants/0/structure/0/children/2/children/1/itemId", "/dcrHash"]
+}

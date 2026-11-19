@@ -1,0 +1,191 @@
+{
+  "tree": {
+    "document": {
+      "id": "0:0",
+      "type": "DOCUMENT",
+      "name": "Untitled",
+      "children": [
+        {
+          "id": "0:1",
+          "type": "PAGE",
+          "name": "Page 1",
+          "children": []
+        },
+        {
+          "id": "1:2",
+          "type": "PAGE",
+          "name": "Components",
+          "children": [
+            {
+              "id": "1:3",
+              "type": "FRAME",
+              "name": "Badge",
+              "bottomLeftRadius": 10,
+              "bottomRightRadius": 10,
+              "clipsContent": false,
+              "fills": [
+                {
+                  "blendMode": "NORMAL",
+                  "boundVariables": {},
+                  "color": {
+                    "b": 1,
+                    "g": 0.6,
+                    "r": 0.05
+                  },
+                  "opacity": 1,
+                  "type": "SOLID",
+                  "visible": true
+                }
+              ],
+              "height": 20,
+              "sharedPluginData": {
+                "holotype": {
+                  "ah": "1328ea6f3042da80bb52d295c8616320622703f3404b0d9408f44b07b5901a258407313ad995bbc708f44b07b5901a2508f44b07b5901a25",
+                  "args": "{\"args\":{},\"globals\":{},\"state\":null,\"viewport\":{\"h\":800,\"w\":1280}}",
+                  "irh": "9046119ad0c1e0d7",
+                  "nk": "root",
+                  "sid": "components-badge",
+                  "story": "components-badge--default",
+                  "v": "0.1",
+                  "vk": "791470562c26f81a"
+                }
+              },
+              "strokes": [
+                {
+                  "blendMode": "NORMAL",
+                  "boundVariables": {},
+                  "color": {
+                    "b": 0.8,
+                    "g": 0.4,
+                    "r": 0
+                  },
+                  "opacity": 1,
+                  "type": "SOLID",
+                  "visible": true
+                }
+              ],
+              "topLeftRadius": 10,
+              "topRightRadius": 10,
+              "width": 48,
+              "x": 0,
+              "y": 0,
+              "children": [
+                {
+                  "id": "1:4",
+                  "type": "TEXT",
+                  "name": "Label",
+                  "autoRename": false,
+                  "blendMode": "NORMAL",
+                  "characters": "New",
+                  "height": 16,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "ah": "6c2516ce20c15cefa4d93e5cd0770fcb08f44b07b5901a25e926599dd01cfaf47de71a893a7f078408f44b07b5901a2508f44b07b5901a25",
+                      "irh": "17aacd889d3813d2",
+                      "nk": "root/label"
+                    }
+                  },
+                  "textAlignHorizontal": "CENTER",
+                  "textAutoResize": "NONE",
+                  "textStyle": [
+                    {
+                      "start": 0,
+                      "end": 3,
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Semi Bold"
+                      },
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 16
+                      },
+                      "letterSpacing": {
+                        "unit": "PIXELS",
+                        "value": 0
+                      },
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "boundVariables": {},
+                          "color": {
+                            "b": 1,
+                            "g": 1,
+                            "r": 1
+                          },
+                          "opacity": 1,
+                          "type": "SOLID",
+                          "visible": true
+                        }
+                      ]
+                    }
+                  ],
+                  "width": 32,
+                  "x": 8,
+                  "y": 2
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "currentPage": "1:2",
+    "images": []
+  },
+  "ops": [
+    "createPage 1:2 - null",
+    "set 1:2 name \"Components\"",
+    "createFrame 1:3 - null",
+    "setSharedPluginData 1:3 holotype/nk \"root\"",
+    "insertChild 1:2 - {\"child\":\"1:3\",\"index\":0}",
+    "set 1:3 fills []",
+    "set 1:3 clipsContent false",
+    "resizeWithoutConstraints 1:3 - {\"height\":20,\"width\":48}",
+    "set 1:3 x 0",
+    "set 1:3 y 0",
+    "set 1:3 fills [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":1,\"g\":0.6,\"r\":0.05},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:3 strokes [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0.8,\"g\":0.4,\"r\":0},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:3 strokeAlign \"INSIDE\"",
+    "set 1:3 strokeWeight 1",
+    "set 1:3 topLeftRadius 10",
+    "set 1:3 topRightRadius 10",
+    "set 1:3 bottomRightRadius 10",
+    "set 1:3 bottomLeftRadius 10",
+    "set 1:3 effects []",
+    "set 1:3 opacity 1",
+    "set 1:3 blendMode \"PASS_THROUGH\"",
+    "set 1:3 visible true",
+    "set 1:3 clipsContent false",
+    "set 1:3 name \"Badge\"",
+    "setSharedPluginData 1:3 holotype/sid \"components-badge\"",
+    "setSharedPluginData 1:3 holotype/vk \"791470562c26f81a\"",
+    "setSharedPluginData 1:3 holotype/irh \"9046119ad0c1e0d7\"",
+    "setSharedPluginData 1:3 holotype/v \"0.1\"",
+    "setSharedPluginData 1:3 holotype/story \"components-badge--default\"",
+    "setSharedPluginData 1:3 holotype/args \"{\\\"args\\\":{},\\\"globals\\\":{},\\\"state\\\":null,\\\"viewport\\\":{\\\"h\\\":800,\\\"w\\\":1280}}\"",
+    "createText 1:4 - null",
+    "setSharedPluginData 1:4 holotype/nk \"root/label\"",
+    "insertChild 1:3 - {\"child\":\"1:4\",\"index\":0}",
+    "set 1:4 x 8",
+    "set 1:4 y 2",
+    "set 1:4 fontName {\"family\":\"Inter\",\"style\":\"Semi Bold\"}",
+    "set 1:4 characters \"New\"",
+    "setRangeFontName 1:4 - {\"end\":3,\"start\":0,\"value\":{\"family\":\"Inter\",\"style\":\"Semi Bold\"}}",
+    "setRangeFontSize 1:4 - {\"end\":3,\"start\":0,\"value\":12}",
+    "setRangeLineHeight 1:4 - {\"end\":3,\"start\":0,\"value\":{\"unit\":\"PIXELS\",\"value\":16}}",
+    "setRangeLetterSpacing 1:4 - {\"end\":3,\"start\":0,\"value\":{\"unit\":\"PIXELS\",\"value\":0}}",
+    "setRangeFills 1:4 - {\"end\":3,\"start\":0,\"value\":[{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":1,\"g\":1,\"r\":1},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]}",
+    "set 1:4 textAlignHorizontal \"CENTER\"",
+    "set 1:4 textAlignVertical \"TOP\"",
+    "set 1:4 textAutoResize \"NONE\"",
+    "resize 1:4 - {\"height\":16,\"width\":32}",
+    "set 1:4 effects []",
+    "set 1:4 opacity 1",
+    "set 1:4 blendMode \"NORMAL\"",
+    "set 1:4 visible true",
+    "set 1:4 name \"Label\"",
+    "setSharedPluginData 1:4 holotype/irh \"17aacd889d3813d2\"",
+    "setSharedPluginData 1:3 holotype/ah \"1328ea6f3042da80bb52d295c8616320622703f3404b0d9408f44b07b5901a258407313ad995bbc708f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:4 holotype/ah \"6c2516ce20c15cefa4d93e5cd0770fcb08f44b07b5901a25e926599dd01cfaf47de71a893a7f078408f44b07b5901a2508f44b07b5901a25\""
+  ]
+}

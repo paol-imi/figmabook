@@ -1,0 +1,16 @@
+{
+  "base": "button.json",
+  "why": "runId is required.",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/runId"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/runId",
+      "kind": "invalid"
+    }
+  ]
+}

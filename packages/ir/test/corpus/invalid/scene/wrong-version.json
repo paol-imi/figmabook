@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "sceneVersion is semver.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/sceneVersion",
+      "value": "v1"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/sceneVersion",
+      "kind": "invalid"
+    }
+  ]
+}

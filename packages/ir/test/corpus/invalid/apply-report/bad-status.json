@@ -1,0 +1,17 @@
+{
+  "base": "file-import.json",
+  "why": "Apply status is synced, partial, failed or skipped.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/components/0/status",
+      "value": "ok"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/components/0/status",
+      "kind": "invalid"
+    }
+  ]
+}

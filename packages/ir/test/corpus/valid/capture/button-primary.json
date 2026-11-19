@@ -1,0 +1,269 @@
+{
+  "kind": "holotype/capture",
+  "captureVersion": "0.1.0",
+  "engine": { "name": "@holotype/capture", "version": "0.3.0", "chromium": "141.0.7390.37", "playwright": "1.56.1" },
+  "target": {
+    "storybookUrl": "http://localhost:6006/iframe.html",
+    "storyId": "components-button--primary",
+    "sid": "components-button",
+    "vk": "5e1b0c77a9d24f03",
+    "args": { "variant": "primary", "size": "medium", "label": "Button", "showIcon": false, "onClick": "[fn onClick]" },
+    "globals": { "theme": "light" },
+    "state": null,
+    "viewport": { "w": 1280, "h": 800 },
+    "dpr": 2,
+    "colorScheme": "light",
+    "rootSelector": "#storybook-root"
+  },
+  "timing": { "renderMs": 120, "settleMs": 40, "serializeMs": 8.5 },
+  "rootRect": { "x": 16, "y": 16, "w": 96, "h": 40 },
+  "root": {
+    "id": "c1",
+    "type": "element",
+    "source": {
+      "tag": "button",
+      "path": "button:0",
+      "classes": ["_btn_x7a3", "_primary_k2l9"],
+      "role": "button",
+      "component": { "name": "Button", "framework": "react", "boundaryId": "b1" },
+      "nativeControl": "button",
+      "loc": { "file": "src/components/Button/Button.tsx", "line": 42, "col": 7 }
+    },
+    "borderBox": { "x": 16, "y": 16, "w": 96, "h": 40 },
+    "computed": {
+      "display": "inline-flex",
+      "position": "static",
+      "boxSizing": "border-box",
+      "visibility": "visible",
+      "zIndex": "auto",
+      "opacity": 1,
+      "mixBlendMode": "normal",
+      "isolation": "auto",
+      "overflowX": "visible",
+      "overflowY": "visible",
+      "padding": [10, 16, 10, 16],
+      "border": {
+        "width": [0, 0, 0, 0],
+        "style": ["none", "none", "none", "none"],
+        "color": [
+          { "r": 0, "g": 0, "b": 0, "a": 1, "space": "srgb" },
+          { "r": 0, "g": 0, "b": 0, "a": 1, "space": "srgb" },
+          { "r": 0, "g": 0, "b": 0, "a": 1, "space": "srgb" },
+          { "r": 0, "g": 0, "b": 0, "a": 1, "space": "srgb" }
+        ]
+      },
+      "margin": [0, 0, 0, 0],
+      "radius": { "h": [8, 8, 8, 8], "v": [8, 8, 8, 8] },
+      "background": {
+        "color": { "r": 0.231, "g": 0.51, "b": 0.965, "a": 1, "space": "srgb" },
+        "layers": [
+          {
+            "image": {
+              "kind": "linear",
+              "css": "linear-gradient(180deg, rgba(255,255,255,0.1), transparent)",
+              "angleDeg": 180,
+              "stops": [
+                { "offset": 0, "color": { "r": 1, "g": 1, "b": 1, "a": 0.1, "space": "srgb" } },
+                { "offset": 1, "color": { "r": 0, "g": 0, "b": 0, "a": 0, "space": "srgb" } }
+              ],
+              "repeating": false
+            },
+            "size": "auto",
+            "position": "0% 0%",
+            "repeat": "repeat",
+            "origin": "padding-box",
+            "clip": "border-box",
+            "attachment": "scroll"
+          }
+        ],
+        "clip": ["border-box"]
+      },
+      "boxShadow": [
+        {
+          "inset": false,
+          "x": 0,
+          "y": 1,
+          "blur": 2,
+          "spread": 0,
+          "color": { "r": 0, "g": 0, "b": 0, "a": 0.05, "space": "srgb" }
+        }
+      ],
+      "flex": {
+        "direction": "row",
+        "wrap": "nowrap",
+        "justify": "center",
+        "alignItems": "center",
+        "alignContent": "normal",
+        "rowGap": 8,
+        "columnGap": 8
+      },
+      "size": { "width": 96, "height": 40, "minW": "auto", "maxW": "none", "minH": "auto", "maxH": "none" },
+      "color": { "r": 1, "g": 1, "b": 1, "a": 1, "space": "srgb" },
+      "textAlign": "center"
+    },
+    "authored": {
+      "width": { "kind": "keyword", "value": "auto" },
+      "height": { "kind": "px", "value": 40 },
+      "maxWidth": { "kind": "percent", "value": 100, "resolvedPx": 1248 },
+      "minWidth": { "kind": "calc", "expr": "calc(var(--space-4) * 4)", "resolvedPx": 64 },
+      "varRefs": {
+        "background-color": {
+          "property": "background-color",
+          "authored": "var(--button-bg)",
+          "chain": ["--button-bg", "--color-blue-500"],
+          "pure": true
+        },
+        "padding-left": {
+          "property": "padding-left",
+          "authored": "var(--space-4, 16px)",
+          "chain": ["--space-4"],
+          "pure": true,
+          "fallbackUsed": false
+        }
+      },
+      "rules": {
+        "padding-left": {
+          "selector": "._btn_x7a3",
+          "styleSheetId": "style-sheet-12-1",
+          "range": { "startLine": 13, "startColumn": 2, "endLine": 13, "endColumn": 30 }
+        }
+      }
+    },
+    "children": [
+      {
+        "id": "c2",
+        "type": "replaced",
+        "source": { "tag": "svg", "path": "button:0>svg:0", "ariaLabel": "Star" },
+        "borderBox": { "x": 32, "y": 28, "w": 16, "h": 16 },
+        "replaced": {
+          "kind": "svg",
+          "asset": { "sha": "1111111111111111111111111111111111111111111111111111111111111111" },
+          "hasFilter": false,
+          "hasForeignObject": false,
+          "hasMask": false
+        },
+        "children": [],
+        "paint": { "stackingContext": false, "zIndex": "auto", "layer": "inline", "domIndex": 1 }
+      },
+      {
+        "id": "c3",
+        "type": "text",
+        "source": { "tag": "span", "path": "button:0>span:1", "testId": "button-label" },
+        "borderBox": { "x": 32, "y": 26, "w": 64, "h": 20 },
+        "fragments": [{ "x": 32, "y": 26, "w": 64, "h": 20 }],
+        "text": {
+          "characters": "Button",
+          "runs": [{ "start": 0, "end": 6, "styleId": "ts1" }],
+          "lines": [{ "top": 26, "height": 20, "baseline": 15, "startChar": 0, "endChar": 6, "left": 32, "width": 64 }],
+          "whiteSpace": "normal",
+          "textOverflow": "clip",
+          "lineClamp": null,
+          "wrap": "wrap",
+          "textAlign": "center",
+          "indent": 0,
+          "scripts": ["Latn"]
+        },
+        "children": [],
+        "paint": { "stackingContext": false, "zIndex": "auto", "layer": "inline", "domIndex": 2 }
+      },
+      {
+        "id": "c4",
+        "type": "pseudo",
+        "source": { "tag": "::after", "path": "button:0>::after", "pseudo": "after" },
+        "borderBox": { "x": 16, "y": 16, "w": 96, "h": 40 },
+        "transform": [[1, 0, 0], [0, 1, 0]],
+        "quads": {
+          "border": [16, 16, 112, 16, 112, 56, 16, 56],
+          "padding": [16, 16, 112, 16, 112, 56, 16, 56],
+          "content": [16, 16, 112, 16, 112, 56, 16, 56]
+        },
+        "children": [],
+        "paint": { "stackingContext": true, "zIndex": 1, "layer": "positioned", "domIndex": 3 }
+      }
+    ],
+    "paint": { "stackingContext": false, "zIndex": "auto", "layer": "block", "domIndex": 0 }
+  },
+  "portals": [
+    {
+      "id": "c9",
+      "type": "element",
+      "source": { "tag": "div", "path": "body>div:3", "figmaName": "Tooltip", "figmaKey": "tooltip" },
+      "borderBox": { "x": 20, "y": 60, "w": 80, "h": 24 },
+      "children": [
+        {
+          "id": "c10",
+          "type": "replaced",
+          "source": { "tag": "input", "path": "body>div:3>input:0", "nativeControl": "checkbox" },
+          "borderBox": { "x": 24, "y": 64, "w": 16, "h": 16 },
+          "replaced": { "kind": "control", "control": "checkbox", "checked": true, "nativeAppearance": true },
+          "children": [],
+          "paint": { "stackingContext": false, "zIndex": "auto", "layer": "inline", "domIndex": 5 }
+        }
+      ],
+      "paint": { "stackingContext": true, "zIndex": 1000, "layer": "positive", "domIndex": 4 }
+    }
+  ],
+  "textStyles": {
+    "ts1": {
+      "cssFamily": "Inter, system-ui, sans-serif",
+      "used": [{ "family": "Inter", "postScriptName": "Inter-SemiBold", "isCustom": true, "glyphCount": 6 }],
+      "weight": 600,
+      "italic": false,
+      "stretch": "100%",
+      "size": 14,
+      "lineHeightPx": 20,
+      "lineHeightSource": "explicit",
+      "letterSpacingPx": 0,
+      "wordSpacingPx": 0,
+      "transform": "none",
+      "smallCaps": false,
+      "color": { "r": 1, "g": 1, "b": 1, "a": 1, "space": "srgb" }
+    }
+  },
+  "assets": {
+    "1111111111111111111111111111111111111111111111111111111111111111": { "mime": "image/svg+xml", "bytes": 412 }
+  },
+  "fonts": [
+    {
+      "family": "Inter",
+      "postScriptName": "Inter-SemiBold",
+      "weights": [600],
+      "italic": false,
+      "isCustom": true,
+      "srcUrl": "http://localhost:6006/fonts/inter.woff2",
+      "status": "loaded",
+      "glyphCount": 6
+    }
+  ],
+  "customProperties": {
+    "declarations": [
+      { "name": "--color-blue-500", "value": "#3b82f6", "resolved": "#3b82f6", "selector": ":root", "origin": "root" },
+      {
+        "name": "--button-bg",
+        "value": "var(--color-blue-500)",
+        "resolved": "#3b82f6",
+        "selector": ":root",
+        "origin": "root"
+      }
+    ]
+  },
+  "framework": {
+    "renderer": "react",
+    "boundaries": [
+      {
+        "boundaryId": "b1",
+        "nodeIds": ["c1"],
+        "framework": "react",
+        "displayName": "Button",
+        "matchedSid": "components-button",
+        "props": { "variant": "primary" },
+        "confidence": "reference"
+      }
+    ]
+  },
+  "styleSheets": {
+    "style-sheet-12-1": { "sourceURL": "http://localhost:6006/src/components/Button/Button.module.css" }
+  },
+  "screenshot": { "sha": "2222222222222222222222222222222222222222222222222222222222222222" },
+  "diagnostics": []
+}

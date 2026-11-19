@@ -1,0 +1,85 @@
+{
+  "lockfileVersion": 1,
+  "faces": [
+    {
+      "family": "Inter",
+      "weight": 400,
+      "style": "normal",
+      "package": "@fontsource/inter",
+      "version": "5.3.0",
+      "stylesheet": "latin-400.css",
+      "files": [
+        {
+          "path": "files/inter-latin-400-normal.woff2",
+          "format": "woff2",
+          "sha256": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc"
+        },
+        {
+          "path": "files/inter-latin-400-normal.woff",
+          "format": "woff",
+          "sha256": "e20fa0b4fd2dd26e4d14b3ac3cc922509c3a63fa5e910e90c614544aa042dd45"
+        }
+      ]
+    },
+    {
+      "family": "Inter",
+      "weight": 500,
+      "style": "normal",
+      "package": "@fontsource/inter",
+      "version": "5.3.0",
+      "stylesheet": "latin-500.css",
+      "files": [
+        {
+          "path": "files/inter-latin-500-normal.woff2",
+          "format": "woff2",
+          "sha256": "f3779f1efccc4bdcdf9c0a02ab95bf6bd092ed09c48c08cedc725889edd1d19f"
+        },
+        {
+          "path": "files/inter-latin-500-normal.woff",
+          "format": "woff",
+          "sha256": "9b42c108da48b5ed55a3072e815ffee2d271562e6c0dd6998910e8f9c09e0a3d"
+        }
+      ]
+    },
+    {
+      "family": "Inter",
+      "weight": 600,
+      "style": "normal",
+      "package": "@fontsource/inter",
+      "version": "5.3.0",
+      "stylesheet": "latin-600.css",
+      "files": [
+        {
+          "path": "files/inter-latin-600-normal.woff2",
+          "format": "woff2",
+          "sha256": "f9a06e79cd3a2a20951c0f0e28f66dd0e6d3fda73911d640a2125c8fcb78f21a"
+        },
+        {
+          "path": "files/inter-latin-600-normal.woff",
+          "format": "woff",
+          "sha256": "6a9cb3a509b4eeaf12b7dda6c4aacac3e85d07f4201bf4dd716e332e692b87bd"
+        }
+      ]
+    },
+    {
+      "family": "Inter",
+      "weight": 700,
+      "style": "normal",
+      "package": "@fontsource/inter",
+      "version": "5.3.0",
+      "stylesheet": "latin-700.css",
+      "files": [
+        {
+          "path": "files/inter-latin-700-normal.woff2",
+          "format": "woff2",
+          "sha256": "6f56409fd3d64bb85f7d070bce20749db2d66b6d63cec586cc22d1c761be2491"
+        },
+        {
+          "path": "files/inter-latin-700-normal.woff",
+          "format": "woff",
+          "sha256": "7c5ed5655730de337704d3fc94628515cd7e3d8d32368871709bf56ac0397e7a"
+        }
+      ]
+    }
+  ]
+}

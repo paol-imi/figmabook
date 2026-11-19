@@ -1,0 +1,11 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/0/root/children/1/text/ranges/0/end",
+      "value": 5
+    }
+  ],
+  "expect": ["text-ranges"]
+}

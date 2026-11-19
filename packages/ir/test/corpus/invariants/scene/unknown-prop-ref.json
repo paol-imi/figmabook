@@ -1,0 +1,11 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/0/root/children/1/propRefs/characters",
+      "value": "arg:title"
+    }
+  ],
+  "expect": ["prop-ref"]
+}

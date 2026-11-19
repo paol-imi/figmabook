@@ -1,0 +1,108 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`holotype capture > prints one RunReport with --json 1`] = `
+{
+  "budgets": [],
+  "bundle": {
+    "byCode": {},
+    "components": [
+      {
+        "diagnostics": [],
+        "planner": {
+          "budget": {
+            "emitted": 1,
+            "requested": 1,
+            "strategy": "auto",
+          },
+          "droppedAxes": [],
+        },
+        "sid": "components-badge",
+      },
+      {
+        "diagnostics": [],
+        "planner": {
+          "budget": {
+            "emitted": 1,
+            "requested": 1,
+            "strategy": "auto",
+          },
+          "droppedAxes": [],
+        },
+        "sid": "micro-flex",
+      },
+    ],
+    "kind": "holotype/report",
+    "summary": {
+      "autoLayoutCoverage": 0,
+      "components": 2,
+      "errors": 0,
+      "propertyQuality": 1,
+      "rasterizedNodes": 0,
+      "variants": 2,
+      "warnings": 0,
+    },
+  },
+  "components": [
+    {
+      "diagnostics": [],
+      "name": "Flex",
+      "properties": {},
+      "sid": "micro-flex",
+      "status": "ok",
+      "timingsMs": {
+        "capture": 0,
+        "map": 0,
+      },
+      "variants": 1,
+    },
+    {
+      "diagnostics": [],
+      "name": "Badge",
+      "properties": {},
+      "sid": "components-badge",
+      "status": "ok",
+      "timingsMs": {
+        "capture": 0,
+        "map": 0,
+      },
+      "variants": 1,
+    },
+  ],
+  "diagnostics": [],
+  "diagnosticsByCode": {},
+  "output": {
+    "bytes": 3303,
+    "kind": "zip",
+    "path": "<cwd>/smoke.holotype.zip",
+  },
+  "reportVersion": "1",
+  "run": {
+    "command": "capture",
+    "durationMs": 0,
+    "exitCode": 0,
+    "generator": {
+      "chromium": "153.0.8010.12",
+      "name": "@holotype/cli",
+      "playwright": "1.63.0",
+      "version": "0.0.0",
+    },
+    "id": "20251119T100000Z-2e546314",
+    "startedAt": "2026-11-19T10:00:00.000Z",
+    "storybook": {
+      "indexHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "renderer": "@storybook/react",
+      "source": "static:storybook-static",
+      "version": "10.6.7",
+    },
+    "surface": "cli",
+  },
+  "totals": {
+    "autoLayoutCoverage": 0,
+    "components": 2,
+    "failed": 0,
+    "nodes": 6,
+    "ok": 2,
+    "variants": 2,
+  },
+}
+`;

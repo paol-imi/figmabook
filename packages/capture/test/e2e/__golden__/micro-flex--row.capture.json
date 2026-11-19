@@ -1,0 +1,599 @@
+{
+  "assets": {
+    "0000000000000000000000000000000000000000000000000000000000000000": {
+      "bytes": 0,
+      "mime": "image/png",
+      "natural": {
+        "h": 96,
+        "w": 2560
+      }
+    }
+  },
+  "captureVersion": "0.1.0",
+  "customProperties": {
+    "declarations": []
+  },
+  "diagnostics": [],
+  "engine": {
+    "chromium": "153.0.8010.12",
+    "name": "@holotype/capture",
+    "playwright": "1.63.0",
+    "version": "0.0.0"
+  },
+  "fonts": [],
+  "kind": "holotype/capture",
+  "portals": [],
+  "root": {
+    "borderBox": {
+      "h": 48,
+      "w": 1280,
+      "x": 0,
+      "y": 0
+    },
+    "children": [
+      {
+        "borderBox": {
+          "h": 32,
+          "w": 48,
+          "x": 8,
+          "y": 8
+        },
+        "children": [],
+        "computed": {
+          "background": {
+            "clip": [
+              "border-box"
+            ],
+            "color": {
+              "a": 1,
+              "b": 0.964706,
+              "g": 0.509804,
+              "r": 0.231373,
+              "space": "srgb"
+            },
+            "layers": []
+          },
+          "border": {
+            "color": [
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              },
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              },
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              },
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              }
+            ],
+            "style": [
+              "none",
+              "none",
+              "none",
+              "none"
+            ],
+            "width": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "boxShadow": [],
+          "boxSizing": "border-box",
+          "color": {
+            "a": 1,
+            "b": 0.164706,
+            "g": 0.090196,
+            "r": 0.058824,
+            "space": "srgb"
+          },
+          "display": "block",
+          "isolation": "auto",
+          "margin": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "mixBlendMode": "normal",
+          "opacity": 1,
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "static",
+          "radius": {
+            "h": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "v": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": {
+            "height": 32,
+            "maxH": "none",
+            "maxW": "none",
+            "minH": "auto",
+            "minW": "auto",
+            "width": 48
+          },
+          "visibility": "visible",
+          "zIndex": "auto"
+        },
+        "id": "c2",
+        "paint": {
+          "domIndex": 1,
+          "layer": "block",
+          "stackingContext": false,
+          "zIndex": "auto"
+        },
+        "source": {
+          "classes": [
+            "_item_1ypxr_9"
+          ],
+          "path": "div:0>div:0",
+          "tag": "div"
+        },
+        "type": "element"
+      },
+      {
+        "borderBox": {
+          "h": 32,
+          "w": 48,
+          "x": 56,
+          "y": 8
+        },
+        "children": [],
+        "computed": {
+          "background": {
+            "clip": [
+              "border-box"
+            ],
+            "color": {
+              "a": 1,
+              "b": 0.964706,
+              "g": 0.509804,
+              "r": 0.231373,
+              "space": "srgb"
+            },
+            "layers": []
+          },
+          "border": {
+            "color": [
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              },
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              },
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              },
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              }
+            ],
+            "style": [
+              "none",
+              "none",
+              "none",
+              "none"
+            ],
+            "width": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "boxShadow": [],
+          "boxSizing": "border-box",
+          "color": {
+            "a": 1,
+            "b": 0.164706,
+            "g": 0.090196,
+            "r": 0.058824,
+            "space": "srgb"
+          },
+          "display": "block",
+          "isolation": "auto",
+          "margin": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "mixBlendMode": "normal",
+          "opacity": 1,
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "static",
+          "radius": {
+            "h": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "v": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": {
+            "height": 32,
+            "maxH": "none",
+            "maxW": "none",
+            "minH": "auto",
+            "minW": "auto",
+            "width": 48
+          },
+          "visibility": "visible",
+          "zIndex": "auto"
+        },
+        "id": "c3",
+        "paint": {
+          "domIndex": 2,
+          "layer": "block",
+          "stackingContext": false,
+          "zIndex": "auto"
+        },
+        "source": {
+          "classes": [
+            "_item_1ypxr_9"
+          ],
+          "path": "div:0>div:1",
+          "tag": "div"
+        },
+        "type": "element"
+      },
+      {
+        "borderBox": {
+          "h": 32,
+          "w": 48,
+          "x": 104,
+          "y": 8
+        },
+        "children": [],
+        "computed": {
+          "background": {
+            "clip": [
+              "border-box"
+            ],
+            "color": {
+              "a": 1,
+              "b": 0.964706,
+              "g": 0.509804,
+              "r": 0.231373,
+              "space": "srgb"
+            },
+            "layers": []
+          },
+          "border": {
+            "color": [
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              },
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              },
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              },
+              {
+                "a": 1,
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824,
+                "space": "srgb"
+              }
+            ],
+            "style": [
+              "none",
+              "none",
+              "none",
+              "none"
+            ],
+            "width": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "boxShadow": [],
+          "boxSizing": "border-box",
+          "color": {
+            "a": 1,
+            "b": 0.164706,
+            "g": 0.090196,
+            "r": 0.058824,
+            "space": "srgb"
+          },
+          "display": "block",
+          "isolation": "auto",
+          "margin": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "mixBlendMode": "normal",
+          "opacity": 1,
+          "overflowX": "visible",
+          "overflowY": "visible",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "static",
+          "radius": {
+            "h": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "v": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": {
+            "height": 32,
+            "maxH": "none",
+            "maxW": "none",
+            "minH": "auto",
+            "minW": "auto",
+            "width": 48
+          },
+          "visibility": "visible",
+          "zIndex": "auto"
+        },
+        "id": "c4",
+        "paint": {
+          "domIndex": 3,
+          "layer": "block",
+          "stackingContext": false,
+          "zIndex": "auto"
+        },
+        "source": {
+          "classes": [
+            "_item_1ypxr_9"
+          ],
+          "path": "div:0>div:2",
+          "tag": "div"
+        },
+        "type": "element"
+      }
+    ],
+    "computed": {
+      "background": {
+        "clip": [
+          "border-box"
+        ],
+        "color": {
+          "a": 1,
+          "b": 0.976471,
+          "g": 0.960784,
+          "r": 0.945098,
+          "space": "srgb"
+        },
+        "layers": []
+      },
+      "border": {
+        "color": [
+          {
+            "a": 1,
+            "b": 0.164706,
+            "g": 0.090196,
+            "r": 0.058824,
+            "space": "srgb"
+          },
+          {
+            "a": 1,
+            "b": 0.164706,
+            "g": 0.090196,
+            "r": 0.058824,
+            "space": "srgb"
+          },
+          {
+            "a": 1,
+            "b": 0.164706,
+            "g": 0.090196,
+            "r": 0.058824,
+            "space": "srgb"
+          },
+          {
+            "a": 1,
+            "b": 0.164706,
+            "g": 0.090196,
+            "r": 0.058824,
+            "space": "srgb"
+          }
+        ],
+        "style": [
+          "none",
+          "none",
+          "none",
+          "none"
+        ],
+        "width": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "boxShadow": [],
+      "boxSizing": "border-box",
+      "color": {
+        "a": 1,
+        "b": 0.164706,
+        "g": 0.090196,
+        "r": 0.058824,
+        "space": "srgb"
+      },
+      "display": "flex",
+      "isolation": "auto",
+      "margin": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "mixBlendMode": "normal",
+      "opacity": 1,
+      "overflowX": "visible",
+      "overflowY": "visible",
+      "padding": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "position": "static",
+      "radius": {
+        "h": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "v": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "size": {
+        "height": 48,
+        "maxH": "none",
+        "maxW": "none",
+        "minH": "0px",
+        "minW": "0px",
+        "width": 1280
+      },
+      "visibility": "visible",
+      "zIndex": "auto"
+    },
+    "id": "c1",
+    "paint": {
+      "domIndex": 0,
+      "layer": "block",
+      "stackingContext": false,
+      "zIndex": "auto"
+    },
+    "source": {
+      "classes": [
+        "_container_1ypxr_3",
+        "_row_1ypxr_21"
+      ],
+      "path": "div:0",
+      "tag": "div"
+    },
+    "type": "element"
+  },
+  "rootRect": {
+    "h": 48,
+    "w": 1280,
+    "x": 0,
+    "y": 0
+  },
+  "screenshot": {
+    "sha": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "target": {
+    "args": {},
+    "colorScheme": "light",
+    "dpr": 2,
+    "globals": {},
+    "rootSelector": "#storybook-root > :nth-child(1)",
+    "sid": "micro-flex",
+    "state": null,
+    "storyId": "micro-flex--row",
+    "storybookUrl": "static:storybook-static/iframe.html",
+    "viewport": {
+      "h": 800,
+      "w": 1280
+    },
+    "vk": "a4f0ee12dbeac5dd"
+  },
+  "textStyles": {},
+  "timing": {
+    "renderMs": 0,
+    "serializeMs": 0,
+    "settleMs": 0
+  }
+}

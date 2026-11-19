@@ -1,0 +1,17 @@
+{
+  "base": "all-kinds.json",
+  "why": "Property types are Figma component property types.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/1/property/type",
+      "value": "NUMBER"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/1/property/type",
+      "kind": "invalid"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "dcrHash": "4c8c4a2464c5ff6f",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [
+    {
+      "code": "DCR_PROVENANCE_MISSING",
+      "message": "No code location (no CDP or source map, or plugin-only extraction).",
+      "severity": "warn"
+    }
+  ],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/button-no-ghost-lg",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "123a8b0397811d30"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "7126736be3cfd411",
+  "items": [
+    {
+      "acceptance": {
+        "story": "existing",
+        "type": "structure"
+      },
+      "assets": {
+        "after": "7cfb3f0e2bbe3ed8:after",
+        "before": "7cfb3f0e2bbe3ed8:before"
+      },
+      "designerTitle": "Button · Variant=Ghost, Size=Lg removed",
+      "id": "7cfb3f0e2bbe3ed8",
+      "kind": "variant.removed",
+      "target": {
+        "figmaNodeId": "12:1",
+        "sid": "components-button",
+        "vk": "bf6eb6f5bc4c3bea"
+      },
+      "title": "Button · variant removed: variant=ghost, size=lg",
+      "variant": {
+        "values": {
+          "Size": "Lg",
+          "Variant": "Ghost"
+        }
+      }
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": ["components-button"],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "variant.removed": 1
+    },
+    "headline": ["Button: variant Variant=Ghost, Size=Lg removed"],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}

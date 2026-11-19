@@ -1,0 +1,10 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/variants/1/root/children/0"
+    }
+  ],
+  "expect": ["nk-aligned"]
+}

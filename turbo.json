@@ -1,0 +1,53 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "globalDependencies": ["tsconfig.base.json", "vitest.shared.ts"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!test/**", "$TURBO_ROOT$/tsdown.shared.ts"],
+      "outputs": ["dist/**", "build/**", "manifest.json", "schema/**"]
+    },
+    "typecheck": {
+      "inputs": ["$TURBO_DEFAULT$"],
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "inputs": ["$TURBO_DEFAULT$"],
+      "dependsOn": ["^build"]
+    },
+    "@holotype/plugin#test": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/figma-fake/src/**"],
+      "dependsOn": ["^build"]
+    },
+    "@holotype/plugin#typecheck": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/figma-fake/src/**"],
+      "dependsOn": ["^build"]
+    },
+    "@holotype/diag-gen#test": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/docs/plan/12-quality.md"]
+    },
+    "@holotype/website#build": {
+      "inputs": ["$TURBO_DEFAULT$", "!test/**", "!README.md", "$TURBO_ROOT$/docs/diagnostics/**"],
+      "outputs": [".vitepress/dist/**"],
+      "env": [
+        "HOLOTYPE_SITE_BASE",
+        "HOLOTYPE_REPO_URL",
+        "HOLOTYPE_SITE_PLAN_LINKS",
+        "GITHUB_SERVER_URL",
+        "GITHUB_REPOSITORY"
+      ]
+    },
+    "build-storybook": {
+      "inputs": ["$TURBO_DEFAULT$", "!test/**"],
+      "outputs": ["storybook-static/**"]
+    },
+    "test:smoke": {
+      "cache": false,
+      "passThroughEnv": ["PLAYWRIGHT_BROWSERS_PATH", "HOLOTYPE_CHROMIUM_PATH"]
+    },
+    "test:e2e": {
+      "cache": false,
+      "passThroughEnv": ["PLAYWRIGHT_BROWSERS_PATH", "HOLOTYPE_CHROMIUM_PATH"]
+    }
+  }
+}

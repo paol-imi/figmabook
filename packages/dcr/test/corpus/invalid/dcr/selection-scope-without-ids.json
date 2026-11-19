@@ -1,0 +1,20 @@
+{
+  "base": "worked-example.json",
+  "why": "A selection scope lists node ids (15 §4.6).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/header/scope",
+      "value": {
+        "kind": "selection",
+        "ids": []
+      }
+    }
+  ],
+  "expect": [
+    {
+      "path": "/header/scope",
+      "kind": "invalid"
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "dcrHash": "a67c224e99dd8970",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/button-padding",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "8e72140f88849eca"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "a8f49e4b1e7b011f",
+  "items": [
+    {
+      "acceptance": {
+        "fields": [
+          {
+            "expect": 21,
+            "field": "layout.paddingLeft",
+            "tol": 0.5
+          },
+          {
+            "expect": 21,
+            "field": "layout.paddingRight",
+            "tol": 0.5
+          }
+        ],
+        "story": "existing",
+        "type": "fields"
+      },
+      "assets": {
+        "after": "ab1743748a010b1a:after",
+        "before": "ab1743748a010b1a:before"
+      },
+      "changes": [
+        {
+          "after": 21,
+          "before": 17,
+          "css": {
+            "after": "20px",
+            "before": "16px",
+            "property": "padding-inline"
+          },
+          "field": "layout.paddingLeft",
+          "group": "layout",
+          "origin": {
+            "authored": "var(--space-4)",
+            "css": ["border-left-width", "padding-left"],
+            "rule": {
+              "col": 3,
+              "file": "src/components/Button/Button.module.css",
+              "line": 67
+            },
+            "selector": ".md",
+            "transform": "border-included",
+            "varChain": ["--space-4"]
+          },
+          "reach": {
+            "designerChangedIn": ["f4506d20025247f2"],
+            "sameOriginVariants": ["0ea44dbf4e7b9668", "83575a6a0b901b0e", "f4506d20025247f2"]
+          },
+          "token": {
+            "candidates": ["--space-5"]
+          },
+          "varDefinition": {
+            "col": 3,
+            "file": "src/tokens/tokens.css",
+            "line": 61
+          }
+        },
+        {
+          "after": 21,
+          "before": 17,
+          "css": {
+            "after": "20px",
+            "before": "16px",
+            "property": "padding-inline"
+          },
+          "field": "layout.paddingRight",
+          "group": "layout",
+          "origin": {
+            "authored": "var(--space-4)",
+            "css": ["border-right-width", "padding-right"],
+            "rule": {
+              "col": 3,
+              "file": "src/components/Button/Button.module.css",
+              "line": 67
+            },
+            "selector": ".md",
+            "transform": "border-included",
+            "varChain": ["--space-4"]
+          },
+          "reach": {
+            "designerChangedIn": ["f4506d20025247f2"],
+            "sameOriginVariants": ["0ea44dbf4e7b9668", "83575a6a0b901b0e", "f4506d20025247f2"]
+          },
+          "token": {
+            "candidates": ["--space-5"]
+          },
+          "varDefinition": {
+            "col": 3,
+            "file": "src/tokens/tokens.css",
+            "line": 61
+          }
+        }
+      ],
+      "designerTitle": "Button · Variant=Secondary, Size=Md · Padding left/right 17 → 21",
+      "diagnostics": [
+        {
+          "code": "DCR_VALUE_UNTOKENIZED",
+          "message": "A raw value is used; matching tokens are listed.",
+          "nodeKey": "root",
+          "property": "layout.paddingLeft",
+          "severity": "warn",
+          "sid": "components-button",
+          "variantKey": "f4506d20025247f2"
+        },
+        {
+          "code": "DCR_VALUE_UNTOKENIZED",
+          "message": "A raw value is used; matching tokens are listed.",
+          "nodeKey": "root",
+          "property": "layout.paddingRight",
+          "severity": "warn",
+          "sid": "components-button",
+          "variantKey": "f4506d20025247f2"
+        }
+      ],
+      "id": "ab1743748a010b1a",
+      "kind": "component.modified",
+      "target": {
+        "code": {
+          "exportName": "Button",
+          "importPath": "src/components/Button/Button.tsx",
+          "package": "@holotype/fixture-ds-react",
+          "sid": "components-button",
+          "storiesPath": "src/components/Button/Button.stories.tsx",
+          "storyIds": ["components-button--secondary"]
+        },
+        "figmaNodeId": "12:11",
+        "nk": "root",
+        "sid": "components-button",
+        "vk": "f4506d20025247f2"
+      },
+      "title": "Button · variant=secondary, size=md · padding-left/right 16 → 20"
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [
+    {
+      "code": "DCR_VALUE_UNTOKENIZED",
+      "id": "q1",
+      "itemId": "ab1743748a010b1a",
+      "options": ["--space-5", "keep 20px"],
+      "text": "Button (Variant=Secondary, Size=Md) padding left/right is 21, which is 20px in CSS without the 1px border, and is not bound to a variable. One token matches: --space-5. Use it?"
+    }
+  ],
+  "summary": {
+    "components": ["components-button"],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "component.modified": 1
+    },
+    "headline": ["Button (Variant=Secondary, Size=Md): padding left/right 17 → 21"],
+    "newComponents": [],
+    "questions": 1,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 1
+    }
+  }
+}

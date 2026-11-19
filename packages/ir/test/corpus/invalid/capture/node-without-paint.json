@@ -1,0 +1,16 @@
+{
+  "base": "button-primary.json",
+  "why": "Every CNode carries its paint-order facts.",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/root/children/0/paint"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/root/children/0/paint",
+      "kind": "invalid"
+    }
+  ]
+}

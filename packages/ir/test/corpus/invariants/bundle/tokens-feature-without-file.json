@@ -1,0 +1,10 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/tokens"
+    }
+  ],
+  "expect": ["tokens-file"]
+}

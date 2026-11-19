@@ -1,0 +1,1312 @@
+{
+  "tree": {
+    "document": {
+      "id": "0:0",
+      "type": "DOCUMENT",
+      "name": "Untitled",
+      "children": [
+        {
+          "id": "0:1",
+          "type": "PAGE",
+          "name": "Page 1",
+          "children": []
+        },
+        {
+          "id": "1:2",
+          "type": "PAGE",
+          "name": "Components",
+          "children": [
+            {
+              "id": "1:3",
+              "type": "FRAME",
+              "name": "Card / Elevation=Flat",
+              "bottomLeftRadius": 12,
+              "bottomRightRadius": 12,
+              "height": 160,
+              "sharedPluginData": {
+                "holotype": {
+                  "ah": "e4cded341ab88e0bbb52d295c861632076daca50bb9dd98308f44b07b5901a25be0838c4618e452e08f44b07b5901a2508f44b07b5901a25",
+                  "args": "{\"args\":{\"Elevation\":\"Flat\"},\"globals\":{},\"state\":null,\"viewport\":{\"h\":800,\"w\":1280}}",
+                  "irh": "54a8f8622deb5abe",
+                  "nk": "root",
+                  "sid": "components-card",
+                  "story": "components-card--flat",
+                  "v": "0.1",
+                  "vk": "95f604241d4aaeeb"
+                }
+              },
+              "topLeftRadius": 12,
+              "topRightRadius": 12,
+              "width": 240,
+              "x": 0,
+              "y": 0,
+              "children": [
+                {
+                  "id": "1:4",
+                  "type": "TEXT",
+                  "name": "Title",
+                  "autoRename": false,
+                  "blendMode": "NORMAL",
+                  "characters": "Pro plan · details",
+                  "height": 20,
+                  "layoutSizingVertical": "HUG",
+                  "sharedPluginData": {
+                    "holotype": {
+                      "ah": "04c4209de7c3f5db5700b9f0759855f508f44b07b5901a25c25757a6ec75c147b8484c2b5633689c08f44b07b5901a2508f44b07b5901a25",
+                      "irh": "41469bbb0b92c998",
+                      "nk": "root/title"
+                    }
+                  },
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": [
+                    {
+                      "start": 0,
+                      "end": 8,
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Bold"
+                      },
+                      "fontSize": 16,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "letterSpacing": {
+                        "unit": "PIXELS",
+                        "value": 0
+                      },
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "boundVariables": {},
+                          "color": {
+                            "b": 0.1,
+                            "g": 0.1,
+                            "r": 0.1
+                          },
+                          "opacity": 1,
+                          "type": "SOLID",
+                          "visible": true
+                        }
+                      ]
+                    },
+                    {
+                      "start": 8,
+                      "end": 18,
+                      "fontSize": 14,
+                      "textCase": "UPPER",
+                      "textDecoration": "UNDERLINE",
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "letterSpacing": {
+                        "unit": "PIXELS",
+                        "value": 0
+                      },
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "boundVariables": {},
+                          "color": {
+                            "b": 0.1,
+                            "g": 0.1,
+                            "r": 0.1
+                          },
+                          "opacity": 1,
+                          "type": "SOLID",
+                          "visible": true
+                        }
+                      ],
+                      "hyperlink": {
+                        "type": "URL",
+                        "value": "https://example.com/plans"
+                      }
+                    }
+                  ],
+                  "width": 208,
+                  "x": 16,
+                  "y": 16
+                },
+                {
+                  "id": "1:5",
+                  "type": "FRAME",
+                  "name": "Row",
+                  "clipsContent": false,
+                  "fills": [],
+                  "height": 40,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "ah": "3bb02052be08a890bb52d295c8616320c076c3ef9490b7c408f44b07b5901a25f1e2ac2e296b730e08f44b07b5901a2508f44b07b5901a25",
+                      "irh": "d426fdf7d2be800d",
+                      "nk": "root/row"
+                    }
+                  },
+                  "width": 208,
+                  "x": 16,
+                  "y": 44,
+                  "children": [
+                    {
+                      "id": "1:6",
+                      "type": "ELLIPSE",
+                      "name": "Avatar",
+                      "blendMode": "NORMAL",
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "imageHash": "c7a9c45fd419815a5ab1998503a9f03514c0e229",
+                          "opacity": 1,
+                          "scaleMode": "FILL",
+                          "type": "IMAGE",
+                          "visible": true
+                        }
+                      ],
+                      "height": 40,
+                      "sharedPluginData": {
+                        "holotype": {
+                          "ah": "8bb871cd20e743b5a4d93e5cd0770fcb8af9114099f0ab0108f44b07b5901a253c37e44a74e8764f08f44b07b5901a2508f44b07b5901a25",
+                          "irh": "519db7c3b71a5348",
+                          "nk": "root/row/avatar"
+                        }
+                      },
+                      "width": 40,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "id": "1:8",
+                      "type": "VECTOR",
+                      "name": "Icon / chevron",
+                      "blendMode": "NORMAL",
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "boundVariables": {},
+                          "color": {
+                            "b": 0.06666666666666667,
+                            "g": 0.06666666666666667,
+                            "r": 0.06666666666666667
+                          },
+                          "opacity": 1,
+                          "type": "SOLID",
+                          "visible": true
+                        }
+                      ],
+                      "height": 16,
+                      "sharedPluginData": {
+                        "holotype": {
+                          "ah": "aad4a723989cacbba4d93e5cd0770fcbaef03e7524ec721808f44b07b5901a254b59b353842949a508f44b07b5901a2508f44b07b5901a25",
+                          "irh": "6775e5aba7e70b03",
+                          "nk": "root/row/icon"
+                        }
+                      },
+                      "vectorPaths": [
+                        {
+                          "data": "M 0 0 L 16 8 L 0 16 Z",
+                          "windingRule": "NONZERO"
+                        }
+                      ],
+                      "width": 16,
+                      "x": 52,
+                      "y": 12
+                    },
+                    {
+                      "id": "1:9",
+                      "type": "FRAME",
+                      "name": "Tag",
+                      "clipsContent": false,
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "boundVariables": {},
+                          "color": {
+                            "b": 1,
+                            "g": 0.9,
+                            "r": 0.9
+                          },
+                          "opacity": 1,
+                          "type": "SOLID",
+                          "visible": true
+                        }
+                      ],
+                      "height": 24,
+                      "sharedPluginData": {
+                        "holotype": {
+                          "ah": "ceaadaec78c0e909bb52d295c861632004d3cd2065445c7408f44b07b5901a2541ea6c05ea59d3b608f44b07b5901a2508f44b07b5901a25",
+                          "irh": "d11ee4fc51f84dd8",
+                          "nk": "root/row/tag"
+                        }
+                      },
+                      "width": 48,
+                      "x": 80,
+                      "y": 8,
+                      "children": [
+                        {
+                          "id": "1:10",
+                          "type": "ELLIPSE",
+                          "name": "Dot",
+                          "blendMode": "NORMAL",
+                          "fills": [
+                            {
+                              "blendMode": "NORMAL",
+                              "boundVariables": {},
+                              "color": {
+                                "b": 0,
+                                "g": 0.6,
+                                "r": 0
+                              },
+                              "opacity": 1,
+                              "type": "SOLID",
+                              "visible": true
+                            }
+                          ],
+                          "height": 8,
+                          "sharedPluginData": {
+                            "holotype": {
+                              "ah": "7ac261b18e604c2da4d93e5cd0770fcb8417bdc714f76b9e08f44b07b5901a25bad181f0d03aed8b08f44b07b5901a2508f44b07b5901a25",
+                              "irh": "c1d3cf4296918776",
+                              "nk": "root/row/tag/dot"
+                            }
+                          },
+                          "width": 8,
+                          "x": 4,
+                          "y": 8
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "1:11",
+                  "type": "VECTOR",
+                  "name": "Divider",
+                  "blendMode": "NORMAL",
+                  "dashPattern": [
+                    4,
+                    2
+                  ],
+                  "height": 1,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "ah": "fd351774f36b92caa4d93e5cd0770fcb97a67a061b7a1ab208f44b07b5901a25ea8173fb32c1c72108f44b07b5901a2508f44b07b5901a25",
+                      "irh": "0035047782a0bbd5",
+                      "nk": "root/divider"
+                    }
+                  },
+                  "strokeCap": "ROUND",
+                  "strokes": [
+                    {
+                      "blendMode": "NORMAL",
+                      "boundVariables": {},
+                      "color": {
+                        "b": 0.85,
+                        "g": 0.85,
+                        "r": 0.85
+                      },
+                      "opacity": 1,
+                      "type": "SOLID",
+                      "visible": true
+                    }
+                  ],
+                  "vectorPaths": [
+                    {
+                      "data": "M 0 0 L 208 0",
+                      "windingRule": "NONZERO"
+                    }
+                  ],
+                  "width": 208,
+                  "x": 16,
+                  "y": 92
+                },
+                {
+                  "id": "1:12",
+                  "type": "RECTANGLE",
+                  "name": "Glow",
+                  "blendMode": "MULTIPLY",
+                  "effects": [
+                    {
+                      "blurType": "NORMAL",
+                      "radius": 4,
+                      "type": "LAYER_BLUR",
+                      "visible": true
+                    }
+                  ],
+                  "fills": [
+                    {
+                      "blendMode": "NORMAL",
+                      "gradientStops": [
+                        {
+                          "color": {
+                            "a": 1,
+                            "b": 0,
+                            "g": 0.5,
+                            "r": 1
+                          },
+                          "position": 0
+                        },
+                        {
+                          "color": {
+                            "a": 0,
+                            "b": 0.5,
+                            "g": 0,
+                            "r": 1
+                          },
+                          "position": 1
+                        }
+                      ],
+                      "gradientTransform": [
+                        [
+                          1,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          1,
+                          0
+                        ]
+                      ],
+                      "opacity": 1,
+                      "type": "GRADIENT_LINEAR",
+                      "visible": true
+                    }
+                  ],
+                  "height": 40,
+                  "opacity": 0.5,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "ah": "52a6e5957ecc207aa4d93e5cd0770fcb0f9a94068f056d4e08f44b07b5901a25007e62a74b1168ab08f44b07b5901a2508f44b07b5901a25",
+                      "irh": "7dbf34a546d71d11",
+                      "nk": "root/glow"
+                    }
+                  },
+                  "strokeAlign": "OUTSIDE",
+                  "strokeBottomWeight": 2,
+                  "strokeLeftWeight": 0,
+                  "strokeRightWeight": 0,
+                  "strokeTopWeight": 2,
+                  "strokes": [
+                    {
+                      "blendMode": "NORMAL",
+                      "boundVariables": {},
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID",
+                      "visible": true
+                    }
+                  ],
+                  "width": 40,
+                  "x": 16,
+                  "y": 101
+                },
+                {
+                  "id": "1:13",
+                  "type": "RECTANGLE",
+                  "name": "Hidden",
+                  "blendMode": "NORMAL",
+                  "fills": [
+                    {
+                      "blendMode": "NORMAL",
+                      "boundVariables": {},
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 1
+                      },
+                      "opacity": 1,
+                      "type": "SOLID",
+                      "visible": true
+                    }
+                  ],
+                  "height": 40,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "ah": "17871450da183d15a4d93e5cd0770fcb9fac6b119e96180308f44b07b5901a25843be75d8076cbeb08f44b07b5901a2508f44b07b5901a25",
+                      "irh": "8e61e06397816175",
+                      "nk": "root/hidden"
+                    }
+                  },
+                  "visible": false,
+                  "width": 40,
+                  "x": 64,
+                  "y": 101
+                }
+              ]
+            },
+            {
+              "id": "1:14",
+              "type": "FRAME",
+              "name": "Card / Elevation=Raised",
+              "bottomLeftRadius": 12,
+              "bottomRightRadius": 12,
+              "effects": [
+                {
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "a": 0.2,
+                    "b": 0,
+                    "g": 0,
+                    "r": 0
+                  },
+                  "offset": {
+                    "x": 0,
+                    "y": 4
+                  },
+                  "radius": 12,
+                  "spread": 0,
+                  "type": "DROP_SHADOW",
+                  "visible": true
+                }
+              ],
+              "height": 160,
+              "sharedPluginData": {
+                "holotype": {
+                  "ah": "e4cded341ab88e0bbb52d295c861632072c7c9fd21c67caf08f44b07b5901a25f93af854aad5116708f44b07b5901a2508f44b07b5901a25",
+                  "args": "{\"args\":{\"Elevation\":\"Raised\"},\"globals\":{},\"state\":null,\"viewport\":{\"h\":800,\"w\":1280}}",
+                  "irh": "62ba74357072186d",
+                  "nk": "root",
+                  "sid": "components-card",
+                  "story": "components-card--raised",
+                  "v": "0.1",
+                  "vk": "18845202c7881231"
+                }
+              },
+              "topLeftRadius": 12,
+              "topRightRadius": 12,
+              "width": 240,
+              "x": 264,
+              "y": 0,
+              "children": [
+                {
+                  "id": "1:15",
+                  "type": "TEXT",
+                  "name": "Title",
+                  "autoRename": false,
+                  "blendMode": "NORMAL",
+                  "characters": "Pro plan · details",
+                  "height": 20,
+                  "layoutSizingVertical": "HUG",
+                  "sharedPluginData": {
+                    "holotype": {
+                      "ah": "04c4209de7c3f5db5700b9f0759855f508f44b07b5901a25c25757a6ec75c147b8484c2b5633689c08f44b07b5901a2508f44b07b5901a25",
+                      "irh": "41469bbb0b92c998",
+                      "nk": "root/title"
+                    }
+                  },
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": [
+                    {
+                      "start": 0,
+                      "end": 8,
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Bold"
+                      },
+                      "fontSize": 16,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "letterSpacing": {
+                        "unit": "PIXELS",
+                        "value": 0
+                      },
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "boundVariables": {},
+                          "color": {
+                            "b": 0.1,
+                            "g": 0.1,
+                            "r": 0.1
+                          },
+                          "opacity": 1,
+                          "type": "SOLID",
+                          "visible": true
+                        }
+                      ]
+                    },
+                    {
+                      "start": 8,
+                      "end": 18,
+                      "fontSize": 14,
+                      "textCase": "UPPER",
+                      "textDecoration": "UNDERLINE",
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "letterSpacing": {
+                        "unit": "PIXELS",
+                        "value": 0
+                      },
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "boundVariables": {},
+                          "color": {
+                            "b": 0.1,
+                            "g": 0.1,
+                            "r": 0.1
+                          },
+                          "opacity": 1,
+                          "type": "SOLID",
+                          "visible": true
+                        }
+                      ],
+                      "hyperlink": {
+                        "type": "URL",
+                        "value": "https://example.com/plans"
+                      }
+                    }
+                  ],
+                  "width": 208,
+                  "x": 16,
+                  "y": 16
+                },
+                {
+                  "id": "1:16",
+                  "type": "FRAME",
+                  "name": "Row",
+                  "clipsContent": false,
+                  "fills": [],
+                  "height": 40,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "ah": "3bb02052be08a890bb52d295c8616320c076c3ef9490b7c408f44b07b5901a25f1e2ac2e296b730e08f44b07b5901a2508f44b07b5901a25",
+                      "irh": "d426fdf7d2be800d",
+                      "nk": "root/row"
+                    }
+                  },
+                  "width": 208,
+                  "x": 16,
+                  "y": 44,
+                  "children": [
+                    {
+                      "id": "1:17",
+                      "type": "ELLIPSE",
+                      "name": "Avatar",
+                      "blendMode": "NORMAL",
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "imageHash": "c7a9c45fd419815a5ab1998503a9f03514c0e229",
+                          "opacity": 1,
+                          "scaleMode": "FILL",
+                          "type": "IMAGE",
+                          "visible": true
+                        }
+                      ],
+                      "height": 40,
+                      "sharedPluginData": {
+                        "holotype": {
+                          "ah": "8bb871cd20e743b5a4d93e5cd0770fcb8af9114099f0ab0108f44b07b5901a253c37e44a74e8764f08f44b07b5901a2508f44b07b5901a25",
+                          "irh": "519db7c3b71a5348",
+                          "nk": "root/row/avatar"
+                        }
+                      },
+                      "width": 40,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "id": "1:19",
+                      "type": "VECTOR",
+                      "name": "Icon / chevron",
+                      "blendMode": "NORMAL",
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "boundVariables": {},
+                          "color": {
+                            "b": 0.06666666666666667,
+                            "g": 0.06666666666666667,
+                            "r": 0.06666666666666667
+                          },
+                          "opacity": 1,
+                          "type": "SOLID",
+                          "visible": true
+                        }
+                      ],
+                      "height": 16,
+                      "sharedPluginData": {
+                        "holotype": {
+                          "ah": "aad4a723989cacbba4d93e5cd0770fcbaef03e7524ec721808f44b07b5901a254b59b353842949a508f44b07b5901a2508f44b07b5901a25",
+                          "irh": "6775e5aba7e70b03",
+                          "nk": "root/row/icon"
+                        }
+                      },
+                      "vectorPaths": [
+                        {
+                          "data": "M 0 0 L 16 8 L 0 16 Z",
+                          "windingRule": "NONZERO"
+                        }
+                      ],
+                      "width": 16,
+                      "x": 52,
+                      "y": 12
+                    },
+                    {
+                      "id": "1:20",
+                      "type": "FRAME",
+                      "name": "Tag",
+                      "clipsContent": false,
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "boundVariables": {},
+                          "color": {
+                            "b": 1,
+                            "g": 0.9,
+                            "r": 0.9
+                          },
+                          "opacity": 1,
+                          "type": "SOLID",
+                          "visible": true
+                        }
+                      ],
+                      "height": 24,
+                      "sharedPluginData": {
+                        "holotype": {
+                          "ah": "ceaadaec78c0e909bb52d295c861632004d3cd2065445c7408f44b07b5901a2541ea6c05ea59d3b608f44b07b5901a2508f44b07b5901a25",
+                          "irh": "d11ee4fc51f84dd8",
+                          "nk": "root/row/tag"
+                        }
+                      },
+                      "width": 48,
+                      "x": 80,
+                      "y": 8,
+                      "children": [
+                        {
+                          "id": "1:21",
+                          "type": "ELLIPSE",
+                          "name": "Dot",
+                          "blendMode": "NORMAL",
+                          "fills": [
+                            {
+                              "blendMode": "NORMAL",
+                              "boundVariables": {},
+                              "color": {
+                                "b": 0,
+                                "g": 0.6,
+                                "r": 0
+                              },
+                              "opacity": 1,
+                              "type": "SOLID",
+                              "visible": true
+                            }
+                          ],
+                          "height": 8,
+                          "sharedPluginData": {
+                            "holotype": {
+                              "ah": "7ac261b18e604c2da4d93e5cd0770fcb8417bdc714f76b9e08f44b07b5901a25bad181f0d03aed8b08f44b07b5901a2508f44b07b5901a25",
+                              "irh": "c1d3cf4296918776",
+                              "nk": "root/row/tag/dot"
+                            }
+                          },
+                          "width": 8,
+                          "x": 4,
+                          "y": 8
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "1:22",
+                  "type": "VECTOR",
+                  "name": "Divider",
+                  "blendMode": "NORMAL",
+                  "dashPattern": [
+                    4,
+                    2
+                  ],
+                  "height": 1,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "ah": "fd351774f36b92caa4d93e5cd0770fcb97a67a061b7a1ab208f44b07b5901a25ea8173fb32c1c72108f44b07b5901a2508f44b07b5901a25",
+                      "irh": "0035047782a0bbd5",
+                      "nk": "root/divider"
+                    }
+                  },
+                  "strokeCap": "ROUND",
+                  "strokes": [
+                    {
+                      "blendMode": "NORMAL",
+                      "boundVariables": {},
+                      "color": {
+                        "b": 0.85,
+                        "g": 0.85,
+                        "r": 0.85
+                      },
+                      "opacity": 1,
+                      "type": "SOLID",
+                      "visible": true
+                    }
+                  ],
+                  "vectorPaths": [
+                    {
+                      "data": "M 0 0 L 208 0",
+                      "windingRule": "NONZERO"
+                    }
+                  ],
+                  "width": 208,
+                  "x": 16,
+                  "y": 92
+                },
+                {
+                  "id": "1:23",
+                  "type": "RECTANGLE",
+                  "name": "Glow",
+                  "blendMode": "MULTIPLY",
+                  "effects": [
+                    {
+                      "blurType": "NORMAL",
+                      "radius": 4,
+                      "type": "LAYER_BLUR",
+                      "visible": true
+                    }
+                  ],
+                  "fills": [
+                    {
+                      "blendMode": "NORMAL",
+                      "gradientStops": [
+                        {
+                          "color": {
+                            "a": 1,
+                            "b": 0,
+                            "g": 0.5,
+                            "r": 1
+                          },
+                          "position": 0
+                        },
+                        {
+                          "color": {
+                            "a": 0,
+                            "b": 0.5,
+                            "g": 0,
+                            "r": 1
+                          },
+                          "position": 1
+                        }
+                      ],
+                      "gradientTransform": [
+                        [
+                          1,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          1,
+                          0
+                        ]
+                      ],
+                      "opacity": 1,
+                      "type": "GRADIENT_LINEAR",
+                      "visible": true
+                    }
+                  ],
+                  "height": 40,
+                  "opacity": 0.5,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "ah": "52a6e5957ecc207aa4d93e5cd0770fcb0f9a94068f056d4e08f44b07b5901a25007e62a74b1168ab08f44b07b5901a2508f44b07b5901a25",
+                      "irh": "7dbf34a546d71d11",
+                      "nk": "root/glow"
+                    }
+                  },
+                  "strokeAlign": "OUTSIDE",
+                  "strokeBottomWeight": 2,
+                  "strokeLeftWeight": 0,
+                  "strokeRightWeight": 0,
+                  "strokeTopWeight": 2,
+                  "strokes": [
+                    {
+                      "blendMode": "NORMAL",
+                      "boundVariables": {},
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID",
+                      "visible": true
+                    }
+                  ],
+                  "width": 40,
+                  "x": 16,
+                  "y": 101
+                },
+                {
+                  "id": "1:24",
+                  "type": "RECTANGLE",
+                  "name": "Hidden",
+                  "blendMode": "NORMAL",
+                  "fills": [
+                    {
+                      "blendMode": "NORMAL",
+                      "boundVariables": {},
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 1
+                      },
+                      "opacity": 1,
+                      "type": "SOLID",
+                      "visible": true
+                    }
+                  ],
+                  "height": 40,
+                  "sharedPluginData": {
+                    "holotype": {
+                      "ah": "17871450da183d15a4d93e5cd0770fcb9fac6b119e96180308f44b07b5901a25843be75d8076cbeb08f44b07b5901a2508f44b07b5901a25",
+                      "irh": "8e61e06397816175",
+                      "nk": "root/hidden"
+                    }
+                  },
+                  "visible": false,
+                  "width": 40,
+                  "x": 64,
+                  "y": 101
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "currentPage": "1:2",
+    "images": [
+      "c7a9c45fd419815a5ab1998503a9f03514c0e229"
+    ]
+  },
+  "ops": [
+    "createPage 1:2 - null",
+    "set 1:2 name \"Components\"",
+    "createImage - - {\"hash\":\"c7a9c45fd419815a5ab1998503a9f03514c0e229\"}",
+    "createFrame 1:3 - null",
+    "setSharedPluginData 1:3 holotype/nk \"root\"",
+    "insertChild 1:2 - {\"child\":\"1:3\",\"index\":0}",
+    "set 1:3 fills []",
+    "set 1:3 clipsContent false",
+    "resizeWithoutConstraints 1:3 - {\"height\":160,\"width\":240}",
+    "set 1:3 x 0",
+    "set 1:3 y 0",
+    "set 1:3 fills [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":1,\"g\":1,\"r\":1},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:3 strokes []",
+    "set 1:3 topLeftRadius 12",
+    "set 1:3 topRightRadius 12",
+    "set 1:3 bottomRightRadius 12",
+    "set 1:3 bottomLeftRadius 12",
+    "set 1:3 effects []",
+    "set 1:3 opacity 1",
+    "set 1:3 blendMode \"PASS_THROUGH\"",
+    "set 1:3 visible true",
+    "set 1:3 clipsContent true",
+    "set 1:3 name \"Card / Elevation=Flat\"",
+    "setSharedPluginData 1:3 holotype/sid \"components-card\"",
+    "setSharedPluginData 1:3 holotype/vk \"95f604241d4aaeeb\"",
+    "setSharedPluginData 1:3 holotype/irh \"54a8f8622deb5abe\"",
+    "setSharedPluginData 1:3 holotype/v \"0.1\"",
+    "setSharedPluginData 1:3 holotype/story \"components-card--flat\"",
+    "setSharedPluginData 1:3 holotype/args \"{\\\"args\\\":{\\\"Elevation\\\":\\\"Flat\\\"},\\\"globals\\\":{},\\\"state\\\":null,\\\"viewport\\\":{\\\"h\\\":800,\\\"w\\\":1280}}\"",
+    "createText 1:4 - null",
+    "setSharedPluginData 1:4 holotype/nk \"root/title\"",
+    "insertChild 1:3 - {\"child\":\"1:4\",\"index\":0}",
+    "set 1:4 x 16",
+    "set 1:4 y 16",
+    "set 1:4 fontName {\"family\":\"Inter\",\"style\":\"Bold\"}",
+    "set 1:4 characters \"Pro plan · details\"",
+    "setRangeFontName 1:4 - {\"end\":8,\"start\":0,\"value\":{\"family\":\"Inter\",\"style\":\"Bold\"}}",
+    "setRangeFontSize 1:4 - {\"end\":8,\"start\":0,\"value\":16}",
+    "setRangeLineHeight 1:4 - {\"end\":8,\"start\":0,\"value\":{\"unit\":\"PIXELS\",\"value\":20}}",
+    "setRangeLetterSpacing 1:4 - {\"end\":8,\"start\":0,\"value\":{\"unit\":\"PIXELS\",\"value\":0}}",
+    "setRangeFills 1:4 - {\"end\":8,\"start\":0,\"value\":[{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0.1,\"g\":0.1,\"r\":0.1},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]}",
+    "setRangeFontName 1:4 - {\"end\":18,\"start\":8,\"value\":{\"family\":\"Inter\",\"style\":\"Regular\"}}",
+    "setRangeFontSize 1:4 - {\"end\":18,\"start\":8,\"value\":14}",
+    "setRangeLineHeight 1:4 - {\"end\":18,\"start\":8,\"value\":{\"unit\":\"PIXELS\",\"value\":20}}",
+    "setRangeLetterSpacing 1:4 - {\"end\":18,\"start\":8,\"value\":{\"unit\":\"PIXELS\",\"value\":0}}",
+    "setRangeFills 1:4 - {\"end\":18,\"start\":8,\"value\":[{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0.1,\"g\":0.1,\"r\":0.1},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]}",
+    "setRangeTextCase 1:4 - {\"end\":18,\"start\":8,\"value\":\"UPPER\"}",
+    "setRangeTextDecoration 1:4 - {\"end\":18,\"start\":8,\"value\":\"UNDERLINE\"}",
+    "setRangeHyperlink 1:4 - {\"end\":18,\"start\":8,\"value\":{\"type\":\"URL\",\"value\":\"https://example.com/plans\"}}",
+    "set 1:4 textAlignHorizontal \"LEFT\"",
+    "set 1:4 textAlignVertical \"TOP\"",
+    "set 1:4 textAutoResize \"HEIGHT\"",
+    "resize 1:4 - {\"height\":20,\"width\":208}",
+    "set 1:4 effects []",
+    "set 1:4 opacity 1",
+    "set 1:4 blendMode \"NORMAL\"",
+    "set 1:4 visible true",
+    "set 1:4 name \"Title\"",
+    "setSharedPluginData 1:4 holotype/irh \"41469bbb0b92c998\"",
+    "createFrame 1:5 - null",
+    "setSharedPluginData 1:5 holotype/nk \"root/row\"",
+    "insertChild 1:3 - {\"child\":\"1:5\",\"index\":1}",
+    "set 1:5 fills []",
+    "set 1:5 clipsContent false",
+    "resizeWithoutConstraints 1:5 - {\"height\":40,\"width\":208}",
+    "set 1:5 x 16",
+    "set 1:5 y 44",
+    "set 1:5 fills []",
+    "set 1:5 strokes []",
+    "set 1:5 topLeftRadius 0",
+    "set 1:5 topRightRadius 0",
+    "set 1:5 bottomRightRadius 0",
+    "set 1:5 bottomLeftRadius 0",
+    "set 1:5 effects []",
+    "set 1:5 opacity 1",
+    "set 1:5 blendMode \"PASS_THROUGH\"",
+    "set 1:5 visible true",
+    "set 1:5 clipsContent false",
+    "set 1:5 name \"Row\"",
+    "setSharedPluginData 1:5 holotype/irh \"d426fdf7d2be800d\"",
+    "createEllipse 1:6 - null",
+    "setSharedPluginData 1:6 holotype/nk \"root/row/avatar\"",
+    "insertChild 1:5 - {\"child\":\"1:6\",\"index\":0}",
+    "resizeWithoutConstraints 1:6 - {\"height\":40,\"width\":40}",
+    "set 1:6 x 0",
+    "set 1:6 y 0",
+    "set 1:6 fills [{\"blendMode\":\"NORMAL\",\"imageHash\":\"c7a9c45fd419815a5ab1998503a9f03514c0e229\",\"opacity\":1,\"scaleMode\":\"FILL\",\"type\":\"IMAGE\",\"visible\":true}]",
+    "set 1:6 strokes []",
+    "set 1:6 effects []",
+    "set 1:6 opacity 1",
+    "set 1:6 blendMode \"NORMAL\"",
+    "set 1:6 visible true",
+    "set 1:6 name \"Avatar\"",
+    "setSharedPluginData 1:6 holotype/irh \"519db7c3b71a5348\"",
+    "createNodeFromSvg 1:7 - null",
+    "setSharedPluginData 1:8 holotype/nk \"root/row/icon\"",
+    "insertChild 1:5 - {\"child\":\"1:8\",\"index\":1}",
+    "remove 1:7 - null",
+    "resizeWithoutConstraints 1:8 - {\"height\":16,\"width\":16}",
+    "set 1:8 x 52",
+    "set 1:8 y 12",
+    "set 1:8 effects []",
+    "set 1:8 opacity 1",
+    "set 1:8 blendMode \"NORMAL\"",
+    "set 1:8 visible true",
+    "set 1:8 name \"Icon / chevron\"",
+    "setSharedPluginData 1:8 holotype/irh \"6775e5aba7e70b03\"",
+    "createFrame 1:9 - null",
+    "setSharedPluginData 1:9 holotype/nk \"root/row/tag\"",
+    "insertChild 1:5 - {\"child\":\"1:9\",\"index\":2}",
+    "set 1:9 fills []",
+    "set 1:9 clipsContent false",
+    "resizeWithoutConstraints 1:9 - {\"height\":24,\"width\":48}",
+    "set 1:9 x 80",
+    "set 1:9 y 8",
+    "set 1:9 fills [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":1,\"g\":0.9,\"r\":0.9},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:9 strokes []",
+    "set 1:9 topLeftRadius 0",
+    "set 1:9 topRightRadius 0",
+    "set 1:9 bottomRightRadius 0",
+    "set 1:9 bottomLeftRadius 0",
+    "set 1:9 effects []",
+    "set 1:9 opacity 1",
+    "set 1:9 blendMode \"PASS_THROUGH\"",
+    "set 1:9 visible true",
+    "set 1:9 clipsContent false",
+    "set 1:9 name \"Tag\"",
+    "setSharedPluginData 1:9 holotype/irh \"d11ee4fc51f84dd8\"",
+    "createEllipse 1:10 - null",
+    "setSharedPluginData 1:10 holotype/nk \"root/row/tag/dot\"",
+    "insertChild 1:9 - {\"child\":\"1:10\",\"index\":0}",
+    "resizeWithoutConstraints 1:10 - {\"height\":8,\"width\":8}",
+    "set 1:10 x 4",
+    "set 1:10 y 8",
+    "set 1:10 fills [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0,\"g\":0.6,\"r\":0},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:10 strokes []",
+    "set 1:10 effects []",
+    "set 1:10 opacity 1",
+    "set 1:10 blendMode \"NORMAL\"",
+    "set 1:10 visible true",
+    "set 1:10 name \"Dot\"",
+    "setSharedPluginData 1:10 holotype/irh \"c1d3cf4296918776\"",
+    "createVector 1:11 - null",
+    "set 1:11 vectorPaths [{\"data\":\"M 0 0 L 208 0\",\"windingRule\":\"NONZERO\"}]",
+    "setSharedPluginData 1:11 holotype/nk \"root/divider\"",
+    "insertChild 1:3 - {\"child\":\"1:11\",\"index\":2}",
+    "resizeWithoutConstraints 1:11 - {\"height\":1,\"width\":208}",
+    "set 1:11 x 16",
+    "set 1:11 y 92",
+    "set 1:11 fills []",
+    "set 1:11 strokes [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0.85,\"g\":0.85,\"r\":0.85},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:11 strokeAlign \"CENTER\"",
+    "set 1:11 strokeWeight 1",
+    "set 1:11 dashPattern [4,2]",
+    "set 1:11 strokeCap \"ROUND\"",
+    "set 1:11 effects []",
+    "set 1:11 opacity 1",
+    "set 1:11 blendMode \"NORMAL\"",
+    "set 1:11 visible true",
+    "set 1:11 name \"Divider\"",
+    "setSharedPluginData 1:11 holotype/irh \"0035047782a0bbd5\"",
+    "createRectangle 1:12 - null",
+    "setSharedPluginData 1:12 holotype/nk \"root/glow\"",
+    "insertChild 1:3 - {\"child\":\"1:12\",\"index\":3}",
+    "resizeWithoutConstraints 1:12 - {\"height\":40,\"width\":40}",
+    "set 1:12 x 16",
+    "set 1:12 y 101",
+    "set 1:12 fills [{\"blendMode\":\"NORMAL\",\"gradientStops\":[{\"color\":{\"a\":1,\"b\":0,\"g\":0.5,\"r\":1},\"position\":0},{\"color\":{\"a\":0,\"b\":0.5,\"g\":0,\"r\":1},\"position\":1}],\"gradientTransform\":[[1,0,0],[0,1,0]],\"opacity\":1,\"type\":\"GRADIENT_LINEAR\",\"visible\":true}]",
+    "set 1:12 strokes [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0,\"g\":0,\"r\":0},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:12 strokeAlign \"OUTSIDE\"",
+    "set 1:12 strokeTopWeight 2",
+    "set 1:12 strokeRightWeight 0",
+    "set 1:12 strokeBottomWeight 2",
+    "set 1:12 strokeLeftWeight 0",
+    "set 1:12 topLeftRadius 0",
+    "set 1:12 topRightRadius 0",
+    "set 1:12 bottomRightRadius 0",
+    "set 1:12 bottomLeftRadius 0",
+    "set 1:12 effects [{\"blurType\":\"NORMAL\",\"radius\":4,\"type\":\"LAYER_BLUR\",\"visible\":true}]",
+    "set 1:12 opacity 0.5",
+    "set 1:12 blendMode \"MULTIPLY\"",
+    "set 1:12 visible true",
+    "set 1:12 name \"Glow\"",
+    "setSharedPluginData 1:12 holotype/irh \"7dbf34a546d71d11\"",
+    "createRectangle 1:13 - null",
+    "setSharedPluginData 1:13 holotype/nk \"root/hidden\"",
+    "insertChild 1:3 - {\"child\":\"1:13\",\"index\":4}",
+    "resizeWithoutConstraints 1:13 - {\"height\":40,\"width\":40}",
+    "set 1:13 x 64",
+    "set 1:13 y 101",
+    "set 1:13 fills [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0,\"g\":0,\"r\":1},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:13 strokes []",
+    "set 1:13 topLeftRadius 0",
+    "set 1:13 topRightRadius 0",
+    "set 1:13 bottomRightRadius 0",
+    "set 1:13 bottomLeftRadius 0",
+    "set 1:13 effects []",
+    "set 1:13 opacity 1",
+    "set 1:13 blendMode \"NORMAL\"",
+    "set 1:13 visible false",
+    "set 1:13 name \"Hidden\"",
+    "setSharedPluginData 1:13 holotype/irh \"8e61e06397816175\"",
+    "setSharedPluginData 1:3 holotype/ah \"e4cded341ab88e0bbb52d295c861632076daca50bb9dd98308f44b07b5901a25be0838c4618e452e08f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:4 holotype/ah \"04c4209de7c3f5db5700b9f0759855f508f44b07b5901a25c25757a6ec75c147b8484c2b5633689c08f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:5 holotype/ah \"3bb02052be08a890bb52d295c8616320c076c3ef9490b7c408f44b07b5901a25f1e2ac2e296b730e08f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:6 holotype/ah \"8bb871cd20e743b5a4d93e5cd0770fcb8af9114099f0ab0108f44b07b5901a253c37e44a74e8764f08f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:8 holotype/ah \"aad4a723989cacbba4d93e5cd0770fcbaef03e7524ec721808f44b07b5901a254b59b353842949a508f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:9 holotype/ah \"ceaadaec78c0e909bb52d295c861632004d3cd2065445c7408f44b07b5901a2541ea6c05ea59d3b608f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:10 holotype/ah \"7ac261b18e604c2da4d93e5cd0770fcb8417bdc714f76b9e08f44b07b5901a25bad181f0d03aed8b08f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:11 holotype/ah \"fd351774f36b92caa4d93e5cd0770fcb97a67a061b7a1ab208f44b07b5901a25ea8173fb32c1c72108f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:12 holotype/ah \"52a6e5957ecc207aa4d93e5cd0770fcb0f9a94068f056d4e08f44b07b5901a25007e62a74b1168ab08f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:13 holotype/ah \"17871450da183d15a4d93e5cd0770fcb9fac6b119e96180308f44b07b5901a25843be75d8076cbeb08f44b07b5901a2508f44b07b5901a25\"",
+    "createFrame 1:14 - null",
+    "setSharedPluginData 1:14 holotype/nk \"root\"",
+    "insertChild 1:2 - {\"child\":\"1:14\",\"index\":1}",
+    "set 1:14 fills []",
+    "set 1:14 clipsContent false",
+    "resizeWithoutConstraints 1:14 - {\"height\":160,\"width\":240}",
+    "set 1:14 x 264",
+    "set 1:14 y 0",
+    "set 1:14 fills [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":1,\"g\":1,\"r\":1},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:14 strokes []",
+    "set 1:14 topLeftRadius 12",
+    "set 1:14 topRightRadius 12",
+    "set 1:14 bottomRightRadius 12",
+    "set 1:14 bottomLeftRadius 12",
+    "set 1:14 effects [{\"blendMode\":\"NORMAL\",\"color\":{\"a\":0.2,\"b\":0,\"g\":0,\"r\":0},\"offset\":{\"x\":0,\"y\":4},\"radius\":12,\"spread\":0,\"type\":\"DROP_SHADOW\",\"visible\":true}]",
+    "set 1:14 opacity 1",
+    "set 1:14 blendMode \"PASS_THROUGH\"",
+    "set 1:14 visible true",
+    "set 1:14 clipsContent true",
+    "set 1:14 name \"Card / Elevation=Raised\"",
+    "setSharedPluginData 1:14 holotype/sid \"components-card\"",
+    "setSharedPluginData 1:14 holotype/vk \"18845202c7881231\"",
+    "setSharedPluginData 1:14 holotype/irh \"62ba74357072186d\"",
+    "setSharedPluginData 1:14 holotype/v \"0.1\"",
+    "setSharedPluginData 1:14 holotype/story \"components-card--raised\"",
+    "setSharedPluginData 1:14 holotype/args \"{\\\"args\\\":{\\\"Elevation\\\":\\\"Raised\\\"},\\\"globals\\\":{},\\\"state\\\":null,\\\"viewport\\\":{\\\"h\\\":800,\\\"w\\\":1280}}\"",
+    "createText 1:15 - null",
+    "setSharedPluginData 1:15 holotype/nk \"root/title\"",
+    "insertChild 1:14 - {\"child\":\"1:15\",\"index\":0}",
+    "set 1:15 x 16",
+    "set 1:15 y 16",
+    "set 1:15 fontName {\"family\":\"Inter\",\"style\":\"Bold\"}",
+    "set 1:15 characters \"Pro plan · details\"",
+    "setRangeFontName 1:15 - {\"end\":8,\"start\":0,\"value\":{\"family\":\"Inter\",\"style\":\"Bold\"}}",
+    "setRangeFontSize 1:15 - {\"end\":8,\"start\":0,\"value\":16}",
+    "setRangeLineHeight 1:15 - {\"end\":8,\"start\":0,\"value\":{\"unit\":\"PIXELS\",\"value\":20}}",
+    "setRangeLetterSpacing 1:15 - {\"end\":8,\"start\":0,\"value\":{\"unit\":\"PIXELS\",\"value\":0}}",
+    "setRangeFills 1:15 - {\"end\":8,\"start\":0,\"value\":[{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0.1,\"g\":0.1,\"r\":0.1},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]}",
+    "setRangeFontName 1:15 - {\"end\":18,\"start\":8,\"value\":{\"family\":\"Inter\",\"style\":\"Regular\"}}",
+    "setRangeFontSize 1:15 - {\"end\":18,\"start\":8,\"value\":14}",
+    "setRangeLineHeight 1:15 - {\"end\":18,\"start\":8,\"value\":{\"unit\":\"PIXELS\",\"value\":20}}",
+    "setRangeLetterSpacing 1:15 - {\"end\":18,\"start\":8,\"value\":{\"unit\":\"PIXELS\",\"value\":0}}",
+    "setRangeFills 1:15 - {\"end\":18,\"start\":8,\"value\":[{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0.1,\"g\":0.1,\"r\":0.1},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]}",
+    "setRangeTextCase 1:15 - {\"end\":18,\"start\":8,\"value\":\"UPPER\"}",
+    "setRangeTextDecoration 1:15 - {\"end\":18,\"start\":8,\"value\":\"UNDERLINE\"}",
+    "setRangeHyperlink 1:15 - {\"end\":18,\"start\":8,\"value\":{\"type\":\"URL\",\"value\":\"https://example.com/plans\"}}",
+    "set 1:15 textAlignHorizontal \"LEFT\"",
+    "set 1:15 textAlignVertical \"TOP\"",
+    "set 1:15 textAutoResize \"HEIGHT\"",
+    "resize 1:15 - {\"height\":20,\"width\":208}",
+    "set 1:15 effects []",
+    "set 1:15 opacity 1",
+    "set 1:15 blendMode \"NORMAL\"",
+    "set 1:15 visible true",
+    "set 1:15 name \"Title\"",
+    "setSharedPluginData 1:15 holotype/irh \"41469bbb0b92c998\"",
+    "createFrame 1:16 - null",
+    "setSharedPluginData 1:16 holotype/nk \"root/row\"",
+    "insertChild 1:14 - {\"child\":\"1:16\",\"index\":1}",
+    "set 1:16 fills []",
+    "set 1:16 clipsContent false",
+    "resizeWithoutConstraints 1:16 - {\"height\":40,\"width\":208}",
+    "set 1:16 x 16",
+    "set 1:16 y 44",
+    "set 1:16 fills []",
+    "set 1:16 strokes []",
+    "set 1:16 topLeftRadius 0",
+    "set 1:16 topRightRadius 0",
+    "set 1:16 bottomRightRadius 0",
+    "set 1:16 bottomLeftRadius 0",
+    "set 1:16 effects []",
+    "set 1:16 opacity 1",
+    "set 1:16 blendMode \"PASS_THROUGH\"",
+    "set 1:16 visible true",
+    "set 1:16 clipsContent false",
+    "set 1:16 name \"Row\"",
+    "setSharedPluginData 1:16 holotype/irh \"d426fdf7d2be800d\"",
+    "createEllipse 1:17 - null",
+    "setSharedPluginData 1:17 holotype/nk \"root/row/avatar\"",
+    "insertChild 1:16 - {\"child\":\"1:17\",\"index\":0}",
+    "resizeWithoutConstraints 1:17 - {\"height\":40,\"width\":40}",
+    "set 1:17 x 0",
+    "set 1:17 y 0",
+    "set 1:17 fills [{\"blendMode\":\"NORMAL\",\"imageHash\":\"c7a9c45fd419815a5ab1998503a9f03514c0e229\",\"opacity\":1,\"scaleMode\":\"FILL\",\"type\":\"IMAGE\",\"visible\":true}]",
+    "set 1:17 strokes []",
+    "set 1:17 effects []",
+    "set 1:17 opacity 1",
+    "set 1:17 blendMode \"NORMAL\"",
+    "set 1:17 visible true",
+    "set 1:17 name \"Avatar\"",
+    "setSharedPluginData 1:17 holotype/irh \"519db7c3b71a5348\"",
+    "createNodeFromSvg 1:18 - null",
+    "setSharedPluginData 1:19 holotype/nk \"root/row/icon\"",
+    "insertChild 1:16 - {\"child\":\"1:19\",\"index\":1}",
+    "remove 1:18 - null",
+    "resizeWithoutConstraints 1:19 - {\"height\":16,\"width\":16}",
+    "set 1:19 x 52",
+    "set 1:19 y 12",
+    "set 1:19 effects []",
+    "set 1:19 opacity 1",
+    "set 1:19 blendMode \"NORMAL\"",
+    "set 1:19 visible true",
+    "set 1:19 name \"Icon / chevron\"",
+    "setSharedPluginData 1:19 holotype/irh \"6775e5aba7e70b03\"",
+    "createFrame 1:20 - null",
+    "setSharedPluginData 1:20 holotype/nk \"root/row/tag\"",
+    "insertChild 1:16 - {\"child\":\"1:20\",\"index\":2}",
+    "set 1:20 fills []",
+    "set 1:20 clipsContent false",
+    "resizeWithoutConstraints 1:20 - {\"height\":24,\"width\":48}",
+    "set 1:20 x 80",
+    "set 1:20 y 8",
+    "set 1:20 fills [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":1,\"g\":0.9,\"r\":0.9},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:20 strokes []",
+    "set 1:20 topLeftRadius 0",
+    "set 1:20 topRightRadius 0",
+    "set 1:20 bottomRightRadius 0",
+    "set 1:20 bottomLeftRadius 0",
+    "set 1:20 effects []",
+    "set 1:20 opacity 1",
+    "set 1:20 blendMode \"PASS_THROUGH\"",
+    "set 1:20 visible true",
+    "set 1:20 clipsContent false",
+    "set 1:20 name \"Tag\"",
+    "setSharedPluginData 1:20 holotype/irh \"d11ee4fc51f84dd8\"",
+    "createEllipse 1:21 - null",
+    "setSharedPluginData 1:21 holotype/nk \"root/row/tag/dot\"",
+    "insertChild 1:20 - {\"child\":\"1:21\",\"index\":0}",
+    "resizeWithoutConstraints 1:21 - {\"height\":8,\"width\":8}",
+    "set 1:21 x 4",
+    "set 1:21 y 8",
+    "set 1:21 fills [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0,\"g\":0.6,\"r\":0},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:21 strokes []",
+    "set 1:21 effects []",
+    "set 1:21 opacity 1",
+    "set 1:21 blendMode \"NORMAL\"",
+    "set 1:21 visible true",
+    "set 1:21 name \"Dot\"",
+    "setSharedPluginData 1:21 holotype/irh \"c1d3cf4296918776\"",
+    "createVector 1:22 - null",
+    "set 1:22 vectorPaths [{\"data\":\"M 0 0 L 208 0\",\"windingRule\":\"NONZERO\"}]",
+    "setSharedPluginData 1:22 holotype/nk \"root/divider\"",
+    "insertChild 1:14 - {\"child\":\"1:22\",\"index\":2}",
+    "resizeWithoutConstraints 1:22 - {\"height\":1,\"width\":208}",
+    "set 1:22 x 16",
+    "set 1:22 y 92",
+    "set 1:22 fills []",
+    "set 1:22 strokes [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0.85,\"g\":0.85,\"r\":0.85},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:22 strokeAlign \"CENTER\"",
+    "set 1:22 strokeWeight 1",
+    "set 1:22 dashPattern [4,2]",
+    "set 1:22 strokeCap \"ROUND\"",
+    "set 1:22 effects []",
+    "set 1:22 opacity 1",
+    "set 1:22 blendMode \"NORMAL\"",
+    "set 1:22 visible true",
+    "set 1:22 name \"Divider\"",
+    "setSharedPluginData 1:22 holotype/irh \"0035047782a0bbd5\"",
+    "createRectangle 1:23 - null",
+    "setSharedPluginData 1:23 holotype/nk \"root/glow\"",
+    "insertChild 1:14 - {\"child\":\"1:23\",\"index\":3}",
+    "resizeWithoutConstraints 1:23 - {\"height\":40,\"width\":40}",
+    "set 1:23 x 16",
+    "set 1:23 y 101",
+    "set 1:23 fills [{\"blendMode\":\"NORMAL\",\"gradientStops\":[{\"color\":{\"a\":1,\"b\":0,\"g\":0.5,\"r\":1},\"position\":0},{\"color\":{\"a\":0,\"b\":0.5,\"g\":0,\"r\":1},\"position\":1}],\"gradientTransform\":[[1,0,0],[0,1,0]],\"opacity\":1,\"type\":\"GRADIENT_LINEAR\",\"visible\":true}]",
+    "set 1:23 strokes [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0,\"g\":0,\"r\":0},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:23 strokeAlign \"OUTSIDE\"",
+    "set 1:23 strokeTopWeight 2",
+    "set 1:23 strokeRightWeight 0",
+    "set 1:23 strokeBottomWeight 2",
+    "set 1:23 strokeLeftWeight 0",
+    "set 1:23 topLeftRadius 0",
+    "set 1:23 topRightRadius 0",
+    "set 1:23 bottomRightRadius 0",
+    "set 1:23 bottomLeftRadius 0",
+    "set 1:23 effects [{\"blurType\":\"NORMAL\",\"radius\":4,\"type\":\"LAYER_BLUR\",\"visible\":true}]",
+    "set 1:23 opacity 0.5",
+    "set 1:23 blendMode \"MULTIPLY\"",
+    "set 1:23 visible true",
+    "set 1:23 name \"Glow\"",
+    "setSharedPluginData 1:23 holotype/irh \"7dbf34a546d71d11\"",
+    "createRectangle 1:24 - null",
+    "setSharedPluginData 1:24 holotype/nk \"root/hidden\"",
+    "insertChild 1:14 - {\"child\":\"1:24\",\"index\":4}",
+    "resizeWithoutConstraints 1:24 - {\"height\":40,\"width\":40}",
+    "set 1:24 x 64",
+    "set 1:24 y 101",
+    "set 1:24 fills [{\"blendMode\":\"NORMAL\",\"boundVariables\":{},\"color\":{\"b\":0,\"g\":0,\"r\":1},\"opacity\":1,\"type\":\"SOLID\",\"visible\":true}]",
+    "set 1:24 strokes []",
+    "set 1:24 topLeftRadius 0",
+    "set 1:24 topRightRadius 0",
+    "set 1:24 bottomRightRadius 0",
+    "set 1:24 bottomLeftRadius 0",
+    "set 1:24 effects []",
+    "set 1:24 opacity 1",
+    "set 1:24 blendMode \"NORMAL\"",
+    "set 1:24 visible false",
+    "set 1:24 name \"Hidden\"",
+    "setSharedPluginData 1:24 holotype/irh \"8e61e06397816175\"",
+    "setSharedPluginData 1:14 holotype/ah \"e4cded341ab88e0bbb52d295c861632072c7c9fd21c67caf08f44b07b5901a25f93af854aad5116708f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:15 holotype/ah \"04c4209de7c3f5db5700b9f0759855f508f44b07b5901a25c25757a6ec75c147b8484c2b5633689c08f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:16 holotype/ah \"3bb02052be08a890bb52d295c8616320c076c3ef9490b7c408f44b07b5901a25f1e2ac2e296b730e08f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:17 holotype/ah \"8bb871cd20e743b5a4d93e5cd0770fcb8af9114099f0ab0108f44b07b5901a253c37e44a74e8764f08f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:19 holotype/ah \"aad4a723989cacbba4d93e5cd0770fcbaef03e7524ec721808f44b07b5901a254b59b353842949a508f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:20 holotype/ah \"ceaadaec78c0e909bb52d295c861632004d3cd2065445c7408f44b07b5901a2541ea6c05ea59d3b608f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:21 holotype/ah \"7ac261b18e604c2da4d93e5cd0770fcb8417bdc714f76b9e08f44b07b5901a25bad181f0d03aed8b08f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:22 holotype/ah \"fd351774f36b92caa4d93e5cd0770fcb97a67a061b7a1ab208f44b07b5901a25ea8173fb32c1c72108f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:23 holotype/ah \"52a6e5957ecc207aa4d93e5cd0770fcb0f9a94068f056d4e08f44b07b5901a25007e62a74b1168ab08f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:24 holotype/ah \"17871450da183d15a4d93e5cd0770fcb9fac6b119e96180308f44b07b5901a25843be75d8076cbeb08f44b07b5901a2508f44b07b5901a25\""
+  ]
+}

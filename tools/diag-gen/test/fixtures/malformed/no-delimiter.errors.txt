@@ -1,0 +1,1 @@
+docs/plan/12-quality.md:39: table header must be followed by a delimiter row "|---|---|…|"

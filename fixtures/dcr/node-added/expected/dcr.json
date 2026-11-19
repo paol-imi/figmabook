@@ -1,0 +1,105 @@
+{
+  "dcrHash": "bb14c945a0ba5821",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [
+    {
+      "code": "DCR_PROVENANCE_MISSING",
+      "message": "No code location (no CDP or source map, or plugin-only extraction).",
+      "severity": "warn"
+    }
+  ],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/card-badge",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "d5517b8cd9da89c9"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "8c659cd3a2909164",
+  "items": [
+    {
+      "acceptance": {
+        "story": "existing",
+        "type": "structure"
+      },
+      "assets": {
+        "after": "d4a5b03fe2e5bb0e:after",
+        "before": "d4a5b03fe2e5bb0e:before"
+      },
+      "designerTitle": "Card · Story=Default · new layer Badge in Content",
+      "id": "d4a5b03fe2e5bb0e",
+      "kind": "node.added",
+      "structure": [
+        {
+          "inst": {
+            "component": {
+              "exportName": "Badge",
+              "importPath": "src/components/Badge/Badge.tsx",
+              "package": "@holotype/fixture-ds-react",
+              "sid": "components-badge",
+              "storiesPath": "src/components/Badge/Badge.stories.tsx",
+              "storyIds": ["components-badge--default"]
+            },
+            "defaults": ["dot"],
+            "props": {
+              "dot": false,
+              "label": "New",
+              "tone": "info"
+            },
+            "sid": "components-badge"
+          },
+          "key": "root/content/Badge:0",
+          "t": "instance"
+        }
+      ],
+      "target": {
+        "figmaNodeId": "31:90",
+        "sid": "components-card",
+        "vk": "4b097af13c9f3545"
+      },
+      "title": "Card · story=default · new element Badge in root/content"
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": ["components-card"],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "node.added": 1
+    },
+    "headline": ["Card (Story=Default): new layer Badge"],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}

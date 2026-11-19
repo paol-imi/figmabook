@@ -1,0 +1,346 @@
+{
+  "dependencies": [],
+  "diagnostics": [],
+  "irh": "d1fb255c355f6795",
+  "kind": "holotype/scene-component",
+  "meta": {
+    "description": "Button fixture.",
+    "descriptionSource": "parameters",
+    "exportName": "Button",
+    "framework": "react",
+    "importPath": "src/Button.tsx",
+    "kind": "component",
+    "links": [
+      {
+        "label": "Storybook",
+        "url": "http://127.0.0.1:6006/?path=/docs/components-button--docs"
+      }
+    ],
+    "name": "Button",
+    "storyIds": [
+      "components-button--primary"
+    ],
+    "titlePath": [
+      "Components",
+      "Button"
+    ]
+  },
+  "properties": [],
+  "sceneVersion": "0.1.0",
+  "setLayout": {
+    "columnsBy": [],
+    "gap": {
+      "x": 24,
+      "y": 24
+    },
+    "labels": false,
+    "mode": "grid",
+    "padding": 32,
+    "rowsBy": []
+  },
+  "sid": "components-button",
+  "variants": [
+    {
+      "diagnostics": [
+        {
+          "code": "CAP_CSS_UNSUPPORTED",
+          "data": {
+            "property": "background-image"
+          },
+          "fallback": "left out of the Figma layer",
+          "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
+          "nodeKey": "root",
+          "property": "background-image",
+          "severity": "warn",
+          "sid": "components-button",
+          "value": "linear-gradient(180deg, rgba(255,255,255,0.1), transparent)",
+          "variantKey": "02e9e83f83176070"
+        },
+        {
+          "code": "CAP_CSS_UNSUPPORTED",
+          "data": {
+            "property": "appearance"
+          },
+          "fallback": "drawn as its box, without the native control",
+          "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
+          "nodeKey": "root/tooltip/input",
+          "property": "appearance",
+          "severity": "warn",
+          "sid": "components-button",
+          "value": "checkbox",
+          "variantKey": "02e9e83f83176070"
+        }
+      ],
+      "grid": {
+        "col": 0,
+        "row": 0
+      },
+      "irh": "8509c6d07077c18f",
+      "provenance": {
+        "args": {
+          "label": "Button",
+          "onClick": "[fn onClick]",
+          "showIcon": false,
+          "size": "medium",
+          "variant": "primary"
+        },
+        "captureHash": "6a42a3f7e74b07bb",
+        "globals": {
+          "theme": "light"
+        },
+        "state": null,
+        "storyId": "components-button--primary",
+        "viewport": {
+          "h": 800,
+          "w": 1280
+        }
+      },
+      "root": {
+        "children": [
+          {
+            "expect": {
+              "h": 16,
+              "w": 16,
+              "x": 16,
+              "y": 12
+            },
+            "irh": "3d0e2bdc03347209",
+            "kind": "svg",
+            "name": "Star",
+            "nk": "root/star",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "source": {
+              "path": "button:0>svg:0",
+              "tag": "svg"
+            },
+            "svg": {
+              "asset": {
+                "sha": "1111111111111111111111111111111111111111111111111111111111111111"
+              },
+              "unwrap": true
+            },
+            "visible": true,
+            "xy": {
+              "x": 16,
+              "y": 12
+            }
+          },
+          {
+            "expect": {
+              "h": 20,
+              "w": 64,
+              "x": 16,
+              "y": 10
+            },
+            "irh": "3a0922dcc3eeb952",
+            "kind": "text",
+            "name": "Button label",
+            "nk": "root/button-label",
+            "size": {
+              "h": 20,
+              "w": 64
+            },
+            "source": {
+              "path": "button:0>span:1",
+              "tag": "span"
+            },
+            "text": {
+              "alignH": "CENTER",
+              "alignV": "TOP",
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "characters": "Button",
+              "lines": [
+                {
+                  "endChar": 6,
+                  "startChar": 0
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "NONE",
+                  "end": 6,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 1,
+                        "g": 1,
+                        "r": 1
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": false,
+                    "postScriptName": "Inter-SemiBold",
+                    "styleCandidates": [
+                      "Semi Bold",
+                      "SemiBold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy",
+                      "Medium",
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline"
+                    ],
+                    "weight": 600
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 0,
+                  "textCase": "ORIGINAL"
+                }
+              ],
+              "widthBuffer": {
+                "max": 3.5
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 16,
+              "y": 10
+            }
+          },
+          {
+            "children": [
+              {
+                "expect": {
+                  "h": 16,
+                  "w": 16,
+                  "x": 8,
+                  "y": 48
+                },
+                "fills": [],
+                "irh": "9556311af8a47c95",
+                "kind": "frame",
+                "name": "Input",
+                "nk": "root/tooltip/input",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "source": {
+                  "path": "body>div:3>input:0",
+                  "tag": "input"
+                },
+                "visible": true,
+                "xy": {
+                  "x": 4,
+                  "y": 4
+                }
+              }
+            ],
+            "expect": {
+              "h": 24,
+              "w": 80,
+              "x": 4,
+              "y": 44
+            },
+            "fills": [],
+            "irh": "21a9a7041b6ee260",
+            "kind": "frame",
+            "name": "Tooltip",
+            "nk": "root/tooltip",
+            "size": {
+              "h": 24,
+              "w": 80
+            },
+            "source": {
+              "path": "body>div:3",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 4,
+              "y": 44
+            }
+          }
+        ],
+        "clipsContent": false,
+        "effects": [
+          {
+            "color": {
+              "a": 0.05,
+              "b": 0,
+              "g": 0,
+              "r": 0
+            },
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "radius": 2,
+            "spread": 0,
+            "type": "DROP_SHADOW"
+          }
+        ],
+        "expect": {
+          "h": 40,
+          "w": 96,
+          "x": 0,
+          "y": 0
+        },
+        "fills": [
+          {
+            "color": {
+              "b": 0.965,
+              "g": 0.51,
+              "r": 0.231
+            },
+            "opacity": 1,
+            "type": "SOLID"
+          }
+        ],
+        "irh": "46f0b449dd3808b6",
+        "kind": "component",
+        "name": "Button",
+        "nk": "root",
+        "radius": {
+          "bl": 8,
+          "br": 8,
+          "tl": 8,
+          "tr": 8
+        },
+        "size": {
+          "h": 40,
+          "w": 96
+        },
+        "source": {
+          "component": "Button",
+          "path": "button:0",
+          "tag": "button"
+        },
+        "visible": true
+      },
+      "values": {},
+      "vk": "02e9e83f83176070"
+    }
+  ]
+}

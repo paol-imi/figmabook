@@ -1,0 +1,12 @@
+{
+  "base": "worked-example.json",
+  "why": "A request cannot follow itself.",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/header/parent",
+      "value": "bc5502e848d108d2"
+    }
+  ],
+  "expect": ["/header/parent", "/dcrHash"]
+}

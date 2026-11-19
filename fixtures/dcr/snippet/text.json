@@ -1,0 +1,44 @@
+{
+  "kind": "holotype/fixture-snippet",
+  "v": 1,
+  "row": "TEXT",
+  "targets": {
+    "components": {
+      "repo": "github.com/acme/ds-react",
+      "package": "@holotype/fixture-ds-react"
+    }
+  },
+  "tree": [
+    {
+      "t": "instance",
+      "key": "Form:0/Button:0",
+      "inst": {
+        "sid": "components-button",
+        "component": {
+          "sid": "components-button",
+          "exportName": "Button",
+          "importPath": "src/components/Button/Button.tsx",
+          "storiesPath": "src/components/Button/Button.stories.tsx",
+          "storyIds": [
+            "components-button--ghost",
+            "components-button--large",
+            "components-button--primary",
+            "components-button--secondary",
+            "components-button--small"
+          ],
+          "package": "@holotype/fixture-ds-react"
+        },
+        "props": {
+          "variant": "primary",
+          "size": "md",
+          "label": "Save \"draft\" {now} <b>",
+          "disabled": false,
+          "loading": false,
+          "iconLeading": "plus",
+          "showIcon": false
+        },
+        "defaults": ["disabled", "iconLeading", "loading", "showIcon", "size", "variant"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Outcomes are chosen or not-implemented.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/decisions/0/outcome",
+      "value": "skipped"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/decisions/0/outcome",
+      "kind": "invalid"
+    }
+  ]
+}

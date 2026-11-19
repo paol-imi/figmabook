@@ -1,0 +1,44 @@
+{
+  "name": "@holotype/ir",
+  "version": "0.0.0",
+  "description": "Holotype IR: TypeBox schemas for Capture IR, Scene IR and bundles; canonical JSON; pure-JS hashing. Isomorphic.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./core": {
+      "@holotype/source": "./src/core.ts",
+      "types": "./dist/core.d.ts",
+      "default": "./dist/core.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/.emit",
+    "src",
+    "schema"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsdown && tsdown --config tsdown.emit.config.ts --log-level warn && node dist/.emit/emit-schemas.js",
+    "typecheck": "tsc && tsc -p test",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@holotype/shared": "workspace:*",
+    "@noble/hashes": "^2.4.0",
+    "@sinclair/typebox": "~0.34.52"
+  },
+  "devDependencies": {
+    "ajv": "8.17.1",
+    "fast-check": "4.10.3"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "base": "button-primary.json",
+  "why": "Source locations stay inside the repo.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/root/source/loc/file",
+      "value": "../secrets.txt"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/root/source/loc/file",
+      "kind": "invalid"
+    }
+  ]
+}

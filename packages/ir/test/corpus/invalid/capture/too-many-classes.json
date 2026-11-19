@@ -1,0 +1,35 @@
+{
+  "base": "button-primary.json",
+  "why": "Class lists are capped at 16.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/root/source/classes",
+      "value": [
+        "c0",
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8",
+        "c9",
+        "c10",
+        "c11",
+        "c12",
+        "c13",
+        "c14",
+        "c15",
+        "c16"
+      ]
+    }
+  ],
+  "expect": [
+    {
+      "path": "/root/source/classes",
+      "kind": "invalid"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "base": "all-kinds.json",
+  "why": "Slots hold usage nodes (recursive).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/5/screen/variants/0/structure/0/children/0/inst/slots/children/0/t",
+      "value": "widget"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/5/screen/variants/0/structure/0/children/0/inst/slots/children/0",
+      "kind": "invalid"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "base": "button-meta.json",
+  "why": "`axes` was removed (16 \u00a719).",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/axes",
+      "value": {}
+    }
+  ],
+  "expect": [
+    {
+      "path": "/axes",
+      "kind": "unknown-key"
+    }
+  ]
+}

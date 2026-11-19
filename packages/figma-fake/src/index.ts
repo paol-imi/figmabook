@@ -1,0 +1,14 @@
+export type { FakeControls, FakeFigma, FakeFigmaOptions } from './api';
+export { createFakeFigma } from './api';
+export { TYPINGS } from './errors';
+export { DEFAULT_FONTS } from './fonts';
+export { MAX_IMAGE_SIZE } from './image';
+export type { JsonValue } from './json';
+export { MIXED_JSON } from './json';
+export { MIN_SIZE } from './nodes/layout';
+export type { Op } from './ops';
+export { PLUGIN_DATA_LIMIT } from './plugin-data';
+export type { FakeNodeSnapshot, FakeTree } from './snapshot';
+export type { FakeNodeType } from './state';
+export type { TextOracle } from './text-metrics';
+export type { VariablesPort } from './variables/api';

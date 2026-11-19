@@ -1,0 +1,11 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/components/1/sid",
+      "value": "components-button"
+    }
+  ],
+  "expect": ["sid-unique"]
+}

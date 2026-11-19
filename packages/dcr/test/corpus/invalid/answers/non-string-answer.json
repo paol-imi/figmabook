@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "An answer is an option or text.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/byQuestion/q1",
+      "value": 1
+    }
+  ],
+  "expect": [
+    {
+      "path": "/byQuestion/q1",
+      "kind": "invalid"
+    }
+  ]
+}

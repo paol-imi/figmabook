@@ -1,0 +1,17 @@
+{
+  "base": "button-set.json",
+  "why": "Property types are Figma component property types.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/props/properties/arg:showIcon/type",
+      "value": "FLAG"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/props/properties/arg:showIcon/type",
+      "kind": "invalid"
+    }
+  ]
+}

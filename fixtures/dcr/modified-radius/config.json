@@ -1,0 +1,35 @@
+{
+  "scope": "changed",
+  "requireApproval": false,
+  "targets": {
+    "components": {
+      "package": "@holotype/fixture-ds-react"
+    }
+  },
+  "screens": {
+    "separator": " / ",
+    "groupBySection": true,
+    "breakpoints": {
+      "Mobile": 0,
+      "Tablet": 768,
+      "Desktop": 1280
+    },
+    "states": {
+      "default": ["Default", "Filled"],
+      "empty": ["Empty"],
+      "loading": ["Loading", "Skeleton"],
+      "error": ["Error"],
+      "success": ["Success"]
+    },
+    "base": "widest",
+    "expectStates": []
+  },
+  "content": {
+    "placeholders": [],
+    "i18n": "auto"
+  },
+  "a11y": {
+    "categories": ["Accessibility", "A11y"]
+  },
+  "deprecations": {}
+}

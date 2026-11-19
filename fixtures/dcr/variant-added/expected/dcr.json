@@ -1,0 +1,123 @@
+{
+  "dcrHash": "1c5a019f072e865b",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [
+    {
+      "code": "DCR_PROVENANCE_MISSING",
+      "message": "No code location (no CDP or source map, or plugin-only extraction).",
+      "severity": "warn"
+    }
+  ],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/button-danger",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "dc9f65346e6a339d"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "2f2e606d16367e02",
+  "items": [
+    {
+      "acceptance": {
+        "story": "must-add",
+        "type": "structure",
+        "visual": {
+          "boxDeltaMax": 1,
+          "sMaskedMin": 0.97
+        }
+      },
+      "assets": {
+        "after": "4b0d252c060f8052:after",
+        "before": "4b0d252c060f8052:before"
+      },
+      "changes": [
+        {
+          "after": {
+            "b": 0.149,
+            "g": 0.149,
+            "r": 0.8627
+          },
+          "before": {
+            "b": 0.9216,
+            "g": 0.3882,
+            "r": 0.1451
+          },
+          "field": "paint.fills[0].color",
+          "group": "paint",
+          "token": {
+            "after": "--color-danger",
+            "before": "--button-bg"
+          }
+        }
+      ],
+      "derivedFrom": {
+        "values": {
+          "Size": "Md",
+          "Variant": "Primary"
+        },
+        "vk": "0ea44dbf4e7b9668"
+      },
+      "designerTitle": "Button · new variant Variant=Danger, Size=Md (from Variant=Primary, Size=Md)",
+      "id": "4b0d252c060f8052",
+      "kind": "variant.added",
+      "target": {
+        "figmaNodeId": "12:90",
+        "sid": "components-button"
+      },
+      "title": "Button · new variant variant=danger, size=md (from variant=primary, size=md)",
+      "variant": {
+        "args": {
+          "size": "md",
+          "variant": "danger"
+        },
+        "inferred": true,
+        "values": {
+          "Size": "Md",
+          "Variant": "Danger"
+        }
+      }
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": ["components-button"],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "variant.added": 1
+    },
+    "headline": ["Button: new variant Variant=Danger, Size=Md (from Primary)"],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}

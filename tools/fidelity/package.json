@@ -1,0 +1,32 @@
+{
+  "name": "@holotype/fidelity",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Fidelity scoring: screenshot vs Figma export, box deltas and reports.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@holotype/ir": "workspace:*",
+    "@holotype/shared": "workspace:*"
+  }
+}

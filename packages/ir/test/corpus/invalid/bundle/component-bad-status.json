@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "Component status is ok, partial or failed.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/components/0/status",
+      "value": "done"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/components/0/status",
+      "kind": "invalid"
+    }
+  ]
+}

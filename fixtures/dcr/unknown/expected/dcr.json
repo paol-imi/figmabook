@@ -1,0 +1,99 @@
+{
+  "dcrHash": "ff48545ab4999377",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [
+    {
+      "code": "DCR_PROVENANCE_MISSING",
+      "message": "No code location (no CDP or source map, or plugin-only extraction).",
+      "severity": "warn"
+    }
+  ],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/rename-button",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "4ab63205f75646e0"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "1ef3754d461d5670",
+  "items": [
+    {
+      "acceptance": {
+        "story": "existing",
+        "type": "structure"
+      },
+      "assets": {
+        "after": "f51dc505f43598be:after"
+      },
+      "changes": [
+        {
+          "after": "Action button",
+          "before": "Button",
+          "field": "vis.name",
+          "group": "vis"
+        }
+      ],
+      "designerTitle": "Button · component renamed to Action button",
+      "diagnostics": [
+        {
+          "code": "DCR_UNKNOWN_CHANGE",
+          "message": "A change could not be classified; listed raw.",
+          "nodeKey": "set",
+          "property": "vis.name",
+          "severity": "warn",
+          "sid": "components-button"
+        }
+      ],
+      "id": "f51dc505f43598be",
+      "kind": "unknown",
+      "target": {
+        "figmaNodeId": "12:1",
+        "nk": "set",
+        "sid": "components-button"
+      },
+      "title": "Button · unclassified change: vis.name"
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": [],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "unknown": 1
+    },
+    "headline": ["Button: 1 change Holotype cannot classify (vis.name)"],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "base": "price-tag-branch.json",
+  "why": "Nodes are keyed by Figma node id.",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/nodes/frame-1",
+      "value": {
+        "id": "1:1",
+        "type": "FRAME",
+        "name": "x",
+        "data": {},
+        "groups": {}
+      }
+    }
+  ],
+  "expect": [
+    {
+      "path": "/nodes/frame-1",
+      "kind": "unknown-key"
+    }
+  ]
+}

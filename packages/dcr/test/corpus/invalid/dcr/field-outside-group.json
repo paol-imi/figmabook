@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Field paths start with their ah group (15 §4.3).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/0/changes/0/field",
+      "value": "paddingLeft"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/0/changes/0/field",
+      "kind": "invalid"
+    }
+  ]
+}

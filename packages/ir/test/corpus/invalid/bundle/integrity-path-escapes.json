@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "Bundle paths stay inside the bundle.",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/integrity/files/..~1escape.json",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/integrity/files/",
+      "kind": "unknown-key"
+    }
+  ]
+}

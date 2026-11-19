@@ -1,0 +1,16 @@
+{
+  "base": "worked-example.json",
+  "why": "component.modified targets one managed node (sid, vk, nk).",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/items/0/target/nk"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/0/target/nk",
+      "kind": "invalid"
+    }
+  ]
+}

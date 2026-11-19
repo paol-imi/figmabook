@@ -1,0 +1,19 @@
+{
+  "base": "minimal.json",
+  "why": "`themes` was replaced by tokens.modes (16 \u00a719).",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/themes",
+      "value": {
+        "global": "theme"
+      }
+    }
+  ],
+  "expect": [
+    {
+      "path": "/themes",
+      "kind": "unknown-key"
+    }
+  ]
+}

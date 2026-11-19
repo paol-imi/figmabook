@@ -1,0 +1,33 @@
+{
+  "name": "@holotype/vite-plugin",
+  "version": "0.0.0",
+  "description": "Optional Vite plugin that stamps JSX source locations for provenance in branch mode.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "vite": ">=6.0.0"
+  },
+  "devDependencies": {
+    "vite": "8.3.8"
+  }
+}

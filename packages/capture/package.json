@@ -1,0 +1,37 @@
+{
+  "name": "@holotype/capture",
+  "version": "0.0.0",
+  "description": "Capture engine: Playwright orchestration, CDP helpers and the in-page serializer (shipped as an IIFE string).",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts"
+  },
+  "dependencies": {
+    "@holotype/storybook": "workspace:*",
+    "@holotype/ir": "workspace:*",
+    "@holotype/shared": "workspace:*",
+    "playwright": "1.63.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.27.7"
+  }
+}

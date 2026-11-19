@@ -1,0 +1,1 @@
+docs/plan/12-quality.md:31: domain CAP_ has no table

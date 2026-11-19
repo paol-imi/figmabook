@@ -1,0 +1,5 @@
+---
+'@holotype/mapper': minor
+---
+
+Mapper core for the loop slice (B-48). New stages: 2 paint order (CSS 2.1 Appendix E for overlapping siblings, flow order kept otherwise; z-index escapes hoisted to their stacking context with a clip frame, `LAYOUT_ZINDEX_HOIST`) and 8 simplify (a text-only element without visuals, padding or anchors is replaced by its TEXT layer). Visuals now map `box-shadow` (drop and inner shadows, spread via clipping or a backing rectangle, ring promotion), `outline` (OUTSIDE stroke or an outline frame), `url()` background layers (FILL, FIT, TILE, CROP), padding- and content-box backgrounds (an inner rectangle), per-side border colors on square boxes (four mitred vectors), `object-fit: none | scale-down`, and `text-shadow`. Synthetic layers get role keys and names (`…/bg`, `…/border-t`, `…/shadow`, `…/outline`, `…/clip`). Capture diagnostics are carried into the variant with the layer's `nk`, variant diagnostics are sorted by `(code, nodeKey, message)`, and Vite CSS-module classes name layers by their local name. New `WorkNode` fields for stage authors: `box`, `synthetic`, `wrapper`, `hoistedFrom`.

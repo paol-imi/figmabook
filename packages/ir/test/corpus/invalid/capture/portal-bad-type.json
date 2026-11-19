@@ -1,0 +1,17 @@
+{
+  "base": "button-primary.json",
+  "why": "Portals are CNodes too (validated through $ref).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/portals/0/type",
+      "value": "comment"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/portals/0/type",
+      "kind": "invalid"
+    }
+  ]
+}

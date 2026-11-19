@@ -1,0 +1,12 @@
+{
+  "base": "worked-example.json",
+  "why": "The request id follows from repo, branch, fileKey and dcrHash.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/header/branch",
+      "value": "feat/other"
+    }
+  ],
+  "expect": ["/id"]
+}

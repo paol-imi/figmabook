@@ -1,0 +1,47 @@
+{
+  "name": "@holotype/storybook-addon",
+  "version": "0.0.0",
+  "description": "Optional Storybook addon: typed parameters.holotype, manager panel, build-time manifest and capture hooks.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json",
+    "./preset": {
+      "@holotype/source": "./src/preset.ts",
+      "types": "./dist/preset.d.ts",
+      "default": "./dist/preset.js"
+    },
+    "./preview": {
+      "@holotype/source": "./src/preview.ts",
+      "types": "./dist/preview.d.ts",
+      "default": "./dist/preview.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@holotype/ir": "workspace:*",
+    "@holotype/shared": "workspace:*"
+  },
+  "peerDependencies": {
+    "storybook": "^10.0.0"
+  },
+  "devDependencies": {
+    "storybook": "10.6.7"
+  }
+}

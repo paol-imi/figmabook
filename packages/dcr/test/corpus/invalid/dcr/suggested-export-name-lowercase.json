@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Suggested export names are PascalCase.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/2/suggested/exportName",
+      "value": "priceTag"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/2/suggested/exportName",
+      "kind": "invalid"
+    }
+  ]
+}

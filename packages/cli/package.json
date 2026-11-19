@@ -1,0 +1,49 @@
+{
+  "name": "@holotype/cli",
+  "version": "0.0.0",
+  "description": "The holotype command-line interface (alias holo) and its programmatic API.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./config": {
+      "@holotype/source": "./src/config.ts",
+      "types": "./dist/config.d.ts",
+      "default": "./dist/config.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "holotype": "./bin/holotype.js",
+    "holo": "./bin/holotype.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts"
+  },
+  "dependencies": {
+    "@holotype/capture": "workspace:*",
+    "@holotype/ir": "workspace:*",
+    "@holotype/mapper": "workspace:*",
+    "@holotype/planner": "workspace:*",
+    "@holotype/shared": "workspace:*",
+    "@holotype/storybook": "workspace:*",
+    "citty": "0.2.2",
+    "fflate": "0.8.2",
+    "playwright": "1.63.0"
+  }
+}

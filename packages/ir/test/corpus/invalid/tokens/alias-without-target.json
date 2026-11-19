@@ -1,0 +1,19 @@
+{
+  "base": "ds-react.json",
+  "why": "An alias names a variable.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variables/1/valuesByMode/mode:light",
+      "value": {
+        "kind": "alias"
+      }
+    }
+  ],
+  "expect": [
+    {
+      "path": "/variables/1/valuesByMode/mode:light/variable",
+      "kind": "invalid"
+    }
+  ]
+}

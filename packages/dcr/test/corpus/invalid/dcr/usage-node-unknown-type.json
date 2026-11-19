@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Usage nodes are instance, frame, text, image or new-component-ref (15 §4.6).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/2/structure/0/children/1/t",
+      "value": "group"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/2/structure/0/children/1",
+      "kind": "invalid"
+    }
+  ]
+}

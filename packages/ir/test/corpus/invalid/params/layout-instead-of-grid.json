@@ -1,0 +1,19 @@
+{
+  "base": "story-minimal.json",
+  "why": "The fixture's old `layout` key is now `grid`.",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/layout",
+      "value": {
+        "columns": ["Size"]
+      }
+    }
+  ],
+  "expect": [
+    {
+      "path": "/layout",
+      "kind": "unknown-key"
+    }
+  ]
+}

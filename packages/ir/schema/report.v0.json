@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Holotype bundle report (BundleReport)",
+  "type": "object",
+  "required": [
+    "kind",
+    "summary",
+    "byCode",
+    "components"
+  ],
+  "properties": {
+    "kind": {
+      "const": "holotype/report",
+      "type": "string"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "components",
+        "variants",
+        "warnings",
+        "errors",
+        "autoLayoutCoverage",
+        "propertyQuality",
+        "rasterizedNodes"
+      ],
+      "properties": {
+        "components": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "variants": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "warnings": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "errors": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "autoLayoutCoverage": {
+          "minimum": 0,
+          "maximum": 1,
+          "type": "number"
+        },
+        "propertyQuality": {
+          "minimum": 0,
+          "maximum": 1,
+          "type": "number"
+        },
+        "rasterizedNodes": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      }
+    },
+    "byCode": {
+      "type": "object",
+      "patternProperties": {
+        "^(.*)$": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sid",
+          "diagnostics"
+        ],
+        "properties": {
+          "sid": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "code",
+                "severity",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "pattern": "^[A-Z]+(?:_[A-Z0-9]+)+$",
+                  "type": "string"
+                },
+                "severity": {
+                  "anyOf": [
+                    {
+                      "const": "info",
+                      "type": "string"
+                    },
+                    {
+                      "const": "warn",
+                      "type": "string"
+                    },
+                    {
+                      "const": "error",
+                      "type": "string"
+                    },
+                    {
+                      "const": "fatal",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "message": {
+                  "type": "string"
+                },
+                "nodeKey": {
+                  "type": "string"
+                },
+                "variantKey": {
+                  "type": "string"
+                },
+                "sid": {
+                  "type": "string"
+                },
+                "property": {
+                  "type": "string"
+                },
+                "value": {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                "fallback": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^(.*)$": {}
+                  }
+                }
+              }
+            }
+          },
+          "skipped": {
+            "type": "object",
+            "required": [
+              "reason"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              }
+            }
+          },
+          "planner": {
+            "type": "object",
+            "required": [
+              "budget",
+              "droppedAxes"
+            ],
+            "properties": {
+              "budget": {
+                "type": "object",
+                "required": [
+                  "requested",
+                  "emitted",
+                  "strategy"
+                ],
+                "properties": {
+                  "requested": {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "emitted": {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "strategy": {
+                    "type": "string"
+                  }
+                }
+              },
+              "droppedAxes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

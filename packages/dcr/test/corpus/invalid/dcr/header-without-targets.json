@@ -1,0 +1,16 @@
+{
+  "base": "worked-example.json",
+  "why": "Every request says where items are implemented (15 §5.5).",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/header/targets"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/header/targets",
+      "kind": "invalid"
+    }
+  ]
+}

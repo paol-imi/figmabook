@@ -1,0 +1,14 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/1/grid",
+      "value": {
+        "row": 0,
+        "col": 0
+      }
+    }
+  ],
+  "expect": ["variant-order"]
+}
