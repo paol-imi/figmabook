@@ -200,6 +200,7 @@ Every response carries `Access-Control-Allow-Origin: *` and `Vary: Origin`.
 | WS | `/v1/ws` | event stream | subprotocol `holotype.v1` + token as first message | `ServerEvent` / `ClientMessage` |
 | POST | `/v1/fidelity` | upload Figma exports for scoring | multipart: `{runId, vk}` + PNG | `FidelityResult` |
 | POST | `/v1/apply-report` | plugin reports results back (node ids, read-back deltas, Figma component keys) | `ApplyReport` | 204. Feeds Code Connect (P7) and the CLI report |
+| POST | `/v1/dcr` | plugin **Submit** hands a DCR extracted in the UI to the CLI, which adds provenance and writes `.holotype/requests/<id>/` ([15 §7.1](15-change-requests.md#prompt)) | `{ dcr: DesignChangeRequest, assets: Record<roleId, base64 PNG> }` (gzip, ≤1 MB chunks like runs) | `{ id, dcrHash, path, questions: number }` (201). Rejected with `DCR_NOT_BRANCH_FILE` unless the session's linked branch matches `header.branch` |
 
 ### 4.2 Pairing handshake
 
@@ -232,7 +233,7 @@ interface Hello {
 }
 type Capability =
   | "runs" | "cancel" | "resume" | "fidelity" | "apply-report"
-  | "events-ws" | "events-longpoll" | "assets-dedupe" | "plan-preview";
+  | "events-ws" | "events-longpoll" | "assets-dedupe" | "plan-preview" | "dcr";   // "dcr": accepts POST /v1/dcr (15)
 ```
 
 - The plugin sends `x-holotype-client: plugin/<version>; protocol=1; scene=^1.0.0`.
@@ -356,8 +357,8 @@ interface BundleManifest {
 
 ```
 <registry-root>/<project>/
-  latest.json                   # { runId, createdAt, git: {sha, ref}, manifestUrl, sbFingerprint }
-  channels/<branch>.json        # same shape; e.g. channels/main.json, channels/feature-x.json
+  latest.json                   # { runId, createdAt, git: {sha, ref, dirty}, repo, manifestUrl, sbFingerprint }
+  channels/<branch>.json        # same shape; e.g. channels/main.json, channels/feature-x.json; branch channels add baseCommit (15 §2.2)
   runs/<runId>/                 # immutable bundle directory (5.1), or <runId>.holotype.zip
   index.json                    # last 50 runs: [{ runId, createdAt, git, changedSids }]
 ```
@@ -371,8 +372,13 @@ interface BundleManifest {
 
 ### 5.4 Local workspace `.holotype/` (gitignored by `holotype init`)
 
+`holotype init` writes `.holotype/` **and** `!.holotype/requests/` to `.gitignore`: DCRs and verify reports are committed with the PR (D-37); everything else stays local.
+
 ```
 .holotype/
+  requests/<dcrId>/             # COMMITTED: dcr.json, prompt.md, assets.json, assets/, verify.json (15 §6)
+  branches/<branch-slug>.json   # { figmaFileKey, ...BranchMeta } link for one git branch (15 §2.2)
+  branches/<branch-slug>/baseline/<vk>.json.gz   # over-budget baseline snapshots (15 §3.3)
   cache/
     capture/<captureKey[0:2]>/<captureKey>.json.gz    # CaptureDoc
     assets/<sha[0:2]>/<sha>                           # raw fetched/rasterized assets
@@ -394,6 +400,7 @@ mapKey        = H( mapperVersion ∥ sceneIR major ∥ sorted(captureKeys) ∥ p
 ```
 
 - `H` is sha256 truncated to 32 hex characters.
+- **Branch keys.** Registry pointers, bundles and branch links are keyed by `{repo, branch, baseCommit}` ([15 §2.2](15-change-requests.md#branch-model)); `repo` is the normalized remote without credentials. In branch mode the dev-server capture cache is **on**, keyed by `baseCommit` + dirty-tree hash instead of the server start time, so `holotype dcr` can recover provenance for the baseline without re-capturing.
 - **Eviction:** LRU, capped at 2 GB (configurable). Clear with `holotype cache prune|clear`.
 - **Remote cache:** the same keys over HTTP (`--remote-cache <url>`, Turbo-style PUT/GET) for CI.
 
