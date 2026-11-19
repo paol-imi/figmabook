@@ -165,6 +165,7 @@ A quarterly **first-party check** re-verifies Figma's agent tools and the compet
 | `plugin` | report tab polish, read-back geometry for the new node kinds |
 | `cli` | `export`, `doctor` (subset) |
 | `fidelity` | T1, T2 harness on the owner's Mac (manual runs until a runner is decided); baseline v1 |
+
 **Exit criteria:** on micro-fixtures excluding layout groups: p95 box error ≤1px, median SSIM_masked ≥0.98; text line parity ≥95%; fonts preflight works; harness green with ratchet. **Effort:** 10 agent-weeks, ~10 owner-hours.
 
 ---
@@ -177,75 +178,73 @@ A quarterly **first-party check** re-verifies Figma's agent tools and the compet
 |---|---|
 | `capture` | Typed OM size keywords, CDP matched styles (authored intent: `fr`, `flex`, `calc`), optional layout probing at multiple widths |
 | `layout-sim` | Figma stack + wrap + grid simulation calibrated with S-10 / T1 data |
-| `mapper` | container classification, flex/grid mapping, sizing HUG/FILL/FIXED, margin strategies, absolute children + constraints, z-order handling, tree simplification, naming chain, text sizing/truncation/wrap modes, embedded per-container fallback |
-| `plugin` | auto-layout build-order rules, read-back verification + per-container fallback, `LAYOUT_*` diagnostics in report |
+| `mapper` | wrap and grid mapping, margin strategies, absolute children + constraints, z-order handling, tree simplification, full naming chain, text sizing/truncation/wrap modes |
+| `plugin` | grid writer (S-10), wrap, full `LAYOUT_*` diagnostics in report |
 | `fixtures` | More React + Vite golden fixtures; real DS dogfooding pipeline on Storybook 10 (MUI, shadcn/ui, Radix-based kits). Vue/Lit ports deferred to post-M5 renderer expansion (D-26) |
 
-**Exit criteria:** auto-layout coverage ≥75% on golden fixtures (≥85% target at M5), geometry p95 ≤1px maintained, text parity ≥97%, ≤5% layers with generic names (`div`, `span`) on golden fixtures. **Decision checkpoint M2:** D-22 (file organization). **Effort:** 20 ew.
+**Exit criteria:** auto-layout coverage ≥75% on golden fixtures (≥85% target at M5), geometry p95 ≤1px maintained, text parity ≥97%, ≤5% layers with generic names (`div`, `span`) on golden fixtures. **Decision checkpoint M2:** D-22 (file organization). **Effort:** 14 agent-weeks, ~8 owner-hours.
 
 ---
 
-## Phase 3 — Components & variants (M3)
+## H-C — Variants at scale (M3; was Phase 3)
 
-**Goal:** real component sets with variant axes and BOOLEAN/TEXT properties; states; local server topology; first usable end-to-end product.
+**Goal:** render-and-diff classification, pairwise matrices, states and large sets. Component sets with declared VARIANT/BOOLEAN/TEXT properties, cross-variant alignment and property bindings are already in the slice (L1).
 
 | Package | Deliverables |
 |---|---|
-| `storybook` | metadata extraction (args/argTypes/docgen/manifest, SB11 path), globals/themes discovery, channel render loop for many variants per page, pseudo-state strategies (S-08) |
-| `planner` | variant source priority (D-12), matrix + `if` pruning, budgets, pairwise mode, render-and-diff classification (D-13): VARIANT/BOOLEAN/TEXT/FIXED/IGNORED, duplicate-variant dedupe, `parameters.holotype` + config merge per README §7 precedence, `chromatic.modes` fallback reading |
-| `mapper` | cross-variant tree alignment (stable `nk` across variants), property bindings (visibility, characters), component-level Scene IR |
-| `plugin` | component creation, `combineAsVariants`, set grid layout + default variant placement, `addComponentProperty` + `componentPropertyReferences`, doc frames, Sections/pages (D-22), relaunch buttons, Library tab with statuses (Not imported/Synced/Error), Import config screen, Connect/pair |
-| `cli` | `init`, `list --plan`, `serve` (pairing token, Host check, ports per S-01), streaming protocol |
+| `storybook` | docgen/manifest metadata (SB11 path), globals/themes discovery, pseudo-state strategies (S-08) |
+| `planner` | variant source priority (D-12) beyond declared args, `if` pruning, pairwise mode, render-and-diff classification (D-13): VARIANT/BOOLEAN/TEXT/FIXED/IGNORED, duplicate-variant dedupe, `chromatic.modes` fallback reading |
+| `mapper` | alignment for huge sets (S-06 step 2 limits) |
+| `plugin` | doc frames, Sections/pages (D-22), relaunch buttons, Library tab with statuses (Not imported/Synced/Error), Import config screen |
+| `cli` | `init`, `list --plan` |
 | `storybook-addon` | typed `parameters.holotype` (types only) |
 
-**Exit criteria:** golden Button/Input/Checkbox/Card imported as sets with ≥70% property quality; states captured where they have visual effect; first-run flow ≤5 min in usability test (5 DS engineers); budgets enforced. **Effort:** 20 ew.
+**Exit criteria:** golden Button/Input/Checkbox/Card imported as sets with ≥70% property quality; states captured where they have visual effect; first-run flow ≤5 min for the owner, Chromium download excluded; budgets enforced. **Effort:** 12 agent-weeks, ~8 owner-hours.
 
 ---
 
-## Phase 4 — Sync (M4)
+## H-D — Sync UX (M4; Phase 4b)
 
-**Goal:** override-safe re-import (G5).
+**Goal:** override-safe re-import (G5) with the full conflict UX. **Phase 4a** (identity index, keyed in-place reconciler obeying S-02 rules, `irh`/`ah` hashing, idempotent apply, proposal-mode preservation) is in the slice (L1).
 
 | Package | Deliverables |
 |---|---|
-| `plugin` | identity index (`findAllWithCriteria` on shared plugin data, D-19), apply plan (read-only), keyed in-place reconciler obeying S-02 rules, `irh`/`ah` hashing, conflict detection + policies, deprecation (D-20), rename detection, root registry (chunked), Diff preview + Conflicts screens, Outdated/Conflict/Deprecated chips |
-| `cli` | capture cache (content-addressed, key per [02](02-architecture.md)), `cache` command, `serve --watch` |
-| `figma-fake` | override model matching S-02 matrix for L6 tests |
+| `plugin` | apply plan preview, conflict detection + policies (take/fork), deprecation (D-20), rename detection, consumer-file retention, Diff preview + Conflicts screens, Outdated/Conflict/Deprecated chips |
+| `cli` | `cache` command, `serve --watch` |
+| `figma-fake` | override model matching the full S-02 matrix for L6 tests |
 | `fidelity` | L6 sync e2e suite (designer-edit simulation) |
 
-**Exit criteria:** 100% override retention on unchanged-structure suite; no-op re-sync = 0 writes; conflict detection precision 100% / recall ≥95% on simulated-edit suite; rename + deletion flows tested with library consumer file. **Effort:** 15 ew.
+**Exit criteria:** 100% override retention on unchanged-structure suite; no-op re-sync = 0 writes; conflict detection precision 100% / recall ≥95% on simulated-edit suite; rename + deletion flows tested with library consumer file. **Effort:** 10 agent-weeks, ~10 owner-hours.
 
 ---
 
-## Phase 4.5 — DCR MVP, flagship (M4.5)
+## H-E — DCR complete (M4.5; was Phase 4.5)
 
-**Goal:** G9. A designer edits a Figma branch file, presses Submit, and an AI agent gets a deterministic, reviewable Design Change Request that names the exact code to change and how existing components are used ([15](15-change-requests.md)).
+**Goal:** G9 at full breadth. The slice (L3–L5) already delivers proposal mode, the embedded baseline, the core DCR kinds, `prompt.md`, Submit with the request in the file, `dcr import` and verify v1. H-E adds everything else from [15](15-change-requests.md).
 
 | Package | Deliverables |
 |---|---|
-| `dcr` (new) | `FigmaSnapshot` with plugin and REST normalizers; identification; field diff + noise filter; classification (`component.modified`, `variant.added/removed`, `property.*`, `node.*`, `component.new`, `screen`, `instance.outdated/deprecated`); reverse prop mapping for VARIANT / BOOLEAN / TEXT; screen grouping by breakpoint × state; interactions; copy vs placeholder; accessibility annotations; `targets` + `importSpecifier`; `renderSnippet`; review summary; `renderPrompt`; canonical DCR + stable ids |
-| `capture` / `mapper` | branch mode on the Vite dev server: `styleSheetId` + ranges, stylesheet headers, `data-holotype-loc`; `provenance/<sid>.json` with a `FieldOrigin` per Scene field ([07 §16.1](07-mapping.md)) |
-| `plugin` | proposal mode; `base:*` snapshots + `branch:meta`; no `SYNC_CONFLICT` in branch files; Changes, Submit and designer-view preview screens with empty / loading / error / success states ([11 §6.14–6.16](11-ux.md#changes)); optional Approve |
-| `cli` | `branch start\|link\|refresh\|close`, `dcr`, `login --figma`, `POST /v1/dcr`; `.holotype/requests/` committed, `.holotype/branches/` local; MCP `design_changes`, `dcr_item`, `dcr_item_assets`, `list_dcrs` |
-| `vite-plugin` (new, optional) | dev-only JSX locations (`data-holotype-loc`) |
-| `fixtures` | `fixtures/dcr/*` golden cases and the shuffle determinism test ([12 §2.4](12-quality.md#dcr-fixtures)); a react-vite fixture branch with designer edits |
+| `dcr` | REST normalizer and parity; `variant.removed`, `node.*` beyond basic, `instance.outdated`/`instance.deprecated`; screen grouping by breakpoint × state (D-41); interactions; copy vs placeholder; content and accessibility annotations; `targets` split + `importSpecifier` |
+| `capture` / `mapper` | `@holotype/vite-plugin` (dev-only JSX locations, `data-holotype-loc`) |
+| `plugin` | optional Approve (D-44); Inspector polish; usage-only DCR for consumer files (screens and `instance.*` items resolved through registry `keys.json`, S-15; no baseline) |
+| `cli` | `dcr --reextract`; MCP server `holotype mcp` with `design_changes`, `dcr_item`, `dcr_item_assets`, `list_dcrs`; topology A local server + pairing + `POST /v1/dcr` (S-01) |
+| `fixtures` | REST `parity` fixture; consumer-file cases |
 
-**Out:** `token.*` items (Phase 5); INSTANCE_SWAP / SLOT reverse mapping, `instance.detached/deviation` (Phase 6); `holotype verify`, `verify_dcr`, follow-up DCRs, the Tailwind adapter and CI comments (Phase 7).
+**Out:** `token.*` items (H-F); INSTANCE_SWAP / SLOT reverse mapping, `instance.detached/deviation` (composition); follow-up DCRs, the Tailwind adapter and CI comments (automation).
 
 **Exit criteria:**
-- Every `fixtures/dcr` case is byte-identical across 3 shuffled runs, and plugin and REST give the same `dcrHash` on the parity fixture.
-- On the fixture branch, ≥95% of `component.modified` fields carry a rule file:line on CSS modules (S-19). A field never points to the wrong file (0 on the fixture set).
+- Plugin and REST give the same core `dcrHash` on the parity fixture.
 - Screens group correctly by naming convention and Sections. Snippets compile as JSX after replacing the pseudo-elements (a syntax check in tests).
 - No designer string reaches the Rules or Verify sections (the `injection` fixture passes).
-- Usability, with the boss on the private dev plugin (D-39): a designer submits a branch with 5 kinds of change in ≤10 minutes without help. The reviewer approves from the summary alone. An agent of the user's choice implements the `component.modified` and `variant.added` items in one session.
+- Usability with the designer on the private dev plugin (D-39): a designer submits a branch with 5 kinds of change in ≤10 minutes without help. The reviewer approves from the summary alone.
 
-**Effort:** 12 ew.
+**Effort:** 10 agent-weeks, ~10 owner-hours.
 
 ---
 
-## Phase 5 — Tokens (M5) — parallel with Phase 4 after M3
+## H-F — Tokens complete (M5; was Phase 5) and H-G — Compatibility
 
-**Goal:** G4 — variables, aliases, modes, bindings, styles, library matching (D-18).
+**Goal:** G4 — variables, aliases, modes, bindings, styles, library matching (D-18). The slice tokens subset (one collection, default mode, exact `var()` bindings) is in L2. H-G adds SB 8/9 smoke tests and SB 11 tracking (at GA).
 
 | Package | Deliverables |
 |---|---|
@@ -253,13 +252,13 @@ A quarterly **first-party check** re-verifies Figma's agent tools and the compet
 | `mapper` | token graph (primitives/semantic collections), binding annotations on Scene nodes, theme → mode mapping, text/effect style candidates |
 | `plugin` | variable collections/modes/aliases creation, bindings (paints, spacing, radius, typography, effects), explicit modes on variant frames, library matching (`codeSyntax.WEB` → name), Variables diff in preview (never overwrite), `TOKEN_MODE_LIMIT` fallback |
 
-**Exit criteria:** on Chakra + Carbon + golden themes: ≥90% of `var()`-produced fill/stroke/spacing/radius values bound; 0 bindings on non-`var` values unless value matching enabled; mode switch on a set reproduces the dark-theme capture (SSIM_masked ≥0.98). README §4 metrics become release-gating from here. **Effort:** 12 ew.
+**Exit criteria:** on Chakra + Carbon + golden themes: ≥90% of `var()`-produced fill/stroke/spacing/radius values bound; 0 bindings on non-`var` values unless value matching enabled; mode switch on a set reproduces the dark-theme capture (SSIM_masked ≥0.98). README §4 fidelity metrics become release-gating from here. **H-G exit:** SB 8/9 smoke suites green; SB 11 tracked at GA. **Effort:** 8 agent-weeks, ~6 owner-hours.
 
 ---
 
-## Phase 6 — Composition (M6)
+## Composition (M6; was Phase 6)
 
-**Goal:** nested components as instances (D-21), icons, INSTANCE_SWAP, SLOT.
+**Goal:** nested components as instances (D-21), icons, INSTANCE_SWAP, SLOT. **First priority after M-Loop:** INSTANCE_SWAP for icon args (S-16 subset) and React-fiber nested instances (S-13), before full tokens.
 
 | Package | Deliverables |
 |---|---|

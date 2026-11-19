@@ -114,6 +114,7 @@ This is the single list of keys. Chapters reference it; the per-namespace sectio
 | `mapper.preferFrames` | `boolean` | `false` | [07](07-mapping.md) |
 | `mapper.alignment.maxPlaceholdersRatio` | `number` (0–1) | `0.5` | [07 §13](07-mapping.md#alignment) |
 | `mapper.colorProfile` | `'auto' \| 'srgb' \| 'display-p3'` | `'auto'` | [07 §9](07-mapping.md#color) |
+| `mapper.nativeControls` | `'synthesize' \| 'raster'` | `'synthesize'` | [05 §5.3](05-capture.md) |
 | `layout.autoLayout` | `'verified' \| 'off'` | `'verified'` | [07 §6](07-mapping.md#verification) (D-15) |
 | `layout.tolerancePx` | `number` | `0.6` | [07 §6](07-mapping.md#verification) (D-15) |
 | `layout.margins` | `'normalize'` | `'normalize'` | [07](07-mapping.md) |
@@ -259,6 +260,7 @@ const MapperConfig = T.Object({
   preferFrames: T.Boolean(),                                      // default false
   alignment: T.Object({ maxPlaceholdersRatio: T.Number({ minimum: 0, maximum: 1 }) }), // default 0.5
   colorProfile: Enum('auto', 'srgb', 'display-p3'),               // default 'auto'
+  nativeControls: Enum('synthesize', 'raster'),                   // default 'synthesize': native form controls rebuilt as frames
 });
 ```
 
