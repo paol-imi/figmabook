@@ -1,6 +1,6 @@
 import { defineProject } from 'vitest/config';
 import shared from '../../vitest.shared.ts';
-import { serializerVitePlugin } from './scripts/serializer.ts';
+import { serializerPlugin } from './scripts/serializer.ts';
 
 /**
  * `pnpm -F @holotype/capture test:e2e`: builds the fixture Storybook and captures stories in
@@ -9,7 +9,7 @@ import { serializerVitePlugin } from './scripts/serializer.ts';
  */
 export default defineProject({
   ...shared,
-  plugins: [serializerVitePlugin()],
+  plugins: [serializerPlugin()],
   test: {
     ...shared.test,
     name: 'capture-e2e',

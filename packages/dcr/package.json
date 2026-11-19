@@ -23,7 +23,7 @@
     "node": ">=22.12"
   },
   "scripts": {
-    "build": "tsup && tsup --config tsup.emit.config.ts --silent && node dist/.emit/emit-schemas.js",
+    "build": "tsdown && tsdown --config tsdown.emit.config.ts --log-level warn && node dist/.emit/emit-schemas.js",
     "typecheck": "tsc && tsc -p test",
     "test": "vitest run"
   },

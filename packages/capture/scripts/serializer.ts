@@ -1,11 +1,14 @@
 /**
  * Bundles the in-page serializer into an IIFE string and exposes it as the virtual module
- * `virtual:holotype-serializer`, both to tsup (esbuild) and to Vitest (Vite).
+ * `virtual:holotype-serializer`. One Rollup-style plugin serves both tsdown (Rolldown) and
+ * Vitest (Vite). The IIFE itself stays a small standalone esbuild build: it targets the page,
+ * not Node, and its bytes are what the capture goldens and the size budget are measured on.
  */
 import { fileURLToPath } from 'node:url';
-import { build, type Plugin } from 'esbuild';
+import { build } from 'esbuild';
 
 const MODULE_ID = 'virtual:holotype-serializer';
+const RESOLVED_ID = `\0${MODULE_ID}`;
 const entry = fileURLToPath(new URL('../src/page/serializer.ts', import.meta.url));
 
 export async function buildSerializer(): Promise<string> {
@@ -26,24 +29,11 @@ export async function buildSerializer(): Promise<string> {
 
 const moduleSource = async () => `export default ${JSON.stringify(await buildSerializer())};\n`;
 
-export function serializerEsbuildPlugin(): Plugin {
+/** The `virtual:holotype-serializer` module for Rolldown (tsdown) and Vite (Vitest). */
+export function serializerPlugin() {
   return {
     name: 'holotype-serializer',
-    setup(builder) {
-      builder.onResolve({ filter: /^virtual:holotype-serializer$/ }, ({ path }) => ({ path, namespace: MODULE_ID }));
-      builder.onLoad({ filter: /.*/, namespace: MODULE_ID }, async () => ({
-        contents: await moduleSource(),
-        loader: 'js',
-      }));
-    },
-  };
-}
-
-export function serializerVitePlugin() {
-  const resolvedId = `\0${MODULE_ID}`;
-  return {
-    name: 'holotype-serializer',
-    resolveId: (id: string) => (id === MODULE_ID ? resolvedId : undefined),
-    load: (id: string) => (id === resolvedId ? moduleSource() : undefined),
+    resolveId: (id: string) => (id === MODULE_ID ? RESOLVED_ID : undefined),
+    load: (id: string) => (id === RESOLVED_ID ? moduleSource() : undefined),
   };
 }

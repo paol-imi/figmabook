@@ -19,7 +19,7 @@ pnpm install
 pnpm build && pnpm test && pnpm lint && pnpm typecheck && pnpm check:deps
 ```
 
-Requires Node ≥22.12 (developed on Node 24, see `.nvmrc`) and pnpm 10. See [CONTRIBUTING.md](CONTRIBUTING.md).
+Building needs Node ≥22.18 (the published packages run on ≥22.12; developed on Node 24, see `.nvmrc`) and pnpm 10. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
