@@ -15,7 +15,7 @@
     "typecheck": "turbo run typecheck",
     "lint": "biome check .",
     "format": "biome format --write .",
-    "check:deps": "depcruise packages tools --config .dependency-cruiser.mjs",
+    "check:deps": "depcruise packages tools spikes --config .dependency-cruiser.mjs",
     "changeset": "changeset",
     "version-packages": "changeset version"
   },

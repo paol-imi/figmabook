@@ -5,6 +5,7 @@ node_modules/
 dist/
 packages/plugin/build/
 packages/plugin/manifest.json
+spikes/runner/build/
 *.tsbuildinfo
 
 # Tooling caches
