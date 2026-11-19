@@ -1,13 +1,26 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { type BundleManifest, jsonSchemaFiles, migrateScene, validateBundleManifest, validateSceneComponent } from '../src';
+import {
+  type BundleManifest,
+  jsonSchemaFiles,
+  migrateScene,
+  validateBundleManifest,
+  validateSceneComponent,
+} from '../src';
 
 const manifest: BundleManifest = {
   kind: 'holotype/bundle',
   bundleVersion: '0.1.0',
   sceneVersion: '0.1.0',
   features: [],
-  generator: { name: '@holotype/cli', version: '0.0.0', mapper: '0.0.0', capture: '0.0.0', chromium: '140.0.0.0', playwright: '1.63.0' },
+  generator: {
+    name: '@holotype/cli',
+    version: '0.0.0',
+    mapper: '0.0.0',
+    capture: '0.0.0',
+    chromium: '140.0.0.0',
+    playwright: '1.63.0',
+  },
   createdBy: 'cli',
   source: { storybookVersion: '10.6.7', origin: 'http://localhost:6006/', fingerprint: 'a'.repeat(64) },
   config: { hash: '0123456789abcdef' },
@@ -24,9 +37,14 @@ describe('schema validation', () => {
   });
 
   it('reports JSON pointers for invalid documents', () => {
-    const result = validateBundleManifest({ ...manifest, createdBy: 'robot', totals: { ...manifest.totals, nodes: -1 } });
+    const result = validateBundleManifest({
+      ...manifest,
+      createdBy: 'robot',
+      totals: { ...manifest.totals, nodes: -1 },
+    });
     expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.error.map((issue) => issue.path)).toEqual(expect.arrayContaining(['/createdBy', '/totals/nodes']));
+    if (!result.ok)
+      expect(result.error.map((issue) => issue.path)).toEqual(expect.arrayContaining(['/createdBy', '/totals/nodes']));
   });
 });
 
@@ -51,7 +69,8 @@ describe('migrateScene', () => {
     (input) => {
       const result = migrateScene(input);
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.error[0]).toMatchObject({ code: 'APPLY_IR_VERSION_UNSUPPORTED', severity: 'error' });
+      if (!result.ok)
+        expect(result.error[0]).toMatchObject({ code: 'APPLY_IR_VERSION_UNSUPPORTED', severity: 'error' });
     },
   );
 });

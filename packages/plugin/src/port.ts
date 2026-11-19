@@ -49,6 +49,9 @@ export type FigmaPort = Pick<
     | 'setBoundVariableForPaint'
     | 'setBoundVariableForEffect'
   >;
-  teamLibrary: Pick<TeamLibraryAPI, 'getAvailableLibraryVariableCollectionsAsync' | 'getVariablesInLibraryCollectionAsync'>;
+  teamLibrary: Pick<
+    TeamLibraryAPI,
+    'getAvailableLibraryVariableCollectionsAsync' | 'getVariablesInLibraryCollectionAsync'
+  >;
   clientStorage: Pick<ClientStorageAPI, 'getAsync' | 'setAsync'>;
 };

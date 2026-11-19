@@ -1,4 +1,5 @@
 import { Container, Muted, render, Stack, Text, VerticalSpace } from '@create-figma-plugin/ui';
+// biome-ignore lint/correctness/noUnusedImports: create-figma-plugin compiles JSX to the classic `h()` factory.
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { version } from '../package.json';

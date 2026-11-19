@@ -27,7 +27,9 @@ describe('Result (02 §9)', () => {
     } catch (error) {
       expect(error).toBeInstanceOf(HolotypeError);
       expect((error as HolotypeError).code).toBe('SB_INDEX_UNREACHABLE');
-      expect((error as HolotypeError).message).toBe('[SB_INDEX_UNREACHABLE] Could not load the Storybook index from http://localhost:6006.');
+      expect((error as HolotypeError).message).toBe(
+        '[SB_INDEX_UNREACHABLE] Could not load the Storybook index from http://localhost:6006.',
+      );
     }
   });
 

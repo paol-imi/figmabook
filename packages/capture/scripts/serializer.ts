@@ -31,7 +31,10 @@ export function serializerEsbuildPlugin(): Plugin {
     name: 'holotype-serializer',
     setup(builder) {
       builder.onResolve({ filter: /^virtual:holotype-serializer$/ }, ({ path }) => ({ path, namespace: MODULE_ID }));
-      builder.onLoad({ filter: /.*/, namespace: MODULE_ID }, async () => ({ contents: await moduleSource(), loader: 'js' }));
+      builder.onLoad({ filter: /.*/, namespace: MODULE_ID }, async () => ({
+        contents: await moduleSource(),
+        loader: 'js',
+      }));
     },
   };
 }

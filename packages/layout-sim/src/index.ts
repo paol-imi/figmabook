@@ -56,10 +56,14 @@ export function simulateAutoLayout(spec: AutoLayoutSpec, children: readonly Layo
   const horizontal = spec.layoutMode === 'HORIZONTAL';
 
   const [startPad, endPad] = horizontal ? [spec.paddingLeft, spec.paddingRight] : [spec.paddingTop, spec.paddingBottom];
-  const [crossStart, crossEnd] = horizontal ? [spec.paddingTop, spec.paddingBottom] : [spec.paddingLeft, spec.paddingRight];
+  const [crossStart, crossEnd] = horizontal
+    ? [spec.paddingTop, spec.paddingBottom]
+    : [spec.paddingLeft, spec.paddingRight];
   const available = (horizontal ? width : height) - startPad - endPad;
   const crossAvailable = (horizontal ? height : width) - crossStart - crossEnd;
-  const used = horizontal ? hug.width - spec.paddingLeft - spec.paddingRight : hug.height - spec.paddingTop - spec.paddingBottom;
+  const used = horizontal
+    ? hug.width - spec.paddingLeft - spec.paddingRight
+    : hug.height - spec.paddingTop - spec.paddingBottom;
   const free = available - used;
 
   let cursor = startPad;

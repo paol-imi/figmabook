@@ -1,4 +1,4 @@
-import { type Result, err, ok } from '@holotype/shared';
+import { err, ok, type Result } from '@holotype/shared';
 import type { Static, TSchema } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import { type BundleManifest, BundleManifestSchema } from './schema/bundle';

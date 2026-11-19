@@ -6,10 +6,10 @@
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=20.19"
+    "node": ">=22.12"
   },
   "scripts": {
-    "build": "ncc build src/main.ts --out dist --minify --target es2022",
+    "build": "tsup",
     "typecheck": "tsc",
     "test": "vitest run"
   },
@@ -17,7 +17,8 @@
     "@holotype/cli": "workspace:*",
     "@holotype/shared": "workspace:*"
   },
-  "devDependencies": {
-    "@vercel/ncc": "0.45.0"
-  }
+  "files": [
+    "action.yml",
+    "dist"
+  ]
 }

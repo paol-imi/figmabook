@@ -11,7 +11,7 @@
     }
   },
   "engines": {
-    "node": ">=20.19"
+    "node": ">=22.12"
   },
   "scripts": {
     "build": "build-figma-plugin --minify && node scripts/check-bundle-size.mjs",
@@ -35,10 +35,13 @@
     "id": "holotype",
     "name": "Holotype",
     "api": "1.0.0",
-    "editorType": ["figma"],
+    "editorType": [
+      "figma"
+    ],
     "main": "src/main.ts",
     "ui": "src/ui.tsx",
     "documentAccess": "dynamic-page",
+    "enablePrivatePluginApi": true,
     "networkAccess": {
       "allowedDomains": [
         "http://127.0.0.1:47321",
@@ -48,9 +51,14 @@
         "ws://127.0.0.1:47322",
         "ws://127.0.0.1:47323"
       ],
-      "devAllowedDomains": ["http://localhost:47321", "ws://localhost:47321"],
+      "devAllowedDomains": [
+        "http://localhost:47321",
+        "ws://localhost:47321"
+      ],
       "reasoning": "Connects only to the Holotype CLI running on your own machine (127.0.0.1, ports 47321-47323) to receive the component data you exported from your Storybook. No Figma document data is sent anywhere else."
     },
-    "permissions": ["teamlibrary"]
+    "permissions": [
+      "teamlibrary"
+    ]
   }
 }

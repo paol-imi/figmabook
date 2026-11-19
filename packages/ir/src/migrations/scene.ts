@@ -1,4 +1,11 @@
-import { APPLY_IR_VERSION_UNSUPPORTED, createDiagnostic, type Diagnostic, err, ok, type Result } from '@holotype/shared';
+import {
+  APPLY_IR_VERSION_UNSUPPORTED,
+  createDiagnostic,
+  type Diagnostic,
+  err,
+  ok,
+  type Result,
+} from '@holotype/shared';
 import { parseMajor, SUPPORTED_SCENE_MAJORS } from '../versions';
 
 /** A pure `vN → vN+1` step (06 §7). There are none before Scene IR 1.0. */

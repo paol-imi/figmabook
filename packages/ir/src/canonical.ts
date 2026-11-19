@@ -51,14 +51,18 @@ function write(value: unknown, path: (string | number)[], resolve: NumKindResolv
       return value ? 'true' : 'false';
     case 'number':
       if (!Number.isFinite(value)) {
-        throw new HolotypeError(createDiagnostic(CAP_NONFINITE_VALUE, { value: String(value), pointer: pointer(path) }));
+        throw new HolotypeError(
+          createDiagnostic(CAP_NONFINITE_VALUE, { value: String(value), pointer: pointer(path) }),
+        );
       }
       return JSON.stringify(normalizeNumber(value, resolve(path)));
     case 'object': {
       if (value === null) return 'null';
       if (ancestors.has(value)) throw new TypeError(`canonicalJSON: circular reference at ${pointer(path)}`);
       ancestors.add(value);
-      const out = Array.isArray(value) ? writeArray(value, path, resolve, ancestors) : writeObject(value, path, resolve, ancestors);
+      const out = Array.isArray(value)
+        ? writeArray(value, path, resolve, ancestors)
+        : writeObject(value, path, resolve, ancestors);
       ancestors.delete(value);
       return out;
     }
@@ -67,7 +71,12 @@ function write(value: unknown, path: (string | number)[], resolve: NumKindResolv
   }
 }
 
-function writeArray(items: readonly unknown[], path: (string | number)[], resolve: NumKindResolver, ancestors: Set<object>): string {
+function writeArray(
+  items: readonly unknown[],
+  path: (string | number)[],
+  resolve: NumKindResolver,
+  ancestors: Set<object>,
+): string {
   const parts: string[] = [];
   for (let i = 0; i < items.length; i++) {
     path.push(i);
@@ -78,7 +87,12 @@ function writeArray(items: readonly unknown[], path: (string | number)[], resolv
   return `[${parts.join(',')}]`;
 }
 
-function writeObject(object: object, path: (string | number)[], resolve: NumKindResolver, ancestors: Set<object>): string {
+function writeObject(
+  object: object,
+  path: (string | number)[],
+  resolve: NumKindResolver,
+  ancestors: Set<object>,
+): string {
   const proto: unknown = Object.getPrototypeOf(object);
   if (proto !== Object.prototype && proto !== null) {
     throw new TypeError(`canonicalJSON: only plain objects are JSON data (at ${pointer(path)})`);
@@ -87,7 +101,8 @@ function writeObject(object: object, path: (string | number)[], resolve: NumKind
   for (const [rawKey, item] of Object.entries(object)) {
     if (item === undefined) continue;
     const key = rawKey.normalize('NFC');
-    if (entries.has(key)) throw new TypeError(`canonicalJSON: keys collide after NFC normalization at ${pointer(path)}`);
+    if (entries.has(key))
+      throw new TypeError(`canonicalJSON: keys collide after NFC normalization at ${pointer(path)}`);
     entries.set(key, item);
   }
   const parts: string[] = [];

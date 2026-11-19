@@ -72,9 +72,7 @@ export interface DiagnosticDef<C extends DiagnosticCode = DiagnosticCode, M exte
 
 export type MessageParamValue = string | number | boolean;
 
-type Placeholders<T extends string> = T extends `${string}{${infer P}}${infer Rest}`
-  ? P | Placeholders<Rest>
-  : never;
+type Placeholders<T extends string> = T extends `${string}{${infer P}}${infer Rest}` ? P | Placeholders<Rest> : never;
 
 /** The params a message template needs, derived from its `{name}` placeholders. */
 export type MessageParams<M extends string> = string extends M
@@ -119,7 +117,7 @@ export function defineDiagnostic<const C extends DiagnosticCode, const M extends
 /** Renders `{name}` placeholders. Unknown placeholders are left in place. */
 export function renderMessage(template: string, params: Readonly<Record<string, MessageParamValue>>): string {
   return template.replace(/\{([^{}]+)\}/g, (placeholder, name: string) =>
-    Object.prototype.hasOwnProperty.call(params, name) ? String(params[name]) : placeholder,
+    Object.hasOwn(params, name) ? String(params[name]) : placeholder,
   );
 }
 

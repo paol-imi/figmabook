@@ -37,7 +37,12 @@ export const BundleManifestSchema = Type.Object(
       chromium: Type.String(),
       playwright: Type.String(),
     }),
-    createdBy: Type.Union([Type.Literal('cli'), Type.Literal('action'), Type.Literal('server'), Type.Literal('hosted')]),
+    createdBy: Type.Union([
+      Type.Literal('cli'),
+      Type.Literal('action'),
+      Type.Literal('server'),
+      Type.Literal('hosted'),
+    ]),
     source: Type.Object({
       storybookVersion: Type.String(),
       renderer: Type.Optional(Type.String()),

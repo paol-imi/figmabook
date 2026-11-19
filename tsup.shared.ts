@@ -6,7 +6,7 @@ const common = {
   dts: true,
   sourcemap: true,
   clean: true,
-  // Keep `node:` specifiers: Node ≥20.19 supports them and they mark built-ins clearly.
+  // Keep `node:` specifiers: every supported Node handles them and they mark built-ins clearly.
   removeNodeProtocol: false,
 } satisfies Options;
 
@@ -20,5 +20,5 @@ export function isomorphic(options: Options = {}): Options {
 
 /** Node packages target the lowest supported Node (D-03). */
 export function node(options: Options = {}): Options {
-  return { ...common, platform: 'node', target: 'node20', ...options };
+  return { ...common, platform: 'node', target: 'node22', ...options };
 }

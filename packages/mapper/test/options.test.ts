@@ -8,7 +8,10 @@ describe('mapper options', () => {
   });
 
   it('merges overrides and rejects impossible tolerances', () => {
-    expect(resolveMapperOptions({ textWrapMode: 'locked-lines' })).toEqual({ ...DEFAULT_MAPPER_OPTIONS, textWrapMode: 'locked-lines' });
+    expect(resolveMapperOptions({ textWrapMode: 'locked-lines' })).toEqual({
+      ...DEFAULT_MAPPER_OPTIONS,
+      textWrapMode: 'locked-lines',
+    });
     expect(() => resolveMapperOptions({ tolSim: -1 })).toThrow(RangeError);
     expect(() => resolveMapperOptions({ tolSim: Number.NaN })).toThrow(RangeError);
   });

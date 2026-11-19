@@ -45,8 +45,12 @@ describe('diagnostic catalog (12 §6)', () => {
 describe('defineDiagnostic / createDiagnosticRegistry', () => {
   it('rejects codes outside the DOMAIN_UPPER_SNAKE format', () => {
     // @ts-expect-error unknown domain prefix
-    expect(() => defineDiagnostic({ code: 'FOO_BAR', severity: 'info', message: 'm', remedy: 'r', since: '0.0.0' })).toThrow(TypeError);
-    expect(() => defineDiagnostic({ code: 'CAP_lower', severity: 'info', message: 'm', remedy: 'r', since: '0.0.0' })).toThrow(TypeError);
+    expect(() =>
+      defineDiagnostic({ code: 'FOO_BAR', severity: 'info', message: 'm', remedy: 'r', since: '0.0.0' }),
+    ).toThrow(TypeError);
+    expect(() =>
+      defineDiagnostic({ code: 'CAP_lower', severity: 'info', message: 'm', remedy: 'r', since: '0.0.0' }),
+    ).toThrow(TypeError);
   });
 
   it('rejects duplicate codes', () => {
@@ -56,7 +60,11 @@ describe('defineDiagnostic / createDiagnosticRegistry', () => {
 
 describe('createDiagnostic', () => {
   it('renders the template and attaches the location', () => {
-    const d = createDiagnostic(CAP_NONFINITE_VALUE, { value: 'NaN', pointer: '#/w' }, { nodeKey: 'root/label', variantKey: 'abc' });
+    const d = createDiagnostic(
+      CAP_NONFINITE_VALUE,
+      { value: 'NaN', pointer: '#/w' },
+      { nodeKey: 'root/label', variantKey: 'abc' },
+    );
     expect(d).toEqual({
       code: 'CAP_NONFINITE_VALUE',
       severity: 'error',
@@ -69,7 +77,9 @@ describe('createDiagnostic', () => {
   it('requires exactly the template placeholders', () => {
     // @ts-expect-error missing the `pointer` param
     createDiagnostic(CAP_NONFINITE_VALUE, { value: 'NaN' });
-    expectTypeOf(createDiagnostic(PLAN_CONFIG_UNKNOWN_KEY, { pointer: '/x' }).code).toEqualTypeOf<'PLAN_CONFIG_UNKNOWN_KEY'>();
+    expectTypeOf(
+      createDiagnostic(PLAN_CONFIG_UNKNOWN_KEY, { pointer: '/x' }).code,
+    ).toEqualTypeOf<'PLAN_CONFIG_UNKNOWN_KEY'>();
   });
 
   it('uses the registered fallback and truncates long values', () => {

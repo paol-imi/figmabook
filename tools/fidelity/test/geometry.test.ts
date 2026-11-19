@@ -17,7 +17,10 @@ describe('geometry fidelity', () => {
   });
 
   it('passes when p95 is within 1px even if one node is off', () => {
-    const pairs = Array.from({ length: 20 }, (_, i) => [box(0, i * 10, 50, 10), box(0, i * 10, i === 19 ? 54 : 50.4, 10)] as const);
-    expect(scoreGeometry(pairs)).toEqual({ nodes: 20, p95: 0.4, max: 4, pass: true });
+    const pairs = Array.from(
+      { length: 20 },
+      (_, i) => [box(0, i * 10, 50, 10), box(0, i * 10, i === 19 ? 54 : 50.5, 10)] as const,
+    );
+    expect(scoreGeometry(pairs)).toEqual({ nodes: 20, p95: 0.5, max: 4, pass: true });
   });
 });

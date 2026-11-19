@@ -13,7 +13,12 @@ export const TokenSetSchema = Type.Object(
         key: Type.String(),
         collection: Type.String(),
         name: Type.String(),
-        type: Type.Union([Type.Literal('COLOR'), Type.Literal('FLOAT'), Type.Literal('STRING'), Type.Literal('BOOLEAN')]),
+        type: Type.Union([
+          Type.Literal('COLOR'),
+          Type.Literal('FLOAT'),
+          Type.Literal('STRING'),
+          Type.Literal('BOOLEAN'),
+        ]),
       }),
     ),
   },

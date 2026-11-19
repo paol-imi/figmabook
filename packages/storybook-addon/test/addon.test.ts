@@ -11,7 +11,9 @@ describe('storybook-addon', () => {
   });
 
   it('types parameters.holotype', () => {
-    expectTypeOf<{ holotype: { strategy: 'curated'; variants: [{ Size: 'md' }] } }>().toExtend<WithHolotypeParameters>();
+    expectTypeOf<{
+      holotype: { strategy: 'curated'; variants: [{ Size: 'md' }] };
+    }>().toExtend<WithHolotypeParameters>();
     expectTypeOf<{ strategy: 'everything' }>().not.toExtend<HolotypeParameters>();
   });
 });

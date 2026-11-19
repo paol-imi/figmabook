@@ -1,0 +1,123 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "includes": [
+      "**",
+      "!docs",
+      "!**/dist",
+      "!packages/plugin/build",
+      "!packages/plugin/manifest.json",
+      "!packages/ir/schema"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 120
+  },
+  "javascript": {
+    "formatter": { "quoteStyle": "single", "trailingCommas": "all", "semicolons": "always" }
+  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "linter": {
+    "enabled": true,
+    "rules": { "preset": "recommended" }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "packages/shared/src/**",
+        "packages/ir/src/**",
+        "packages/layout-sim/src/**",
+        "packages/mapper/src/**",
+        "packages/plugin/src/**",
+        "packages/capture/src/page/**"
+      ],
+      "linter": {
+        "rules": {
+          "correctness": { "noNodejsModules": "error" },
+          "style": {
+            "noRestrictedGlobals": {
+              "level": "error",
+              "options": {
+                "deniedGlobals": {
+                  "process": "Isomorphic code (02 §7) cannot use Node globals.",
+                  "Buffer": "Use Uint8Array and TextEncoder (02 §7).",
+                  "global": "Use globalThis.",
+                  "require": "ESM only (D-03).",
+                  "__dirname": "Isomorphic code (02 §7) cannot use Node globals.",
+                  "__filename": "Isomorphic code (02 §7) cannot use Node globals.",
+                  "setImmediate": "Isomorphic code (02 §7) cannot use Node globals."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/plugin/src/apply/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedGlobals": {
+              "level": "error",
+              "options": {
+                "deniedGlobals": {
+                  "figma": "The applier receives a FigmaPort; only src/main.ts touches figma (09 §4).",
+                  "process": "Isomorphic code (02 §7) cannot use Node globals.",
+                  "Buffer": "Use Uint8Array and TextEncoder (02 §7).",
+                  "require": "ESM only (D-03)."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/dcr/src/**"],
+      "linter": {
+        "rules": {
+          "correctness": { "noNodejsModules": "error" },
+          "style": {
+            "noRestrictedGlobals": {
+              "level": "error",
+              "options": {
+                "deniedGlobals": {
+                  "Date": "DCR extraction is deterministic: no clock (D-35).",
+                  "fetch": "DCR extraction has no network (D-35).",
+                  "crypto": "Use @holotype/ir hashing: it is deterministic and works everywhere (D-31).",
+                  "process": "Isomorphic code (02 §7) cannot use Node globals.",
+                  "Buffer": "Use Uint8Array and TextEncoder (02 §7).",
+                  "require": "ESM only (D-03)."
+                }
+              }
+            }
+          },
+          "nursery": {
+            "noJsRestrictedProperties": {
+              "level": "error",
+              "options": {
+                "entries": [
+                  {
+                    "object": "Math",
+                    "property": "random",
+                    "message": "DCR extraction is deterministic: no randomness (D-35)."
+                  },
+                  {
+                    "object": "performance",
+                    "property": "now",
+                    "message": "DCR extraction is deterministic: no clock (D-35)."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

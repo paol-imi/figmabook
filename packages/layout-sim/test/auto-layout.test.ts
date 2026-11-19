@@ -28,7 +28,10 @@ describe('simulateAutoLayout', () => {
   });
 
   it('distributes free space with SPACE_BETWEEN in a FIXED container', () => {
-    const { children } = simulateAutoLayout({ ...row, width: 200, primaryAxisAlignItems: 'SPACE_BETWEEN' }, [icon, label]);
+    const { children } = simulateAutoLayout({ ...row, width: 200, primaryAxisAlignItems: 'SPACE_BETWEEN' }, [
+      icon,
+      label,
+    ]);
     expect(children.map((c) => c.x)).toEqual([16, 200 - 16 - 40]);
   });
 

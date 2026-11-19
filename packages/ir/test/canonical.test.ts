@@ -7,11 +7,19 @@ describe('canonicalJSON golden output (06 §5)', () => {
   it.each([
     ['sorts keys and drops undefined', { b: 1, a: [true, null, 'x'], c: undefined }, '{"a":[true,null,"x"],"b":1}'],
     ['sorts recursively', { z: { y: 1, x: [{ b: 2, a: 1 }] } }, '{"z":{"x":[{"a":1,"b":2}],"y":1}}'],
-    ['sorts by UTF-16 code unit, not code point', { '～': 1, '😀': 2, é: 3, a: 4, Z: 5, '10': 6, '9': 7 }, '{"10":6,"9":7,"Z":5,"a":4,"é":3,"😀":2,"～":1}'],
-    ['rounds lengths to 1/1000 px', { a: 0.1 + 0.2, b: 1.23456, c: -2.5, d: 123456789 }, '{"a":0.3,"b":1.235,"c":-2.5,"d":123456789}'],
+    [
+      'sorts by UTF-16 code unit, not code point',
+      { '～': 1, '😀': 2, é: 3, a: 4, Z: 5, '10': 6, '9': 7 },
+      '{"10":6,"9":7,"Z":5,"a":4,"é":3,"😀":2,"～":1}',
+    ],
+    [
+      'rounds lengths to 1/1000 px',
+      { a: 0.1 + 0.2, b: 1.23456, c: -2.5, d: 123456789 },
+      '{"a":0.3,"b":1.235,"c":-2.5,"d":123456789}',
+    ],
     ['normalizes -0 after rounding', { a: -0, b: -0.0001 }, '{"a":0,"b":0}'],
     ['keeps shortest round-trip numbers', { big: 1e21, small: 0.001 }, '{"big":1e+21,"small":0.001}'],
-    ['NFC-normalizes strings and keys', { 'café': 'café' }, '{"café":"café"}'],
+    ['NFC-normalizes strings and keys', { café: 'café' }, '{"café":"café"}'],
     ['keeps empty containers', { fills: [], meta: {} }, '{"fills":[],"meta":{}}'],
   ])('%s', (_name, input, expected) => {
     expect(canonicalJSON(input)).toBe(expected);
@@ -50,7 +58,7 @@ describe('canonicalJSON rejects non-JSON data', () => {
     ['functions', { f: () => 1 }],
     ['bigints', { n: 1n }],
     ['class instances', { d: new Date(0) }],
-    ['keys that collide after NFC', { 'café': 1, café: 2 }],
+    ['keys that collide after NFC', { café: 1, café: 2 }],
   ])('throws a TypeError for %s', (_name, input) => {
     expect(() => canonicalJSON(input)).toThrow(TypeError);
   });
@@ -68,7 +76,11 @@ describe('canonicalJSON properties (12 §1.1)', () => {
   const reverseKeys = (value: unknown): unknown => {
     if (Array.isArray(value)) return value.map(reverseKeys);
     if (value === null || typeof value !== 'object') return value;
-    return Object.fromEntries(Object.entries(value).reverse().map(([k, v]) => [k, reverseKeys(v)]));
+    return Object.fromEntries(
+      Object.entries(value)
+        .reverse()
+        .map(([k, v]) => [k, reverseKeys(v)]),
+    );
   };
 
   it('is idempotent through a JSON round trip', () => {

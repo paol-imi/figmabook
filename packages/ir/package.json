@@ -19,7 +19,7 @@
     "schema"
   ],
   "engines": {
-    "node": ">=20.19"
+    "node": ">=22.12"
   },
   "scripts": {
     "build": "tsup && node scripts/emit-schemas.mjs",
