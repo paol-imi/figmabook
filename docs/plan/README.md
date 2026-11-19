@@ -109,7 +109,7 @@ These are binding for every chapter. If a chapter disagrees with this table, thi
 
 | ID | Decision | Status |
 |---|---|---|
-| D-01 | **Public product name: Holotype** (proposed; CLI `holotype`, alias `holo`; npm scope `@holotype`; GitHub org e.g. `holotypehq`). A holotype is the single reference specimen a species is defined from: the code is the specimen, Figma gets the faithful copy. npm name and scope are free; no conflicting dev or design product was found; a formal USPTO/EUIPO search is still required. Runners-up: Twinform, Limner (trademark risk: an existing painting app). Until the rename lands, every package, CLI and doc keeps the codename `figmabook`; the rename happens before the first public release (see [13](13-security-legal.md#trademark)). Listing title pattern: "Holotype — Storybook to components, plugin for Figma Design" | 🟡 (user confirm + trademark search) |
+| D-01 | **Public product name: Holotype** (user decision). CLI `holotype`, alias `holo`; npm scope `@holotype/*`; plugin-data namespace and Storybook parameter key `holotype`. A holotype is the single reference specimen a species is defined from: the code is the specimen, Figma gets the faithful copy. A formal USPTO/EUIPO trademark search is still required before any public listing. The plan text still uses the codename `figmabook` in places until the rename pass (see [REVIEW](REVIEW.md)); the GitHub repo is renamed before any public release (it must not contain "Figma"). Listing title pattern: "Holotype — Storybook to components, plugin for Figma Design" | ✅ |
 | D-02 | **License:** MIT for all packages in this repo (user decision). A future hosted service, if any, lives in a separate repo (closed source or FSL-1.1-MIT) | ✅ |
 | D-03 | **Language/runtime:** TypeScript (strict) everywhere; Node ≥20.19, developed on Node 24 LTS; ESM only | ✅ |
 | D-04 | **Monorepo:** pnpm workspaces + Turborepo + changesets; Vitest; Biome (lint+format); tsup for Node packages. Core libraries: Hono + `ws` (local server), c12/jiti (config), citty (CLI), fflate (bundle zip), `@noble/hashes`, colorjs.io, fontkit + harfbuzzjs (font metrics), sharp (CLI only), sirv; dependency-cruiser enforces package boundaries. Plugin bundle budgets: main ≤400 KB, UI ≤600 KB (see [02](02-architecture.md)) | ✅ |
@@ -147,6 +147,8 @@ These are binding for every chapter. If a chapter disagrees with this table, thi
 | D-36 | **Provenance.** Branch mode captures from the Vite dev server with source maps. The mapper records field → CSS origin in `provenance/<sid>.json`. An optional `@figmabook/vite-plugin` adds JSX locations (see [15](15-change-requests.md)) | ✅ |
 | D-37 | **Agent contract.** Stories are mandatory for every new or changed item, tagged `parameters.figmabook.implements`. `figmabook verify` is the acceptance test. DCRs and verify reports are committed with the PR (see [15](15-change-requests.md)) | ✅ |
 | D-38 | **Designer text is untrusted data** in prompts: always fenced or escaped, never inside instructions (see [15](15-change-requests.md)) | ✅ |
+| D-39 | **Distribution (now): private, for a small known group** (user decision: the user and their boss). Phase 0–4: a **development plugin** installed from the built `manifest.json` ("Import plugin from manifest" in the Figma desktop app; any plan, no review). If the Figma account is on Organization/Enterprise, switch to a **private organization plugin** (published to the org only, no Figma review) once the plugin is stable. Figma Community listing is deferred until after M8 and requires the trademark search (D-01) | ✅ |
+| D-40 | **Quality bar** (user requirement): high-quality software with very good UX for both designers and developers. Every user-facing flow has a spec in [11](11-ux.md) with empty, loading, error and success states; every diagnostic has a plain-language message and a remedy; no flow ships without a usability check on a real design system | ✅ |
 
 ## 6. Architecture at a glance
 
@@ -264,11 +266,11 @@ Details, estimates and exit criteria are in [14](14-roadmap.md).
 
 ## 9. Decisions needed from the user
 
-1. **D-01 public name.** Proposed **Holotype** (alternatives Twinform, Limner). Needs user confirmation and a formal trademark search.
+1. ~~D-01 public name~~ → **Holotype** (decided; trademark search before any public listing).
 2. ~~D-02 license~~ → **MIT** (decided).
 3. ~~Primary target stack~~ → **React + Vite on Storybook 10** (decided, D-26).
-4. **Distribution:** public Figma Community plugin, or a private org plugin first (no review, faster iteration)?
+4. ~~Distribution~~ → **private**: development plugin shared with the user's boss now, private organization plugin later if the plan allows (D-39).
 5. ~~Storybook minimum version~~ → **Storybook 10 primary**; 11 at GA; 8/9 best-effort; no 7 (decided, D-11).
 6. Is a hosted or paid tier ever intended? (Affects nothing in the MIT core; only where a future service would live.)
-7. **Figma plan:** Organization/Enterprise (Figma-native branching for branch files) or one duplicated file per branch (any plan)? (D-32)
+7. **Figma plan:** Organization/Enterprise (Figma-native branching for branch files) or one duplicated file per branch (any plan)? (D-32). *Pending: the user sees "branches" in Figma, which suggests native branching is available; to confirm.*
 8. **Who edits branch files:** designers only, or developers too? Affects how much of the DCR preview targets non-developers.
