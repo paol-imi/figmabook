@@ -10,7 +10,8 @@
       "!**/dist",
       "!packages/plugin/build",
       "!packages/plugin/manifest.json",
-      "!packages/ir/schema"
+      "!packages/ir/schema",
+      "!**/__snapshots__"
     ]
   },
   "formatter": {

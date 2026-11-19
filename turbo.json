@@ -15,6 +15,14 @@
       "inputs": ["$TURBO_DEFAULT$"],
       "dependsOn": ["^build"]
     },
+    "@holotype/plugin#test": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/figma-fake/src/**"],
+      "dependsOn": ["^build"]
+    },
+    "@holotype/plugin#typecheck": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/figma-fake/src/**"],
+      "dependsOn": ["^build"]
+    },
     "@holotype/diag-gen#test": {
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/docs/plan/12-quality.md"]
     },

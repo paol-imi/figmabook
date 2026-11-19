@@ -98,6 +98,15 @@ describe('main ↔ UI protocol (09 §3.2)', () => {
     ],
     ['an unknown need', { ...envelope, t: 'need', unit: { kind: 'component' } }],
     ['an incomplete summary', { ...envelope, t: 'done', summary: { componentsOk: 1 } }],
+    [
+      'a done with another document as report',
+      {
+        ...envelope,
+        t: 'done',
+        summary: { componentsOk: 1, componentsFailed: 0, variants: 1, durationMs: 1, cancelled: false },
+        report: { kind: 'holotype/report', components: [], diagnostics: [] },
+      },
+    ],
     ['an error without code', { ...envelope, t: 'error', message: 'x', recoverable: true }],
   ])('rejects %s from main', (_label, message) => {
     expect(parseMainToUi(message)).toBeUndefined();

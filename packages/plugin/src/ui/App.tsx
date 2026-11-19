@@ -9,6 +9,7 @@ import { type TabItem, Tabs } from './components/Tabs';
 import { HANDSHAKE_TIMEOUT_MS, useHandshake, usePong, useRun } from './hooks';
 import { t } from './i18n';
 import { ImportScreen } from './import/ImportScreen';
+import { useImport } from './import/use-import';
 import { LibraryScreen } from './screens/LibraryScreen';
 import { ReportScreen } from './screens/ReportScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
@@ -38,6 +39,7 @@ export function App({
 }: AppProps) {
   const [handshake, retry] = useHandshake(channel, uiVersion, handshakeTimeoutMs);
   const run = useRun(channel);
+  const importer = useImport(channel);
   const [tab, setTab] = useState<TabId>(initialTab);
   usePong(channel);
 
@@ -71,7 +73,7 @@ export function App({
 
   const screens: Readonly<Record<TabId, () => ComponentChildren>> = {
     library: () => <LibraryScreen onImportFile={() => setTab('import')} />,
-    import: () => <ImportScreen />,
+    import: () => <ImportScreen state={importer.state} onFile={importer.importFile} onReset={importer.reset} />,
     report: () => <ReportScreen run={run} onCancel={() => channel.send({ t: 'cancel' })} />,
     settings: () => <SettingsScreen pluginVersion={handshake.info.pluginVersion} irMajors={handshake.info.irMajors} />,
   };

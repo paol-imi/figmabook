@@ -36,7 +36,7 @@ const isomorphic = {
   'layout-sim': [],
   mapper: [],
   dcr: [],
-  plugin: ['preact', '@create-figma-plugin/ui', '@create-figma-plugin/utilities'],
+  plugin: ['preact', '@create-figma-plugin/ui', '@create-figma-plugin/utilities', 'fflate'],
 };
 
 const boundaryRules = Object.entries(allowed).map(([name, deps]) => ({
