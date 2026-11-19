@@ -20,6 +20,10 @@ export const MESSAGE_TEMPLATES = {
   SB_VERSION_UNSUPPORTED: { message: 'Storybook {version} is not supported; Holotype needs Storybook 8 or newer.' },
   PLAN_CONFIG_INVALID: { message: 'Invalid config value at {pointer}: {reason}.' },
   PLAN_CONFIG_UNKNOWN_KEY: { message: 'Unknown config key {pointer} was ignored.', fallback: 'the key was ignored' },
+  PLAN_PARAM_UNKNOWN_KEY: {
+    message: 'Unknown key {pointer} in parameters.holotype was ignored.',
+    fallback: 'the key was ignored',
+  },
   PLAN_MAPPER_FAILED: { message: 'The mapper failed on this component: {reason}.' },
   PLAN_INVARIANT_VIOLATION: { message: 'The mapper produced invalid output ({invariant}); the component was skipped.' },
   CAP_NONFINITE_VALUE: { message: 'A non-finite number ({value}) reached the IR at {pointer}.' },

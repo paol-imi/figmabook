@@ -1,0 +1,731 @@
+[
+  {
+    "id": "components-input--default",
+    "sid": "components-input",
+    "title": "Components/Input",
+    "titlePath": [
+      "Components",
+      "Input"
+    ],
+    "name": "Default",
+    "exportName": "Default",
+    "importPath": "./src/components/Input/Input.stories.tsx",
+    "componentPath": "./src/components/Input/Input.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Input/Input.stories.tsx",
+      "__isArgsStory": true
+    },
+    "holotype": {},
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "error": {
+        "name": "error",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Error message. When set, the field is marked invalid and the message replaces the hint."
+      },
+      "helperText": {
+        "name": "helperText",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Hint shown under the field while there is no error."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible field label."
+      },
+      "onValueChange": {
+        "name": "onValueChange",
+        "origin": "story",
+        "type": {
+          "name": "function",
+          "required": false,
+          "raw": "(value: string) => void"
+        },
+        "control": false,
+        "description": "Called with the new text on every edit."
+      },
+      "placeholder": {
+        "name": "placeholder",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        }
+      },
+      "prefixIcon": {
+        "name": "prefixIcon",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "description": "An icon drawn inside the field, before the text."
+      },
+      "value": {
+        "name": "value",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "''"
+          }
+        },
+        "description": "The field value. The field stays editable and follows later changes of this prop."
+      }
+    },
+    "args": {},
+    "initialArgs": {
+      "label": "Email",
+      "placeholder": "you@example.com",
+      "value": "",
+      "helperText": "We never share your email.",
+      "disabled": false
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-input",
+      "exportName": "Input",
+      "importPath": "./src/components/Input/Input.tsx",
+      "storiesPath": "./src/components/Input/Input.stories.tsx",
+      "storyIds": [
+        "components-input--default",
+        "components-input--with-error",
+        "components-input--disabled",
+        "components-input--with-prefix"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-input--with-error",
+    "sid": "components-input",
+    "title": "Components/Input",
+    "titlePath": [
+      "Components",
+      "Input"
+    ],
+    "name": "With Error",
+    "exportName": "WithError",
+    "importPath": "./src/components/Input/Input.stories.tsx",
+    "componentPath": "./src/components/Input/Input.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Input/Input.stories.tsx",
+      "__isArgsStory": true
+    },
+    "holotype": {},
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "error": {
+        "name": "error",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Error message. When set, the field is marked invalid and the message replaces the hint."
+      },
+      "helperText": {
+        "name": "helperText",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Hint shown under the field while there is no error."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible field label."
+      },
+      "onValueChange": {
+        "name": "onValueChange",
+        "origin": "story",
+        "type": {
+          "name": "function",
+          "required": false,
+          "raw": "(value: string) => void"
+        },
+        "control": false,
+        "description": "Called with the new text on every edit."
+      },
+      "placeholder": {
+        "name": "placeholder",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        }
+      },
+      "prefixIcon": {
+        "name": "prefixIcon",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "description": "An icon drawn inside the field, before the text."
+      },
+      "value": {
+        "name": "value",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "''"
+          }
+        },
+        "description": "The field value. The field stays editable and follows later changes of this prop."
+      }
+    },
+    "args": {
+      "value": "not-an-email",
+      "error": "Enter a valid email address."
+    },
+    "initialArgs": {
+      "label": "Email",
+      "placeholder": "you@example.com",
+      "value": "not-an-email",
+      "helperText": "We never share your email.",
+      "disabled": false,
+      "error": "Enter a valid email address."
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-input",
+      "exportName": "Input",
+      "importPath": "./src/components/Input/Input.tsx",
+      "storiesPath": "./src/components/Input/Input.stories.tsx",
+      "storyIds": [
+        "components-input--default",
+        "components-input--with-error",
+        "components-input--disabled",
+        "components-input--with-prefix"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-input--disabled",
+    "sid": "components-input",
+    "title": "Components/Input",
+    "titlePath": [
+      "Components",
+      "Input"
+    ],
+    "name": "Disabled",
+    "exportName": "Disabled",
+    "importPath": "./src/components/Input/Input.stories.tsx",
+    "componentPath": "./src/components/Input/Input.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Input/Input.stories.tsx",
+      "__isArgsStory": true
+    },
+    "holotype": {},
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "error": {
+        "name": "error",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Error message. When set, the field is marked invalid and the message replaces the hint."
+      },
+      "helperText": {
+        "name": "helperText",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Hint shown under the field while there is no error."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible field label."
+      },
+      "onValueChange": {
+        "name": "onValueChange",
+        "origin": "story",
+        "type": {
+          "name": "function",
+          "required": false,
+          "raw": "(value: string) => void"
+        },
+        "control": false,
+        "description": "Called with the new text on every edit."
+      },
+      "placeholder": {
+        "name": "placeholder",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        }
+      },
+      "prefixIcon": {
+        "name": "prefixIcon",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "description": "An icon drawn inside the field, before the text."
+      },
+      "value": {
+        "name": "value",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "''"
+          }
+        },
+        "description": "The field value. The field stays editable and follows later changes of this prop."
+      }
+    },
+    "args": {
+      "disabled": true,
+      "value": "locked@example.com"
+    },
+    "initialArgs": {
+      "label": "Email",
+      "placeholder": "you@example.com",
+      "value": "locked@example.com",
+      "helperText": "We never share your email.",
+      "disabled": true
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-input",
+      "exportName": "Input",
+      "importPath": "./src/components/Input/Input.tsx",
+      "storiesPath": "./src/components/Input/Input.stories.tsx",
+      "storyIds": [
+        "components-input--default",
+        "components-input--with-error",
+        "components-input--disabled",
+        "components-input--with-prefix"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-input--with-prefix",
+    "sid": "components-input",
+    "title": "Components/Input",
+    "titlePath": [
+      "Components",
+      "Input"
+    ],
+    "name": "With Prefix",
+    "exportName": "WithPrefix",
+    "importPath": "./src/components/Input/Input.stories.tsx",
+    "componentPath": "./src/components/Input/Input.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Input/Input.stories.tsx",
+      "__isArgsStory": true
+    },
+    "holotype": {},
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "error": {
+        "name": "error",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Error message. When set, the field is marked invalid and the message replaces the hint."
+      },
+      "helperText": {
+        "name": "helperText",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Hint shown under the field while there is no error."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible field label."
+      },
+      "onValueChange": {
+        "name": "onValueChange",
+        "origin": "story",
+        "type": {
+          "name": "function",
+          "required": false,
+          "raw": "(value: string) => void"
+        },
+        "control": false,
+        "description": "Called with the new text on every edit."
+      },
+      "placeholder": {
+        "name": "placeholder",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        }
+      },
+      "prefixIcon": {
+        "name": "prefixIcon",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "description": "An icon drawn inside the field, before the text."
+      },
+      "value": {
+        "name": "value",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "text"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "''"
+          }
+        },
+        "description": "The field value. The field stays editable and follows later changes of this prop."
+      }
+    },
+    "args": {
+      "label": "Search",
+      "placeholder": "Search components",
+      "helperText": "",
+      "prefixIcon": "search"
+    },
+    "initialArgs": {
+      "label": "Search",
+      "placeholder": "Search components",
+      "value": "",
+      "helperText": "",
+      "disabled": false,
+      "prefixIcon": "search"
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-input",
+      "exportName": "Input",
+      "importPath": "./src/components/Input/Input.tsx",
+      "storiesPath": "./src/components/Input/Input.stories.tsx",
+      "storyIds": [
+        "components-input--default",
+        "components-input--with-error",
+        "components-input--disabled",
+        "components-input--with-prefix"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  }
+]

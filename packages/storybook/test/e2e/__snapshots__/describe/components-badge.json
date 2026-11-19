@@ -1,0 +1,522 @@
+[
+  {
+    "id": "components-badge--default",
+    "sid": "components-badge",
+    "title": "Components/Badge",
+    "titlePath": [
+      "Components",
+      "Badge"
+    ],
+    "name": "Default",
+    "exportName": "Default",
+    "importPath": "./src/components/Badge/Badge.stories.tsx",
+    "componentPath": "./src/components/Badge/Badge.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Badge/Badge.stories.tsx",
+      "holotype": {
+        "args": {
+          "tone": {
+            "as": "variant",
+            "name": "Tone"
+          },
+          "dot": {
+            "as": "boolean",
+            "name": "Dot"
+          },
+          "label": {
+            "as": "text"
+          }
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "args": {
+        "tone": {
+          "as": "variant",
+          "name": "Tone"
+        },
+        "dot": {
+          "as": "boolean",
+          "name": "Dot"
+        },
+        "label": {
+          "as": "text"
+        }
+      }
+    },
+    "argTypes": {
+      "className": {
+        "name": "className",
+        "origin": "docgen-inline",
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "other",
+              "value": "undefined"
+            }
+          ],
+          "required": false,
+          "raw": "string | undefined"
+        },
+        "control": {
+          "type": "object"
+        }
+      },
+      "dot": {
+        "name": "dot",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Shows a status dot before the label."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        }
+      },
+      "tone": {
+        "name": "tone",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "neutral",
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ],
+          "required": false,
+          "raw": "'neutral' | 'info' | 'success' | 'warning' | 'danger'"
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "neutral",
+          "info",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'neutral'"
+          }
+        },
+        "description": "Color family that carries the meaning."
+      }
+    },
+    "args": {},
+    "initialArgs": {
+      "tone": "neutral",
+      "label": "Badge",
+      "dot": false
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-badge",
+      "exportName": "Badge",
+      "importPath": "./src/components/Badge/Badge.tsx",
+      "storiesPath": "./src/components/Badge/Badge.stories.tsx",
+      "storyIds": [
+        "components-badge--default",
+        "components-badge--tones",
+        "components-badge--with-dot"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-badge--tones",
+    "sid": "components-badge",
+    "title": "Components/Badge",
+    "titlePath": [
+      "Components",
+      "Badge"
+    ],
+    "name": "Tones",
+    "exportName": "Tones",
+    "importPath": "./src/components/Badge/Badge.stories.tsx",
+    "componentPath": "./src/components/Badge/Badge.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Badge/Badge.stories.tsx",
+      "holotype": {
+        "args": {
+          "tone": {
+            "as": "variant",
+            "name": "Tone"
+          },
+          "dot": {
+            "as": "boolean",
+            "name": "Dot"
+          },
+          "label": {
+            "as": "text"
+          }
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "args": {
+        "tone": {
+          "as": "variant",
+          "name": "Tone"
+        },
+        "dot": {
+          "as": "boolean",
+          "name": "Dot"
+        },
+        "label": {
+          "as": "text"
+        }
+      }
+    },
+    "argTypes": {
+      "className": {
+        "name": "className",
+        "origin": "docgen-inline",
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "other",
+              "value": "undefined"
+            }
+          ],
+          "required": false,
+          "raw": "string | undefined"
+        },
+        "control": {
+          "type": "object"
+        }
+      },
+      "dot": {
+        "name": "dot",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Shows a status dot before the label."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        }
+      },
+      "tone": {
+        "name": "tone",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "neutral",
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ],
+          "required": false,
+          "raw": "'neutral' | 'info' | 'success' | 'warning' | 'danger'"
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "neutral",
+          "info",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'neutral'"
+          }
+        },
+        "description": "Color family that carries the meaning."
+      }
+    },
+    "args": {},
+    "initialArgs": {
+      "tone": "neutral",
+      "label": "Badge",
+      "dot": false
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-badge",
+      "exportName": "Badge",
+      "importPath": "./src/components/Badge/Badge.tsx",
+      "storiesPath": "./src/components/Badge/Badge.stories.tsx",
+      "storyIds": [
+        "components-badge--default",
+        "components-badge--tones",
+        "components-badge--with-dot"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-badge--with-dot",
+    "sid": "components-badge",
+    "title": "Components/Badge",
+    "titlePath": [
+      "Components",
+      "Badge"
+    ],
+    "name": "With Dot",
+    "exportName": "WithDot",
+    "importPath": "./src/components/Badge/Badge.stories.tsx",
+    "componentPath": "./src/components/Badge/Badge.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Badge/Badge.stories.tsx",
+      "holotype": {
+        "args": {
+          "tone": {
+            "as": "variant",
+            "name": "Tone"
+          },
+          "dot": {
+            "as": "boolean",
+            "name": "Dot"
+          },
+          "label": {
+            "as": "text"
+          }
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "args": {
+        "tone": {
+          "as": "variant",
+          "name": "Tone"
+        },
+        "dot": {
+          "as": "boolean",
+          "name": "Dot"
+        },
+        "label": {
+          "as": "text"
+        }
+      }
+    },
+    "argTypes": {
+      "className": {
+        "name": "className",
+        "origin": "docgen-inline",
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "other",
+              "value": "undefined"
+            }
+          ],
+          "required": false,
+          "raw": "string | undefined"
+        },
+        "control": {
+          "type": "object"
+        }
+      },
+      "dot": {
+        "name": "dot",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Shows a status dot before the label."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        }
+      },
+      "tone": {
+        "name": "tone",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "neutral",
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ],
+          "required": false,
+          "raw": "'neutral' | 'info' | 'success' | 'warning' | 'danger'"
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "neutral",
+          "info",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'neutral'"
+          }
+        },
+        "description": "Color family that carries the meaning."
+      }
+    },
+    "args": {
+      "dot": true,
+      "tone": "success",
+      "label": "Online"
+    },
+    "initialArgs": {
+      "tone": "success",
+      "label": "Online",
+      "dot": true
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-badge",
+      "exportName": "Badge",
+      "importPath": "./src/components/Badge/Badge.tsx",
+      "storiesPath": "./src/components/Badge/Badge.stories.tsx",
+      "storyIds": [
+        "components-badge--default",
+        "components-badge--tones",
+        "components-badge--with-dot"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  }
+]

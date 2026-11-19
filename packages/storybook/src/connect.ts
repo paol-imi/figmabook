@@ -4,7 +4,9 @@ import { canonicalJSON, sha256Hex } from '@holotype/ir';
 import { createDiagnostic, type Diagnostic, diagnostic, type Err, err, ok, type Result } from '@holotype/shared';
 import type { Page } from 'playwright';
 import { checkStorybookVersion, detectCapabilities, parseProjectJson } from './capabilities';
-import { createUrlDriver } from './driver/url-driver';
+import { type DescribeOptions, type DescribeResult, describeStories } from './describe/describe';
+import { type LoadedManifest, loadComponentsManifest } from './describe/manifest';
+import { createRenderDriver } from './driver/render-driver';
 import { filterStories } from './filter';
 import { describeOutcome, type FetchOutcome, fetchText, parseJsonBody } from './http';
 import { type ParsedIndex, parseStoriesJsonV3, parseStoryIndex } from './index-json';
@@ -44,8 +46,16 @@ export interface ConnectedStorybook {
   readonly diagnostics: readonly Diagnostic[];
   /** The filtered stories, in index order (03 §2.2). */
   listStories(): Promise<readonly IndexStory[]>;
-  /** A driver that renders stories in `page` (03 §5). Call before the page navigates. */
+  /**
+   * A driver that renders stories in `page` (03 §5): the channel loop, with the URL path as
+   * fallback (`options.mode: 'url'` forces it). Call before the page navigates.
+   */
   openDriver(page: Page, options?: DriverOptions): Promise<RenderDriver>;
+  /**
+   * Story metadata (03 §4) read in `page`, which is left on the preview: args, argTypes, tags,
+   * validated `parameters.holotype` with the config layers of `options`, and `CodeRef`.
+   */
+  describe(page: Page, ids: readonly string[], options?: DescribeOptions): Promise<DescribeResult>;
   /** Stops the static server of a `static` source. Idempotent. */
   close(): Promise<void>;
 }
@@ -204,6 +214,16 @@ async function discover(
     ...(endpoint.defaultStoryId === undefined ? {} : { defaultStoryId: endpoint.defaultStoryId }),
   };
   const storyIds: ReadonlySet<string> = new Set(index.value.entries.map((entry) => entry.story.id));
+  const indexById: ReadonlyMap<string, IndexStory> = new Map(
+    index.value.entries.map((entry) => [entry.story.id, entry.story]),
+  );
+  let manifest: Promise<LoadedManifest> | undefined;
+  const loadManifest = () => {
+    manifest ??= caps.componentsManifest
+      ? loadComponentsManifest(baseUrl, timeoutMs)
+      : Promise.resolve<LoadedManifest>({ diagnostics: [] });
+    return manifest;
+  };
 
   return ok({
     baseUrl,
@@ -212,7 +232,23 @@ async function discover(
     model,
     diagnostics: version.warnings,
     listStories: async () => stories,
-    openDriver: (page, driverOptions) => createUrlDriver({ page, baseUrl, caps, storyIds }, driverOptions),
+    openDriver: (page, driverOptions) => createRenderDriver({ page, baseUrl, caps, storyIds }, driverOptions),
+    describe: async (page, ids, describeOptions) => {
+      const loaded = await loadManifest();
+      return describeStories(
+        page,
+        ids,
+        {
+          baseUrl,
+          origin,
+          index: indexById,
+          stories,
+          ...(loaded.manifest === undefined ? {} : { manifest: loaded.manifest }),
+          diagnostics: loaded.diagnostics,
+        },
+        describeOptions,
+      );
+    },
     close: async () => {
       await server?.close();
     },

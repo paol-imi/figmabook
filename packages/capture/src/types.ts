@@ -1,6 +1,6 @@
 import type { CaptureDoc, JsonValue } from '@holotype/ir';
 import type { Diagnostic } from '@holotype/shared';
-import type { ConnectedStorybook } from '@holotype/storybook';
+import type { ConnectedStorybook, DriverMode } from '@holotype/storybook';
 import type { LaunchOptions, Page } from 'playwright';
 import type { CaptureConfig } from './environment';
 
@@ -21,6 +21,12 @@ export interface CapturerOptions {
   readonly launch?: LaunchOptions;
   /** `T.render` of the driver (03 §5.3). */
   readonly renderTimeoutMs?: number;
+  /**
+   * How pages render (03 §5): `channel` (default) drives one long-lived `iframe.html` page per
+   * worker through the Storybook channel, falling back to the URL path when the preview has no
+   * channel API; `url` navigates once per variant (`--no-channel`).
+   */
+  readonly renderMode?: DriverMode;
   /** Recycle a worker's page after this many variants. Default 500 (05 §1.1). */
   readonly recycleAfter?: number;
   /** Called for every new page before it renders: request routing, auth headers (03 §9.4). */
@@ -43,6 +49,8 @@ export interface CaptureRequest {
   readonly rootSelector?: string;
   /** `parameters.holotype.keepLayout` (03 §6.1). */
   readonly keepLayout?: boolean;
+  /** `parameters.holotype.unwrap` (03 §6.2): decorator wrappers to see through. Default all. */
+  readonly unwrap?: boolean | number;
   /** `parameters.holotype.exclude`: CSS selectors left out of the capture. */
   readonly exclude?: readonly string[];
   /** Take the root screenshot @DPR (fidelity harness, 12). Default `true`. */

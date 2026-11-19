@@ -1,0 +1,2411 @@
+[
+  {
+    "id": "components-button--primary",
+    "sid": "components-button",
+    "title": "Components/Button",
+    "titlePath": [
+      "Components",
+      "Button"
+    ],
+    "name": "Primary",
+    "exportName": "Primary",
+    "importPath": "./src/components/Button/Button.stories.tsx",
+    "componentPath": "./src/components/Button/Button.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Button/Button.stories.tsx",
+      "holotype": {
+        "args": {
+          "variant": {
+            "as": "variant"
+          },
+          "size": {
+            "as": "variant"
+          },
+          "label": {
+            "as": "text"
+          },
+          "showIcon": {
+            "as": "boolean"
+          }
+        },
+        "states": {
+          "include": [
+            "default",
+            "hover",
+            "focus-visible",
+            "active"
+          ],
+          "foldBooleans": [
+            "disabled",
+            "loading"
+          ]
+        },
+        "grid": {
+          "columns": [
+            "Size"
+          ],
+          "rows": [
+            "Variant"
+          ]
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "args": {
+        "variant": {
+          "as": "variant"
+        },
+        "size": {
+          "as": "variant"
+        },
+        "label": {
+          "as": "text"
+        },
+        "showIcon": {
+          "as": "boolean"
+        }
+      },
+      "states": {
+        "include": [
+          "default",
+          "hover",
+          "focus-visible",
+          "active"
+        ],
+        "foldBooleans": [
+          "disabled",
+          "loading"
+        ]
+      },
+      "grid": {
+        "columns": [
+          "Size"
+        ],
+        "rows": [
+          "Variant"
+        ]
+      }
+    },
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "iconLeading": {
+        "name": "iconLeading",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'plus'"
+          }
+        },
+        "description": "The icon drawn before the label while `showIcon` is on."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible text."
+      },
+      "loading": {
+        "name": "loading",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Shows a spinner in place of the icon, and blocks clicks."
+      },
+      "showIcon": {
+        "name": "showIcon",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Whether the leading icon is visible."
+      },
+      "size": {
+        "name": "size",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "required": false,
+          "raw": "'sm' | 'md' | 'lg'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'md'"
+          }
+        }
+      },
+      "type": {
+        "name": "type",
+        "origin": "docgen-inline",
+        "control": {
+          "type": "object"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "'button'"
+          }
+        }
+      },
+      "variant": {
+        "name": "variant",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "primary",
+            "secondary",
+            "ghost"
+          ],
+          "required": false,
+          "raw": "'primary' | 'secondary' | 'ghost'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "primary",
+          "secondary",
+          "ghost"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'primary'"
+          }
+        },
+        "description": "Visual emphasis."
+      }
+    },
+    "args": {},
+    "initialArgs": {
+      "variant": "primary",
+      "size": "md",
+      "label": "Button",
+      "disabled": false,
+      "loading": false,
+      "iconLeading": "plus",
+      "showIcon": false
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-button",
+      "exportName": "Button",
+      "importPath": "./src/components/Button/Button.tsx",
+      "storiesPath": "./src/components/Button/Button.stories.tsx",
+      "storyIds": [
+        "components-button--primary",
+        "components-button--secondary",
+        "components-button--ghost",
+        "components-button--small",
+        "components-button--large",
+        "components-button--with-icon",
+        "components-button--loading",
+        "components-button--disabled"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-button--secondary",
+    "sid": "components-button",
+    "title": "Components/Button",
+    "titlePath": [
+      "Components",
+      "Button"
+    ],
+    "name": "Secondary",
+    "exportName": "Secondary",
+    "importPath": "./src/components/Button/Button.stories.tsx",
+    "componentPath": "./src/components/Button/Button.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Button/Button.stories.tsx",
+      "holotype": {
+        "args": {
+          "variant": {
+            "as": "variant"
+          },
+          "size": {
+            "as": "variant"
+          },
+          "label": {
+            "as": "text"
+          },
+          "showIcon": {
+            "as": "boolean"
+          }
+        },
+        "states": {
+          "include": [
+            "default",
+            "hover",
+            "focus-visible",
+            "active"
+          ],
+          "foldBooleans": [
+            "disabled",
+            "loading"
+          ]
+        },
+        "grid": {
+          "columns": [
+            "Size"
+          ],
+          "rows": [
+            "Variant"
+          ]
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "args": {
+        "variant": {
+          "as": "variant"
+        },
+        "size": {
+          "as": "variant"
+        },
+        "label": {
+          "as": "text"
+        },
+        "showIcon": {
+          "as": "boolean"
+        }
+      },
+      "states": {
+        "include": [
+          "default",
+          "hover",
+          "focus-visible",
+          "active"
+        ],
+        "foldBooleans": [
+          "disabled",
+          "loading"
+        ]
+      },
+      "grid": {
+        "columns": [
+          "Size"
+        ],
+        "rows": [
+          "Variant"
+        ]
+      }
+    },
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "iconLeading": {
+        "name": "iconLeading",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'plus'"
+          }
+        },
+        "description": "The icon drawn before the label while `showIcon` is on."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible text."
+      },
+      "loading": {
+        "name": "loading",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Shows a spinner in place of the icon, and blocks clicks."
+      },
+      "showIcon": {
+        "name": "showIcon",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Whether the leading icon is visible."
+      },
+      "size": {
+        "name": "size",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "required": false,
+          "raw": "'sm' | 'md' | 'lg'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'md'"
+          }
+        }
+      },
+      "type": {
+        "name": "type",
+        "origin": "docgen-inline",
+        "control": {
+          "type": "object"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "'button'"
+          }
+        }
+      },
+      "variant": {
+        "name": "variant",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "primary",
+            "secondary",
+            "ghost"
+          ],
+          "required": false,
+          "raw": "'primary' | 'secondary' | 'ghost'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "primary",
+          "secondary",
+          "ghost"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'primary'"
+          }
+        },
+        "description": "Visual emphasis."
+      }
+    },
+    "args": {
+      "variant": "secondary"
+    },
+    "initialArgs": {
+      "variant": "secondary",
+      "size": "md",
+      "label": "Button",
+      "disabled": false,
+      "loading": false,
+      "iconLeading": "plus",
+      "showIcon": false
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-button",
+      "exportName": "Button",
+      "importPath": "./src/components/Button/Button.tsx",
+      "storiesPath": "./src/components/Button/Button.stories.tsx",
+      "storyIds": [
+        "components-button--primary",
+        "components-button--secondary",
+        "components-button--ghost",
+        "components-button--small",
+        "components-button--large",
+        "components-button--with-icon",
+        "components-button--loading",
+        "components-button--disabled"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-button--ghost",
+    "sid": "components-button",
+    "title": "Components/Button",
+    "titlePath": [
+      "Components",
+      "Button"
+    ],
+    "name": "Ghost",
+    "exportName": "Ghost",
+    "importPath": "./src/components/Button/Button.stories.tsx",
+    "componentPath": "./src/components/Button/Button.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Button/Button.stories.tsx",
+      "holotype": {
+        "args": {
+          "variant": {
+            "as": "variant"
+          },
+          "size": {
+            "as": "variant"
+          },
+          "label": {
+            "as": "text"
+          },
+          "showIcon": {
+            "as": "boolean"
+          }
+        },
+        "states": {
+          "include": [
+            "default",
+            "hover",
+            "focus-visible",
+            "active"
+          ],
+          "foldBooleans": [
+            "disabled",
+            "loading"
+          ]
+        },
+        "grid": {
+          "columns": [
+            "Size"
+          ],
+          "rows": [
+            "Variant"
+          ]
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "args": {
+        "variant": {
+          "as": "variant"
+        },
+        "size": {
+          "as": "variant"
+        },
+        "label": {
+          "as": "text"
+        },
+        "showIcon": {
+          "as": "boolean"
+        }
+      },
+      "states": {
+        "include": [
+          "default",
+          "hover",
+          "focus-visible",
+          "active"
+        ],
+        "foldBooleans": [
+          "disabled",
+          "loading"
+        ]
+      },
+      "grid": {
+        "columns": [
+          "Size"
+        ],
+        "rows": [
+          "Variant"
+        ]
+      }
+    },
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "iconLeading": {
+        "name": "iconLeading",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'plus'"
+          }
+        },
+        "description": "The icon drawn before the label while `showIcon` is on."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible text."
+      },
+      "loading": {
+        "name": "loading",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Shows a spinner in place of the icon, and blocks clicks."
+      },
+      "showIcon": {
+        "name": "showIcon",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Whether the leading icon is visible."
+      },
+      "size": {
+        "name": "size",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "required": false,
+          "raw": "'sm' | 'md' | 'lg'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'md'"
+          }
+        }
+      },
+      "type": {
+        "name": "type",
+        "origin": "docgen-inline",
+        "control": {
+          "type": "object"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "'button'"
+          }
+        }
+      },
+      "variant": {
+        "name": "variant",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "primary",
+            "secondary",
+            "ghost"
+          ],
+          "required": false,
+          "raw": "'primary' | 'secondary' | 'ghost'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "primary",
+          "secondary",
+          "ghost"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'primary'"
+          }
+        },
+        "description": "Visual emphasis."
+      }
+    },
+    "args": {
+      "variant": "ghost"
+    },
+    "initialArgs": {
+      "variant": "ghost",
+      "size": "md",
+      "label": "Button",
+      "disabled": false,
+      "loading": false,
+      "iconLeading": "plus",
+      "showIcon": false
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-button",
+      "exportName": "Button",
+      "importPath": "./src/components/Button/Button.tsx",
+      "storiesPath": "./src/components/Button/Button.stories.tsx",
+      "storyIds": [
+        "components-button--primary",
+        "components-button--secondary",
+        "components-button--ghost",
+        "components-button--small",
+        "components-button--large",
+        "components-button--with-icon",
+        "components-button--loading",
+        "components-button--disabled"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-button--small",
+    "sid": "components-button",
+    "title": "Components/Button",
+    "titlePath": [
+      "Components",
+      "Button"
+    ],
+    "name": "Small",
+    "exportName": "Small",
+    "importPath": "./src/components/Button/Button.stories.tsx",
+    "componentPath": "./src/components/Button/Button.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Button/Button.stories.tsx",
+      "holotype": {
+        "args": {
+          "variant": {
+            "as": "variant"
+          },
+          "size": {
+            "as": "variant"
+          },
+          "label": {
+            "as": "text"
+          },
+          "showIcon": {
+            "as": "boolean"
+          }
+        },
+        "states": {
+          "include": [
+            "default",
+            "hover",
+            "focus-visible",
+            "active"
+          ],
+          "foldBooleans": [
+            "disabled",
+            "loading"
+          ]
+        },
+        "grid": {
+          "columns": [
+            "Size"
+          ],
+          "rows": [
+            "Variant"
+          ]
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "args": {
+        "variant": {
+          "as": "variant"
+        },
+        "size": {
+          "as": "variant"
+        },
+        "label": {
+          "as": "text"
+        },
+        "showIcon": {
+          "as": "boolean"
+        }
+      },
+      "states": {
+        "include": [
+          "default",
+          "hover",
+          "focus-visible",
+          "active"
+        ],
+        "foldBooleans": [
+          "disabled",
+          "loading"
+        ]
+      },
+      "grid": {
+        "columns": [
+          "Size"
+        ],
+        "rows": [
+          "Variant"
+        ]
+      }
+    },
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "iconLeading": {
+        "name": "iconLeading",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'plus'"
+          }
+        },
+        "description": "The icon drawn before the label while `showIcon` is on."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible text."
+      },
+      "loading": {
+        "name": "loading",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Shows a spinner in place of the icon, and blocks clicks."
+      },
+      "showIcon": {
+        "name": "showIcon",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Whether the leading icon is visible."
+      },
+      "size": {
+        "name": "size",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "required": false,
+          "raw": "'sm' | 'md' | 'lg'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'md'"
+          }
+        }
+      },
+      "type": {
+        "name": "type",
+        "origin": "docgen-inline",
+        "control": {
+          "type": "object"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "'button'"
+          }
+        }
+      },
+      "variant": {
+        "name": "variant",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "primary",
+            "secondary",
+            "ghost"
+          ],
+          "required": false,
+          "raw": "'primary' | 'secondary' | 'ghost'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "primary",
+          "secondary",
+          "ghost"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'primary'"
+          }
+        },
+        "description": "Visual emphasis."
+      }
+    },
+    "args": {
+      "size": "sm"
+    },
+    "initialArgs": {
+      "variant": "primary",
+      "size": "sm",
+      "label": "Button",
+      "disabled": false,
+      "loading": false,
+      "iconLeading": "plus",
+      "showIcon": false
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-button",
+      "exportName": "Button",
+      "importPath": "./src/components/Button/Button.tsx",
+      "storiesPath": "./src/components/Button/Button.stories.tsx",
+      "storyIds": [
+        "components-button--primary",
+        "components-button--secondary",
+        "components-button--ghost",
+        "components-button--small",
+        "components-button--large",
+        "components-button--with-icon",
+        "components-button--loading",
+        "components-button--disabled"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-button--large",
+    "sid": "components-button",
+    "title": "Components/Button",
+    "titlePath": [
+      "Components",
+      "Button"
+    ],
+    "name": "Large",
+    "exportName": "Large",
+    "importPath": "./src/components/Button/Button.stories.tsx",
+    "componentPath": "./src/components/Button/Button.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Button/Button.stories.tsx",
+      "holotype": {
+        "args": {
+          "variant": {
+            "as": "variant"
+          },
+          "size": {
+            "as": "variant"
+          },
+          "label": {
+            "as": "text"
+          },
+          "showIcon": {
+            "as": "boolean"
+          }
+        },
+        "states": {
+          "include": [
+            "default",
+            "hover",
+            "focus-visible",
+            "active"
+          ],
+          "foldBooleans": [
+            "disabled",
+            "loading"
+          ]
+        },
+        "grid": {
+          "columns": [
+            "Size"
+          ],
+          "rows": [
+            "Variant"
+          ]
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "args": {
+        "variant": {
+          "as": "variant"
+        },
+        "size": {
+          "as": "variant"
+        },
+        "label": {
+          "as": "text"
+        },
+        "showIcon": {
+          "as": "boolean"
+        }
+      },
+      "states": {
+        "include": [
+          "default",
+          "hover",
+          "focus-visible",
+          "active"
+        ],
+        "foldBooleans": [
+          "disabled",
+          "loading"
+        ]
+      },
+      "grid": {
+        "columns": [
+          "Size"
+        ],
+        "rows": [
+          "Variant"
+        ]
+      }
+    },
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "iconLeading": {
+        "name": "iconLeading",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'plus'"
+          }
+        },
+        "description": "The icon drawn before the label while `showIcon` is on."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible text."
+      },
+      "loading": {
+        "name": "loading",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Shows a spinner in place of the icon, and blocks clicks."
+      },
+      "showIcon": {
+        "name": "showIcon",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Whether the leading icon is visible."
+      },
+      "size": {
+        "name": "size",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "required": false,
+          "raw": "'sm' | 'md' | 'lg'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'md'"
+          }
+        }
+      },
+      "type": {
+        "name": "type",
+        "origin": "docgen-inline",
+        "control": {
+          "type": "object"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "'button'"
+          }
+        }
+      },
+      "variant": {
+        "name": "variant",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "primary",
+            "secondary",
+            "ghost"
+          ],
+          "required": false,
+          "raw": "'primary' | 'secondary' | 'ghost'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "primary",
+          "secondary",
+          "ghost"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'primary'"
+          }
+        },
+        "description": "Visual emphasis."
+      }
+    },
+    "args": {
+      "size": "lg"
+    },
+    "initialArgs": {
+      "variant": "primary",
+      "size": "lg",
+      "label": "Button",
+      "disabled": false,
+      "loading": false,
+      "iconLeading": "plus",
+      "showIcon": false
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-button",
+      "exportName": "Button",
+      "importPath": "./src/components/Button/Button.tsx",
+      "storiesPath": "./src/components/Button/Button.stories.tsx",
+      "storyIds": [
+        "components-button--primary",
+        "components-button--secondary",
+        "components-button--ghost",
+        "components-button--small",
+        "components-button--large",
+        "components-button--with-icon",
+        "components-button--loading",
+        "components-button--disabled"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-button--with-icon",
+    "sid": "components-button",
+    "title": "Components/Button",
+    "titlePath": [
+      "Components",
+      "Button"
+    ],
+    "name": "With Icon",
+    "exportName": "WithIcon",
+    "importPath": "./src/components/Button/Button.stories.tsx",
+    "componentPath": "./src/components/Button/Button.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Button/Button.stories.tsx",
+      "holotype": {
+        "args": {
+          "variant": {
+            "as": "variant"
+          },
+          "size": {
+            "as": "variant"
+          },
+          "label": {
+            "as": "text"
+          },
+          "showIcon": {
+            "as": "boolean"
+          }
+        },
+        "states": {
+          "include": [
+            "default",
+            "hover",
+            "focus-visible",
+            "active"
+          ],
+          "foldBooleans": [
+            "disabled",
+            "loading"
+          ]
+        },
+        "grid": {
+          "columns": [
+            "Size"
+          ],
+          "rows": [
+            "Variant"
+          ]
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "args": {
+        "variant": {
+          "as": "variant"
+        },
+        "size": {
+          "as": "variant"
+        },
+        "label": {
+          "as": "text"
+        },
+        "showIcon": {
+          "as": "boolean"
+        }
+      },
+      "states": {
+        "include": [
+          "default",
+          "hover",
+          "focus-visible",
+          "active"
+        ],
+        "foldBooleans": [
+          "disabled",
+          "loading"
+        ]
+      },
+      "grid": {
+        "columns": [
+          "Size"
+        ],
+        "rows": [
+          "Variant"
+        ]
+      }
+    },
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "iconLeading": {
+        "name": "iconLeading",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'plus'"
+          }
+        },
+        "description": "The icon drawn before the label while `showIcon` is on."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible text."
+      },
+      "loading": {
+        "name": "loading",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Shows a spinner in place of the icon, and blocks clicks."
+      },
+      "showIcon": {
+        "name": "showIcon",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Whether the leading icon is visible."
+      },
+      "size": {
+        "name": "size",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "required": false,
+          "raw": "'sm' | 'md' | 'lg'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'md'"
+          }
+        }
+      },
+      "type": {
+        "name": "type",
+        "origin": "docgen-inline",
+        "control": {
+          "type": "object"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "'button'"
+          }
+        }
+      },
+      "variant": {
+        "name": "variant",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "primary",
+            "secondary",
+            "ghost"
+          ],
+          "required": false,
+          "raw": "'primary' | 'secondary' | 'ghost'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "primary",
+          "secondary",
+          "ghost"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'primary'"
+          }
+        },
+        "description": "Visual emphasis."
+      }
+    },
+    "args": {
+      "showIcon": true,
+      "iconLeading": "plus",
+      "label": "Add item"
+    },
+    "initialArgs": {
+      "variant": "primary",
+      "size": "md",
+      "label": "Add item",
+      "disabled": false,
+      "loading": false,
+      "iconLeading": "plus",
+      "showIcon": true
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-button",
+      "exportName": "Button",
+      "importPath": "./src/components/Button/Button.tsx",
+      "storiesPath": "./src/components/Button/Button.stories.tsx",
+      "storyIds": [
+        "components-button--primary",
+        "components-button--secondary",
+        "components-button--ghost",
+        "components-button--small",
+        "components-button--large",
+        "components-button--with-icon",
+        "components-button--loading",
+        "components-button--disabled"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-button--loading",
+    "sid": "components-button",
+    "title": "Components/Button",
+    "titlePath": [
+      "Components",
+      "Button"
+    ],
+    "name": "Loading",
+    "exportName": "Loading",
+    "importPath": "./src/components/Button/Button.stories.tsx",
+    "componentPath": "./src/components/Button/Button.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Button/Button.stories.tsx",
+      "holotype": {
+        "args": {
+          "variant": {
+            "as": "variant"
+          },
+          "size": {
+            "as": "variant"
+          },
+          "label": {
+            "as": "text"
+          },
+          "showIcon": {
+            "as": "boolean"
+          }
+        },
+        "states": {
+          "include": [
+            "default",
+            "hover",
+            "focus-visible",
+            "active"
+          ],
+          "foldBooleans": [
+            "disabled",
+            "loading"
+          ]
+        },
+        "grid": {
+          "columns": [
+            "Size"
+          ],
+          "rows": [
+            "Variant"
+          ]
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "args": {
+        "variant": {
+          "as": "variant"
+        },
+        "size": {
+          "as": "variant"
+        },
+        "label": {
+          "as": "text"
+        },
+        "showIcon": {
+          "as": "boolean"
+        }
+      },
+      "states": {
+        "include": [
+          "default",
+          "hover",
+          "focus-visible",
+          "active"
+        ],
+        "foldBooleans": [
+          "disabled",
+          "loading"
+        ]
+      },
+      "grid": {
+        "columns": [
+          "Size"
+        ],
+        "rows": [
+          "Variant"
+        ]
+      }
+    },
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "iconLeading": {
+        "name": "iconLeading",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'plus'"
+          }
+        },
+        "description": "The icon drawn before the label while `showIcon` is on."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible text."
+      },
+      "loading": {
+        "name": "loading",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Shows a spinner in place of the icon, and blocks clicks."
+      },
+      "showIcon": {
+        "name": "showIcon",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Whether the leading icon is visible."
+      },
+      "size": {
+        "name": "size",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "required": false,
+          "raw": "'sm' | 'md' | 'lg'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'md'"
+          }
+        }
+      },
+      "type": {
+        "name": "type",
+        "origin": "docgen-inline",
+        "control": {
+          "type": "object"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "'button'"
+          }
+        }
+      },
+      "variant": {
+        "name": "variant",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "primary",
+            "secondary",
+            "ghost"
+          ],
+          "required": false,
+          "raw": "'primary' | 'secondary' | 'ghost'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "primary",
+          "secondary",
+          "ghost"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'primary'"
+          }
+        },
+        "description": "Visual emphasis."
+      }
+    },
+    "args": {
+      "loading": true,
+      "label": "Saving"
+    },
+    "initialArgs": {
+      "variant": "primary",
+      "size": "md",
+      "label": "Saving",
+      "disabled": false,
+      "loading": true,
+      "iconLeading": "plus",
+      "showIcon": false
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-button",
+      "exportName": "Button",
+      "importPath": "./src/components/Button/Button.tsx",
+      "storiesPath": "./src/components/Button/Button.stories.tsx",
+      "storyIds": [
+        "components-button--primary",
+        "components-button--secondary",
+        "components-button--ghost",
+        "components-button--small",
+        "components-button--large",
+        "components-button--with-icon",
+        "components-button--loading",
+        "components-button--disabled"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-button--disabled",
+    "sid": "components-button",
+    "title": "Components/Button",
+    "titlePath": [
+      "Components",
+      "Button"
+    ],
+    "name": "Disabled",
+    "exportName": "Disabled",
+    "importPath": "./src/components/Button/Button.stories.tsx",
+    "componentPath": "./src/components/Button/Button.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Button/Button.stories.tsx",
+      "holotype": {
+        "args": {
+          "variant": {
+            "as": "variant"
+          },
+          "size": {
+            "as": "variant"
+          },
+          "label": {
+            "as": "text"
+          },
+          "showIcon": {
+            "as": "boolean"
+          }
+        },
+        "states": {
+          "include": [
+            "default",
+            "hover",
+            "focus-visible",
+            "active"
+          ],
+          "foldBooleans": [
+            "disabled",
+            "loading"
+          ]
+        },
+        "grid": {
+          "columns": [
+            "Size"
+          ],
+          "rows": [
+            "Variant"
+          ]
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "args": {
+        "variant": {
+          "as": "variant"
+        },
+        "size": {
+          "as": "variant"
+        },
+        "label": {
+          "as": "text"
+        },
+        "showIcon": {
+          "as": "boolean"
+        }
+      },
+      "states": {
+        "include": [
+          "default",
+          "hover",
+          "focus-visible",
+          "active"
+        ],
+        "foldBooleans": [
+          "disabled",
+          "loading"
+        ]
+      },
+      "grid": {
+        "columns": [
+          "Size"
+        ],
+        "rows": [
+          "Variant"
+        ]
+      }
+    },
+    "argTypes": {
+      "disabled": {
+        "name": "disabled",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        }
+      },
+      "iconLeading": {
+        "name": "iconLeading",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "unknown",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "arrow-right",
+          "check",
+          "chevron-down",
+          "info",
+          "plus",
+          "search",
+          "star",
+          "x"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'plus'"
+          }
+        },
+        "description": "The icon drawn before the label while `showIcon` is on."
+      },
+      "label": {
+        "name": "label",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "The visible text."
+      },
+      "loading": {
+        "name": "loading",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Shows a spinner in place of the icon, and blocks clicks."
+      },
+      "showIcon": {
+        "name": "showIcon",
+        "origin": "story",
+        "type": {
+          "name": "boolean",
+          "required": false
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "false"
+          }
+        },
+        "description": "Whether the leading icon is visible."
+      },
+      "size": {
+        "name": "size",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "required": false,
+          "raw": "'sm' | 'md' | 'lg'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'md'"
+          }
+        }
+      },
+      "type": {
+        "name": "type",
+        "origin": "docgen-inline",
+        "control": {
+          "type": "object"
+        },
+        "table": {
+          "defaultValue": {
+            "summary": "'button'"
+          }
+        }
+      },
+      "variant": {
+        "name": "variant",
+        "origin": "story",
+        "type": {
+          "name": "enum",
+          "value": [
+            "primary",
+            "secondary",
+            "ghost"
+          ],
+          "required": false,
+          "raw": "'primary' | 'secondary' | 'ghost'"
+        },
+        "control": {
+          "type": "inline-radio"
+        },
+        "options": [
+          "primary",
+          "secondary",
+          "ghost"
+        ],
+        "table": {
+          "defaultValue": {
+            "summary": "'primary'"
+          }
+        },
+        "description": "Visual emphasis."
+      }
+    },
+    "args": {
+      "disabled": true
+    },
+    "initialArgs": {
+      "variant": "primary",
+      "size": "md",
+      "label": "Button",
+      "disabled": true,
+      "loading": false,
+      "iconLeading": "plus",
+      "showIcon": false
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-button",
+      "exportName": "Button",
+      "importPath": "./src/components/Button/Button.tsx",
+      "storiesPath": "./src/components/Button/Button.stories.tsx",
+      "storyIds": [
+        "components-button--primary",
+        "components-button--secondary",
+        "components-button--ghost",
+        "components-button--small",
+        "components-button--large",
+        "components-button--with-icon",
+        "components-button--loading",
+        "components-button--disabled"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  }
+]

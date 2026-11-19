@@ -1,0 +1,528 @@
+[
+  {
+    "id": "components-card--default",
+    "sid": "components-card",
+    "title": "Components/Card",
+    "titlePath": [
+      "Components",
+      "Card"
+    ],
+    "name": "Default",
+    "exportName": "Default",
+    "importPath": "./src/components/Card/Card.stories.tsx",
+    "componentPath": "./src/components/Card/Card.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Card/Card.stories.tsx",
+      "holotype": {
+        "slots": {
+          "actions": {
+            "selector": "[data-slot=actions]"
+          }
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "slots": {
+        "actions": {
+          "selector": "[data-slot=actions]"
+        }
+      }
+    },
+    "argTypes": {
+      "body": {
+        "name": "body",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Body copy. Clamped to three lines."
+      },
+      "children": {
+        "name": "children",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "ReactNode",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "None",
+          "Single",
+          "Pair"
+        ],
+        "mapping": {
+          "None": {
+            "$undef": true
+          },
+          "Single": {
+            "$node": "react",
+            "type": "v"
+          },
+          "Pair": {
+            "$node": "react",
+            "type": ""
+          }
+        },
+        "description": "Actions shown in the footer, which sticks to the bottom of the card."
+      },
+      "className": {
+        "name": "className",
+        "origin": "docgen-inline",
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "other",
+              "value": "undefined"
+            }
+          ],
+          "required": false,
+          "raw": "string | undefined"
+        },
+        "control": {
+          "type": "object"
+        }
+      },
+      "media": {
+        "name": "media",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "None",
+          "Landscape"
+        ],
+        "mapping": {
+          "None": {
+            "$undef": true
+          },
+          "Landscape": "static:storybook-static/assets/landscape-Bp9n5ecF.png"
+        },
+        "description": "URL of a cover image, cropped to fill the media area."
+      },
+      "title": {
+        "name": "title",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        }
+      }
+    },
+    "args": {},
+    "initialArgs": {
+      "title": "Mountain retreat",
+      "body": "A quiet cabin above the tree line, two hours from the city.",
+      "media": "None",
+      "children": "Pair"
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-card",
+      "exportName": "Card",
+      "importPath": "./src/components/Card/Card.tsx",
+      "storiesPath": "./src/components/Card/Card.stories.tsx",
+      "storyIds": [
+        "components-card--default",
+        "components-card--with-media",
+        "components-card--long-text"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-card--with-media",
+    "sid": "components-card",
+    "title": "Components/Card",
+    "titlePath": [
+      "Components",
+      "Card"
+    ],
+    "name": "With Media",
+    "exportName": "WithMedia",
+    "importPath": "./src/components/Card/Card.stories.tsx",
+    "componentPath": "./src/components/Card/Card.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Card/Card.stories.tsx",
+      "holotype": {
+        "slots": {
+          "actions": {
+            "selector": "[data-slot=actions]"
+          }
+        }
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "slots": {
+        "actions": {
+          "selector": "[data-slot=actions]"
+        }
+      }
+    },
+    "argTypes": {
+      "body": {
+        "name": "body",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Body copy. Clamped to three lines."
+      },
+      "children": {
+        "name": "children",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "ReactNode",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "None",
+          "Single",
+          "Pair"
+        ],
+        "mapping": {
+          "None": {
+            "$undef": true
+          },
+          "Single": {
+            "$node": "react",
+            "type": "v"
+          },
+          "Pair": {
+            "$node": "react",
+            "type": ""
+          }
+        },
+        "description": "Actions shown in the footer, which sticks to the bottom of the card."
+      },
+      "className": {
+        "name": "className",
+        "origin": "docgen-inline",
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "other",
+              "value": "undefined"
+            }
+          ],
+          "required": false,
+          "raw": "string | undefined"
+        },
+        "control": {
+          "type": "object"
+        }
+      },
+      "media": {
+        "name": "media",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "None",
+          "Landscape"
+        ],
+        "mapping": {
+          "None": {
+            "$undef": true
+          },
+          "Landscape": "static:storybook-static/assets/landscape-Bp9n5ecF.png"
+        },
+        "description": "URL of a cover image, cropped to fill the media area."
+      },
+      "title": {
+        "name": "title",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        }
+      }
+    },
+    "args": {
+      "media": "Landscape"
+    },
+    "initialArgs": {
+      "title": "Mountain retreat",
+      "body": "A quiet cabin above the tree line, two hours from the city.",
+      "media": "Landscape",
+      "children": "Pair"
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-card",
+      "exportName": "Card",
+      "importPath": "./src/components/Card/Card.tsx",
+      "storiesPath": "./src/components/Card/Card.stories.tsx",
+      "storyIds": [
+        "components-card--default",
+        "components-card--with-media",
+        "components-card--long-text"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "components-card--long-text",
+    "sid": "components-card",
+    "title": "Components/Card",
+    "titlePath": [
+      "Components",
+      "Card"
+    ],
+    "name": "Long Text",
+    "exportName": "LongText",
+    "importPath": "./src/components/Card/Card.stories.tsx",
+    "componentPath": "./src/components/Card/Card.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/components/Card/Card.stories.tsx",
+      "holotype": {
+        "slots": {
+          "actions": {
+            "selector": "[data-slot=actions]"
+          }
+        },
+        "textMode": "locked-lines"
+      },
+      "__isArgsStory": true
+    },
+    "holotype": {
+      "slots": {
+        "actions": {
+          "selector": "[data-slot=actions]"
+        }
+      },
+      "textMode": "locked-lines"
+    },
+    "argTypes": {
+      "body": {
+        "name": "body",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        },
+        "description": "Body copy. Clamped to three lines."
+      },
+      "children": {
+        "name": "children",
+        "origin": "story",
+        "type": {
+          "name": "other",
+          "value": "ReactNode",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "None",
+          "Single",
+          "Pair"
+        ],
+        "mapping": {
+          "None": {
+            "$undef": true
+          },
+          "Single": {
+            "$node": "react",
+            "type": "v"
+          },
+          "Pair": {
+            "$node": "react",
+            "type": ""
+          }
+        },
+        "description": "Actions shown in the footer, which sticks to the bottom of the card."
+      },
+      "className": {
+        "name": "className",
+        "origin": "docgen-inline",
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "other",
+              "value": "undefined"
+            }
+          ],
+          "required": false,
+          "raw": "string | undefined"
+        },
+        "control": {
+          "type": "object"
+        }
+      },
+      "media": {
+        "name": "media",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": false
+        },
+        "control": {
+          "type": "select"
+        },
+        "options": [
+          "None",
+          "Landscape"
+        ],
+        "mapping": {
+          "None": {
+            "$undef": true
+          },
+          "Landscape": "static:storybook-static/assets/landscape-Bp9n5ecF.png"
+        },
+        "description": "URL of a cover image, cropped to fill the media area."
+      },
+      "title": {
+        "name": "title",
+        "origin": "story",
+        "type": {
+          "name": "string",
+          "required": true
+        },
+        "control": {
+          "type": "text"
+        }
+      }
+    },
+    "args": {
+      "title": "A very long card title that wraps onto a second line",
+      "body": "Body copy that is far longer than three lines, so the line clamp cuts it off with an ellipsis. It keeps going to make sure the clamp, not the card height, decides where the text ends. Designers can still edit the text in Figma; the line count stays locked."
+    },
+    "initialArgs": {
+      "title": "A very long card title that wraps onto a second line",
+      "body": "Body copy that is far longer than three lines, so the line clamp cuts it off with an ellipsis. It keeps going to make sure the clamp, not the card height, decides where the text ends. Designers can still edit the text in Figma; the line count stays locked.",
+      "media": "None",
+      "children": "Pair"
+    },
+    "storyGlobals": {},
+    "code": {
+      "sid": "components-card",
+      "exportName": "Card",
+      "importPath": "./src/components/Card/Card.tsx",
+      "storiesPath": "./src/components/Card/Card.stories.tsx",
+      "storyIds": [
+        "components-card--default",
+        "components-card--with-media",
+        "components-card--long-text"
+      ],
+      "package": "@holotype/fixture-ds-react"
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  }
+]

@@ -1,0 +1,352 @@
+{
+  "v": 0,
+  "components": {
+    "components-badge": {
+      "id": "components-badge",
+      "name": "Badge",
+      "path": "./src/components/Badge/Badge.stories.tsx",
+      "jsDocTags": {},
+      "import": "import { Badge, Stack } from '@holotype/fixture-ds-react';",
+      "reactDocgen": {
+        "displayName": "Badge",
+        "actualName": "Badge",
+        "exportName": "Badge"
+      },
+      "stories": [
+        {
+          "id": "components-badge--default",
+          "name": "Default"
+        },
+        {
+          "id": "components-badge--tones",
+          "name": "Tones"
+        },
+        {
+          "id": "components-badge--with-dot",
+          "name": "With Dot"
+        }
+      ]
+    },
+    "components-button": {
+      "id": "components-button",
+      "name": "Button",
+      "path": "./src/components/Button/Button.stories.tsx",
+      "jsDocTags": {},
+      "import": "import { Button } from '@holotype/fixture-ds-react';",
+      "reactDocgen": {
+        "displayName": "Button",
+        "actualName": "Button",
+        "exportName": "Button"
+      },
+      "stories": [
+        {
+          "id": "components-button--primary",
+          "name": "Primary"
+        },
+        {
+          "id": "components-button--secondary",
+          "name": "Secondary"
+        },
+        {
+          "id": "components-button--ghost",
+          "name": "Ghost"
+        },
+        {
+          "id": "components-button--small",
+          "name": "Small"
+        },
+        {
+          "id": "components-button--large",
+          "name": "Large"
+        },
+        {
+          "id": "components-button--with-icon",
+          "name": "With Icon"
+        },
+        {
+          "id": "components-button--loading",
+          "name": "Loading"
+        },
+        {
+          "id": "components-button--disabled",
+          "name": "Disabled"
+        }
+      ]
+    },
+    "components-card": {
+      "id": "components-card",
+      "name": "Card",
+      "path": "./src/components/Card/Card.stories.tsx",
+      "jsDocTags": {},
+      "import": "import { Button, Card } from '@holotype/fixture-ds-react';",
+      "reactDocgen": {
+        "displayName": "Card",
+        "actualName": "Card",
+        "exportName": "Card"
+      },
+      "stories": [
+        {
+          "id": "components-card--default",
+          "name": "Default"
+        },
+        {
+          "id": "components-card--with-media",
+          "name": "With Media"
+        },
+        {
+          "id": "components-card--long-text",
+          "name": "Long Text"
+        }
+      ]
+    },
+    "components-icon": {
+      "id": "components-icon",
+      "name": "Icon",
+      "path": "./src/components/Icon/Icon.stories.tsx",
+      "jsDocTags": {},
+      "import": "import { Icon } from '@holotype/fixture-ds-react';",
+      "reactDocgen": {
+        "displayName": "Icon",
+        "actualName": "Icon",
+        "exportName": "Icon"
+      },
+      "stories": [
+        {
+          "id": "components-icon--default",
+          "name": "Default"
+        },
+        {
+          "id": "components-icon--gallery",
+          "name": "Gallery"
+        }
+      ]
+    },
+    "components-input": {
+      "id": "components-input",
+      "name": "Input",
+      "path": "./src/components/Input/Input.stories.tsx",
+      "jsDocTags": {},
+      "import": "import { Input } from '@holotype/fixture-ds-react';",
+      "reactDocgen": {
+        "displayName": "Input",
+        "actualName": "Input",
+        "exportName": "Input"
+      },
+      "stories": [
+        {
+          "id": "components-input--default",
+          "name": "Default"
+        },
+        {
+          "id": "components-input--with-error",
+          "name": "With Error"
+        },
+        {
+          "id": "components-input--disabled",
+          "name": "Disabled"
+        },
+        {
+          "id": "components-input--with-prefix",
+          "name": "With Prefix"
+        }
+      ]
+    },
+    "components-stack": {
+      "id": "components-stack",
+      "name": "Stack",
+      "path": "./src/components/Stack/Stack.stories.tsx",
+      "jsDocTags": {},
+      "import": "import { Badge, Button, Input, Stack } from '@holotype/fixture-ds-react';\nimport { Button } from '../Button/Button.tsx';\nimport { Input } from '../Input/Input.tsx';\nimport { Badge } from '../Badge/Badge.tsx';",
+      "reactDocgen": {
+        "displayName": "Stack",
+        "actualName": "Stack",
+        "exportName": "Stack"
+      },
+      "stories": [
+        {
+          "id": "components-stack--row",
+          "name": "Row"
+        },
+        {
+          "id": "components-stack--column",
+          "name": "Column"
+        },
+        {
+          "id": "components-stack--wrap",
+          "name": "Wrap"
+        }
+      ]
+    },
+    "micro-backgrounds": {
+      "id": "micro-backgrounds",
+      "name": "Backgrounds",
+      "path": "./src/micro/Backgrounds.stories.tsx",
+      "jsDocTags": {},
+      "error": {
+        "name": "No component found",
+        "message": "We could not detect the component from your story file. Specify meta.component.\n   7 |  * Ids `micro-backgrounds--<case>"
+      },
+      "stories": [
+        {
+          "id": "micro-backgrounds--solid-alpha",
+          "name": "Solid Alpha"
+        },
+        {
+          "id": "micro-backgrounds--oklch",
+          "name": "Oklch"
+        },
+        {
+          "id": "micro-backgrounds--linear-angle",
+          "name": "Linear Angle"
+        },
+        {
+          "id": "micro-backgrounds--linear-hard-stops",
+          "name": "Linear Hard Stops"
+        },
+        {
+          "id": "micro-backgrounds--radial",
+          "name": "Radial"
+        },
+        {
+          "id": "micro-backgrounds--conic",
+          "name": "Conic"
+        },
+        {
+          "id": "micro-backgrounds--multi-layer",
+          "name": "Multi Layer"
+        },
+        {
+          "id": "micro-backgrounds--image-cover",
+          "name": "Image Cover"
+        }
+      ]
+    },
+    "micro-borders": {
+      "id": "micro-borders",
+      "name": "Borders",
+      "path": "./src/micro/Borders.stories.tsx",
+      "jsDocTags": {},
+      "error": {
+        "name": "No component found",
+        "message": "We could not detect the component from your story file. Specify meta.component.\n   7 |  * are API: never rename an expor"
+      },
+      "stories": [
+        {
+          "id": "micro-borders--uniform",
+          "name": "Uniform"
+        },
+        {
+          "id": "micro-borders--per-side-widths",
+          "name": "Per Side Widths"
+        },
+        {
+          "id": "micro-borders--per-side-colors",
+          "name": "Per Side Colors"
+        },
+        {
+          "id": "micro-borders--dashed",
+          "name": "Dashed"
+        },
+        {
+          "id": "micro-borders--outline-offset",
+          "name": "Outline Offset"
+        },
+        {
+          "id": "micro-borders--radius-per-corner",
+          "name": "Radius Per Corner"
+        },
+        {
+          "id": "micro-borders--radius-overflow",
+          "name": "Radius Overflow"
+        }
+      ]
+    },
+    "micro-flex": {
+      "id": "micro-flex",
+      "name": "Flex",
+      "path": "./src/micro/Flex.stories.tsx",
+      "jsDocTags": {},
+      "error": {
+        "name": "No component found",
+        "message": "We could not detect the component from your story file. Specify meta.component.\n   7 |  * are API: never rename an expor"
+      },
+      "stories": [
+        {
+          "id": "micro-flex--row",
+          "name": "Row"
+        },
+        {
+          "id": "micro-flex--column",
+          "name": "Column"
+        },
+        {
+          "id": "micro-flex--wrap",
+          "name": "Wrap"
+        },
+        {
+          "id": "micro-flex--gap",
+          "name": "Gap"
+        },
+        {
+          "id": "micro-flex--justify-between",
+          "name": "Justify Between"
+        },
+        {
+          "id": "micro-flex--align-center",
+          "name": "Align Center"
+        },
+        {
+          "id": "micro-flex--grow",
+          "name": "Grow"
+        },
+        {
+          "id": "micro-flex--nested",
+          "name": "Nested"
+        }
+      ]
+    },
+    "micro-text": {
+      "id": "micro-text",
+      "name": "Text",
+      "path": "./src/micro/Text.stories.tsx",
+      "jsDocTags": {},
+      "error": {
+        "name": "No component found",
+        "message": "We could not detect the component from your story file. Specify meta.component.\n   7 |  * are API: never rename an expor"
+      },
+      "stories": [
+        {
+          "id": "micro-text--single-line",
+          "name": "Single Line"
+        },
+        {
+          "id": "micro-text--wrap-paragraph",
+          "name": "Wrap Paragraph"
+        },
+        {
+          "id": "micro-text--weights",
+          "name": "Weights"
+        },
+        {
+          "id": "micro-text--line-height-px",
+          "name": "Line Height Px"
+        },
+        {
+          "id": "micro-text--letter-spacing",
+          "name": "Letter Spacing"
+        },
+        {
+          "id": "micro-text--text-transform",
+          "name": "Text Transform"
+        },
+        {
+          "id": "micro-text--mixed-inline",
+          "name": "Mixed Inline"
+        }
+      ]
+    }
+  },
+  "meta": {
+    "docgen": "react-docgen"
+  }
+}

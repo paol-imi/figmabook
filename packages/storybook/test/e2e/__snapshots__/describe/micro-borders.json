@@ -1,0 +1,401 @@
+[
+  {
+    "id": "micro-borders--uniform",
+    "sid": "micro-borders",
+    "title": "Micro/Borders",
+    "titlePath": [
+      "Micro",
+      "Borders"
+    ],
+    "name": "Uniform",
+    "exportName": "Uniform",
+    "importPath": "./src/micro/Borders.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Borders.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-borders",
+      "storiesPath": "./src/micro/Borders.stories.tsx",
+      "storyIds": [
+        "micro-borders--uniform",
+        "micro-borders--per-side-widths",
+        "micro-borders--per-side-colors",
+        "micro-borders--dashed",
+        "micro-borders--outline-offset",
+        "micro-borders--radius-per-corner",
+        "micro-borders--radius-overflow"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-borders--per-side-widths",
+    "sid": "micro-borders",
+    "title": "Micro/Borders",
+    "titlePath": [
+      "Micro",
+      "Borders"
+    ],
+    "name": "Per Side Widths",
+    "exportName": "PerSideWidths",
+    "importPath": "./src/micro/Borders.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Borders.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-borders",
+      "storiesPath": "./src/micro/Borders.stories.tsx",
+      "storyIds": [
+        "micro-borders--uniform",
+        "micro-borders--per-side-widths",
+        "micro-borders--per-side-colors",
+        "micro-borders--dashed",
+        "micro-borders--outline-offset",
+        "micro-borders--radius-per-corner",
+        "micro-borders--radius-overflow"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-borders--per-side-colors",
+    "sid": "micro-borders",
+    "title": "Micro/Borders",
+    "titlePath": [
+      "Micro",
+      "Borders"
+    ],
+    "name": "Per Side Colors",
+    "exportName": "PerSideColors",
+    "importPath": "./src/micro/Borders.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Borders.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-borders",
+      "storiesPath": "./src/micro/Borders.stories.tsx",
+      "storyIds": [
+        "micro-borders--uniform",
+        "micro-borders--per-side-widths",
+        "micro-borders--per-side-colors",
+        "micro-borders--dashed",
+        "micro-borders--outline-offset",
+        "micro-borders--radius-per-corner",
+        "micro-borders--radius-overflow"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-borders--dashed",
+    "sid": "micro-borders",
+    "title": "Micro/Borders",
+    "titlePath": [
+      "Micro",
+      "Borders"
+    ],
+    "name": "Dashed",
+    "exportName": "Dashed",
+    "importPath": "./src/micro/Borders.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Borders.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-borders",
+      "storiesPath": "./src/micro/Borders.stories.tsx",
+      "storyIds": [
+        "micro-borders--uniform",
+        "micro-borders--per-side-widths",
+        "micro-borders--per-side-colors",
+        "micro-borders--dashed",
+        "micro-borders--outline-offset",
+        "micro-borders--radius-per-corner",
+        "micro-borders--radius-overflow"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-borders--outline-offset",
+    "sid": "micro-borders",
+    "title": "Micro/Borders",
+    "titlePath": [
+      "Micro",
+      "Borders"
+    ],
+    "name": "Outline Offset",
+    "exportName": "OutlineOffset",
+    "importPath": "./src/micro/Borders.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Borders.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-borders",
+      "storiesPath": "./src/micro/Borders.stories.tsx",
+      "storyIds": [
+        "micro-borders--uniform",
+        "micro-borders--per-side-widths",
+        "micro-borders--per-side-colors",
+        "micro-borders--dashed",
+        "micro-borders--outline-offset",
+        "micro-borders--radius-per-corner",
+        "micro-borders--radius-overflow"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-borders--radius-per-corner",
+    "sid": "micro-borders",
+    "title": "Micro/Borders",
+    "titlePath": [
+      "Micro",
+      "Borders"
+    ],
+    "name": "Radius Per Corner",
+    "exportName": "RadiusPerCorner",
+    "importPath": "./src/micro/Borders.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Borders.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-borders",
+      "storiesPath": "./src/micro/Borders.stories.tsx",
+      "storyIds": [
+        "micro-borders--uniform",
+        "micro-borders--per-side-widths",
+        "micro-borders--per-side-colors",
+        "micro-borders--dashed",
+        "micro-borders--outline-offset",
+        "micro-borders--radius-per-corner",
+        "micro-borders--radius-overflow"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  },
+  {
+    "id": "micro-borders--radius-overflow",
+    "sid": "micro-borders",
+    "title": "Micro/Borders",
+    "titlePath": [
+      "Micro",
+      "Borders"
+    ],
+    "name": "Radius Overflow",
+    "exportName": "RadiusOverflow",
+    "importPath": "./src/micro/Borders.stories.tsx",
+    "tags": [
+      "dev",
+      "test",
+      "figma"
+    ],
+    "parameters": {
+      "backgrounds": {
+        "grid": {
+          "cellSize": 20,
+          "opacity": 0.5,
+          "cellAmount": 5
+        },
+        "disable": false
+      },
+      "throwPlayFunctionExceptions": false,
+      "renderer": "react",
+      "layout": "padded",
+      "controls": {
+        "expanded": true
+      },
+      "fileName": "./src/micro/Borders.stories.tsx",
+      "__isArgsStory": false
+    },
+    "holotype": {},
+    "argTypes": {},
+    "args": {},
+    "initialArgs": {},
+    "storyGlobals": {},
+    "code": {
+      "sid": "micro-borders",
+      "storiesPath": "./src/micro/Borders.stories.tsx",
+      "storyIds": [
+        "micro-borders--uniform",
+        "micro-borders--per-side-widths",
+        "micro-borders--per-side-colors",
+        "micro-borders--dashed",
+        "micro-borders--outline-offset",
+        "micro-borders--radius-per-corner",
+        "micro-borders--radius-overflow"
+      ]
+    },
+    "subcomponents": [],
+    "hasPlay": false,
+    "usesMount": false,
+    "diagnostics": []
+  }
+]

@@ -1,6 +1,6 @@
 import { type CNode, validateCaptureDoc } from '@holotype/ir';
 import { createDiagnostic, diagnostic } from '@holotype/shared';
-import type { RenderResult, SbError } from '@holotype/storybook';
+import type { RenderRequest, RenderResult, SbError } from '@holotype/storybook';
 import type { ElementHandle, Page } from 'playwright';
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_ENVIRONMENT } from '../src';
@@ -67,16 +67,18 @@ interface FakeOptions {
   readonly serialize?: (PageCapture | Error)[];
   readonly frozen?: number;
   readonly broken?: boolean;
+  /** `nth-child` indexes from the container down to the root (decorators unwrapped). */
+  readonly rootPath?: number[];
 }
 
 function fakeSession(options: FakeOptions = {}) {
-  const calls = { serialize: 0, screenshot: 0 };
+  const calls = { serialize: 0, screenshot: 0, requests: [] as RenderRequest[] };
   const results = [...(options.serialize ?? [pageCapture()])];
   const handle = {
     evaluate: async (fn: unknown) => {
-      // resolvedRootSelector: the container matches `#storybook-root`, the root is child 1.
+      // resolvedRootSelector: the container matches `#storybook-root`, the root is its child 1.
       if (String(fn).includes('defaults')) return '#storybook-root';
-      if (String(fn).includes('indexOf')) return 1;
+      if (String(fn).includes('indexOf')) return options.rootPath ?? [1];
       calls.serialize += 1;
       const next = results.shift() ?? pageCapture();
       if (next instanceof Error) throw next;
@@ -106,7 +108,10 @@ function fakeSession(options: FakeOptions = {}) {
     page,
     driver: {
       mode: 'url',
-      render: async () => options.render ?? render,
+      render: async (request: RenderRequest) => {
+        calls.requests.push(request);
+        return options.render ?? render;
+      },
       reload: async () => {},
       dispose: async () => {},
     },
@@ -158,6 +163,14 @@ describe('captureVariant', () => {
       'static:storybook-static/iframe.html',
     ]);
     expect(outcomes[0]?.hash).toBe(outcomes[1]?.hash);
+  });
+
+  it('passes unwrap to the driver and names an unwrapped root by its path from the container', async () => {
+    const { session, calls } = fakeSession({ rootPath: [1, 2, 1] });
+    const outcome = await captureVariant(session, { storyId: 'micro-flex--row', unwrap: 2, keepLayout: true }, context);
+    if (!outcome.ok) throw new Error(JSON.stringify(outcome.diagnostic));
+    expect(calls.requests[0]).toMatchObject({ storyId: 'micro-flex--row', unwrap: 2, keepLayout: true });
+    expect(outcome.doc.target.rootSelector).toBe('#storybook-root > :nth-child(1) > :nth-child(2) > :nth-child(1)');
   });
 
   it('keeps the planned vk and sid, and can skip the screenshot', async () => {
