@@ -78,7 +78,7 @@ jobs:
         run: pnpm size
 
       - name: Committed JSON Schemas are up to date
-        run: git diff --exit-code -- packages/ir/schema
+        run: git diff --exit-code -- packages/ir/schema packages/dcr/schema
 
       - name: Generated diagnostics are up to date
         run: |
