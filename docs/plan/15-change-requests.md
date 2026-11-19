@@ -923,23 +923,27 @@ The component library lives in `github.com/acme/ui` (published as `@acme/ui`); s
    - a table of changes: property | before | after | token | where in code (file:line, selector);
    - screens: a variants table (breakpoint × state), the base **usage snippet** (§7.3), the deltas for each other variant, then **Interactions**, **Copy** and **Accessibility** tables;
    - `instance.*`: the component to use instead, the arg map, and every occurrence;
+   - the blast-radius line when the change's origin styles variants the designer did not change (§5.4);
    - acceptance criteria;
+   - for every new variant, property and component, the exact story to add, e.g. `export const Danger = { args: { tone: 'danger' }, parameters: { holotype: { implements: ['8c7b6a5948372615'] } } }`; for screens, the marker `// holotype-implements: c3b2a1f0e9d8c7b6` in the screen file;
    - image references (`assets/<sha>.png`).
-5. **Open questions.** Numbered, with options. The agent must resolve each one: ask the human, or pick and state the choice in the PR.
+5. **Open questions.** Numbered, with options. When `answers.json` has an entry, the question reads "Answered by reviewer: …" and the agent follows it. Otherwise the agent resolves it: ask the human, or pick and record the choice in `decisions.json` (§8).
 6. **Designer notes.** Every designer-authored string goes here, fenced (§10.3).
-7. **Verify.** The exact command: `holotype verify --dcr <id>`.
+7. **Verify.** `holotype verify` (defaults to this request); it starts Storybook itself (`storybook.dev.command`). Verify lists the files it scanned for markers. Before verify exists (L4 demos), this section reads: "Render the stories tagged `implements` in Storybook and compare them with `assets/…`; list each item's status in the PR."
 
 An excerpt for item 1:
 
 ```md
-### 1. Button · size=md · label: padding-left/right 12 → 16   `id: 1f2e3d4c5b6a7980`
+### 1. Button · size=md · padding-left/right 12 → 16   `id: 1f2e3d4c5b6a7980`
 Code: `Button` — src/components/Button/Button.tsx · stories: src/components/Button/Button.stories.tsx
 
 | Property | Before | After | Token | Where |
 |---|---|---|---|---|
-| padding-left / padding-right | 12px | 16px | `--space-3` → `--space-4` | src/components/Button/Button.module.css:14 `.btn { padding: 0 var(--btn-pad-x) }` via `--btn-pad-x` |
+| padding-inline | 12px | 16px | `--space-3` → `--space-4` | src/components/Button/Button.module.css:14 `.btn { padding: 0 var(--btn-pad-x) }` via `--btn-pad-x` (defined at Button.module.css:3) |
 
-Acceptance: padding 16px on both sides, bound to `--space-4`; existing stories must still render.
+This rule also styles size=sm and size=lg, which the designer did not change. Keep them as they are (scope the change to size=md).
+
+Acceptance: padding 16px on both sides, bound to `--space-4`; existing stories must still render; size=sm and size=lg unchanged.
 Images: before `assets/3e…png` · after `assets/9a…png`
 ```
 

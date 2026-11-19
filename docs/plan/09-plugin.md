@@ -24,6 +24,7 @@ Contents:
 17. Diagnostics
 18. Testing the plugin
 19. Open questions / spikes
+20. Proposal mode (branch files)
 
 ---
 
@@ -940,19 +941,35 @@ The workflow is in [15](15-change-requests.md#proposal-mode). This section cover
 - **Convention hints.** Changes also lists live hints: unparsed screen names, raw (untokenized) values, and frames outside the scope.
 - Screen spec: [11 §6.14](11-ux.md#changes).
 
+<a id="submit"></a><a id="request-in-file"></a>
 ### 20.3 Submit flow
 
 ```
-UI: snapshot.request{scope} ─► main: normalizePlugin() over nodes in scope (read-only) ─► snapshot chunks
-UI: dcr.extract(snapshot, baseline, config)   (package dcr, pure; WebCrypto for h16)
-UI: render designer-view preview (review summary first, 15 §7.4) ─► user: Submit
-UI: export "after" images (exportAsync PNG @2x, via the fidelity-export path §14)
-UI: POST /v1/dcr (02 §4.1)  |  Download .zip  |  Copy prompt
-UI ─► main: branch.meta.patch { status: 'submitted', lastDcr } · devstatus.set(screens)   (one commitUndo)
+UI: snapshot.request{scope} ─► main: normalizeGroups() over nodes in scope (read-only) ─► snapshot chunks
+UI: dcr.extract(snapshot, baseline, branch:meta.dcrConfig)   (package dcr, pure; core hash D-50)
+UI: designer-view preview (summary first) ─► user: Submit
+UI: export "after" images (exportAsync PNG @2x)
+UI ─► main: request.write(gzip(canonical(core)) as request:0..n) · branch.meta.patch { status:'submitted', lastDcr:{id, hash, scope, excluded, chunks} } · devstatus.set(top-level screens)   (one commitUndo)
+main: wait ~1 s, version.save('Holotype request <hash8>') → id ─► branch.meta.patch { lastDcr.versionId: id }
+UI: primary action — paired: "Send to Holotype on this computer" (hardening) | unpaired: "Notify developer" (once --pull exists) | always: "Download request (.zip)" · "Copy AI prompt"
 ```
 
-- **Read-only until Submit.** Only the final `branch.meta.patch` and `devstatus.set` write to the document, in one undo step.
-- **Approve / Request changes** (`dcr.requireApproval`, [15 §7.4](15-change-requests.md#review)) is a single `branch.meta.patch { approval, status }`, bound to the previewed `dcrHash`.
+- **Writes.** Only `request:*`, `branch:meta` and `devStatus`, in one undo step, plus the version save (D-48). Before Submit, the flow is read-only.
+- **Request in file (D-49).** `request:*` chunks are ≤90 kB each in root shared plugin data. Over 2 MB in total → `DCR_TOO_LARGE`, and only Download is offered. The developer reads the request with `holotype dcr --pull <figma-url>` or `holotype dcr import <request.zip>` ([15](15-change-requests.md#handoff)).
+- **Version (D-48).** If `saveVersionHistoryAsync` returns `null`, `lastDcr.versionId` stays absent, the CLI reads head, and the UI shows a warning.
+- **`devStatus`** is set only on top-level frames and sections (§9.2).
+- **`dcr` in the UI bundle.** The `dcr` package is bundled into the plugin UI only, never into main (README §6).
+- **Approval** (hardening; `dcr.requireApproval`, [15 §7.4](15-change-requests.md#review)) is a single `branch.meta.patch { approval, status }`, bound to the core `dcrHash` (D-50).
 - **Budget:** snapshot plus extraction take ≤2 s for 200 items. Larger scopes show progress and can be cancelled (verify, S-06).
-- **Without the CLI**, the plugin still produces `dcr.json` and `prompt.md`, but with no file:line provenance (`DCR_PROVENANCE_MISSING`).
-- Screen specs, with empty, loading, error and success states: [11 §6.15–6.16](11-ux.md#submit) (D-40).
+- **Without provenance**, the `prompt.md` from "Copy AI prompt" has no file:line (`DCR_PROVENANCE_MISSING`); the CLI attaches provenance on pull or import.
+- Button labels follow [11](11-ux.md#submit). Screen specs, with empty, loading, error and success states: [11 §6.15–6.16](11-ux.md#submit) (D-40).
+
+<a id="inspector"></a>
+### 20.4 Inspector (main side)
+
+On `selectionchange`, on `inspect.selection` and on the `details` relaunch, main posts `inspect.result` with `InspectInfo` (§3.2) for the first selected node: `{ managed, sid?, nk?, locked?, mode, changedGroups? }`. `changedGroups` are the `ah` groups that differ from the baseline (proposal mode) or from the last write (library). The UI spec is [11 §6.17](11-ux.md#inspector).
+
+<a id="branch-residue"></a>
+### 20.5 Library file with branch residue
+
+A file without `mode: 'proposal'` but with `branch:meta` or `base:*` (a branch that was merged anyway, D-47) is a library. Proposal mode is off, `SYNC_BRANCH_RESIDUE` is shown, and the next sync offers a cleanup step ([10 §9.6](10-sync.md#branch-residue)).
