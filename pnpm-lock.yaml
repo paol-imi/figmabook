@@ -325,6 +325,9 @@ importers:
 
   spikes:
     dependencies:
+      '@jridgewell/trace-mapping':
+        specifier: 0.3.31
+        version: 0.3.31
       '@sinclair/typebox':
         specifier: 0.34.52
         version: 0.34.52
@@ -338,9 +341,21 @@ importers:
       '@figma/plugin-typings':
         specifier: 1.142.0
         version: 1.142.0
+      '@holotype/capture':
+        specifier: workspace:*
+        version: link:../packages/capture
       '@holotype/figma-fake':
         specifier: workspace:*
         version: link:../packages/figma-fake
+      '@holotype/ir':
+        specifier: workspace:*
+        version: link:../packages/ir
+      '@holotype/shared':
+        specifier: workspace:*
+        version: link:../packages/shared
+      '@holotype/storybook':
+        specifier: workspace:*
+        version: link:../packages/storybook
       '@testing-library/preact':
         specifier: 3.2.6
         version: 3.2.6(preact@10.29.8)
