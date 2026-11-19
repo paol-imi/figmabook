@@ -88,6 +88,8 @@ export function openChannelDriver(
  */
 export function channelStorybook(storybook: ConnectedStorybook, options: ChannelDriverOptions = {}) {
   return {
+    // Same document origin as the URL driver, so both drivers' captures hash alike.
+    origin: storybook.origin,
     openDriver: async (page: Page, driverOptions?: DriverOptions): Promise<RenderDriver> => {
       const timeout = driverOptions?.renderTimeoutMs ?? options.renderTimeoutMs;
       const driver = await openChannelDriver(storybook, page, {

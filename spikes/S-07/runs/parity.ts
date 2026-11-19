@@ -24,7 +24,7 @@ export function withoutReactIds(canonical: string): string {
 export const PARITY_STEP = 5;
 
 async function captureAll(
-  storybook: Pick<ConnectedStorybook, 'openDriver'>,
+  storybook: Pick<ConnectedStorybook, 'openDriver' | 'origin'>,
   variants: readonly Variant[],
 ): Promise<{ outcomes: CaptureOutcome[]; wallMs: number }> {
   const executablePath = process.env.HOLOTYPE_CHROMIUM_PATH;
