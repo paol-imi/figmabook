@@ -109,6 +109,26 @@ Until M5, dogfooding runs only the React systems, on Storybook 10 (D-11, D-26). 
 
 Selection criteria: public Storybook or buildable from source with a permissive license; covers each styling approach (and, post-M5, each renderer); ≥1 heavy shadow-DOM system; ≥2 token-driven theming systems. Each pinned to a commit in `fixtures/real/lock.json`; built once per pin and cached.
 
+### 2.4 DCR golden fixtures (`fixtures/dcr/`) <a id="dcr-fixtures"></a>
+
+Each case is a directory: `input/` holds the saved REST file JSON (`GET /v1/files/:key?plugin_data=shared`), the embedded baselines, the provenance side files ([15 §5.2](15-change-requests.md#provenance)) and `holotype.config.ts → dcr`. `expected/` holds `dcr.json` and `prompt.md` (plus `prompt.components.md` / `prompt.screens.md` when targets differ). The cases follow [15 §6.1](15-change-requests.md#dcr-ir) and cover one item kind each, then combinations:
+
+| Case | Exercises |
+|---|---|
+| `modified-padding` | field diff, D-16 reverse arithmetic, token before/after, provenance file:line |
+| `variant-added`, `property-added` | derived variants, duplicated `vk`/`nk` resolution |
+| `component-new` | structure, nearest-component scoring, untokenized radius question |
+| `screen-breakpoints-states` | naming convention + Sections, base/delta, `expectStates` question |
+| `screen-interactions` | navigate / overlay / back / `CHANGE_TO` hover covered by code / unsupported actions |
+| `screen-content-a11y` | copy vs lorem / `{{…}}` / component default; role, label, focus-order gaps |
+| `instance-outdated`, `instance-deprecated` | `irh` mismatch, removed `vk`, `replacedBy` + `argMap`, no replacement |
+| `targets-split` | separate screens repo: package imports, prompt split, `DCR_IMPORT_UNRESOLVED` |
+| `injection` | designer strings with "ignore previous instructions", backticks, `</td>`, `{}`: still fenced/escaped, `DCR_NOTE_SUSPICIOUS` |
+| `snippet/*` | one per row of the snippet table ([15 §7.3](15-change-requests.md#snippet)) → `*.jsx-sketch` |
+| `parity` (after S-18) | the same file through plugin and REST: byte-identical `FigmaSnapshot` |
+
+**Determinism test (D-35).** Each case runs 3 times: as is, and twice with input shuffled by a seeded permutation (object key order, `children`/`nodes`/`pages` array order where the order isn't semantic, variable and annotation order). All outputs must be **byte-identical** (sha256 of `dcr.json` and `prompt.md`); `header.generated` is omitted in tests. A second check re-runs extraction on its own output's file version and expects the same `dcrHash`, so item ids stay stable across re-extractions. Expected files change only through `pnpm test -u`, with reviewer sign-off (§1.2).
+
 ---
 
 ## 3. Storybook adapter integration tests
@@ -249,81 +269,215 @@ Columns: **Emitted by** is the package that raises the code ([02 §6](02-archite
 | `SB_ROOT_NOT_FOUND` | error | `storybook` | the capture root selector matched nothing | Fix `parameters.holotype.rootSelector` (or remove it to use `#storybook-root`) | [03](03-storybook.md) |
 | `SB_PORTAL_AMBIGUOUS` | warning | `storybook` | several candidate portal roots; their union was used | Set `parameters.holotype.portal.selector` to the right overlay | [03](03-storybook.md#portals-and-overlays) |
 | `SB_NOT_A_STORYBOOK` | error | `cli` (hosted) | the target has no `index.json` plus `iframe.html` with a Storybook preview | Point Holotype at the root URL of a Storybook | [13](13-security-legal.md) |
-| **Planner (PLAN_)** | | |
-| `PLAN_BUDGET_EXCEEDED` | warn | matrix > budget; reduced via pairwise/priority |
-| `PLAN_AXIS_NO_VISUAL_EFFECT` | info | arg values render identically; axis dropped |
-| `PLAN_STATE_NO_VISUAL_EFFECT` | info | pseudo-state render identical to default; dropped |
-| `PLAN_CLASSIFICATION_REJECTED` | warn | forced BOOLEAN/TEXT failed render-and-diff; used VARIANT |
-| `PLAN_ARG_NOT_ENUMERABLE` | info | text/object/node arg fixed at initialArgs |
-| `PLAN_CONDITIONAL_ARG_PRUNED` | info | combos removed by argType `if` |
-| `PLAN_DUPLICATE_VARIANT` | info | two combos produced identical Scene; deduped |
-| **Capture (CAP_)** | | |
-| `CAP_CLOSED_SHADOW_LATE` | warn | closed shadow root created before hook; used CDP pierce |
-| `CAP_CROSS_ORIGIN_IFRAME` | warn | iframe content via screenshot |
-| `CAP_RASTERIZED` | warn | subtree rasterized (data.reason: filter, 3d-transform, foreignObject, canvas-tainted …) |
-| `CAP_CSS_UNSUPPORTED` | warn | property has no Figma equivalent (data.property) |
-| `CAP_TRANSFORM_SKEW` | info | skew via relativeTransform |
-| `CAP_NATIVE_CONTROL_SYNTH` | info | native control synthesized |
-| `CAP_IMAGE_FORMAT_CONVERTED` | info | WebP/AVIF/SVG-img → PNG |
-| `CAP_IMAGE_DOWNSCALED` | warn | >4096px downscaled |
-| `CAP_IMAGE_LOAD_FAILED` | warn | image failed to load; placeholder fill |
-| `CAP_OVERFLOW_AXIS` | warn | axis-specific overflow approximated as clip |
-| `CAP_ZINDEX_HOIST` | warn | node hoisted to stacking-context root as absolute |
-| `CAP_PSEUDO_MATERIALIZED` | info | pseudo measured via materialization fallback |
-| **Layout (LAYOUT_)** | | |
-| `LAYOUT_FALLBACK_SIMULATION` | info | auto layout rejected by capture-side simulation (data.maxDelta) |
-| `LAYOUT_FALLBACK_READBACK` | warn | auto layout reverted after plugin read-back |
-| `LAYOUT_FALLBACK_MARGIN` | info | irregular margins → wrapper/split/absolute |
-| `LAYOUT_FALLBACK_ALIGN_SELF` | info | per-child align-self → wrapper/absolute |
-| `LAYOUT_FLEX_GROW_UNEQUAL` | info | unequal grow → FIXED sizes |
-| `LAYOUT_SPACE_AROUND_APPROX` | info | space-around/evenly → measured spacing (non-responsive) |
-| `LAYOUT_WRAP_UNSUPPORTED` | info | wrap-reverse / unverifiable wrap → fallback |
-| `LAYOUT_GRID_UNSUPPORTED` | warn | dense/areas/subgrid/overlap → stacks/absolute |
-| `LAYOUT_GRID_AUTO_FILL_FROZEN` | info | auto-fill/fit count frozen at capture width |
-| `LAYOUT_PERCENT_RESOLVED` | info | % sizes resolved to px |
-| `LAYOUT_ZORDER_FLOW_CONFLICT` | warn | paint order ≠ flow order; absolute fallback |
-| **Text (TEXT_)** | | |
-| `TEXT_LINE_MISMATCH` | warn | Figma line count ≠ browser (data.expected, actual) |
-| `TEXT_WIDTH_BUFFER` | info | widened by N px to avoid extra wrap |
-| `TEXT_CASE_BAKED` | info | text-transform baked into characters |
-| `TEXT_SPLIT_MIDLINE` | info | inline context split into per-line nodes |
-| `TEXT_DECORATION_APPROX` | info | unsupported decoration style |
-| **Fonts (FONT_)** | | |
-| `FONT_MISSING` | warn | face not available in Figma |
-| `FONT_SUBSTITUTED` | warn | substitute used (data.original, substitute) |
-| `FONT_SYNTHETIC` | warn | browser synthesized bold/italic |
-| `FONT_FALLBACK_GLYPHS` | warn | some glyphs rendered by fallback font |
-| `FONT_LOAD_FAILED` | warn | web font failed to load in browser |
-| `FONT_ICON_VECTORIZED` | info | icon font glyphs converted to vectors |
-| **Paint & effects (PAINT_)** | | |
-| `PAINT_BORDER_PER_SIDE_DECOMPOSED` | info | per-side colors/styles → vectors |
-| `PAINT_BORDER_PER_SIDE_APPROX` | warn | dominant color used |
-| `PAINT_BORDER_STYLE_APPROX` | info | dashed/dotted/double approximated |
-| `PAINT_RADIUS_ELLIPTICAL` | warn | elliptical radius → min / path |
-| `PAINT_RING_PROMOTED` | info | ring shadow → OUTSIDE stroke |
-| `PAINT_SPREAD_UNSUPPORTED` | warn | shadow spread moved to backing rect / dropped |
-| `PAINT_GRADIENT_APPROX` | info | conic/interpolation-space/repeating approximated |
-| `PAINT_COLOR_GAMUT_MAPPED` | info | out-of-sRGB color gamut-mapped |
-| `PAINT_FILTER_UNSUPPORTED` | warn | filter other than blur/drop-shadow |
-| `PAINT_BLEND_UNSUPPORTED` | warn | blend mode mapped approximately |
-| **SVG (SVG_)** | | |
-| `SVG_IMPORT_FAILED` | error | `createNodeFromSvg` threw; rasterized |
-| `SVG_USE_UNRESOLVED` | warn | `<use>` target not found |
-| `SVG_FEATURE_RASTERIZED` | warn | filter/mask/foreignObject → raster |
-| `SVG_ICON_EXTRACTED` | info | repeated SVG promoted to icon component |
-| **Tokens (TOKEN_)** | | |
-| `TOKEN_UNRESOLVED_VAR` | warn | `var()` with no definition (fallback used) |
-| `TOKEN_CALC_UNBINDABLE` | info | value from `calc()`/`color-mix()` — literal used |
-| `TOKEN_VALUE_MATCHED` | info | low-confidence value-equality binding (opt-in) |
-| `TOKEN_MODE_LIMIT` | warn | plan mode limit; fallback per config |
-| `TOKEN_LIBRARY_CONFLICT` | warn | existing variable differs from code; not overwritten (D-18) |
-| `TOKEN_SCOPE_MISMATCH` | info | variable scope disallows field; bound anyway/skipped |
-| **Apply (APPLY_)** | | |
-| `APPLY_NODE_FAILED` | error | Plugin API threw for a node (data.op, message) |
-| `APPLY_MIXED_VALUE` | info | `figma.mixed` encountered; normalized |
-| `APPLY_IMAGE_REJECTED` | warn | `createImage` failed |
-| `APPLY_INSTANCE_MISMATCH` | warn | nested instance render ≠ capture; kept as frame (D-21) |
-| `APPLY_CANCELLED` | info | user cancelled; partial |
+#### Planner, config and mapper structure (PLAN_) — 43
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `PLAN_CONFIG_INVALID` | error | `cli` | a config value fails the schema; the run stops (exit 2) | Fix the value at the JSON pointer printed with the error | [02](02-architecture.md) |
+| `PLAN_CONFIG_UNKNOWN_KEY` | warning | `cli` | unknown key in `holotype.config.ts`; ignored | Check the spelling against the "did you mean…" hint | [02](02-architecture.md) |
+| `PLAN_PARAM_UNKNOWN_KEY` | warning | `planner` | unknown key in `parameters.holotype`; ignored | Check the spelling; the addon's types catch this while you type | [04](04-variant-model.md) |
+| `PLAN_ENUM_UNRESOLVED` | warning | `planner` | docgen gave a type alias that cannot be enumerated; the arg was not made an axis | Add `options` to the argType | [04](04-variant-model.md) |
+| `PLAN_ARG_NOT_ENUMERABLE` | info | `planner` | a text, object or node arg was fixed at its `initialArgs` value | Nothing to do. To make it an axis, list its values in `args.<name>.values` | [04](04-variant-model.md) |
+| `PLAN_ARG_NO_VISUAL_EFFECT` | info | `planner` | the arg never changes the render (e.g. `onClick`, `aria-*`); ignored | Nothing to do | [04](04-variant-model.md) |
+| `PLAN_BOOLEAN_PROMOTED_TO_VARIANT` | info | `planner` | a boolean does more than show/hide a layer, so it became a variant axis | Nothing to do. To get a Figma boolean, make the prop only toggle visibility | [04](04-variant-model.md) |
+| `PLAN_CLASSIFICATION_REJECTED` | warning | `planner` | a classification you forced in config failed render-and-diff; VARIANT was used | Remove the forced classification, or change the component so the prop matches it | [04](04-variant-model.md) |
+| `PLAN_TEXT_PARTIAL` | warning | `planner` | the arg is part of a larger text (e.g. `"{count} items"`); the property holds the whole text | Render the arg in its own element if designers should edit it alone | [04](04-variant-model.md) |
+| `PLAN_TEXT_MULTI_NODE` | warning | `planner` | the arg text appears in several layers; only the first is bound | Nothing to do, or drop the duplicate (e.g. a tooltip echoing the label) | [04](04-variant-model.md) |
+| `PLAN_TEXT_UNBOUND` | info | `planner` | a string arg could not be bound to a text layer; it was fixed | Make sure the arg renders as plain text in one element | [04](04-variant-model.md) |
+| `PLAN_SWAP_OPTION_UNRESOLVED` | warning | `planner` | an instance-swap option has no matching component | Import that component too, or remove the option | [04](04-variant-model.md) |
+| `PLAN_SLOT_UNVERIFIED` | info | `planner` | a slot was inferred without an empty-content probe | Nothing to do. Allow empty children in the story to verify it | [04](04-variant-model.md) |
+| `PLAN_VALUES_MERGED` | info | `planner` | two values of an axis render the same; merged under the first label | Nothing to do, or make the values look different | [04](04-variant-model.md) |
+| `PLAN_PROPERTY_INCONSISTENT` | warning | `planner` | a property behaved differently on a non-default variant; demoted to VARIANT | Check the variant named in the report; the prop changes more than expected there | [04](04-variant-model.md) |
+| `PLAN_UNVERIFIED_CLASSIFICATION` | info | `planner` | `classification: 'fast'` used priors without probes | Use the default classification for the final sync | [04](04-variant-model.md) |
+| `PLAN_SPARSE_SET` | warning | `planner` | the set has missing combinations; switching to one snaps to the nearest | Raise `budget.max`, or accept the sparse set | [04](04-variant-model.md) |
+| `PLAN_AXIS_DROPPED_BUDGET` | warning | `planner` | an axis was pinned to its default to stay within budget | Use "include" in the report, or raise `budget.max` | [04](04-variant-model.md) |
+| `PLAN_BUDGET_EXCEEDED` | error | `planner` | the matrix is over `budget.hardLimit`; the component was refused | Reduce axes or values, or pass `--force` | [04](04-variant-model.md) |
+| `PLAN_PROBE_BUDGET` | warning | `planner` | the probe budget ran out; the remaining args were classified by priors | Raise `budget.maxProbes`, or classify those args in config | [04](04-variant-model.md) |
+| `PLAN_CONDITIONAL_DUPLICATE` | info | `planner` | an argType `if` collapses combinations; the duplicates are built as clones | Nothing to do, or set `conditional: 'sparse'` to omit them | [04](04-variant-model.md) |
+| `PLAN_DUPLICATE_VARIANT` | info | `planner` | two combinations produced the same render; reported by render-hash dedup | Nothing to do, or remove the redundant arg values | [04](04-variant-model.md) |
+| `PLAN_AXIS_NO_EFFECT` | warning | `planner` | every value of an axis renders the same; the axis was removed | Check the arg is wired to the component; remove it from config if unused | [04](04-variant-model.md) |
+| `PLAN_STATE_NO_EFFECT` | info | `planner` | a pseudo-state looks the same as default; dropped | Nothing to do | [04](04-variant-model.md) |
+| `PLAN_THEME_AS_AXIS` | warning | `planner` | theme differences are not explained by tokens, so themes became a `Theme` variant axis | Move the listed hard-coded values into tokens to get Figma modes instead | [04](04-variant-model.md) |
+| `PLAN_VIEWPORT_STRUCTURE_CHANGE` | info | `planner` | the layout changes structure across viewports | Consider `viewports.as: 'components'` | [04](04-variant-model.md) |
+| `PLAN_STORY_SPLIT` | info | `planner` | too many unexplained stories; split into separate components | Nothing to do, or add args so the stories become variants | [04](04-variant-model.md) |
+| `PLAN_COMPAT_SPLIT` | info | `planner` | a story.to.design setting was mapped to a split into components | Nothing to do | [04](04-variant-model.md) |
+| `PLAN_COMPAT_UNSUPPORTED` | warning | `planner` | a story.to.design setting has no equivalent (e.g. `:tap`) | Replace it with an arg, as the hint says | [04](04-variant-model.md) |
+| `PLAN_CHROMATIC_DISABLED_HINT` | info | `planner` | Chromatic `disableSnapshot` seen; the story is still captured | Tag the story `!figma` if you want it left out | [04](04-variant-model.md) |
+| `PLAN_SUGGEST_MERGE_AXES` | info | `planner` | exclusive booleans could become one axis | Accept the suggestion in config (`args.<name>.values`) | [04](04-variant-model.md) |
+| `PLAN_ICON_SPLIT` | info | `planner` | an icon enum was split into one component per value | Nothing to do | [04](04-variant-model.md) |
+| `PLAN_FEATURE_DOWNGRADED` | warning | `cli` | the plugin lacks an IR feature, so the output was downgraded (e.g. slots → frames) | Update the Figma plugin | [06](06-ir.md) |
+| `PLAN_COMPONENT_TOO_LARGE` | warning (error over 8 MB) | `planner` | a `SceneComponent` file is over 2 MB; variants were reduced | Lower the variant budget or split the component | [06](06-ir.md) |
+| `PLAN_BUNDLE_LARGE` | warning | `cli` | the bundle is over 200 MB | Sync fewer components per run, or split by `include` | [02](02-architecture.md) |
+| `PLAN_INVARIANT_VIOLATION` | error | `mapper` | the mapper produced invalid output (a Holotype bug); the component was skipped | Report it with `report.json`; the other components are unaffected | [06](06-ir.md) |
+| `PLAN_MAPPER_FAILED` | error | `mapper` | the mapper threw (a Holotype bug); the component failed | Report it with the stack in `report.json`; the other components are unaffected | [02](02-architecture.md) |
+| `PLAN_ALIGNMENT_ANCHOR_CONFLICT` | warning | `mapper` | two layers share an anchor (e.g. a `data-testid`) across variants | Make test ids unique within the component | [07](07-mapping.md#alignment) |
+| `PLAN_ALIGNMENT_DIVERGENT` | warning | `mapper` | variants are structurally unrelated; kept as separate subtrees | Consider splitting them into separate components | [07](07-mapping.md#alignment) |
+| `PLAN_ALIGNMENT_ORDER_CONFLICT` | warning | `mapper` | variants disagree on layer order; that variant's parent fell back to absolute | Nothing to do, or avoid z-index changes between states | [07](07-mapping.md#alignment) |
+| `PLAN_PROPERTY_UNBOUND` | warning | `mapper` | a planned property bound to no layer; it was dropped | Check the arg renders something; see the report for the property | [07](07-mapping.md) |
+| `PLAN_INSTANCE_PROPS_UNMAPPED` | info | `mapper` | a nested component's props don't map to its properties; kept as a frame | Expose those props as args on the nested component | [07](07-mapping.md) |
+| `PLAN_INSTANCE_MISMATCH` | info | `mapper` | a nested component's capture differs from its own story; kept as a frame | Nothing to do; it is retried once the nested component is imported | [07](07-mapping.md) |
+#### Capture (CAP_) — 30
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `CAP_PAGE_CRASHED` | warning | `capture` | the browser page crashed; the variant was retried once | Nothing to do if it passed on retry; otherwise look for memory-heavy stories | [05](05-capture.md) |
+| `CAP_SR_ONLY_SKIPPED` | info | `capture` | screen-reader-only content was skipped (counted only) | Nothing to do | [05](05-capture.md#walk) |
+| `CAP_CLIPPED_CULLED` | info | `capture` | a node fully hidden by an ancestor's clip was removed | Nothing to do. Planner-bound layers are always kept | [05](05-capture.md#walk) |
+| `CAP_IFRAME_RASTERIZED` | warning | `capture` | an iframe (e.g. cross-origin) could not be walked and was captured as an image | Render the content without an iframe in the story if you need editable layers | [05](05-capture.md) |
+| `CAP_NON_AFFINE_RASTERIZED` | warning | `capture` | a 3D or perspective transform subtree was captured as an image | Nothing to do, or provide a flat story state for Figma | [05](05-capture.md) |
+| `CAP_ANIMATED_GIF` | info | `capture` | an animated GIF keeps only its first frame | Nothing to do | [05](05-capture.md) |
+| `CAP_ANIMATION_FROZEN` | info | `capture` | an infinite animation was frozen at t=0 | Nothing to do | [03](03-storybook.md) |
+| `CAP_IMAGE_DOWNSCALED` | info | `capture` | an image over 4096 px was downscaled (Figma's limit) | Nothing to do, or ship a smaller source image | [05](05-capture.md) |
+| `CAP_IMAGE_TRANSCODED` | info | `capture` | a WebP/AVIF/HEIC/ICO/BMP image was re-encoded as PNG or JPEG | Nothing to do | [05](05-capture.md) |
+| `CAP_CANVAS_RASTERIZED` | info | `capture` | a `<canvas>` was captured as an image | Nothing to do | [05](05-capture.md) |
+| `CAP_PSEUDO_UNMEASURED` | warning | `capture` | a `::before`/`::after` could not be measured and was left out | Use a real element instead of the pseudo-element if it matters in Figma | [05](05-capture.md) |
+| `CAP_PSEUDO_MATERIALIZED` | info | `capture` | a pseudo-element was measured through the materialization fallback | Nothing to do | [05](05-capture.md) |
+| `CAP_FOCUS_VISIBLE_UNREACHED` | warning | `capture` | Tab navigation never reached the target; focus was set directly, so `:focus-visible` may not show | Make the element keyboard-focusable, or set `stateTarget` | [05](05-capture.md) |
+| `CAP_STATE_LOST` | warning | `capture` | a forced hover/focus state was lost because the framework re-rendered | Check that variant in Figma; avoid re-mounting on hover in the story | [05](05-capture.md) |
+| `CAP_STATE_PORTAL_IGNORED` | info | `capture` | a state opened a portal (e.g. a tooltip) that was left out | Set `states.includePortals: true` to include it | [04](04-variant-model.md) |
+| `CAP_PROBE_REMOUNTED` | info | `capture` | the component re-mounted during the layout probe; nodes matched by path | Nothing to do | [05](05-capture.md) |
+| `CAP_SERIALIZE_FAILED` | error | `capture` | the serializer threw twice; the variant failed | Report it with the stack in `report.json` | [05](05-capture.md) |
+| `CAP_NONFINITE_VALUE` | error | `capture` | a `NaN`/`Infinity` value reached the IR; the variant failed | Report it; usually a Holotype bug or a broken CSS value in the story | [06](06-ir.md) |
+| `CAP_BOX_MODEL_FAILED` | info | `capture` | the CDP box model was unavailable; the fast-path rect was used | Nothing to do | [05](05-capture.md) |
+| `CAP_ASSET_FETCH_FAILED` | warning | `capture` | an image or asset could not be loaded; a grey placeholder fill was used | Check the asset URL and auth; make sure the asset is served with the Storybook | [05](05-capture.md) |
+| `CAP_DOC_TOO_LARGE` | warning | `capture` | over 20 MB or 5,000 nodes; the largest subtrees were rasterized | Split the story into smaller components | [05](05-capture.md) |
+| `CAP_NONDETERMINISTIC` | warning | `capture` | two captures of the same story differ (cache verification) | Remove randomness, dates or animations from the story (see the node paths in the report) | [05](05-capture.md) |
+| `CAP_UNSTABLE_RENDER` | warning | `capture` | the root kept changing size after settle | Wait for data in loaders, or disable animations for capture | [03](03-storybook.md) |
+| `CAP_VIEWPORT_GROWN` | info | `capture` | the viewport was enlarged to fit the root | Nothing to do | [03](03-storybook.md) |
+| `CAP_FIXED_IN_ROOT` | info | `capture` | `position:fixed` content found; the viewport was not grown | Nothing to do, or use `portal.frame: 'viewport'` for modals | [03](03-storybook.md) |
+| `CAP_CHROMIUM_MISMATCH` | warning | `capture` | `--chromium-path` differs from the pinned version; fidelity not guaranteed | Use the pinned Chromium (`npx playwright install chromium`) | [02](02-architecture.md) |
+| `CAP_CLOSED_SHADOW_LATE` | warning | `capture` | a closed shadow root was created before our hook; read through CDP instead | Nothing to do unless content is missing; then report it | [05](05-capture.md) |
+| `CAP_CSS_UNSUPPORTED` | warning | `capture` | a CSS property has no Figma equivalent (`data.property`); it was ignored | Check the affected layer; avoid the property for design-relevant styling | [05](05-capture.md) |
+| `CAP_TRANSFORM_SKEW` | info | `capture` | a skew is expressed through `relativeTransform` | Nothing to do | [07](07-mapping.md) |
+| `CAP_NATIVE_CONTROL_SYNTHESIZED` | info | `capture` | a native control (input, checkbox, select) was rebuilt from frames and vectors | Nothing to do | [07](07-mapping.md) |
+#### Layout (LAYOUT_) — 16
+
+Auto-layout relaxations and read-back fallbacks in the plugin are `APPLY_LAYOUT_RELAXED` / `APPLY_LAYOUT_FALLBACK` (APPLY_ table).
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `LAYOUT_SIM_MISMATCH` | info | `mapper` | no auto-layout candidate matched the browser in simulation (`data.maxDelta`); the container is absolute | Nothing to do; pixels match. For a resizable frame, simplify that container's CSS (flex or grid with uniform gaps) | [07](07-mapping.md) |
+| `LAYOUT_IRREGULAR_GAPS` | info | `mapper` | margins could not be expressed as gaps, padding, wrappers or splits; the container is absolute | Use `gap` instead of per-child margins, or set `allowSpacers` | [07](07-mapping.md) |
+| `LAYOUT_ALIGN_SELF_WRAPPED` | info | `mapper` | per-child `align-self` was expressed with a wrapper frame | Nothing to do | [07](07-mapping.md) |
+| `LAYOUT_GROW_RATIO_FIXED` | info | `mapper` | unequal `flex-grow` became FIXED sizes; pixels match, resizing differs | Nothing to do, or use equal `flex: 1` for Figma-style fill | [07](07-mapping.md) |
+| `LAYOUT_SPACE_AROUND_APPROX` | info | `mapper` | `space-around`/`space-evenly` became measured spacing (does not adapt on resize) | Nothing to do | [07](07-mapping.md) |
+| `LAYOUT_WRAP_REVERSE_UNSUPPORTED` | info | `mapper` | `wrap-reverse` (or an unverifiable wrap) fell back to absolute | Nothing to do, or use normal `wrap` | [07](07-mapping.md) |
+| `LAYOUT_FLOAT_ABSOLUTE` | info | `mapper` | a float container became absolute | Use flex or grid instead of floats for resizable frames | [07](07-mapping.md) |
+| `LAYOUT_PERCENT_RESOLVED` | info | `mapper` | a `%` min/max size was resolved to px | Nothing to do | [07](07-mapping.md) |
+| `LAYOUT_RTL_REVERSED` | info | `mapper` | an RTL row was emitted as reversed order | Nothing to do | [07](07-mapping.md) |
+| `LAYOUT_BREAKPOINT_IN_PROBE` | info | `mapper` | a media/container query breakpoint limits the layout probe; crossing widths were skipped | Nothing to do. Breakpoints become viewport variants ([04](04-variant-model.md)) | [07](07-mapping.md) |
+| `LAYOUT_GRID_MINMAX_FIXED` | info | `mapper` | a `minmax()` track became a fixed size | Nothing to do | [07](07-mapping.md) |
+| `LAYOUT_GRID_AUTOFILL_FROZEN` | info | `mapper` | the `auto-fill`/`auto-fit` track count was frozen at the capture width | Nothing to do; add viewports if the count should change | [07](07-mapping.md) |
+| `LAYOUT_GRID_UNREPRESENTABLE` | warning | `mapper` | a grid feature (dense, areas, subgrid, overlap) has no Figma equivalent; stacks or absolute used | Check the grid in Figma; simplify the grid if designers need to edit it | [07](07-mapping.md) |
+| `LAYOUT_ZINDEX_HOIST` | warning | `mapper` | a layer painting above its ancestor's sibling was moved up the tree as absolute | Nothing to do unless the layer order matters to designers; avoid z-index escapes | [07](07-mapping.md) |
+| `LAYOUT_ZORDER_FLOW_CONFLICT` | warning | `mapper` | paint order differs from flow order; the container is absolute | Avoid z-index reordering of in-flow children | [07](07-mapping.md) |
+| `LAYOUT_OVERFLOW_AXIS_APPROX` | warning | `mapper` | overflow hidden on one axis only; Figma clips both | Check for clipped content in Figma; set overflow on both axes | [07](07-mapping.md) |
+
+#### Text (TEXT_) — 10
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `TEXT_LINE_MISMATCH` | warning | `plugin` | Figma wraps the text into a different number of lines than the browser, even after buffering | Switch that text to locked-lines mode, or check that the font matches (see `FONT_*`) | [09](09-plugin.md) |
+| `TEXT_WIDTH_BUFFERED` | info | `plugin` | the text box was widened by a few px to match the browser's line count | Nothing to do | [09](09-plugin.md) |
+| `TEXT_CASE_BAKED` | info | `mapper` | `text-transform` was baked into the characters (CSS and Figma casing differ here) | Nothing to do; edit the source text in code | [07](07-mapping.md) |
+| `TEXT_SPLIT_MIDLINE` | info | `mapper` | inline content was split into one text layer per line | Nothing to do | [07](07-mapping.md) |
+| `TEXT_OVERLINE_OVERLAY` | info | `mapper` | an overline was drawn as a 1 px rectangle | Nothing to do | [07](07-mapping.md) |
+| `TEXT_DECORATION_STYLE_APPROX` | info | `mapper` | a `double`/`dashed` underline became solid | Nothing to do | [07](07-mapping.md) |
+| `TEXT_OVERLAY_LOCKED` | info | `mapper` | text with overlays was switched to locked lines | Nothing to do | [07](07-mapping.md) |
+| `TEXT_SHADOW_RANGE_APPROX` | warning | `mapper` | text shadows differ across ranges; the dominant one was used | Use one text shadow per text element | [07](07-mapping.md) |
+| `TEXT_WORD_SPACING_DROPPED` | warning | `mapper` | `word-spacing` has no Figma equivalent and was dropped | Use `letter-spacing`, or accept the difference | [07](07-mapping.md) |
+| `TEXT_BASELINE_SHIFT_DROPPED` | warning | `mapper` | `vertical-align: super/sub` was dropped (Figma has no baseline shift) | Render super/subscript in its own element | [07](07-mapping.md) |
+#### Fonts (FONT_) — 7
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `FONT_LOAD_FAILED` | warning | `capture` | a web font failed to load in the browser (`data.src`) | Check the font URL and CORS; the capture used whatever font the browser fell back to | [03](03-storybook.md) |
+| `FONT_FALLBACK_USED` | info | `capture` | some characters were drawn by a fallback font; the run was split by script | Nothing to do, or load a font that covers those characters | [05](05-capture.md) |
+| `FONT_SYNTHETIC` | warning | `capture` | the browser faked bold or italic; Figma will use the real style | Load the real bold/italic face in Storybook so both match | [05](05-capture.md) |
+| `FONT_UNRESOLVED` | warning | `capture` | the platform font could not be identified; the first family in the stack was used | Name an explicit web font in `font-family` | [05](05-capture.md) |
+| `FONT_ICON_VECTORIZED` | info | `cli` | icon-font glyphs were converted to vector paths | Nothing to do | [05](05-capture.md) |
+| `FONT_MISSING` | warning | `plugin` (forecast by `holotype doctor`) | a font is not available in Figma; the fallback was applied | Install the font for your Figma team, or map it in the **Fonts** screen; a re-sync restores the original | [09](09-plugin.md) |
+| `FONT_SUBSTITUTED` | info | `plugin` | a font was mapped through your saved or chosen mapping | Nothing to do; change the mapping in the **Fonts** screen | [09](09-plugin.md) |
+
+#### Paint and effects (PAINT_) — 16
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `PAINT_COLOR_READBACK` | info | `capture` | a color was resolved through canvas read-back and clipped to sRGB | Nothing to do | [05](05-capture.md) |
+| `PAINT_COLOR_GAMUT_MAPPED` | info | `mapper` | an out-of-sRGB color was gamut-mapped | Nothing to do | [07](07-mapping.md) |
+| `PAINT_GRADIENT_APPROX` | info | `mapper` | a gradient interpolation space (e.g. `in oklch`) was approximated with extra stops | Nothing to do | [07](07-mapping.md) |
+| `PAINT_CONIC_APPROX` | info | `mapper` | a conic gradient's origin or direction is approximate (until S-03) | Check the gradient in Figma | [07](07-mapping.md) |
+| `PAINT_REPEATING_CAPPED` | info | `mapper` | a repeating gradient was capped at 256 stops | Nothing to do | [07](07-mapping.md) |
+| `PAINT_TABLE_BORDER_APPROX` | info | `mapper` | `border-collapse` was drawn by giving shared borders to one side | Nothing to do | [07](07-mapping.md) |
+| `PAINT_DASH_APPROX` | info | `mapper` | dashed borders use a Figma dash pattern; corners phase differently | Nothing to do | [07](07-mapping.md) |
+| `PAINT_BORDER_DECOMPOSED` | info | `mapper` | per-side border colors or styles became four vector layers | Nothing to do | [07](07-mapping.md) |
+| `PAINT_BORDER_DOMINANT` | warning | `mapper` | per-side borders on a rounded box use the dominant color | Set `exactBorders: true` for exact paths | [07](07-mapping.md) |
+| `PAINT_BORDER_STYLE_APPROX` | info | `mapper` | a `double`/`groove`/`ridge`/`inset`/`outset` border was approximated | Nothing to do | [07](07-mapping.md) |
+| `PAINT_ELLIPTICAL_RADIUS_APPROX` | warning | `mapper` | elliptical corner radii used the smaller radius | Set `exactRadii: true` for an exact path | [07](07-mapping.md) |
+| `PAINT_SPREAD_BACKING_RECT` | info | `mapper` | a shadow spread was moved to a backing rectangle | Nothing to do | [07](07-mapping.md) |
+| `PAINT_RING_PROMOTED` | info | `mapper` | a ring shadow (e.g. Tailwind `ring-*`) became an outside stroke | Nothing to do | [07](07-mapping.md) |
+| `PAINT_FILTER_RASTERIZED` | warning | `mapper` | a CSS filter other than blur/drop-shadow was rasterized | Nothing to do, or apply the effect to an image asset instead | [07](07-mapping.md) |
+| `PAINT_BLEND_UNSUPPORTED` | warning | `mapper` | a blend mode (e.g. `plus-lighter`) has no exact Figma match | Check the layer in Figma; use a standard blend mode | [07](07-mapping.md) |
+| `PAINT_SUBTREE_RASTERIZED` | warning | `mapper` | a subtree was captured as an image (`data.reason`); layers inside are not editable | Check `data.reason`; avoid that CSS on design-relevant parts | [07](07-mapping.md) |
+
+#### SVG (SVG_) — 5
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `SVG_RASTERIZED` | warning | `mapper` | an SVG with a filter, mask or `foreignObject` was rasterized | Set `svg.rasterizeFilters: false` to try vectors, or simplify the SVG | [07](07-mapping.md) |
+| `SVG_USE_UNRESOLVED` | warning | `capture` | an SVG `<use>` target was not found | Make sure the referenced symbol is in the page or the same shadow root | [05](05-capture.md) |
+| `SVG_ICON_FONT_RASTERIZED` | warning | `cli` | an icon-font glyph could not be shaped and was captured as an image | Make sure the icon font file is reachable, or use SVG icons | [05](05-capture.md) |
+| `SVG_ICON_EXTRACTED` | info | `mapper` | a repeated SVG was promoted to an icon component | Nothing to do | [07](07-mapping.md) |
+| `SVG_IMPORT_FAILED` | warning | `plugin` | Figma could not import the SVG; a raster fallback was used | Simplify the SVG (it is in the report), or report it | [09](09-plugin.md) |
+#### Tokens (TOKEN_) — 21
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `TOKEN_AUTHORED_UNAVAILABLE` | info | `capture` | no matched styles for a node (e.g. inside a shadow root); its token bindings are degraded | Nothing to do | [05](05-capture.md) |
+| `TOKEN_UNUSED` | info | `mapper` | a discovered token is not used by any imported component (counted only) | Nothing to do; set `tokens.include: 'all'` to export it anyway | [08](08-tokens.md) |
+| `TOKEN_FALLBACK_USED` | info | `mapper` | `var(--x, fallback)` used its fallback because `--x` is undefined; a literal was emitted | Define the variable, or remove the dead `var()` | [08](08-tokens.md) |
+| `TOKEN_EXPRESSION_UNBOUND` | info | `mapper` | a value comes from `calc()`, `color-mix()` or several vars; no variable can express it | Add a token for the computed value if designers need it | [08](08-tokens.md) |
+| `TOKEN_CLAMPED_UNBOUND` | info | `mapper` | a radius or size token was clamped by layout, so it was not bound | Nothing to do | [08](08-tokens.md) |
+| `TOKEN_PROVENANCE_MISMATCH` | warning | `mapper` | CSS says `var(--x)` but the rendered value differs (opacity, filter, redeclaration); not bound | Check the node named in the report for opacity, filters or a local redeclaration | [08](08-tokens.md) |
+| `TOKEN_PRIVATE_CHAIN` | info | `mapper` | the value only resolves through component-private vars; not bound | Point the private var at a global token | [08](08-tokens.md) |
+| `TOKEN_ALIAS_CYCLE` | warning | `mapper` | tokens alias each other in a cycle; broken with a literal | Fix the cyclic definitions in your token source | [08](08-tokens.md) |
+| `TOKEN_TYPE_CONFLICT` | warning | `mapper` | a token is used as incompatible types, or an alias changes type | Give each use its own token of the right type | [08](08-tokens.md) |
+| `TOKEN_NAME_COLLISION` | warning | `mapper` | two CSS names map to the same Figma name; a numeric suffix was added | Rename one of the tokens | [08](08-tokens.md) |
+| `TOKEN_MODE_UNTOKENIZED_DIFF` | warning | `mapper` | a property changes between themes (or viewports) without a token, so modes can't express it | Move the listed value into a token, or set `tokens.themeFallback: "variant-axis"` | [08](08-tokens.md) |
+| `TOKEN_MODE_LIMIT` | warning | `plugin` | your Figma plan's mode (or variable) limit was hit; the overflow policy was applied | Choose an option in the plugin (first N as modes, or a Theme axis), reduce themes, or upgrade the plan | [08](08-tokens.md) |
+| `TOKEN_EFFECT_MODE_DIFF` | info | `mapper` | a shadow differs per mode, but Figma effect styles have no modes | Build the shadow from tokens so each part can be bound | [08](08-tokens.md) |
+| `TOKEN_PADDING_BORDER_OFFSET` | info | `mapper` | padding is not bound because Scene padding includes the border width (D-16) | Nothing to do | [08](08-tokens.md) |
+| `TOKEN_RELATIVE_UNIT` | info | `mapper` | an `em`/`%` token has no stable px value; not bound | Use a px or rem token for design-relevant sizes | [08](08-tokens.md) |
+| `TOKEN_LIBRARY_VALUE_DRIFT` | warning | `plugin` | a library variable bound here has a different value than code; it was not changed | Update the library file, or the code | [08](08-tokens.md) |
+| `TOKEN_VALUE_AMBIGUOUS` | info | `mapper` | value-equality matching found several candidate tokens; not bound | Use `var()` in code for that property | [08](08-tokens.md) |
+| `TOKEN_VALUE_MATCHED` | info | `mapper` | a binding was made by value equality only (opt-in, lower confidence) | Nothing to do; use `var()` in code for an exact binding | [08](08-tokens.md) |
+| `TOKEN_SOURCE_CSS_MISMATCH` | warning | `mapper` | the tokens file and the CSS computed value differ | Rebuild your tokens, or fix the CSS that overrides them | [08](08-tokens.md) |
+| `TOKEN_BIND_FAILED` | warning | `plugin` | Figma refused a binding (field unsupported or variable scope mismatch); the literal was kept | Widen the variable's scopes in Figma, or nothing to do | [08](08-tokens.md) |
+| `TOKEN_ORPHANED` | info | `plugin` | a linked variable no longer exists in code | Delete or deprecate the variable in Figma | [08](08-tokens.md) |
+#### Apply (APPLY_) — 20
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `APPLY_IR_VERSION_UNSUPPORTED` | error | `plugin` | the bundle's (or a DCR's) IR major is not supported by this plugin or CLI; nothing is applied | Update whichever side is older: the plugin, or the CLI (`npx holotype@latest`) | [09](09-plugin.md#preflight) |
+| `APPLY_UNSUPPORTED_FEATURE` | error | `cli` | the config requires an IR feature the plugin does not support | Update the Figma plugin, or turn off the feature in config | [06](06-ir.md) |
+| `APPLY_BUNDLE_CORRUPT` | error | `plugin` | a bundle file's sha256 does not match `integrity`; the file was rejected | Re-export the bundle, or re-send it from the CLI | [02](02-architecture.md) |
+| `APPLY_BUNDLE_REJECTED` | error | `plugin` | the bundle breaks a safety limit (size, nodes, string length, zip ratio) | Split the run into smaller bundles; if you didn't create the file, don't import it | [13](13-security-legal.md) |
+| `APPLY_COMPONENT_FAILED` | error | `plugin` | the Figma API threw while applying a component; partial state left for resume | Re-run the sync to resume; report it with `report.json` if it repeats | [09](09-plugin.md#resume) |
+| `APPLY_CANCELLED` | info | `plugin` | you cancelled; finished components are kept, the rest are marked partial | Re-run the sync to finish | [09](09-plugin.md) |
+| `APPLY_VARIANT_ADD_FAILED` | error | `plugin` | a variant could not be added to the existing set without breaking instance links | Report it; meanwhile apply the component as a new set | [09](09-plugin.md) |
+| `APPLY_VARIANT_NAME_COLLISION` | error | `plugin` | two variants resolve to the same `Prop=Value` name | Give the colliding arg values distinct labels in config | [09](09-plugin.md) |
+| `APPLY_SET_LARGE` | info | `plugin` | a set has more than 500 variants; Figma may get slow | Lower the variant budget, or split the component | [09](09-plugin.md) |
+| `APPLY_PROPERTY_BIND_FAILED` | warning | `plugin` | Figma rejected a component-property binding (type or node mismatch) | Report it; the layer stays without that property | [09](09-plugin.md) |
+| `APPLY_SLOT_UNSUPPORTED` | info | `plugin` | this Figma client has no slots; the slot became fixed content | Update Figma, or nothing to do | [09](09-plugin.md) |
+| `APPLY_INSTANCE_TARGET_MISSING` | warning | `plugin` | a nested component is not in the file; a frame was built instead | Import the nested component, then re-sync | [09](09-plugin.md) |
+| `APPLY_INSTANCE_MISMATCH` | warning | `plugin` | the created instance's geometry differs from the capture (read-back); a frame was built instead | Nothing to do; the next run learns from it. Check the nested component's own story matches its usage | [09](09-plugin.md) |
+| `APPLY_INSTANCE_OVERRIDE` | info | `plugin` | a literal override was applied on an instance | Expose that text or toggle as a prop on the nested component | [09](09-plugin.md) |
+| `APPLY_INSTANCE_CYCLE` | warning | `plugin` | components nest each other in a cycle; broken with frames | Nothing to do | [09](09-plugin.md) |
+| `APPLY_IMAGE_REJECTED` | warning | `plugin` | Figma refused an image (format or size) | Report it with the asset hash from the report | [09](09-plugin.md) |
+| `APPLY_IMAGE_SKIPPED` | warning | `plugin` | an image was not applied (`use_figma` path or upload failure) | Re-run through the plugin to get the images | [09](09-plugin.md) |
+| `APPLY_LAYOUT_RELAXED` | info | `plugin` | HUG/FILL sizing was relaxed to FIXED to pass read-back | Nothing to do | [09](09-plugin.md) |
+| `APPLY_LAYOUT_FALLBACK` | warning | `plugin` | auto layout failed read-back in Figma; the container became absolute | Nothing to do; pixels match. Report the component if it repeats | [09](09-plugin.md) |
+| `APPLY_MIXED_VALUE` | info | `plugin` | Figma returned `figma.mixed`; it was normalized | Nothing to do | [09](09-plugin.md) |
 | **Sync (SYNC_)** | | |
 | `SYNC_CONFLICT_KEPT` | warn | designer edit kept |
 | `SYNC_CONFLICT_OVERWRITTEN` | warn | designer edit overwritten by choice |

@@ -651,7 +651,7 @@ Figma is multiplayer, and two people may sync the same file.
 
 Statuses are recomputed and written to the registry only (not to nodes) until a sync runs.
 
-- **Outside Figma.** `holotype status --figma-file <key>` (CLI, using a Figma REST token) reads the file's root shared plugin data via `GET /v1/files/:key?plugin_data=shared&depth=1` and compares it with the local bundle (verify REST support for root plugin data; proposed spike S-14). The GitHub Action uses this to comment "Figma library is 4 components behind" on PRs ([02](02-architecture.md#topologies)).
+- **Outside Figma.** `holotype status --figma-file <key>` (CLI, using a Figma REST token) reads the file's root shared plugin data via `GET /v1/files/:key?plugin_data=shared&depth=1` and compares it with the local bundle (verify REST support for root plugin data; spike S-18, which absorbs the proposed S-14, [14](14-roadmap.md#phase-0)). The GitHub Action uses this to comment "Figma library is 4 components behind" on PRs ([02](02-architecture.md#topologies)).
 - The doc frame badge and the relaunch button ("Re-sync from Storybook") give designers a one-click path.
 
 ---
@@ -687,5 +687,5 @@ Statuses are recomputed and written to the registry only (not to nodes) until a 
    - whether moving a set across pages keeps library keys;
    - whether plugin data survives branch merges.
 2. **S-06:** lease propagation latency in multiplayer; `getInstancesAsync` cost on large files (bounds the plan's lazy `impact`); clipboard copy from the plugin UI.
-3. **Proposed S-14** (new): REST read of root shared plugin data for CI status checks (`plugin_data=shared` on the document node).
+3. **S-18** (absorbs the proposed S-14): REST read of root shared plugin data for CI status checks (`plugin_data=shared` on the document node), plus the DCR's REST field coverage ([15 §12](15-change-requests.md#phasing)).
 4. Whether hashing per-group `ah` by reading `getStyledTextSegments` is fast enough on text-heavy components (part of S-06).

@@ -346,7 +346,7 @@ name        = 1 − normalizedLevenshtein( tokens(name_new), tokens(name_existin
 | Stable order | items sorted by `(kindOrder, sid, vk, nk/key, id)`; fields by path; candidates by name |
 | Hash | `dcrHash = h16(canonical(DCR without header.generated))`. `header.generated` (tool version, time) is the only volatile block and is excluded |
 | Assets outside the hash | PNG bytes from Figma exports aren't guaranteed byte-stable, so items reference assets by **role id** (`<itemId>:before`), and `assets.json` maps role → sha256 outside `dcrHash` |
-| Golden tests | `fixtures/dcr/*`: saved REST JSON + baseline + capture provenance → expected `dcr.json` and `prompt.md`. Run twice with shuffled input order (object keys, node arrays): output must be byte-identical. A plugin-vs-REST parity fixture is added after S-18 |
+| Golden tests | `fixtures/dcr/*`: saved REST JSON + baseline + capture provenance → expected `dcr.json` and `prompt.md`. Run three times, as is and with two seeded shuffles of the input order (object keys, node arrays): the output must be byte-identical. A plugin-vs-REST parity fixture is added after S-18. Case list: [12 §2.4](12-quality.md#dcr-fixtures) |
 | Config is part of the input | screen naming, placeholder patterns, a11y categories, targets and deprecation maps (§4.10–§4.13, §5.5) are hashed into `extractor.configHash`; the same file + baseline + config give the same DCR |
 
 ### 4.10 Screens: breakpoints, states and grouping <a id="screens"></a>
@@ -959,7 +959,7 @@ interface UsageSnippet { lang: 'jsx-sketch'; imports: string[]; code: string }
 - **Imports** come from `CodeRef` through `importSpecifier()` (§5.5): one line per module specifier, named imports sorted, lines sorted by specifier. Deprecated components are replaced by their `current` component before rendering (§4.13).
 - **Formatting.** Two-space indentation. An element whose attributes exceed 100 columns wraps one attribute per line. There are no other formatting choices.
 - **Escaping.** Designer text (`characters`, prop strings, names) is untrusted (D-38). `{`, `}`, `<` and `>` are emitted as JSX entities, control characters are stripped, strings are capped at 200 characters, and the fence is one backtick longer than the longest backtick run inside.
-- **Golden tests.** `fixtures/dcr/snippet/*.json` → `*.jsx-sketch` covers every row above. Shuffled input must give the same bytes ([12](12-quality.md#fixtures)).
+- **Golden tests.** `fixtures/dcr/snippet/*.json` → `*.jsx-sketch` covers every row above. Shuffled input must give the same bytes ([12 §2.4](12-quality.md#dcr-fixtures)).
 
 ### 7.4 Review summary and approval <a id="review"></a>
 
@@ -1139,14 +1139,14 @@ In proposal mode, `SYNC_CONFLICT` is **not** emitted for designer edits. They ar
 
 | Phase | Scope | Depends on |
 |---|---|---|
-| **4.5: DCR MVP** (right after M4) | branch link/start/refresh; proposal mode; embedded baseline; `dcr` package (plugin + REST sources); items `component.modified`, `variant.added`, `property.*`, `node.*`, `component.new`, `screen` (usage with existing components, grouped by breakpoint and state, with snippets, interactions, copy vs placeholder, and accessibility annotations), `instance.outdated` / `instance.deprecated`; `targets`; review summary + optional approval; CSS-rule provenance from the dev server; `prompt.md`; CLI `dcr`; plugin Changes / Submit preview + Copy prompt; golden tests | Phase 4 (identity, `ah`), S-15…S-19 |
+| **4.5: DCR MVP** (right after M4) | branch link/start/refresh; proposal mode; embedded baseline; `dcr` package (plugin + REST sources); items `component.modified`, `variant.added`, `property.*`, `node.*`, `component.new`, `screen` (usage with existing components, grouped by breakpoint and state, with snippets, interactions, copy vs placeholder, and accessibility annotations), `instance.outdated` / `instance.deprecated`; `targets`; review summary + optional approval; CSS-rule provenance from the dev server; `prompt.md`; CLI `dcr`, `login --figma`; MCP `design_changes`, `dcr_item`, `dcr_item_assets`, `list_dcrs`; plugin Changes / Submit preview + Copy prompt; golden tests | Phase 4 (identity, `ah`), S-15…S-19 |
 | **5 (tokens)** | `token.*` items; untokenized-value questions with candidates | Phase 5 |
 | **6 (composition)** | INSTANCE_SWAP / SLOT reverse mapping; `instance.deviation` / `instance.detached`; nearest-component scoring with composition | Phase 6 |
-| **7 (automation)** | MCP tools; `holotype verify` + follow-up DCRs; "Swap drafts for library components"; JSX locations via `@holotype/vite-plugin`; Tailwind adapter; CI comment "DCR a41c… : 7/9 implemented" | Phase 7 |
+| **7 (automation)** | MCP `verify_dcr` (the other DCR tools ship in 4.5, [14](14-roadmap.md)); `holotype verify` + follow-up DCRs; "Swap drafts for library components"; JSX locations via `@holotype/vite-plugin`; Tailwind adapter; CI comment "DCR a41c… : 7/9 implemented" | Phase 7 |
 
-The MVP DCR moves the product's flagship promise to M4.5. It needs about 8–10 engineer-weeks, mostly the `dcr` package, the REST normalizer and provenance.
+The MVP DCR moves the product's flagship promise to M4.5. It needs about 12 engineer-weeks ([14](14-roadmap.md)), mostly the `dcr` package (including screen grouping, snippets and the review summary), the REST normalizer and provenance.
 
-**Spikes** (add to [14](14-roadmap.md#phase-0)):
+**Spikes** (scheduled in [14 Phase 0](14-roadmap.md#phase-0); the canonical rows live there):
 
 | ID | Question | Method | Output | Effort |
 |---|---|---|---|---|
@@ -1171,11 +1171,11 @@ S-14 (REST read of root shared plugin data for CI status, [10 §15](10-sync.md))
 | D-36 | **Provenance.** Branch mode captures from the Vite dev server with source maps. The mapper records field → CSS origin in `provenance/<sid>.json`. An optional `@holotype/vite-plugin` adds JSX locations |
 | D-37 | **Agent contract.** Stories are mandatory for every new or changed item, tagged `parameters.holotype.implements`. `holotype verify` is the acceptance test. DCRs and verify reports are committed with the PR |
 | D-38 | **Designer text is untrusted data** in prompts: always fenced or escaped, never inside instructions |
-| D-41 (proposed) | **Screen grouping.** Frames are grouped into one `screen` item by `Screen / Breakpoint / State` names and Figma Sections, classified by vocabulary (§4.10). Configurable in `dcr.screens` |
-| D-42 (proposed) | **Usage snippets are specs.** `renderSnippet` is pure and golden-tested; its `jsx-sketch` output names real components and props but is never shipped code (§7.3) |
-| D-43 (proposed) | **Targets.** The DCR header names `targets.components` and an optional `targets.screens` repo. The default is the same repo; with separate repos, screens import only from the published package (§5.5) |
-| D-44 (proposed) | **Approval is optional and hash-bound.** `branch:meta.approval` approves one `dcrHash`; it is never part of the DCR, so approving doesn't change the hash (§7.4) |
-| D-45 (proposed) | **Old instances are not requests.** Outdated or deprecated instances in a mock produce `instance.outdated` / `instance.deprecated` items that point at the current component; the old look is never rebuilt (§4.13) |
+| D-41 | **Screen grouping.** Frames are grouped into one `screen` item by `Screen / Breakpoint / State` names and Figma Sections, classified by vocabulary (§4.10). Configurable in `dcr.screens` |
+| D-42 | **Usage snippets are specs.** `renderSnippet` is pure and golden-tested; its `jsx-sketch` output names real components and props but is never shipped code (§7.3) |
+| D-43 | **Targets.** The DCR header names `targets.components` and an optional `targets.screens` repo. The default is the same repo; with separate repos, screens import only from the published package (§5.5) |
+| D-44 | **Approval is optional and hash-bound.** `branch:meta.approval` approves one `dcrHash`; it is never part of the DCR, so approving doesn't change the hash (§7.4) |
+| D-45 | **Old instances are not requests.** Outdated or deprecated instances in a mock produce `instance.outdated` / `instance.deprecated` items that point at the current component; the old look is never rebuilt (§4.13) |
 
 ---
 

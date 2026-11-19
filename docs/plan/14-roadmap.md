@@ -1,30 +1,33 @@
 # 14 — Roadmap: phases, spikes, milestones, risks
 
-> Assumptions for estimates: **3 engineers** (E1 capture/Storybook, E2 mapper/layout/text, E3 plugin/sync/UX), plus ~0.3 FTE design/UX review from M2. Estimates are in **engineer-weeks (ew)**, include tests and docs, and carry ±30% uncertainty until Phase 0 closes. Calendar estimates assume parallel work: ~11–13 months from start to launch (M8; private distribution, D-39).
+> Assumptions for estimates: **3 engineers** (E1 capture/Storybook, E2 mapper/layout/text, E3 plugin/sync/UX), plus ~0.3 FTE design/UX review from M2. Estimates are in **engineer-weeks (ew)**, include tests and docs, and carry ±30% uncertainty until Phase 0 closes. Calendar estimates assume parallel work: ~12–14 months from start to launch (M8; private distribution, D-39), including Phase 4.5 (DCR MVP, [15](15-change-requests.md)).
 
 ---
 
 ## Overview
 
 ```
-Phase:  0 ──► 1 ──► 2 ──┬──► 3 ──► 4 ──┬──► 6 ──► 7 ──► 8
-                        │              │
-                        └──► (5 can start after 3, in parallel with 4) ┘
-Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
+Phase:  0 ──► 1 ──► 2 ──┬──► 3 ──► 4 ──► 4.5 ──┬──► 6 ──► 7 ──► 8
+                        │                      │
+                        └──► (5 can start after 3, in parallel with 4 / 4.5) ┘
+Milestones: M0   M1    M2      M3     M4   M4.5    M5     M6    M7    M8
 ```
 
 | Phase | Theme | Effort (ew) | Calendar (3 eng.) | Milestone |
 |---|---|---|---|---|
-| 0 | Foundations & spikes | 12 | 4–5 wk | M0 |
+| 0 | Foundations & spikes | 15 | 5–6 wk | M0 |
 | 1 | Pixel-correct snapshot | 15 | 5–6 wk | M1 |
 | 2 | Native structure | 20 | 7 wk | M2 |
 | 3 | Components & variants | 20 | 7 wk | M3 |
 | 4 | Sync | 15 | 5–6 wk | M4 |
-| 5 | Tokens | 12 | 4–5 wk (parallel with 4) | M5 |
+| 4.5 | **DCR MVP (flagship)** | 12 | 4–5 wk | M4.5 |
+| 5 | Tokens | 12 | 4–5 wk (parallel with 4 / 4.5) | M5 |
 | 6 | Composition | 12 | 4–5 wk | M6 |
 | 7 | Automation | 15 | 5–6 wk | M7 |
 | 8 | Launch (private org plugin) | 10 | 4 wk | M8 |
-| | **Total** | **~131 ew** | | |
+| | **Total** | **~146 ew** | | |
+
+Phase 0 grows by 3 ew for spikes S-15…S-19 (13 days), and Phase 4.5 adds 12 ew: +15 ew against the previous ~131 ew.
 
 ---
 
@@ -59,8 +62,15 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 | **S-11** | Can Figma MCP `use_figma` run our applier server-side for CI harness or headless builds? Input size limits, execution time, images (`upload_assets`), fonts (account-uploaded only), determinism, pricing outlook | Bundle applier into a self-contained script; drive via remote MCP from a Node client; apply 10 fixtures; read back boxes; compare to desktop results | Feasibility verdict; limits table; harness design if viable; ToS/terms review note ([13](13-security-legal.md)) | 3 d | [12](12-quality.md) §4.4, Phase 7 MCP |
 | **S-12** | Variables: bindable-field coverage in practice (padding, gap, radius, typography, effects), `setExplicitVariableModeForCollection`, mode limits per plan, `codeSyntax.WEB` matching and `importVariableByKeyAsync` against a team library, aliases across collections; `documentationLinks` on sets | Test file on Starter/Pro/Org bot accounts; scripted bindings; library publish + consume | Coverage matrix; plan-limit handling (`TOKEN_MODE_LIMIT` fallback); library-matching algorithm confirmed | 3 d | D-18, [08](08-tokens.md) |
 | **S-13** | Nested component detection: React fiber `type` ↔ Storybook `component` refs (dev & prod builds); structural-hash fallback accuracy. Vue `__vueParentComponent.type`, Angular `ng.getComponent` and custom-element tags + CEM are post-M5 (D-26) | React + Vite golden fixtures with nesting (Card→Button→Icon), dev & static builds | Detection precision/recall per build mode; prop-extraction reliability (`memoizedProps`); decision on default enablement | 3 d | D-21, [09](09-plugin.md) |
+| **S-15** | Cross-file instance resolution: can a consumer or branch file resolve instances of library components to our `sid`/`vk`/`irh`? Is `getSharedPluginData` readable on remote main components (`getMainComponentAsync`), or is component key → registry `keys.json` needed? Is `detachedInfo` reliable? Can an outdated library instance be detected? | Library file + consumer file (and a Figma branch); instances before and after a library publish; read through the plugin and REST | Resolution path chosen; `keys.json` format; outdated-detection rule (`irh` vs registry) | 2 d | [15 §4.2, §4.13](15-change-requests.md#instance-versions) |
+| **S-16** | Override → args round trip: does instance properties → args → re-render → same instance hold for VARIANT / BOOLEAN / TEXT / INSTANCE_SWAP / SLOT and nested instances? Which overrides fall outside properties (`instance.deviation`)? | Fixture components with every property kind; scripted: set properties, reverse-map, re-render the story, rebuild, compare | Reversibility table; `valueMap` gaps; snippet prop rendering confirmed | 3 d | [15 §4.5, §7.3](15-change-requests.md#snippet) |
+| **S-17** | Automated Figma branch creation: can a branch (or file) be created without the UI (REST, Figma MCP, plan-gated features)? Do branches carry shared plugin data (`branch:meta`, `base:*`) on creation, update from main, and merge? | Try each path on the user's Organization account; create, edit, update and merge a branch with plugin data on root and variants | Supported creation path, or the manual UI flow with copy; plugin-data behaviour on merge (feeds [10 §9.5](10-sync.md#proposal-mode)) | 2 d | D-32, [15 §2](15-change-requests.md#branch-model) |
+| **S-18** | Headless REST diff + shared plugin data (**absorbs S-14**, proposed in [10 §15](10-sync.md)): does `GET /v1/files/:key?plugin_data=shared` return root and node shared plugin data (registry, `branch:meta`, `base:*`) and every field the normalizer needs (groups, `componentProperties`, overrides, `boundVariables`, `devStatus`, annotations + categories, `interactions`/`reactions` incl. `CHANGE_TO`, Sections)? Is REST ↔ plugin snapshot parity byte-exact? Can plugins write `devStatus`? Token scope names | The same file through both paths, diffed; a CI-status read on the document node at `depth=1` | Field coverage table; the `parity` fixture ([12 §2.4](12-quality.md#dcr-fixtures)); CI status path for `holotype status` | 3 d | D-34, D-35, [15 §4.1, §4.11](15-change-requests.md#interactions), [10 §15](10-sync.md) |
+| **S-19** | CSS provenance via CDP + Vite source maps: do `rule.styleSheetId` + `style.range` and `CSS.styleSheetAdded` `sourceURL`/`sourceMapURL` map to the original file:line for plain CSS, CSS modules (de-hashed selectors), Tailwind v4 and emotion in the Vite dev server? Does `data-holotype-loc` injection work with React 19 + Vite? | The react-vite fixture repo on the dev server; compare resolved locations with ground truth; prototype `@holotype/vite-plugin` | Coverage per styling approach; resolver + plugin prototype; `DCR_PROVENANCE_*` thresholds | 3 d | D-36, [05 §6.2](05-capture.md), [15 §5](15-change-requests.md#provenance) |
 
-**Exit criteria (M0):** all 13 spike reports merged; README §5 updated (every 🟡 resolved or re-dated); CI green; one micro-fixture flows CLI → bundle → plugin as a rectangle-only smoke test.
+S-14 was proposed in [10 §15](10-sync.md) and never got a separate slot. Its question (REST read of root shared plugin data for CI status) is part of S-18, and the id is retired.
+
+**Exit criteria (M0):** all 18 spike reports merged (S-01…S-13, S-15…S-19); README §5 updated (every 🟡 resolved or re-dated); CI green; one micro-fixture flows CLI → bundle → plugin as a rectangle-only smoke test.
 
 ---
 
@@ -127,6 +137,32 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 | `fidelity` | L6 sync e2e suite (designer-edit simulation) |
 
 **Exit criteria:** 100% override retention on unchanged-structure suite; no-op re-sync = 0 writes; conflict detection precision 100% / recall ≥95% on simulated-edit suite; rename + deletion flows tested with library consumer file. **Effort:** 15 ew.
+
+---
+
+## Phase 4.5 — DCR MVP, flagship (M4.5)
+
+**Goal:** G9. A designer edits a Figma branch file, presses Submit, and an AI agent gets a deterministic, reviewable Design Change Request that names the exact code to change and how existing components are used ([15](15-change-requests.md)).
+
+| Package | Deliverables |
+|---|---|
+| `dcr` (new) | `FigmaSnapshot` with plugin and REST normalizers; identification; field diff + noise filter; classification (`component.modified`, `variant.added/removed`, `property.*`, `node.*`, `component.new`, `screen`, `instance.outdated/deprecated`); reverse prop mapping for VARIANT / BOOLEAN / TEXT; screen grouping by breakpoint × state; interactions; copy vs placeholder; accessibility annotations; `targets` + `importSpecifier`; `renderSnippet`; review summary; `renderPrompt`; canonical DCR + stable ids |
+| `capture` / `mapper` | branch mode on the Vite dev server: `styleSheetId` + ranges, stylesheet headers, `data-holotype-loc`; `provenance/<sid>.json` with a `FieldOrigin` per Scene field ([07 §16.1](07-mapping.md)) |
+| `plugin` | proposal mode; `base:*` snapshots + `branch:meta`; no `SYNC_CONFLICT` in branch files; Changes, Submit and designer-view preview screens with empty / loading / error / success states ([11 §6.14–6.16](11-ux.md#changes)); optional Approve |
+| `cli` | `branch start\|link\|refresh\|close`, `dcr`, `login --figma`, `POST /v1/dcr`; `.holotype/requests/` committed, `.holotype/branches/` local; MCP `design_changes`, `dcr_item`, `dcr_item_assets`, `list_dcrs` |
+| `vite-plugin` (new, optional) | dev-only JSX locations (`data-holotype-loc`) |
+| `fixtures` | `fixtures/dcr/*` golden cases and the shuffle determinism test ([12 §2.4](12-quality.md#dcr-fixtures)); a react-vite fixture branch with designer edits |
+
+**Out:** `token.*` items (Phase 5); INSTANCE_SWAP / SLOT reverse mapping, `instance.detached/deviation` (Phase 6); `holotype verify`, `verify_dcr`, follow-up DCRs, the Tailwind adapter and CI comments (Phase 7).
+
+**Exit criteria:**
+- Every `fixtures/dcr` case is byte-identical across 3 shuffled runs, and plugin and REST give the same `dcrHash` on the parity fixture.
+- On the fixture branch, ≥95% of `component.modified` fields carry a rule file:line on CSS modules (S-19). A field never points to the wrong file (0 on the fixture set).
+- Screens group correctly by naming convention and Sections. Snippets compile as JSX after replacing the pseudo-elements (a syntax check in tests).
+- No designer string reaches the Rules or Verify sections (the `injection` fixture passes).
+- Usability, with the boss on the private dev plugin (D-39): a designer submits a branch with 5 kinds of change in ≤10 minutes without help. The reviewer approves from the summary alone. An agent of the user's choice implements the `component.modified` and `variant.added` items in one session.
+
+**Effort:** 12 ew.
 
 ---
 
@@ -199,6 +235,7 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 | M2 | Native structure | Phase 2 exit | D-22 |
 | M3 | Components alpha | Phase 3 exit; private alpha for the user and their boss (dev plugin, D-39) | D-01 shortlist |
 | M4 | Sync beta | Phase 4 exit | — |
+| M4.5 | DCR MVP | Phase 4.5 exit; the flagship demo for the user and their boss | D-41…D-45 (proposed in [15 §13](15-change-requests.md)); screens target default ([15 §14](15-change-requests.md)) |
 | M5 | Tokens | Phase 5 exit; metrics gating | — |
 | M6 | Composition | Phase 6 exit; org beta (private organization plugin, D-39) | — |
 | M7 | Automation | Phase 7 exit | registry hosting |
@@ -228,6 +265,10 @@ L = likelihood, I = impact (H/M/L).
 | R14 | Nested component detection unreliable in production builds (minified names, no fiber debug) | M | M | Use `component` reference identity (not names), structural hash fallback, verification before instancing (D-21) | 6 |
 | R15 | Scope creep / timeline slip | H | M | Phase exit criteria, ratchet metrics, defer hosted tier | all |
 | R16 | Legal challenge from competitor | L | M | Clean-room implementation, no clipboard reverse-engineering ([13](13-security-legal.md)) | all |
+| R17 | REST lacks fields the DCR needs (plugin data, reactions, annotations), so headless extraction is incomplete | M | M | S-18 early; plugin path is preferred and always complete; `DCR_SNAPSHOT_PARITY` reporting | 0, 4.5 |
+| R18 | Prompt injection through designer text steers the user's agent | M | H | D-38 fencing/escaping, `injection` golden fixture, contract rule 8, PR review (D-37) ([13 §2.5](13-security-legal.md#dcr)) | 4.5 |
+| R19 | Figma branches drop or mangle shared plugin data on create/merge | M | M | S-17; duplicated-file fallback (D-32); CLI-cache baseline (`DCR_BASELINE_EXTERNAL`) | 0, 4.5 |
+| R20 | Provenance unreliable outside CSS modules (CSS-in-JS, Tailwind) | M | M | S-19 coverage table; selector-only fallback flagged `DCR_PROVENANCE_MISSING`; Tailwind adapter (Phase 7) | 4.5, 7 |
 
 ---
 
@@ -250,6 +291,7 @@ Technical (answered by spikes or during phases):
 12. Registry hosting: first-party domain vs GitHub Pages only (Phase 7; manifest domains are fixed at publish time).
 13. Prototype state reactions on by default? (Phase 3 usability test)
 14. Should the mapper also be bundled into the plugin for future in-plugin re-inference? (post-M4)
+15. Where do screens live: in the UI repo, or in a separate app repo? Default **same repo**; separate repos via `dcr.targets.screens` ([15 §5.5, §14](15-change-requests.md#targets)). (Phase 4.5)
 
 ---
 
@@ -286,3 +328,9 @@ Week 4 — spikes batch C + smoke path
 22. Smoke path: CLI captures one micro-fixture → minimal Capture IR → absolute Scene IR → plugin file import builds rectangles + text. (all)
 23. macOS self-hosted runner provisioning + Figma desktop bot account + "run last plugin" automation proof. (E3)
 24. Write spike reports; update README §5 decisions; replan Phase 1 estimates. (all)
+
+Week 5 — DCR spikes (flagship de-risking, [15](15-change-requests.md))
+25. S-17 branch creation + plugin data on merge, and S-15 cross-file instance resolution, on the user's Organization account. (E3)
+26. S-18 REST ↔ plugin field coverage and parity fixture (absorbs S-14). (E3)
+27. S-19 CDP + Vite source-map provenance; `@holotype/vite-plugin` prototype. (E1)
+28. S-16 override → args round trip on golden fixtures. (E2)

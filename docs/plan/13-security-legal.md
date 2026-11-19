@@ -15,6 +15,8 @@ Legal goal: ship under a name and license that cannot be taken down, using only 
 | Local-server session tokens | `~/.holotype/sessions.json`, plugin `clientStorage` | Secret |
 | Registry tokens | CI secrets, plugin `clientStorage` | Secret |
 | Figma document | Figma | Confidential (the user's) |
+| Figma personal access token (DCR extraction, [15](15-change-requests.md)) | OS keychain via `holotype login --figma`, or `FIGMA_TOKEN` env / CI secret | Secret (read access to every file the user can see) |
+| Design change requests (`dcr.json`, `prompt.md`, before/after PNGs) | `.holotype/requests/<id>/`, **committed** with the PR (D-37) | Confidential (unreleased UI, designer copy) |
 | Our release artifacts (npm packages, plugin bundle) | npm, plugin zip (dev plugin), private org plugin; Figma Community only after M8 (D-39) | Integrity-critical |
 
 ```
@@ -24,6 +26,7 @@ Legal goal: ship under a name and license that cannot be taken down, using only 
                                [Storybook: localhost / intranet / Chromatic]
  [CI runner] ──► [Registry (HTTPS, CORS *)] ◄── [Figma plugin UI]
  [Hosted workers (P8+)] ──► [egress proxy] ──► [public internet only]
+ [CLI `dcr`] ──(PAT, read-only)──► [api.figma.com]        [prompt.md] ──(user's choice)──► [user's AI agent / provider]
 ```
 
 Each arrow that crosses a boundary has an authentication or authorization control, listed below.
@@ -93,6 +96,18 @@ A headless browser fetching user-supplied URLs is an SSRF tool by construction (
 6. **Tenancy:** a per-tenant queue quota and a per-job budget, so one tenant cannot starve the others.
 7. **Abuse:** URL allow/deny lists and rate limiting per account. The service refuses to render known non-Storybook targets: it requires `index.json` plus `iframe.html` with `__STORYBOOK_PREVIEW__`, which is checked before any capture (`SB_NOT_A_STORYBOOK`).
 
+### 2.5 Design change requests <a id="dcr"></a>
+
+The DCR turns a Figma file into instructions for an AI coding agent ([15](15-change-requests.md)). Anyone who can edit the branch file can put text in front of that agent.
+
+| Threat | Control |
+|---|---|
+| **Prompt injection** through designer text: layer, frame or section names, text content, TEXT props, annotations (accessibility labels and alt text too), comments, variable names, prototype URLs | **D-38.** Designer strings appear only in fenced blocks, escaped table cells or escaped `jsx-sketch` snippets. They never appear in the Rules or Verify sections or in any instruction sentence. Titles are template-built from ids. The Rules section says designer text is data. Instruction-like text is flagged `DCR_NOTE_SUSPICIOUS` but never dropped, so nothing is hidden from reviewers. A golden `injection` fixture proves it ([12 §2.4](12-quality.md#dcr-fixtures), [15 §10.3](15-change-requests.md#security)) |
+| Crafted DCR via `POST /v1/dcr` (a compromised plugin or another local client) | Session token required. TypeBox validation. Size caps (5 MB JSON, 20 MB assets). The CLI recomputes `dcrHash` and item ids, rejects mismatches, and adds provenance itself, never taking file paths from the request. The branch must match the linked branch |
+| Path traversal through provenance (`SourceLoc.file`, `data-holotype-loc`) | Paths must be repo-relative, with no `..`, no absolute paths and no symlinks out of the repo. They are checked at capture and again before writing |
+| Agent acting on links | `open-url` interaction targets are listed as text and never fetched by holotype. The contract tells the agent they are data |
+| Approval spoofing | `branch:meta.approval` is a workflow gate, not a security control: anyone with edit access to the branch file can approve. It is bound to one `dcrHash`, so it can't approve later edits. The PR review stays the real control (D-37) |
+
 ## 3. Secrets handling <a id="secrets"></a>
 
 **Sources**, in precedence order:
@@ -114,6 +129,24 @@ A headless browser fetching user-supplied URLs is an SSRF tool by construction (
 **Text redaction mode:** `redaction.text: "mask"` replaces every text character with a width-preserving glyph in the same font. Capture keeps the geometry, but bundle text becomes `■`/`x`. This is for teams that share bundles with vendors.
 
 **Config literal guard:** `SEC_SECRET_IN_CONFIG` ([02 §8](02-architecture.md)).
+
+**Figma token (DCR, [15 §10.1](15-change-requests.md#security)):**
+- A **personal access token** with read-only file scopes (`file_content:read`, plus `file_comments:read` only for `--with-comments`; verify the scope names, S-18). OAuth comes later, if a hosted service ever needs it.
+- Sources, in precedence order: `FIGMA_TOKEN` (CI secrets), then the OS keychain entry written by `holotype login --figma` (macOS Keychain, Windows Credential Manager, libsecret; a 0600 file under `~/.holotype/` only where no keychain exists). It is never accepted on argv (`SEC_SECRET_ON_ARGV`) and never read from the config (`SEC_SECRET_IN_CONFIG`).
+- It is sent only to `api.figma.com` over HTTPS. It is redacted from logs and never written to DCR files, bundles, `branch:meta` or reports. `holotype login --figma --logout` deletes it, and `doctor` reports its age.
+- The plugin needs no token: it reads the open file through the Plugin API.
+
+### 3.1 What leaves the machine (DCR) <a id="dcr-egress"></a>
+
+| Data | Goes to | When |
+|---|---|---|
+| Figma file JSON, comments | read **from** `api.figma.com` with the user's PAT | `holotype dcr` (REST path) |
+| DCR from the plugin | the local CLI on loopback (`POST /v1/dcr`) | Submit → *Send to CLI* |
+| `dcr.json`, `prompt.md`, PNGs | the user's repo, committed with the PR | always (D-37) |
+| The prompt, the referenced code, images | **the AI provider the user chose**, under the user's agreement with it | only when the user's agent reads it. holotype calls no model (D-35) |
+| Anything | holotype maintainers | never |
+
+The Submit screen and the docs say this plainly ([11 §6.15](11-ux.md#submit)). No designer identity is stored: comment and annotation authors and approvers are dropped (`DcrNote.author: never`).
 
 ## 4. Supply chain <a id="supply-chain"></a>
 

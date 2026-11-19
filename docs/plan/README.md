@@ -149,6 +149,11 @@ These are binding for every chapter. If a chapter disagrees with this table, thi
 | D-38 | **Designer text is untrusted data** in prompts: always fenced or escaped, never inside instructions (see [15](15-change-requests.md)) | ✅ |
 | D-39 | **Distribution (now): private, for a small known group** (user decision: the user and their boss). Phase 0–4: a **development plugin** installed from the built `manifest.json` ("Import plugin from manifest" in the Figma desktop app; any plan, no review). The account has Organization/Enterprise features (native branching), so switch to a **private organization plugin** (published to the org only, no Figma review) once the plugin is stable. Figma Community listing is deferred until after M8 and requires the trademark search (D-01) | ✅ |
 | D-40 | **Quality bar** (user requirement): high-quality software with very good UX for both designers and developers. Every user-facing flow has a spec in [11](11-ux.md) with empty, loading, error and success states; every diagnostic has a plain-language message and a remedy; no flow ships without a usability check on a real design system | ✅ |
+| D-41 | **Screen grouping:** frames become one `screen` item, grouped by `Screen / Breakpoint / State` names and Figma Sections and classified by vocabulary; configurable in `dcr.screens` (see [15](15-change-requests.md)) | 🟡 |
+| D-42 | **Usage snippets are specs:** `renderSnippet` is pure and golden-tested; its `jsx-sketch` names real components and props but is never shipped code | ✅ |
+| D-43 | **Targets:** the DCR header names `targets.components` and optional `targets.screens`. Default: screens live in the UI repo; with separate repos, screens import only from the published package | 🟡 (user to confirm) |
+| D-44 | **Approval is optional and hash-bound:** `branch:meta.approval` approves exactly one `dcrHash` and is not part of the DCR, so approving never changes the hash | ✅ |
+| D-45 | **Old instances are not requests:** outdated/deprecated instances yield `instance.outdated` / `instance.deprecated` items pointing at the current component; the old look is never rebuilt | ✅ |
 
 ## 6. Architecture at a glance
 
@@ -233,7 +238,7 @@ Use these exact terms and identifiers in every chapter.
 | **Branch file** | a Figma file (duplicate or Figma-native branch) linked to one git feature branch and its `baseCommit` (D-32) |
 | **Proposal mode** | the sync mode of branch files: designer edits to managed nodes are *intent*, captured for a DCR, not conflicts (D-33) |
 | **Baseline snapshot** | the normalized applied state per variant stored at generation time (`base:*`); the DCR diffs against it (D-34) |
-| **DCR** | Design Change Request: deterministic, schema-validated list of design changes vs the baseline (modified, new variant/property/component, usage, deleted, detached), each with provenance, tokens, assets and an acceptance criterion; rendered to `prompt.md` for an AI agent ([15](15-change-requests.md)) |
+| **DCR** | Design Change Request: deterministic, schema-validated list of design changes vs the baseline (modified, new variant/property/component, screens with states/breakpoints, interactions, content/a11y, deleted, detached, outdated/deprecated instances, tokens), each with provenance, tokens, assets and an acceptance criterion; rendered to `prompt.md` for an AI agent ([15](15-change-requests.md)) |
 
 ### Config precedence (lowest to highest)
 
@@ -253,7 +258,7 @@ Details, estimates and exit criteria are in [14](14-roadmap.md).
 
 | Phase | Theme | Headline deliverable |
 |---|---|---|
-| 0 | Foundations & spikes | Repo, CI, schemas skeleton; 14 de-risking spikes (S-01..S-14) answered |
+| 0 | Foundations & spikes | Repo, CI, schemas skeleton; 18 de-risking spikes (S-01..S-13, S-15..S-19; S-14 folded into S-18) answered |
 | 1 | Pixel-correct snapshot | `holotype capture <story>` → bundle → plugin builds an **absolute**, pixel-faithful frame. Fidelity harness live |
 | 2 | Native structure | Auto layout/grid inference with verification and fallback; text and font fidelity; naming; simplification |
 | 3 | Components & variants | Variant planner, component sets, component properties (BOOLEAN/TEXT), states; local server + pairing; doc frames |
