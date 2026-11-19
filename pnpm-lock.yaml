@@ -359,6 +359,9 @@ importers:
       '@holotype/ir':
         specifier: workspace:*
         version: link:../packages/ir
+      '@holotype/sandboxes':
+        specifier: workspace:*
+        version: link:../tools/sandboxes
       '@holotype/shared':
         specifier: workspace:*
         version: link:../packages/shared
@@ -412,6 +415,8 @@ importers:
       '@holotype/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+
+  tools/sandboxes: {}
 
 packages:
 

@@ -1,0 +1,21 @@
+{
+  "name": "@holotype/sandboxes",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Generates throwaway Storybook sandboxes (React + Vite on Storybook 10.6 first) for spikes and compatibility checks.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "gen": "node --experimental-strip-types --disable-warning=ExperimentalWarning src/cli.ts gen",
+    "list": "node --experimental-strip-types --disable-warning=ExperimentalWarning src/cli.ts list",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  }
+}

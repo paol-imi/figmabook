@@ -11,9 +11,10 @@
   "scripts": {
     "build": "node --experimental-strip-types --disable-warning=ExperimentalWarning runner/scripts/build.ts",
     "refs": "node --experimental-strip-types --disable-warning=ExperimentalWarning runner/scripts/refs.ts",
-    "typecheck": "tsc",
+    "typecheck": "tsc && tsc -p S-07",
     "test": "vitest run",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
+    "s07": "node --experimental-strip-types --disable-warning=ExperimentalWarning S-07/cli.ts",
     "s19": "node --experimental-strip-types --disable-warning=ExperimentalWarning S-19/run.ts",
     "s19:record": "node --experimental-strip-types --disable-warning=ExperimentalWarning S-19/record.ts"
   },
@@ -28,6 +29,7 @@
     "@holotype/capture": "workspace:*",
     "@holotype/figma-fake": "workspace:*",
     "@holotype/ir": "workspace:*",
+    "@holotype/sandboxes": "workspace:*",
     "@holotype/shared": "workspace:*",
     "@holotype/storybook": "workspace:*",
     "@testing-library/preact": "3.2.6",
