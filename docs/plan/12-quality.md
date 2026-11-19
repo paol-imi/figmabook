@@ -1,6 +1,6 @@
 # 12 — Quality, fidelity, performance, diagnostics, observability
 
-> This chapter defines how we *know* figmabook works: the test pyramid, the fixture corpus, the fidelity harness that measures README §4 metrics, performance budgets, the diagnostics catalog, observability and release gates.
+> This chapter defines how we *know* holotype works: the test pyramid, the fixture corpus, the fidelity harness that measures README §4 metrics, performance budgets, the diagnostics catalog, observability and release gates.
 
 ---
 
@@ -360,13 +360,13 @@ Endpoint on our own domain (listed in manifest `allowedDomains` only when teleme
 | `sync_outcome` | conflicts count, policy chosen, overrides lost count |
 | `error_crash` | error class, package, version, stack hash (no message text) |
 
-Install id = random UUID stored locally; `DO_NOT_TRACK=1` and `CI=true` force off; `figmabook telemetry status|enable|disable`.
+Install id = random UUID stored locally; `DO_NOT_TRACK=1` and `CI=true` force off; `holotype telemetry status|enable|disable`.
 
 ---
 
 ## 8. Release quality gates
 
-A release (any `@figmabook/*` minor/major, plugin publish) requires:
+A release (any `@holotype/*` minor/major, plugin publish) requires:
 
 1. L0–L4 green on the full sandbox matrix for first-class SB versions (D-11).
 2. Nightly fidelity within ratchet baseline; README §4 targets met from M5 onward (before: tracked, not gating).

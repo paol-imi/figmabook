@@ -48,7 +48,7 @@ create-figma-plugin generates `manifest.json` from the `"figma-plugin"` field of
 
 ```jsonc
 {
-  "name": "figmabook",                         // public name pending D-01
+  "name": "holotype",                         // public name pending D-01
   "id": "<assigned by Figma on first publish>",
   "api": "1.0.0",
   "main": "build/main.js",
@@ -59,15 +59,15 @@ create-figma-plugin generates `manifest.json` from the `"figma-plugin"` field of
     "allowedDomains": [
       "http://127.0.0.1:47321", "http://127.0.0.1:47322", "http://127.0.0.1:47323",   // D-25 local CLI server
       "ws://127.0.0.1:47321",   "ws://127.0.0.1:47322",   "ws://127.0.0.1:47323",
-      "https://registry.figmabook.dev"         // CI registry (topology D); final domain pending D-01
+      "https://registry.holotype.dev"         // CI registry (topology D); final domain pending D-01
     ],
     "devAllowedDomains": ["http://localhost:47321", "ws://localhost:47321"],
-    "reasoning": "Connects only to the figmabook CLI running on your own machine (127.0.0.1) to receive component data you exported from your Storybook, and optionally to your team's figmabook registry to download published bundles. No Figma document data is sent anywhere except fidelity screenshots you explicitly request, which go to the same local CLI."
+    "reasoning": "Connects only to the holotype CLI running on your own machine (127.0.0.1) to receive component data you exported from your Storybook, and optionally to your team's holotype registry to download published bundles. No Figma document data is sent anywhere except fidelity screenshots you explicitly request, which go to the same local CLI."
   },
   "permissions": ["teamlibrary"],              // library variable/style/component matching (08 §10)
   "relaunchButtons": [
     { "command": "resync",  "name": "Re-sync from Storybook", "multipleSelection": true },
-    { "command": "inspect", "name": "figmabook details" }
+    { "command": "inspect", "name": "holotype details" }
   ]
 }
 ```
@@ -76,7 +76,7 @@ Notes:
 
 - **Ports.** Every port is listed explicitly; port wildcards are not documented (verify, S-01). `127.0.0.1` is preferred over `localhost`, because it avoids IPv6/`::1` resolution differences (verify, S-01). If Chrome's Local Network Access permission ("Apps on device", Chrome 142+) blocks loopback in the browser app, the UI detects it ([§3.4](#connect)) and steers the user to the desktop app or to file import (D-10).
 - **No `"*"` entry.** A wildcard would put "unrestricted network access" on the Community listing ([13](13-security-legal.md#publishing)).
-- **Self-hosted registries** that are not on `registry.figmabook.dev` go through file import, or through a CORS-enabled proxy on the registry domain ([02](02-architecture.md#topologies)).
+- **Self-hosted registries** that are not on `registry.holotype.dev` go through file import, or through a CORS-enabled proxy on the registry domain ([02](02-architecture.md#topologies)).
 - **Relaunch commands.** `setRelaunchData` is set on every managed component set and on the documentation frame ([§9](#doc-frame)). `resync` re-runs the pipeline scoped to the selected sets' `sid`s.
 
 ---
@@ -173,9 +173,9 @@ The server side of this exchange is specified in [02](02-architecture.md#protoco
 3. **Transport.** Requests use `Authorization: Bearer <token>`. Progress and incremental bundles stream over `ws://…/v1/events?token=…`.
 4. **Errors.**
    - The UI can't tell an LNA denial from "server not running". The CLI prints "plugin connected" when it receives a probe, which disambiguates for the user.
-   - The UI shows `NET_SERVER_UNREACHABLE` with steps: start `figmabook serve`; use the desktop app; or allow "Apps on device" in the browser.
+   - The UI shows `NET_SERVER_UNREACHABLE` with steps: start `holotype serve`; use the desktop app; or allow "Apps on device" in the browser.
    - A file-import button is always visible.
-5. **File mode.** Drag a `.figmabook.zip` or pick a directory with `webkitdirectory`. Unzip with `fflate` in the UI. No network.
+5. **File mode.** Drag a `.holotype.zip` or pick a directory with `webkitdirectory`. Unzip with `fflate` in the UI. No network.
 
 ---
 
@@ -225,7 +225,7 @@ RO = read-only, W = writes. No stage before `tokens` writes to the document, whi
 | Check | How | Outcome |
 |---|---|---|
 | **IR compatibility** | `manifest.irVersion` major ∈ `SUPPORTED_MAJORS`; unknown minors are ignored ([06](06-ir.md#versioning)) | else `APPLY_IR_VERSION_UNSUPPORTED` (error, blocks) |
-| **Fonts** | Collect every `FontName` the bundle needs: text runs, plus every mode value of font-family/weight variables ([08](08-tokens.md#edge)). `await figma.listAvailableFontsAsync()` is cached once per session. Resolve each one: (1) exact family+style; (2) a saved mapping (root shared plugin data `figmabook/fontmap`, plus clientStorage for user-level defaults); (3) a style-name normalization table ([07](07-mapping.md#fonts)); (4) `{ family, variationSettings }` for variable fonts (`figma.getFontFamilyVariationAxes`) | missing fonts are listed in the **Fonts** screen; the user maps or accepts the fallback (default Inter of the nearest weight). Emits `FONT_MISSING_IN_FIGMA` (warn) or `FONT_SUBSTITUTED` (info) |
+| **Fonts** | Collect every `FontName` the bundle needs: text runs, plus every mode value of font-family/weight variables ([08](08-tokens.md#edge)). `await figma.listAvailableFontsAsync()` is cached once per session. Resolve each one: (1) exact family+style; (2) a saved mapping (root shared plugin data `holotype/fontmap`, plus clientStorage for user-level defaults); (3) a style-name normalization table ([07](07-mapping.md#fonts)); (4) `{ family, variationSettings }` for variable fonts (`figma.getFontFamilyVariationAxes`) | missing fonts are listed in the **Fonts** screen; the user maps or accepts the fallback (default Inter of the nearest weight). Emits `FONT_MISSING_IN_FIGMA` (warn) or `FONT_SUBSTITUTED` (info) |
 | **Images** | For each asset sha: the registry image map (sha → Figma image hash), then `figma.getImageByHash` | request only the missing ones |
 | **Variables / styles** | The full matching procedure of [08 §10](08-tokens.md#matching) | a matching summary for the Tokens tab |
 | **Libraries** (components) | If `options.libraryComponents` maps `sid` → published component key (e.g. icons already exist in a team library), resolve with `importComponentByKeyAsync` / `importComponentSetByKeyAsync` | use library components as instance targets ([§10](#nested)) |
@@ -239,10 +239,10 @@ Fonts: `loadFontAsync` is called **once per unique FontName**, in parallel batch
 See [10 §3](10-sync.md#index). For each target page (from the registry plus the default page):
 
 1. `await page.loadAsync()`.
-2. `page.findAllWithCriteria({ sharedPluginData: { namespace: 'figmabook', keys: ['nk'] } })`, with `figma.skipInvisibleInstanceChildren = true`.
+2. `page.findAllWithCriteria({ sharedPluginData: { namespace: 'holotype', keys: ['nk'] } })`, with `figma.skipInvisibleInstanceChildren = true`.
 3. Build the maps `sid → ComponentSetNode`, `(sid, vk) → ComponentNode`, `(sid, vk, nk) → SceneNode`.
 
-Variables are indexed via `getLocalVariablesAsync()` plus their `figmabook/tok` data. `figma.loadAllPagesAsync()` is never called.
+Variables are indexed via `getLocalVariablesAsync()` plus their `holotype/tok` data. `figma.loadAllPagesAsync()` is never called.
 
 ### 5.3 Plan (read-only)
 
@@ -259,7 +259,7 @@ These are applied before any node, because node bindings reference variables. Th
 5. scopes and code syntax
 6. styles
 
-Each written variable gets `figmabook/tok` and `figmabook/ah`. Library-matched variables are imported (`importVariableByKeyAsync`) and never modified.
+Each written variable gets `holotype/tok` and `holotype/ah`. Library-matched variables are imported (`importVariableByKeyAsync`) and never modified.
 
 ### 5.5 Apply (write), per component in topological order
 
@@ -280,7 +280,7 @@ Each written variable gets `figmabook/tok` and `figmabook/ah`. Library-matched v
 ### 5.6 Finalize (write)
 
 1. Write the root registry, chunked ([10 §2.3](10-sync.md#root-registry)).
-2. Write the report summary to root shared plugin data `figmabook/report:*`.
+2. Write the report summary to root shared plugin data `holotype/report:*`.
 3. Post `done`.
 4. `figma.notify('Synced 12 components (3 updated, 1 conflict)', { timeout: 6000 })`.
 5. Select the changed sets, with an optional zoom: `figma.viewport.scrollAndZoomIntoView`.
@@ -296,7 +296,7 @@ The Plugin API is order-sensitive and throws on several invalid sequences (resea
 async function writeNode(port: FigmaPort, s: SceneNode, parent: ChildrenMixin & BaseNode, index: number, existing?: SceneNodeLike) {
   // 0. create (or reuse existing managed node, 10 §5)
   const n = existing ?? create(port, s.kind);                          // createFrame | createText | createRectangle | createNodeFromSvg | instance
-  if (!existing) n.setSharedPluginData('figmabook', 'nk', s.nk);       // provisional identity immediately (crash-safe resume, §13)
+  if (!existing) n.setSharedPluginData('holotype', 'nk', s.nk);       // provisional identity immediately (crash-safe resume, §13)
   // 1. attach FIRST: FILL/ABSOLUTE/constraints require a parent; auto-layout child props require an auto-layout parent
   if (n.parent !== parent || indexOf(n) !== index) parent.insertChild(index, n);
   // 2. defaults hygiene for fresh frames: createFrame() starts at 100×100 with a WHITE fill
@@ -352,7 +352,7 @@ async function writeNode(port: FigmaPort, s: SceneNode, parent: ChildrenMixin & 
   for (const b of s.bindings.filter(isNodeFieldBinding)) n.setBoundVariable(b.field, await resolveVar(b.token));
   // 10. name + identity LAST (cheap, and marks the node as fully written)
   n.name = s.name;
-  writeIdentity(n, s);                                                 // figmabook/nk, irh, ah, v (10 §2)
+  writeIdentity(n, s);                                                 // holotype/nk, irh, ah, v (10 §2)
   // 11. children (pre-order recursion) happen after this node is complete
 }
 ```
@@ -490,7 +490,7 @@ interface SceneProperty {
 ### 8.1 Define on the set, bind in every variant
 
 ```ts
-const ids = readJSON(set, 'figmabook', 'props') as Record<string /*arg*/, string /*Figma property name incl. #id*/>;
+const ids = readJSON(set, 'holotype', 'props') as Record<string /*arg*/, string /*Figma property name incl. #id*/>;
 for (const p of scene.properties) {
   let name = ids[p.arg];
   if (!name || !(name in set.componentPropertyDefinitions)) {
@@ -503,7 +503,7 @@ for (const p of scene.properties) {
     if (patch) ids[p.arg] = set.editComponentProperty(name, patch);           // returns the (possibly new) name string
   }
 }
-writeJSON(set, 'figmabook', 'props', ids);
+writeJSON(set, 'holotype', 'props', ids);
 // bind
 for (const p of scene.properties) for (const b of p.bindings) {
   const node = index.node(scene.sid, b.vk, b.nk);
@@ -561,7 +561,7 @@ The documentation frame is a managed frame (vertical auto layout, 24px padding, 
 3. "Open in Storybook" link (`setRangeHyperlink`).
 4. Properties table: rows of *name · type · values · default*, generated from Scene `axes` + `properties`.
 5. Mode preview row, when variable modes exist: one instance of the default variant per mode, each wrapped in a frame with `setExplicitVariableModeForCollection` ([08 §7.3](08-tokens.md#modes)).
-6. Footer: "Managed by figmabook · source `<storybook fingerprint>` · synced `<ISO time>` · do not edit layers inside the set; add annotations outside or use unmanaged layers ([10 §9](10-sync.md#designer-edits))".
+6. Footer: "Managed by holotype · source `<storybook fingerprint>` · synced `<ISO time>` · do not edit layers inside the set; add annotations outside or use unmanaged layers ([10 §9](10-sync.md#designer-edits))".
 7. Diagnostics badge: counts of warn/error for this component. Clicking it opens the report.
 
 Toggles: `docs.enabled`, `docs.sections[]`.
@@ -594,7 +594,7 @@ interface SceneInstanceNode extends SceneNodeBase {
 2. **Create or reuse the instance.**
    - Create: `const inst = main.createInstance()`, insert it at its index, then apply the child-of-parent properties (§6 step 5–6).
    - Reuse with a changed target: `inst.swapComponent(main)`, which **preserves overrides**. Never assign `inst.mainComponent` (research brief §2).
-3. **Set properties:** `inst.setProperties({ [propsMap[arg]]: value, [axis]: value })`. Use the *target's* stored `figmabook/props` map to translate arg → `Name#id`.
+3. **Set properties:** `inst.setProperties({ [propsMap[arg]]: value, [axis]: value })`. Use the *target's* stored `holotype/props` map to translate arg → `Name#id`.
 4. **Overrides.** Apply the allowed literal overrides (e.g. a text that isn't a TEXT property). Each one is a diagnostic `APPLY_INSTANCE_OVERRIDE` (info), so authors can add TEXT props.
 5. **Verify.** Read `inst.absoluteBoundingBox` relative to the variant root and compare it to `expect` (tolerance 1px). Optionally, in fidelity mode, compare visually. On mismatch: remove the instance, build `fallback`, and emit `APPLY_INSTANCE_MISMATCH` (warn, with Δ). The planner learns from this in the next run (cached negative match).
 
@@ -715,7 +715,7 @@ const yieldToEditor = () => typeof setTimeout === 'function'
   - continue with the next component, unless the failure is `fatal` (e.g. out of memory).
 - **Resume is natural.** Reconciliation is keyed and idempotent ([10 §5](10-sync.md#reconcile)), so re-running the sync completes partial components without duplicates.
 - **Registry consistency.** The registry is written last. On a crash before finalize, the next run rebuilds the index from node plugin data (source of truth), then repairs the registry (`SYNC_REGISTRY_REPAIRED`, info).
-- **Orphan creations.** Freshly created nodes get a provisional `figmabook/nk` right after creation (step 0), before attributes or children are written. Step 10 then writes the full identity record. An interrupted node is therefore found by the index and reconciled, never duplicated. A node with `nk` but without `irh` is known to be incomplete and is always rewritten.
+- **Orphan creations.** Freshly created nodes get a provisional `holotype/nk` right after creation (step 0), before attributes or children are written. Step 10 then writes the full identity record. An interrupted node is therefore found by the index and reconciled, never duplicated. A node with `nk` but without `irh` is known to be incomplete and is always rewritten.
 
 ---
 
@@ -729,7 +729,7 @@ Fidelity export is used by the harness ([12](12-quality.md#fidelity)) and on dem
    - collect `{ nk, absoluteBoundingBox }` for every managed descendant.
 2. Throttle to one export in flight at a time. Yield between exports.
 3. Post `export.png` with the bytes and boxes. The UI POSTs them to the local server's `/v1/fidelity` (topology A), or bundles them into a downloadable zip (file mode).
-4. The CLI's `fidelity` tool scores them against the Playwright screenshots (SSIM, pixelmatch, box deltas). The score is shown back in the report, and optionally written onto the set as `figmabook/fid` (score + timestamp).
+4. The CLI's `fidelity` tool scores them against the Playwright screenshots (SSIM, pixelmatch, box deltas). The score is shown back in the report, and optionally written onto the set as `holotype/fid` (score + timestamp).
 
 Harness mode (`options.auto = true`, set only by the CLI in a dev build) skips the review screen, applies, exports, and closes with `figma.closePlugin()`.
 
@@ -764,7 +764,7 @@ Figma's remote MCP server tool `use_figma` runs Plugin API code against a file s
 The applier is pure over `FigmaPort`, so the same code can run there:
 
 - **Build target `plugin/dist/applier.mjs`.** A standalone module, with no UI and no messaging, that exports `applyBundleSlice(port, sceneComponentsJSON, tokensJSON, options)`.
-- **Driver.** The CLI command `figmabook mcp` (or an agent) sends slices: one component per call, because output is limited to 48 KB per call and the input limits are unknown (verify, S-11).
+- **Driver.** The CLI command `holotype mcp` (or an agent) sends slices: one component per call, because output is limited to 48 KB per call and the input limits are unknown (verify, S-11).
 - **Images can't be added by `use_figma` itself.** Image-bearing nodes are uploaded with the server's `upload_assets` tool first and referenced by hash. If that is unavailable, they degrade to their vector or empty fallback, with `APPLY_IMAGE_SKIPPED` (warn).
 - **Fonts.** Only fonts uploaded to the account are available, not local ones. Preflight runs first, and missing fonts fail fast.
 - **Uses:** (1) CI fidelity harness without a desktop runner; (2) agent-driven "sync component X". **It is not the product path** until S-11 proves limits, cost and stability.

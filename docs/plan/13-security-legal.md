@@ -10,9 +10,9 @@ Legal goal: ship under a name and license that cannot be taken down, using only 
 
 | Asset | Where it lives | Sensitivity |
 |---|---|---|
-| Storybook content (DOM text, images, component names) | CLI memory, `.figmabook/cache`, bundles, Figma file | Confidential (unreleased product UI) |
-| Storybook credentials (cookies, basic auth, headers, SSO `storageState`) | `.figmabook/auth/*`, env vars, CI secrets | Secret |
-| Local-server session tokens | `~/.figmabook/sessions.json`, plugin `clientStorage` | Secret |
+| Storybook content (DOM text, images, component names) | CLI memory, `.holotype/cache`, bundles, Figma file | Confidential (unreleased product UI) |
+| Storybook credentials (cookies, basic auth, headers, SSO `storageState`) | `.holotype/auth/*`, env vars, CI secrets | Secret |
+| Local-server session tokens | `~/.holotype/sessions.json`, plugin `clientStorage` | Secret |
 | Registry tokens | CI secrets, plugin `clientStorage` | Secret |
 | Figma document | Figma | Confidential (the user's) |
 | Our release artifacts (npm packages, plugin bundle) | npm, Figma Community | Integrity-critical |
@@ -54,9 +54,9 @@ Legacy PNA preflights get `Access-Control-Allow-Private-Network: true`. That onl
 |---|---|
 | Plugin fetches from unexpected hosts | Minimal `networkAccess.allowedDomains`: the loopback ports (D-25), the registry domain(s), and later the hosted API and telemetry endpoint. **Never `"*"`.** `reasoning` text explains each entry. `devAllowedDomains` is used only for development |
 | Malicious bundle (crafted file or registry compromise) | The bundle is **data only**. The plugin never `eval`s bundle content. Schema validation (TypeBox) runs before applying. Integrity hashes are checked ([02 §5.1](02-architecture.md#protocol)). Size limits apply: ≤200 MB per bundle, ≤50k nodes per component, ≤5 MB per string (`APPLY_BUNDLE_REJECTED`). Text is inserted as `characters` and is never interpreted. SVG text is passed to `createNodeFromSvg`, which runs in Figma's own sandboxed parser; capture strips `<script>`, `<foreignObject>` and event attributes first |
-| Plugin damages unrelated parts of the file | The reconciler touches only nodes carrying `figmabook/nk` and their managed descendants (D-19). Unmanaged nodes are never modified ([10](10-sync.md)). Every apply is preceded by a plan preview ([09](09-plugin.md)) |
+| Plugin damages unrelated parts of the file | The reconciler touches only nodes carrying `holotype/nk` and their managed descendants (D-19). Unmanaged nodes are never modified ([10](10-sync.md)). Every apply is preceded by a plan preview ([09](09-plugin.md)) |
 | Token theft from `clientStorage` | `clientStorage` is local to the user's machine and keyed to the plugin ID ([clientStorage](https://developers.figma.com/docs/plugins/api/figma-clientStorage/)). We store only the session or registry token and no Storybook credentials. A "Forget connections" button wipes it |
-| Shared plugin data readable by any plugin | `setSharedPluginData('figmabook', …)` is readable by every plugin and through REST `plugin_data=shared`. It must never contain secrets or Storybook URLs with credentials. Only ids, hashes, versions and story ids are stored. Users who need an opaque registry use `setPluginData` (private) mode (`sync.identityStorage: "private"`, [10](10-sync.md)) |
+| Shared plugin data readable by any plugin | `setSharedPluginData('holotype', …)` is readable by every plugin and through REST `plugin_data=shared`. It must never contain secrets or Storybook URLs with credentials. Only ids, hashes, versions and story ids are stored. Users who need an opaque registry use `setPluginData` (private) mode (`sync.identityStorage: "private"`, [10](10-sync.md)) |
 
 ### 2.3 CI / GitHub Action
 
@@ -65,7 +65,7 @@ Legacy PNA preflights get `Access-Control-Allow-Private-Network: true`. That onl
 | Fork PRs exfiltrate the registry token | The Action publishes only on `push` or `workflow_dispatch`. On `pull_request` from forks it runs capture and comment only, with no secrets. Docs show `pull_request_target` as unsafe |
 | Compromised dependency in the capture toolchain | §4 supply chain. The Action is pinned by SHA in docs examples |
 | Registry poisoning | Runs are immutable and content-addressed (integrity hashes). Pointer updates need the token. Optionally a `manifest.json` signature with Sigstore, verified by the plugin when the registry advertises `signed:true` (P7+, verify feasibility in the sandbox) |
-| Bundles in public registries leak unreleased UI | `figmabook publish` warns (`SEC_PUBLIC_REGISTRY`) when the target is publicly readable and the Storybook isn't public. The docs default to private registries |
+| Bundles in public registries leak unreleased UI | `holotype publish` warns (`SEC_PUBLIC_REGISTRY`) when the target is publicly readable and the Storybook isn't public. The docs default to private registries |
 
 ### 2.4 Hosted renderer (P8+) <a id="hosted"></a>
 
@@ -97,8 +97,8 @@ A headless browser fetching user-supplied URLs is an SSRF tool by construction (
 
 **Sources**, in precedence order:
 1. CLI flags `--header` / `--basic-auth`. These are discouraged and emit `SEC_SECRET_ON_ARGV`, because process lists and shell history can expose them.
-2. Environment variables `FIGMABOOK_SB_HEADERS` (JSON), `FIGMABOOK_SB_BASIC` (`user:pass`), `FIGMABOOK_REGISTRY_TOKEN`.
-3. `.figmabook/auth/headers.json` and `.figmabook/auth/storageState.json`. These are created by `figmabook auth login <url>`, which opens a headed Chromium so the user can complete SSO; the storage state is saved afterwards. File mode is 0600, and `figmabook init` adds `.figmabook/` to `.gitignore`.
+2. Environment variables `HOLOTYPE_SB_HEADERS` (JSON), `HOLOTYPE_SB_BASIC` (`user:pass`), `HOLOTYPE_REGISTRY_TOKEN`.
+3. `.holotype/auth/headers.json` and `.holotype/auth/storageState.json`. These are created by `holotype auth login <url>`, which opens a headed Chromium so the user can complete SSO; the storage state is saved afterwards. File mode is 0600, and `holotype init` adds `.holotype/` to `.gitignore`.
 
 **Scoping:**
 - Credentials are bound to an **origin**.
@@ -143,9 +143,9 @@ A headless browser fetching user-supplied URLs is an SSRF tool by construction (
 ### 5.1 Telemetry (D-23)
 - **Off by default.** Turned on with:
   - a CLI prompt on first interactive run (default No);
-  - `figmabook telemetry enable|disable|status`;
+  - `holotype telemetry enable|disable|status`;
   - a plugin settings toggle.
-- **Always disabled when** `DO_NOT_TRACK=1` is set or CI is detected (`ci-info`), unless `FIGMABOOK_TELEMETRY=1`.
+- **Always disabled when** `DO_NOT_TRACK=1` is set or CI is detected (`ci-info`), unless `HOLOTYPE_TELEMETRY=1`.
 - **Payload** (anonymous; random install id rotated yearly):
   - tool, Node, Chromium, Storybook and framework versions;
   - counts (components, variants, nodes), durations;
@@ -165,10 +165,8 @@ A headless browser fetching user-supplied URLs is an SSRF tool by construction (
   2. Pass a USPTO/EUIPO knockout search in class 9/42.
   3. npm scope, GitHub org and a `.dev` domain must all be available.
   4. The descriptive tagline may name both products.
-- Candidate directions to present to the user: "Storyframe" (verify availability), "Mirrorkit", "Specimen", "Canvasync". None has been checked yet.
-- **Migration:** the codename lives in the package scope `@figmabook/*`, the CLI binary, the config filename, the plugin data namespace `figmabook` (D-19), and the `parameters.figmabook` key.
-  - The **namespace and parameter key must be renamed before the first public release**, because they are persisted in user files and code.
-  - After rename, the plugin and addon accept the old key as an alias for one major version (`SYNC_LEGACY_NAMESPACE` info).
+- **Chosen name: Holotype** (D-01, user decision). npm `holotype` and the `@holotype` scope were free at selection time; GitHub org candidates `holotypehq` / `holotypedev`; the only other use found is a hobby pixel font. Before any public listing: formal USPTO/EUIPO search and domain registration.
+- **Identifiers are final from day one:** package scope `@holotype/*`, CLI binary `holotype` (alias `holo`), config file `holotype.config.ts`, plugin data namespace `holotype` (D-19), Storybook key `parameters.holotype`. Because the name was chosen before any release, no namespace migration is needed; `SYNC_LEGACY_NAMESPACE` is kept in the catalog only for a future rename.
 
 ### 6.2 Our license (D-02)
 - **MIT** for all packages in this repo (user decision). It is the most familiar license in the JS ecosystem (Storybook itself is MIT) and has the least friction for adoption. Trade-off vs Apache-2.0: MIT has no explicit patent grant; accepted. Third-party attributions go in `THIRD_PARTY_NOTICES.md`; Apache-2.0 dependencies that ship a `NOTICE` file have it reproduced there.

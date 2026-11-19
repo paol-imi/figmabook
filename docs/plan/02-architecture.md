@@ -32,7 +32,7 @@ What crosses the wire is defined in [06](06-ir.md). The plugin internals are in 
                                                       │ serializer)  │ CaptureDoc per variant
                                                       └──────┬───────┘
                                                              ▼
-                              cache  ◄────────────── content-addressed store (.figmabook/cache)
+                              cache  ◄────────────── content-addressed store (.holotype/cache)
                                                              ▼
                                                       ┌──────────────┐  SceneComponent per sid
                                                       │    mapper    │  + tokens + diagnostics
@@ -41,7 +41,7 @@ What crosses the wire is defined in [06](06-ir.md). The plugin internals are in 
                                                       └──────┬───────┘
                                                              ▼
                                          ┌─────────────── bundle writer ───────────────┐
-                                         │ dir / .figmabook.zip / registry / local srv │
+                                         │ dir / .holotype.zip / registry / local srv │
                                          └──────────────────────┬──────────────────────┘
                                                                 ▼
                                                        Figma plugin (09)
@@ -89,7 +89,7 @@ interface CaptureJob { id: JobId; sid: string; vk: string; request: RenderReques
 
 | | Topology | Phase | Who renders | How the plugin gets data | Network needs in manifest |
 |---|---|---|---|---|---|
-| **A** | Local CLI server: `figmabook serve` | MVP (P3) | user's machine | HTTP + WS on loopback | `http://127.0.0.1:47321`–`47323`, `ws://` same (D-25) |
+| **A** | Local CLI server: `holotype serve` | MVP (P3) | user's machine | HTTP + WS on loopback | `http://127.0.0.1:47321`–`47323`, `ws://` same (D-25) |
 | **B** | Bundle-file import | MVP (P1) | user's machine or CI | File API in UI (drag and drop / picker) | none |
 | **D** | CI + registry: GitHub Action | P7 | CI runner | HTTPS GET from registry | registry domain(s) |
 | **C** | Hosted renderer | P8+ | our sandboxed workers | HTTPS from our API | `https://api.<brand>.dev` |
@@ -105,12 +105,12 @@ interface CaptureJob { id: JobId; sid: string; vk: string; request: RenderReques
   - The user must keep a terminal open.
 
 ### 2.2 (B) Bundle-file import
-- `figmabook export` writes `./figmabook-out/<runId>/` and `<runId>.figmabook.zip` (§5).
+- `holotype export` writes `./holotype-out/<runId>/` and `<runId>.holotype.zip` (§5).
 - In the plugin UI, the user drops the zip or a directory (`webkitdirectory`). The UI unzips in a Web Worker with `fflate` and streams components to main (§4.4).
 - Always available. It is the fallback for every topology failure. It needs zero network, so it suits air-gapped and enterprise users.
 
 ### 2.3 (D) CI + registry
-- The Action runs `build-storybook`, then `figmabook export --static storybook-static`, then publishes the bundle to a **registry** (§5.3).
+- The Action runs `build-storybook`, then `holotype export --static storybook-static`, then publishes the bundle to a **registry** (§5.3).
 - In the plugin, "Connect registry" takes a URL and a token. A public registry needs no token. A private one uses a bearer token stored in `clientStorage`. CORS needs `ACAO: *` plus `Access-Control-Allow-Headers: authorization`.
 - **Hosts (decision for P7):**
   - Our first-party registry domain (e.g. `registry.<brand>.dev`). It acts as a proxy for S3/GCS/GitHub Releases, so we don't need `"*"` in the manifest.
@@ -160,7 +160,7 @@ The only workable variant needs our addon *installed in the target Storybook*, p
       - opaque network error in a browser client → `NET_LOOPBACK_BLOCKED`;
       - connection refused or timeout in desktop → `NET_SERVER_UNREACHABLE`.
    3. Show the specific remedy:
-      - "start `figmabook serve`";
+      - "start `holotype serve`";
       - "allow Apps on device";
       - "use the desktop app";
       - **"import a bundle file instead"**. This is always shown as a one-click alternative.
@@ -176,14 +176,14 @@ Every response carries `Access-Control-Allow-Origin: *` and `Vary: Origin`.
 
 **Preflight:**
 - `OPTIONS` answers `Access-Control-Allow-Methods: GET,POST,DELETE`.
-- It also sends `Access-Control-Allow-Headers: authorization,content-type,x-figmabook-client`.
+- It also sends `Access-Control-Allow-Headers: authorization,content-type,x-holotype-client`.
 - It sends `Access-Control-Allow-Private-Network: true` (the legacy PNA preflight) and `Access-Control-Max-Age: 600`.
 
 **Authentication:** every route except `/v1/health` and `/v1/pair/*` requires `Authorization: Bearer <sessionToken>`.
 
 | Method | Path | Purpose | Body / query | Response |
 |---|---|---|---|---|
-| GET | `/v1/health` | liveness, no auth | — | `{ ok:true, server:"figmabook", version, protocol:[1] }` |
+| GET | `/v1/health` | liveness, no auth | — | `{ ok:true, server:"holotype", version, protocol:[1] }` |
 | POST | `/v1/pair/start` | begin pairing | `{ clientName, clientNonce }` | `{ pairingId, expiresAt }`. The CLI prints a 6-digit code |
 | POST | `/v1/pair/confirm` | finish pairing | `{ pairingId, code, clientNonce }` | `{ sessionToken, expiresAt }` |
 | GET | `/v1/session` | capabilities | — | `Hello` (§4.3) |
@@ -197,7 +197,7 @@ Every response carries `Access-Control-Allow-Origin: *` and `Vary: Origin`.
 | GET | `/v1/assets/:sha256` | asset bytes | — | bytes; `Cache-Control: immutable` |
 | POST | `/v1/assets/have` | dedupe | `{ hashes[] }` | `{ missing[] }` (the plugin's known `imageHash` map is consulted first) |
 | GET | `/v1/events` | long-poll fallback | `?after=<seq>&wait=25` | `ServerEvent[]` |
-| WS | `/v1/ws` | event stream | subprotocol `figmabook.v1` + token as first message | `ServerEvent` / `ClientMessage` |
+| WS | `/v1/ws` | event stream | subprotocol `holotype.v1` + token as first message | `ServerEvent` / `ClientMessage` |
 | POST | `/v1/fidelity` | upload Figma exports for scoring | multipart: `{runId, vk}` + PNG | `FidelityResult` |
 | POST | `/v1/apply-report` | plugin reports results back (node ids, read-back deltas, Figma component keys) | `ApplyReport` | 204. Feeds Code Connect (P7) and the CLI report |
 
@@ -216,15 +216,15 @@ Plugin UI                               CLI server                       Termina
    │◄──────────────────────────── Hello    │                                 │
 ```
 
-- **Session lifetime:** 30-day sliding window. `figmabook serve --revoke` invalidates all sessions. The token file lives at `~/.figmabook/sessions.json` with mode 0600.
+- **Session lifetime:** 30-day sliding window. `holotype serve --revoke` invalidates all sessions. The token file lives at `~/.holotype/sessions.json` with mode 0600.
 - **Brute force:** 5 failed confirms lock pairing for 60 s ([13](13-security-legal.md#local-server)).
-- **No-code mode:** `figmabook serve --pair-url` prints a one-time URL, `http://127.0.0.1:47321/v1/pair/auto?t=<one-time>`. The user pastes it into the plugin to skip typing the code. This is useful for screen readers and remote desktops.
+- **No-code mode:** `holotype serve --pair-url` prints a one-time URL, `http://127.0.0.1:47321/v1/pair/auto?t=<one-time>`. The user pastes it into the plugin to skip typing the code. This is useful for screen readers and remote desktops.
 
 ### 4.3 Version and capability negotiation
 
 ```ts
 interface Hello {
-  server: { name: "figmabook"; version: string /* semver */ };
+  server: { name: "holotype"; version: string /* semver */ };
   protocol: number[];                   // supported protocol majors, e.g. [1]
   ir: { scene: string[]; capture: string[] };   // supported IR semver ranges, e.g. ["^1.0.0"]
   capabilities: Capability[];
@@ -235,7 +235,7 @@ type Capability =
   | "events-ws" | "events-longpoll" | "assets-dedupe" | "plan-preview";
 ```
 
-- The plugin sends `x-figmabook-client: plugin/<version>; protocol=1; scene=^1.0.0`.
+- The plugin sends `x-holotype-client: plugin/<version>; protocol=1; scene=^1.0.0`.
 - **Mismatch rules:**
   - No common protocol major gives `NET_PROTOCOL_MISMATCH`, with an "update CLI" or "update plugin" hint depending on which side is older.
   - Scene IR major mismatch: the plugin carries migrations for the previous major ([06](06-ir.md#versioning)). Otherwise `APPLY_IR_UNSUPPORTED`.
@@ -275,7 +275,7 @@ interface RunRequest {
 - The main thread gets one component at a time over `postMessage` ([09](09-plugin.md)). Assets are fetched lazily by hash, deduped against `figma.root` shared plugin data `imageMap` (`sha256 → imageHash`).
 
 **Resume:**
-- Events are kept in a ring buffer (10,000 entries, or for the run's lifetime). Each run has an append-only event log at `.figmabook/runs/<runId>/events.ndjson`.
+- Events are kept in a ring buffer (10,000 entries, or for the run's lifetime). Each run has an append-only event log at `.holotype/runs/<runId>/events.ndjson`.
 - On reconnect the client sends `subscribe {fromSeq}`, and the server replays from there. If `fromSeq` was evicted, the server sends a `run.snapshot` with the current state of every component.
 - Runs persist on disk, so a restarted CLI can serve finished runs (`GET /v1/runs/:runId` works after a restart).
 
@@ -313,7 +313,7 @@ type MainToUi =
 ### 5.1 Bundle (directory form)
 
 ```
-figmabook-out/<runId>/
+holotype-out/<runId>/
   manifest.json                 # BundleManifest (06)
   components/
     components-button.json      # SceneComponent (one sid per file; gzip optional: .json.gz)
@@ -332,7 +332,7 @@ interface BundleManifest {
   $schema: "https://<brand>.dev/schema/bundle/v1.json";
   bundleVersion: "1.0.0";
   runId: string; createdAt: string;            // createdAt excluded from hashes
-  generator: { name: "figmabook"; version: string; chromium: string; playwright: string; mapper: string };
+  generator: { name: "holotype"; version: string; chromium: string; playwright: string; mapper: string };
   storybook: { url?: string; version: string; framework: string; sbFingerprint: string };
   irVersions: { scene: string; capture?: string };
   components: { sid: string; title: string; file: string; sceneHash: string; status: "ok"|"partial"|"failed"; variants: number }[];
@@ -342,7 +342,7 @@ interface BundleManifest {
 }
 ```
 
-- **Zip form:** `<runId>.figmabook.zip` holds the same tree.
+- **Zip form:** `<runId>.holotype.zip` holds the same tree.
   - Stored with `STORE` for assets that are already compressed, and `DEFLATE` for JSON.
   - `manifest.json` is written **first**, so streaming readers can plan early.
 - **Size guardrail:** a warning at 200 MB (`PLAN_BUNDLE_LARGE`). Above that, the plugin streams entries from the zip without materialising the whole archive (fflate streaming unzip).
@@ -358,27 +358,27 @@ interface BundleManifest {
 <registry-root>/<project>/
   latest.json                   # { runId, createdAt, git: {sha, ref}, manifestUrl, sbFingerprint }
   channels/<branch>.json        # same shape; e.g. channels/main.json, channels/feature-x.json
-  runs/<runId>/                 # immutable bundle directory (5.1), or <runId>.figmabook.zip
+  runs/<runId>/                 # immutable bundle directory (5.1), or <runId>.holotype.zip
   index.json                    # last 50 runs: [{ runId, createdAt, git, changedSids }]
 ```
 
 - Runs are **immutable**: `Cache-Control: public, max-age=31536000, immutable`. Pointers (`latest.json`, `channels/*`) use `max-age=60`.
 - **CORS:** `Access-Control-Allow-Origin: *`. For private registries, also `Access-Control-Allow-Headers: authorization`.
-- **Publishing:** `figmabook publish --to <url|s3://|gh-pages>` is an uploader with pluggable backends. The Action defaults to a `gh-pages` branch or an artifact plus our proxy.
+- **Publishing:** `holotype publish --to <url|s3://|gh-pages>` is an uploader with pluggable backends. The Action defaults to a `gh-pages` branch or an artifact plus our proxy.
 - **Plugin behaviour:**
   - Polls the channel pointer when opened and on demand.
   - Shows "Outdated (N components changed)" by comparing `sceneHash` with the file registry.
 
-### 5.4 Local workspace `.figmabook/` (gitignored by `figmabook init`)
+### 5.4 Local workspace `.holotype/` (gitignored by `holotype init`)
 
 ```
-.figmabook/
+.holotype/
   cache/
     capture/<captureKey[0:2]>/<captureKey>.json.gz    # CaptureDoc
     assets/<sha[0:2]>/<sha>                           # raw fetched/rasterized assets
     map/<mapKey>.json.gz                              # SceneComponent
     meta/sb-<sbFingerprint>.json                      # StorybookModel snapshot
-  runs/<runId>/events.ndjson | status.json | bundle → ../../figmabook-out/<runId>
+  runs/<runId>/events.ndjson | status.json | bundle → ../../holotype-out/<runId>
   auth/storageState.json        # 0600; Playwright storage state for private Storybooks (13)
   auth/headers.json             # 0600; extra headers; never copied into bundles
   logs/<date>.ndjson
@@ -394,7 +394,7 @@ mapKey        = H( mapperVersion ∥ sceneIR major ∥ sorted(captureKeys) ∥ p
 ```
 
 - `H` is sha256 truncated to 32 hex characters.
-- **Eviction:** LRU, capped at 2 GB (configurable). Clear with `figmabook cache prune|clear`.
+- **Eviction:** LRU, capped at 2 GB (configurable). Clear with `holotype cache prune|clear`.
 - **Remote cache:** the same keys over HTTP (`--remote-cache <url>`, Turbo-style PUT/GET) for CI.
 
 ---
@@ -402,7 +402,7 @@ mapKey        = H( mapperVersion ∥ sceneIR major ∥ sorted(captureKeys) ∥ p
 ## 6. Monorepo <a id="monorepo"></a>
 
 ```
-figmabook/
+holotype/
   packages/
     ir/                 # TypeBox schemas: capture.ts, scene.ts, bundle.ts, tokens.ts, diagnostics.ts; migrations/; canonical.ts; hash.ts
     shared/             # Diagnostic codes registry, Result<T,E>, logger interface, small utils (no deps)
@@ -413,8 +413,8 @@ figmabook/
     mapper/             # layout inference, sizing, text, paints, effects, borders, simplification, naming, alignment, token binding
     plugin/             # src/main/* (reconciler, applier, figma-port.ts, identity, verify), src/ui/* (Preact), manifest via package.json
     figma-fake/         # FigmaPort in-memory implementation + snapshot serializer; uses layout-sim for geometry
-    cli/                # bin/figmabook; commands/*; server/* (Hono + ws); bundle/* (writer, zip, publish backends); config/*
-    storybook-addon/    # preset.ts, preview.ts (beforeAll hooks), manager.tsx (panel), types.ts (parameters.figmabook typing)
+    cli/                # bin/holotype; commands/*; server/* (Hono + ws); bundle/* (writer, zip, publish backends); config/*
+    storybook-addon/    # preset.ts, preview.ts (beforeAll hooks), manager.tsx (panel), types.ts (parameters.holotype typing)
     action/             # action.yml + dist (ncc bundle of cli entry)
   tools/
     fidelity/           # scoring: pixelmatch, ssim.js, box-delta; HTML dashboard; ratchet thresholds
@@ -437,8 +437,8 @@ figmabook/
 | `mapper` | `mapComponent(input: MapInput) → SceneComponent`, `mapTokens()`, `MapperOptions` | **Node built-ins, DOM, `figma`, Playwright** |
 | `plugin` | none (an application); internal `FigmaPort` interface exported for `figma-fake` | Node built-ins; may bundle only `ir`, `shared`, `layout-sim` (+ Preact in UI) |
 | `figma-fake` | `createFakeFigma() → FigmaPort & { snapshot(): FakeTree }` | `plugin` runtime code (only the `FigmaPort` type) |
-| `cli` | `figmabook` binary; programmatic `run(config)`, `serve(opts)`, `exportBundle()` | `plugin` |
-| `storybook-addon` | preset (`previewAnnotations`, `experimental_manifests`), `FigmabookParameters` type | `cli`, `capture` (the serializer is consumed as a built string) |
+| `cli` | `holotype` binary; programmatic `run(config)`, `serve(opts)`, `exportBundle()` | `plugin` |
+| `storybook-addon` | preset (`previewAnnotations`, `experimental_manifests`), `HolotypeParameters` type | `cli`, `capture` (the serializer is consumed as a built string) |
 
 ### 6.2 Dependency rules
 These are enforced with `dependency-cruiser` in CI.
@@ -484,7 +484,7 @@ These are enforced with `dependency-cruiser` in CI.
 | Plugin toolkit | `create-figma-plugin` (`@create-figma-plugin/build`, `/ui`, `/utilities`) | pinned | D-06: esbuild, Preact, Figma-like UI kit ([docs](https://yuanqing.github.io/create-figma-plugin/)) |
 | Figma typings | `@figma/plugin-typings` | **1.142.0** pinned; upgrades reviewed against changelog | Grid, slots, variable fonts, `sourceColor` |
 | HTTP server | Hono (+ `@hono/node-server`) + `ws` | — | Small, typed, Web-standard Request/Response |
-| Config loading | `c12` (uses `jiti`) | — | `figmabook.config.{ts,mjs,json}`, env overlays, `defineConfig()` |
+| Config loading | `c12` (uses `jiti`) | — | `holotype.config.{ts,mjs,json}`, env overlays, `defineConfig()` |
 | CLI framework | `citty` | — | unjs family, consistent with c12 |
 | Zip | `fflate` | — | Browser and Node, streaming |
 | Hashing | `@noble/hashes` (sha256) | — | Pure JS, isomorphic |
@@ -521,12 +521,12 @@ Nightly: the real-Figma fidelity harness ([12](12-quality.md)).
 The manifest `id` is fixed forever, because `clientStorage` and plugin data are keyed by it.
 
 **Playwright/Chromium pinning:**
-- `capture` declares an exact `playwright-core` version. `figmabook doctor` checks the browser and installs it with `figmabook install-browser` (wrapping `playwright install chromium`).
+- `capture` declares an exact `playwright-core` version. `holotype doctor` checks the browser and installs it with `holotype install-browser` (wrapping `playwright install chromium`).
 - In environments with a preinstalled browser, `--chromium-path` is allowed, with a `CAP_CHROMIUM_MISMATCH` warning when the version differs from the pin, because fidelity is not guaranteed.
 
 **Compatibility promise:**
 - The plugin accepts Scene IR of the current and previous major.
-- The CLI refuses to publish a bundle the current Community plugin can't read: `figmabook export --check-plugin-compat`.
+- The CLI refuses to publish a bundle the current Community plugin can't read: `holotype export --check-plugin-compat`.
 
 ### 6.5 Compatibility matrix (targets)
 
@@ -572,19 +572,19 @@ The manifest `id` is fixed forever, because `clientStorage` and plugin data are 
 
 ## 8. Configuration loading
 
-- `c12.loadConfig({ name: "figmabook", defaults, dotenv: true })` reads:
-  - `figmabook.config.{ts,mts,js,mjs,json}`;
-  - `.figmabookrc`;
-  - the `figmabook` key in `package.json`;
+- `c12.loadConfig({ name: "holotype", defaults, dotenv: true })` reads:
+  - `holotype.config.{ts,mts,js,mjs,json}`;
+  - `.holotyperc`;
+  - the `holotype` key in `package.json`;
   - env overlays `$env.ci`.
 - TypeScript configs are executed through `jiti`.
-- `defineConfig()` is exported from `figmabook/config`, which re-exports the `cli` config types. The full schema lives in [11](11-ux.md#config).
+- `defineConfig()` is exported from `holotype/config`, which re-exports the `cli` config types. The full schema lives in [11](11-ux.md#config).
 - **Validation:** the resolved config is checked against a TypeBox schema. Unknown keys produce `PLAN_CONFIG_UNKNOWN_KEY` (warning), invalid values `PLAN_CONFIG_INVALID` (error, exit 2).
 - **Merge semantics** (precedence in README §7):
   - objects deep-merge, arrays replace;
   - `null` explicitly unsets;
   - per-`sid` overrides go under `components["components-button"]`, and glob keys (`"components-forms-*"`) are allowed.
-- **Secrets** are never read from the config file. Only env (`FIGMABOOK_SB_TOKEN`, `FIGMABOOK_REGISTRY_TOKEN`) or `.figmabook/auth/*` are used ([13](13-security-legal.md#secrets)). A config that contains `password`/`token`-like literal values produces `SEC_SECRET_IN_CONFIG` (error).
+- **Secrets** are never read from the config file. Only env (`HOLOTYPE_SB_TOKEN`, `HOLOTYPE_REGISTRY_TOKEN`) or `.holotype/auth/*` are used ([13](13-security-legal.md#secrets)). A config that contains `password`/`token`-like literal values produces `SEC_SECRET_IN_CONFIG` (error).
 
 ---
 
@@ -622,7 +622,7 @@ The manifest `id` is fixed forever, because `clientStorage` and plugin data are 
 ## 10. Logging
 
 - **CLI:**
-  - Structured NDJSON is written to `.figmabook/logs/` with fields `{ts, level, runId, sid?, vk?, msg, data?}`.
+  - Structured NDJSON is written to `.holotype/logs/` with fields `{ts, level, runId, sid?, vk?, msg, data?}`.
   - Pretty TTY output goes through consola (spinners or progress bars per component).
   - `--log-level` takes `silent|error|warn|info|debug|trace`; `trace` also dumps CDP traffic for one `--trace-story`.
 - **Server:** request log at `debug` level. Authorization headers are **never** logged; a redactor runs over every log record (`authorization`, `cookie`, `set-cookie`, `x-*-token`, `password`) ([13](13-security-legal.md#secrets)).

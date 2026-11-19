@@ -1,6 +1,6 @@
 # 03: Storybook integration
 
-> Package: `@figmabook/storybook` (Node + in-page). Consumers: `planner` ([04](04-variant-model.md)) and `capture` ([05](05-capture.md)).
+> Package: `@holotype/storybook` (Node + in-page). Consumers: `planner` ([04](04-variant-model.md)) and `capture` ([05](05-capture.md)).
 > Governing decisions: D-05, D-11, D-12, D-14, D-24.
 > Research: [docs/research](../research/) and the Storybook monorepo at `next`@0cdcdc9 (11.0.0-beta.3). Paths below are relative to `code/`.
 
@@ -91,11 +91,11 @@ The manifest schema is documented as "not yet stable… not a public API", so it
 ### 2.4 Composition (refs)
 
 - The built manager's `index.html` inlines `window['REFS'] = {…}` (`builder-manager/utils/template.ts:64`).
-- `figmabook list --refs` parses it and offers each ref as a separate `StorybookSource`. Sources stay separate and are never merged into one index.
+- `holotype list --refs` parses it and offers each ref as a separate `StorybookSource`. Sources stay separate and are never merged into one index.
 - The ref's own `iframe.html` uses **un-prefixed** ids (the manager uses `refId_storyId`).
 - Credentials:
   - `user:pass@host` in a ref URL becomes Basic auth.
-  - A 401 with `{loginUrl}` produces `SB_REF_AUTH_REQUIRED`, which points to `figmabook login` (§9.4).
+  - A 401 with `{loginUrl}` produces `SB_REF_AUTH_REQUIRED`, which points to `holotype login` (§9.4).
 - In SB 11, refs must publish `index.json`/`stories.json` (v2 and `setStories` were dropped).
 
 ---
@@ -153,7 +153,7 @@ interface StorybookAdapter {
 
 ### 4.1 Per-story `loadStory`
 
-Open **one** page on `iframe.html?id=__figmabook__&viewMode=story`. The bogus id gives a cheap "story missing" render while the preview initializes. Then:
+Open **one** page on `iframe.html?id=__holotype__&viewMode=story`. The bogus id gives a cheap "story missing" render while the preview initializes. Then:
 
 ```ts
 await page.waitForFunction(() => (window as any).__STORYBOOK_PREVIEW__);
@@ -211,7 +211,7 @@ From `preview.storyStoreValue.projectAnnotations` (or `storyStore.projectAnnotat
 
 - `globalTypes` (with `toolbar.items`)
 - `initialGlobals` (`globals` on <8.2)
-- `parameters`, including `layout`, `figmabook`, `chromatic`, `pseudo`, `themes` and `viewport.options`/`viewports`
+- `parameters`, including `layout`, `holotype`, `chromatic`, `pseudo`, `themes` and `viewport.options`/`viewports`
 - `tags`
 
 Themes discovery is covered in §8.
@@ -339,8 +339,8 @@ Notes and edge cases:
   This is how SLOT and INSTANCE_SWAP probes swap real nodes ([04 §4](04-variant-model.md#classification)).
 - **Play functions.** A rerender does **not** re-run `play`; a remount does.
   - If `meta.hasPlay`, the default is to capture only the story's initial state, after `played`, and not to vary args on that story. The planner marks such stories `playLocked`.
-  - `parameters.figmabook.play: 'rerun'` forces a `forceRemount` per variant.
-- **React state leaks.** Uncontrolled inputs and open popovers can leak between variants. The planner sets `remount: true` when a component's `parameters.figmabook.remount !== false` and it contains form controls or portals (detected on its first capture).
+  - `parameters.holotype.play: 'rerun'` forces a `forceRemount` per variant.
+- **React state leaks.** Uncontrolled inputs and open popovers can leak between variants. The planner sets `remount: true` when a component's `parameters.holotype.remount !== false` and it contains form controls or portals (detected on its first capture).
 - **Timeouts.** Defaults:
   - `T.render = 15s`, which raises `SB_RENDER_TIMEOUT`.
   - After two consecutive timeouts on a page, call `reload()`.
@@ -383,7 +383,7 @@ The goal is a deterministic frame. Run in order:
    - Lazy loaders based on IntersectionObserver: the viewport is set to at least the root size plus 200px before settling (§6.4).
 5. **Network idle.** No in-flight requests for 300ms (tracked via CDP `Network.requestWillBeSent`/`loadingFinished`), capped at 5s. A long-poll or WebSocket is excluded from the count.
 6. **Two rAFs**, then a microtask flush.
-7. **Custom delay**: `parameters.figmabook.delay` (ms), or `chromatic.delay` as a compat fallback.
+7. **Custom delay**: `parameters.holotype.delay` (ms), or `chromatic.delay` as a compat fallback.
 8. **Stability check (optional, on by default for the first capture of each component).** Hash `root.getBoundingClientRect()` plus `document.body.innerHTML.length` twice, 100ms apart. If they differ, repeat up to 3 times, otherwise raise `CAP_UNSTABLE_RENDER` (warn).
 
 `?freeze=finished` (`setupStoryFreezer.ts`) strips scripts and kills timers, so it is **not** used in the warm loop. It is used only as the single-shot fallback when the warm loop fails twice.
@@ -395,8 +395,8 @@ The goal is a deterministic frame. Run in order:
 ### 6.1 Story root
 
 - **Always use `viewMode=story`**. Docs mode applies different decorators and inline rendering.
-- The root container is `#storybook-root` (SB ≥7), falling back to `#root`. `parameters.figmabook.rootSelector` overrides it; it is evaluated relative to the document, and it pierces open shadow roots via `>>>`-style segments (`host >>> inner`).
-- The `body` layout class comes from `parameters.layout` (`WebView.ts:31-136`): `sb-main-padded`, `sb-main-centered`, `sb-main-fullscreen`, `none` (11). **We force `layout: 'fullscreen'`** for capture: we inject `body{padding:0!important}` and `#storybook-root{display:block}` with no centering. Padding from the `padded` layout is decorator chrome, not component. If a story *requires* centering for its own geometry (rare), `parameters.figmabook.keepLayout: true` disables the override.
+- The root container is `#storybook-root` (SB ≥7), falling back to `#root`. `parameters.holotype.rootSelector` overrides it; it is evaluated relative to the document, and it pierces open shadow roots via `>>>`-style segments (`host >>> inner`).
+- The `body` layout class comes from `parameters.layout` (`WebView.ts:31-136`): `sb-main-padded`, `sb-main-centered`, `sb-main-fullscreen`, `none` (11). **We force `layout: 'fullscreen'`** for capture: we inject `body{padding:0!important}` and `#storybook-root{display:block}` with no centering. Padding from the `padded` layout is decorator chrome, not component. If a story *requires* centering for its own geometry (rare), `parameters.holotype.keepLayout: true` disables the override.
 
 ### 6.2 Decorator unwrapping
 
@@ -414,7 +414,7 @@ function isTransparentWrapper(el: Element): boolean {
 }
 ```
 
-- `parameters.figmabook.unwrap: false` disables this; `unwrap: n` sets a max depth.
+- `parameters.holotype.unwrap: false` disables this; `unwrap: n` sets a max depth.
 - When there are multiple root children (fragments), the capture root is a **virtual group**: their union rect, recorded as `rootMode: 'multi'` in the Capture IR.
 - Known wrappers are always transparent even with a box. They are matched by id/class: `[data-theme]` provider divs with no paint, `#root-inner`, and `.docs-story` outside docs. Themed wrappers that *paint* a background are reported as `SB_DECORATOR_PAINTS` (info). The background is **not** included in the component, but it is recorded as the "canvas background" for the documentation frame ([09](09-plugin.md)).
 
@@ -422,14 +422,14 @@ function isTransparentWrapper(el: Element): boolean {
 
 1. **Before** the render, snapshot `document.body.children` (identity set) and the ids of top-layer elements (`:popover-open`, `dialog[open]`).
 2. **After** settle, look for new body children outside `#storybook-root`, elements with `[data-radix-portal]`, `[data-floating-ui-portal]`, `.MuiPopover-root`, `.cdk-overlay-container`, `[data-headlessui-portal]` or `[role=dialog]`, and newly top-layer elements.
-3. `parameters.figmabook.portal`:
+3. `parameters.holotype.portal`:
    - `true`: include the auto-detected portals;
    - a CSS selector string: include exactly those;
    - `false`: ignore them.
 
    **Default `'auto'`**: include portals only when the root itself has zero size (modal-only stories), or the story is tagged `figma-portal`.
 4. With portals included, the capture root becomes a virtual frame: the union of root and portal rects. Alternatively, with `portal.frame: 'viewport'`, it is the full viewport (useful for modals with backdrops). Backdrops (`position:fixed; inset:0`) are kept as the bottom layer.
-5. Viewport sizing for overlays: default 1280×800 (D-24); `parameters.figmabook.viewport` overrides it.
+5. Viewport sizing for overlays: default 1280×800 (D-24); `parameters.holotype.viewport` overrides it.
 
 ### 6.4 Viewport adequacy
 
@@ -445,7 +445,7 @@ After settle:
 ### 7.1 Grouping
 
 - **Default.** One component, and so one Figma component set, per **sid** (the story-id prefix before `--`). This equals the manifest `components[id]` on 10.1+.
-- **Split.** When `parameters.figmabook.component` names a different component, stories move to that group. This lets one CSF file feed several Figma components, and several files feed one.
+- **Split.** When `parameters.holotype.component` names a different component, stories move to that group. This lets one CSF file feed several Figma components, and several files feed one.
 - **Subcomponents.** Each `subcomponents` entry becomes a separate component only if it has its own stories. Otherwise it is only a nested-instance candidate ([09](09-plugin.md)).
 - **Shared `component`.** Several titles sharing the same `component` reference (detected in-page by object identity, §10) are reported as `SB_COMPONENT_MULTI_TITLE` (info). They are *not* merged automatically, to avoid surprise; `component:` in config merges them.
 
@@ -464,7 +464,7 @@ interface ComponentIdentity {
 ```
 
 - **Display name**, first hit wins:
-  1. `parameters.figmabook.name`
+  1. `parameters.holotype.name`
   2. `component.displayName`
   3. `component.__docgenInfo.displayName`
   4. manifest `name`
@@ -525,7 +525,7 @@ To iterate a mode: `updateGlobals({globals:{theme:'dark'}})`, then wait for `glo
 
 - Permalinks: `https://<branch>--<appid>.chromatic.com` and `https://<commit>--<appid>.chromatic.com`. Branch names are truncated at 37 characters (https://www.chromatic.com/docs/permalinks).
 - They behave like a static build.
-- **Private projects** require a signed-in collaborator. Use `figmabook login <url>` (§9.4) to obtain `storageState`. No Storybook-asset API token is documented (verify, S-07).
+- **Private projects** require a signed-in collaborator. Use `holotype login <url>` (§9.4) to obtain `storageState`. No Storybook-asset API token is documented (verify, S-07).
 
 ### 9.4 Authenticated hosts
 
@@ -538,7 +538,7 @@ type AuthConfig =
 ```
 
 - They map to Playwright `httpCredentials`, `extraHTTPHeaders` (scoped by a route handler to the Storybook origin only, so headers never go to third-party CDNs) and `storageState`.
-- **`figmabook login <url>`** opens a *headed* Chromium on `<url>`. The user signs in (SSO, Chromatic, VPN web portal) and presses Enter in the terminal. The CLI saves `storageState` to `.figmabook/auth/<host>.json` (mode 0600, gitignored by `figmabook init`).
+- **`holotype login <url>`** opens a *headed* Chromium on `<url>`. The user signs in (SSO, Chromatic, VPN web portal) and presses Enter in the terminal. The CLI saves `storageState` to `.holotype/auth/<host>.json` (mode 0600, gitignored by `holotype init`).
 - Credentials **never** enter the Capture IR, Scene IR, bundle or logs (D-23; [13](13-security-legal.md)). The redaction list applies to logs.
 - Auth failure: a 401 or 403 on `index.json` gives `SB_AUTH_FAILED`; a redirect to a login HTML page (content-type `text/html` on `index.json`) gives `SB_AUTH_REDIRECT`.
 
@@ -575,17 +575,17 @@ Enhancers run in-page during serialization ([05 §3](05-capture.md#walk)) and an
 
 ---
 
-## 11. Optional Storybook addon (`@figmabook/storybook-addon`)
+## 11. Optional Storybook addon (`@holotype/storybook-addon`)
 
 It is not required: a zero-install capture uses `page.addInitScript` with the same serializer bundle. Installing it adds:
 
-1. **Typed parameters.** CSF type augmentation for `parameters.figmabook` (schema in [04 §9](04-variant-model.md#schema)), like `PseudoTypes` in `addons/pseudo-states/src/types.ts`.
-2. **Build-time manifest.** Through `experimental_manifests` (`core-server/utils/manifests/manifests.ts:133-140`), it writes `manifests/figmabook.json` at `storybook build`. The file holds the per-story `parameters.figmabook`, resolved tags and component identities. This lets the CLI plan without loading every CSF in a browser, which speeds up `figmabook list`.
-3. **Preview hook.** Through `previewAnnotations` and `definePreviewAddon` (10+), a `beforeAll` registers a channel request/response pair `figmabook/capture` → `figmabook/captured`. This allows capture from inside the preview, for future in-Figma or MCP experiments. It is disabled unless `parameters.figmabook.channelCapture` is set.
+1. **Typed parameters.** CSF type augmentation for `parameters.holotype` (schema in [04 §9](04-variant-model.md#schema)), like `PseudoTypes` in `addons/pseudo-states/src/types.ts`.
+2. **Build-time manifest.** Through `experimental_manifests` (`core-server/utils/manifests/manifests.ts:133-140`), it writes `manifests/holotype.json` at `storybook build`. The file holds the per-story `parameters.holotype`, resolved tags and component identities. This lets the CLI plan without loading every CSF in a browser, which speeds up `holotype list`.
+3. **Preview hook.** Through `previewAnnotations` and `definePreviewAddon` (10+), a `beforeAll` registers a channel request/response pair `holotype/capture` → `holotype/captured`. This allows capture from inside the preview, for future in-Figma or MCP experiments. It is disabled unless `parameters.holotype.channelCapture` is set.
 4. **Manager panel "Figma".**
    - Shows the planned variants and properties for the current story (calling the planner on the args/argTypes the manager already has).
-   - Shows last sync status, read from a `figmabook-status.json` published by CI if configured.
-   - Provides "Copy capture command" (`npx figmabook capture --story <id>`).
+   - Shows last sync status, read from a `holotype-status.json` published by CI if configured.
+   - Provides "Copy capture command" (`npx holotype capture --story <id>`).
 5. **Lint.** A preset hook warns at dev time about stories whose args cannot be encoded for the URL fallback, and about argTypes missing `options`.
 
 Compatibility: addon versions track Storybook majors (10.x and 11.x first). The 8.x and 9.x presets are published from the same source, behind a capability shim.

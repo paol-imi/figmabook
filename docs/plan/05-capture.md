@@ -1,6 +1,6 @@
 # 05: Capture engine
 
-> **Package:** `@figmabook/capture` (Node orchestrator + in-page serializer bundle).
+> **Package:** `@holotype/capture` (Node orchestrator + in-page serializer bundle).
 > **Input:** `PlannedVariant` / `ProbeRender` from [04](04-variant-model.md), rendered through the `RenderDriver` from [03](03-storybook.md).
 > **Output:** **Capture IR** (`CaptureDoc`, schema in [06](06-ir.md)), one per variant, cached on the CLI side (D-08).
 > **Governing decisions:** D-05 (Chromium + CDP, pinned), D-08, D-14, D-17, D-18, D-24.
@@ -29,7 +29,7 @@ CaptureRunner (Node)
  │   └─ N workers = N BrowserContexts (isolated cookies/storage), each with 1 long-lived Page
  │        on iframe.html (RenderDriver) + 1 CDPSession
  ├─ Job queue: components ordered by dependency (icons/atoms first, [09]), variants FIFO within component
- └─ Writer: Capture IR → cache (.figmabook/cache/capture/<key>.json.zst) + assets (cas/<sha256>)
+ └─ Writer: Capture IR → cache (.holotype/cache/capture/<key>.json.zst) + assets (cas/<sha256>)
 ```
 
 - **Concurrency:** `N = min(8, max(1, os.availableParallelism() - 1))` locally and `min(4, cpus)` in CI. This is configurable (`--concurrency`). All variants of a component go to **one worker**, so the warm page stays on the same story and cheap arg updates are possible ([03 §5.3](03-storybook.md#render-loop-driver)). Components are distributed across workers.
@@ -39,7 +39,7 @@ CaptureRunner (Node)
 const ctxOpts: BrowserContextOptions = {
   viewport: { width: 1280, height: 800 }, deviceScaleFactor: 2,
   locale: 'en-US', timezoneId: 'UTC', colorScheme: 'light', reducedMotion: 'reduce',
-  userAgent: `${defaultUA} StorybookTestRunner figmabook/${version}`,
+  userAgent: `${defaultUA} StorybookTestRunner holotype/${version}`,
   serviceWorkers: 'block', bypassCSP: false, javaScriptEnabled: true,
   ...auth /* httpCredentials | storageState | extraHTTPHeaders via route, [03 §9.4] */,
 };
@@ -94,7 +94,7 @@ GPU stays default, because rasterization does not affect DOM geometry. Headless 
   - `probe(rootSpec)`
   - `measure(ids)`
   - `enhancers.*` (framework hooks, [03 §10](03-storybook.md#framework-enhancers))
-- It is injected with `page.addInitScript({ content })`, so it runs **before** any Storybook or component code. The same bundle is reused by the optional addon's preview hook ([03 §11](03-storybook.md#optional-storybook-addon-figmabookstorybook-addon)).
+- It is injected with `page.addInitScript({ content })`, so it runs **before** any Storybook or component code. The same bundle is reused by the optional addon's preview hook ([03 §11](03-storybook.md#optional-storybook-addon-holotypestorybook-addon)).
 - Size budget: ≤150 kB minified. `colorjs.io` (§7.1) is tree-shaken to the conversion and gamut-mapping modules.
 
 ### 2.2 Init-time hooks
@@ -154,8 +154,8 @@ Per element, in walk order:
 1. **Skip:**
    - `script`, `style`, `template`, `head`, `noscript`, `meta`, `link`, and `<source>`/`<track>`;
    - `display:none` (whole subtree);
-   - nodes in `parameters.figmabook.exclude`;
-   - elements with `[data-figmabook-ignore]`;
+   - nodes in `parameters.holotype.exclude`;
+   - elements with `[data-holotype-ignore]`;
    - sr-only patterns: 1×1 px and `clip: rect(0 0 0 0)`, or `clip-path: inset(50%)` (web2ui), with `CAP_SR_ONLY_SKIPPED` (info, counted only).
 2. **`display: contents`.** Emit no node and splice its children into the parent. Their inherited styles are already resolved.
 3. **`visibility: hidden|collapse`.** Emit no own paint, but keep walking, because descendants with `visibility: visible` still render. The node is recorded with `paintVisible:false`, so that layout keeps its box.

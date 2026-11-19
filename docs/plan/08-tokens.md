@@ -236,7 +236,7 @@ The default transform is applied in order:
    - additionally, with `tokens.naming: "dash-groups"` (default), the **first** single dash splits the group: `--color-bg-hover` → `color/bg-hover`;
    - `"flat"` keeps `color-bg-hover`;
    - `"all-dashes"` gives `color/bg/hover`.
-4. A custom `tokens.rename: (cssName) => string` function in `figmabook.config.ts` overrides everything.
+4. A custom `tokens.rename: (cssName) => string` function in `holotype.config.ts` overrides everything.
 
 Collisions after transformation, e.g. `--color-bg` (flat) vs `--color--bg`, get a numeric suffix and `TOKEN_NAME_COLLISION` (warn). The `codeSyntax.WEB` keeps the original name, so code ↔ design mapping stays exact.
 
@@ -293,8 +293,8 @@ Additional rules:
 
 ### 7.1 Where modes come from (first hit wins)
 
-1. `figmabook.config.ts` → `tokens.modes: [{ name: 'Light', globals: { theme: 'light' } }, { name: 'Dark', globals: { theme: 'dark' } }]`.
-2. `parameters.figmabook.modes` (project level) ([04](04-variant-model.md#config)).
+1. `holotype.config.ts` → `tokens.modes: [{ name: 'Light', globals: { theme: 'light' } }, { name: 'Dark', globals: { theme: 'dark' } }]`.
+2. `parameters.holotype.modes` (project level) ([04](04-variant-model.md#config)).
 3. `@storybook/addon-themes`: the `storybook/themes/REGISTER_THEMES` event payload `{themes, defaultTheme}`, or `globalTypes.theme.toolbar.items` ([03](03-storybook.md#themes)).
 4. `parameters.chromatic.modes`, restricted to entries that differ only in a theme-like global (`theme`, `mode`, `scheme`, `colorScheme`, `brand`).
 5. `prefers-color-scheme` only: if a sheet contains `@media (prefers-color-scheme: dark)` rules that declare tokens, synthesize modes Light/Dark via `page.emulateMedia({ colorScheme })`.
@@ -428,7 +428,7 @@ This runs in plugin **preflight** ([09](09-plugin.md#preflight)), before any wri
 
 | Order | Rule | Result |
 |---|---|---|
-| 1 | Previously linked: the variable's shared plugin data `figmabook/tok = "--color-bg"` ([10](10-sync.md#keys)) | reuse |
+| 1 | Previously linked: the variable's shared plugin data `holotype/tok = "--color-bg"` ([10](10-sync.md#keys)) | reuse |
 | 2 | `codeSyntax.WEB` equals `var(--color-bg)` (normalized whitespace), or equals `--color-bg` | reuse (`match: 'codeSyntax'`) |
 | 3 | Transformed name equals the variable name (case-insensitive, `/` and `-`/`.` normalized), and types agree | reuse (`match: 'name'`). Surface in preflight for confirmation if the *value* also differs |
 | 4 | Value equality (per default mode) and type agree; only with `tokens.matchByValue: true` | propose (`match: 'value'`); always requires user confirmation |
@@ -436,7 +436,7 @@ This runs in plugin **preflight** ([09](09-plugin.md#preflight)), before any wri
 
 **Library variables always win over creating local duplicates.** A matched library variable is *bound* but never *modified*: the plugin cannot edit remote variables. If its value differs from code, emit `TOKEN_LIBRARY_VALUE_DRIFT` (warn) and show it in the Tokens tab as "library differs from code: update the library file".
 
-Styles match the same way: name, then a `figmabook/tok` pluginData link, then (for text styles) the field tuple. Matched library styles are imported with `figma.importStyleByKeyAsync(key)`.
+Styles match the same way: name, then a `holotype/tok` pluginData link, then (for text styles) the field tuple. Matched library styles are imported with `figma.importStyleByKeyAsync(key)`.
 
 <a id="value-match"></a>
 ### 10.3 Value-equality binding (opt-in)
@@ -466,7 +466,7 @@ When a tokens file is present:
 
 ### 11.2 Export
 
-`figmabook export --tokens dtcg` writes the discovered token graph (from CSS) as DTCG JSON. Teams can bootstrap a tokens pipeline from an existing CSS-only design system. This export is the same `tokens.json` the bundle carries, serialized as DTCG (see [§14](#scene-ir)).
+`holotype export --tokens dtcg` writes the discovered token graph (from CSS) as DTCG JSON. Teams can bootstrap a tokens pipeline from an existing CSS-only design system. This export is the same `tokens.json` the bundle carries, serialized as DTCG (see [§14](#scene-ir)).
 
 ---
 
@@ -493,11 +493,11 @@ Policies:
 | New token | create (auto-checked) |
 | Value changed in code, Figma variable unchanged since our last write (`ah` matches, [10](10-sync.md#designer-edits)) | update (auto-checked) |
 | Value changed in code **and** the designer changed it in Figma (`ah` mismatch) | conflict, unchecked; the user picks code or Figma |
-| Renamed in Figma by the designer | keep the designer's name; identity is via `figmabook/tok` and `codeSyntax` |
+| Renamed in Figma by the designer | keep the designer's name; identity is via `holotype/tok` and `codeSyntax` |
 | Token removed from code | `orphan`: the variable keeps its name (renaming would break consumers' references and mental model); its `description` gets the prefix `[deprecated] `, it is listed in the report, and it is never deleted automatically |
 | Library variable drift | informational row |
 
-Every write is recorded in the variable's shared plugin data: `figmabook/tok`, `figmabook/ah` (hash of the values we wrote per mode, plus scopes and codeSyntax).
+Every write is recorded in the variable's shared plugin data: `holotype/tok`, `holotype/ah` (hash of the values we wrote per mode, plus scopes and codeSyntax).
 
 ---
 
@@ -560,7 +560,7 @@ interface Binding {                        // on SceneNode.bindings[]
 <a id="config"></a>
 ## 15. Config
 
-This is part of `figmabook.config.ts`; the full schema is in [11](11-ux.md#config).
+This is part of `holotype.config.ts`; the full schema is in [11](11-ux.md#config).
 
 ```ts
 tokens: {

@@ -66,7 +66,7 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 
 ## Phase 1 — Pixel-correct snapshot (M1)
 
-**Goal:** `figmabook capture --story <id>` → bundle → plugin builds an **absolute-positioned** frame tree that is pixel-faithful. Absolute is the baseline that every later phase falls back to (D-15).
+**Goal:** `holotype capture --story <id>` → bundle → plugin builds an **absolute-positioned** frame tree that is pixel-faithful. Absolute is the baseline that every later phase falls back to (D-15).
 
 | Package | Deliverables |
 |---|---|
@@ -105,11 +105,11 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 | Package | Deliverables |
 |---|---|
 | `storybook` | metadata extraction (args/argTypes/docgen/manifest, SB11 path), globals/themes discovery, channel render loop for many variants per page, pseudo-state strategies (S-08) |
-| `planner` | variant source priority (D-12), matrix + `if` pruning, budgets, pairwise mode, render-and-diff classification (D-13): VARIANT/BOOLEAN/TEXT/FIXED/IGNORED, duplicate-variant dedupe, `parameters.figmabook` + config merge per README §7 precedence, `chromatic.modes` fallback reading |
+| `planner` | variant source priority (D-12), matrix + `if` pruning, budgets, pairwise mode, render-and-diff classification (D-13): VARIANT/BOOLEAN/TEXT/FIXED/IGNORED, duplicate-variant dedupe, `parameters.holotype` + config merge per README §7 precedence, `chromatic.modes` fallback reading |
 | `mapper` | cross-variant tree alignment (stable `nk` across variants), property bindings (visibility, characters), component-level Scene IR |
 | `plugin` | component creation, `combineAsVariants`, set grid layout + default variant placement, `addComponentProperty` + `componentPropertyReferences`, doc frames, Sections/pages (D-22), relaunch buttons, Library tab with statuses (Not imported/Synced/Error), Import config screen, Connect/pair |
 | `cli` | `init`, `list --plan`, `serve` (pairing token, Host check, ports per S-01), streaming protocol |
-| `storybook-addon` | typed `parameters.figmabook` (types only) |
+| `storybook-addon` | typed `parameters.holotype` (types only) |
 
 **Exit criteria:** golden Button/Input/Checkbox/Card imported as sets with ≥70% property quality; states captured where they have visual effect; first-run flow ≤5 min in usability test (5 DS engineers); budgets enforced. **Decision checkpoint M3:** D-02 license final. **Effort:** 20 ew.
 
@@ -167,7 +167,7 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 |---|---|
 | `action` | GitHub Action: build-or-use static Storybook, capture, publish bundle + `latest.json` (registry / Pages / artifact), PR summary + annotations, fidelity delta |
 | registry | minimal first-party registry domain (static bucket + CDN with `ACAO:*`) listed in manifest; GitHub Pages/raw support per S-01 findings |
-| `storybook-addon` | manager panel (sync status, "open in Figma"), `experimental_manifests` emitting `manifests/figmabook.json`, optional in-preview capture hooks |
+| `storybook-addon` | manager panel (sync status, "open in Figma"), `experimental_manifests` emitting `manifests/holotype.json`, optional in-preview capture hooks |
 | `cli` | `codeconnect` (generate Code Connect files from plugin-exported node map), `mcp` server, `login` |
 | `plugin` | Registry source, poll `latest.json`, export node map for Code Connect |
 
@@ -220,7 +220,7 @@ L = likelihood, I = impact (H/M/L).
 | R7 | Combinatorial explosion / giant sets degrade Figma | M | M | Budgets, pairwise, render-and-diff dedupe, properties instead of axes (D-12, D-13), S-06 limits | 3 |
 | R8 | Plugin freezes or OOM on big imports | M | H | Time-slicing, chunked NDJSON, per-component commits, S-06 measured limits, cancel | 1, 3 |
 | R9 | Community review delays / rejection (network access, localhost reasoning) | M | M | Minimal domains, clear reasoning, privacy policy, early private org plugin, submit early | 8 |
-| R10 | Trademark conflict over name | H (if unchanged) | M | Rename before public (D-01); codename only internally | 3–8 |
+| R10 | Trademark conflict over name | H (if unchanged) | M | Name chosen early (Holotype, D-01); formal trademark search before any public listing; repo renamed from `figmabook` | 3–8 |
 | R11 | CSS-in-JS late rules / JS-driven states missed | M | M | CDP force + interact fallback (S-08), "no visual effect" detection | 3 |
 | R12 | `use_figma` pricing/limits make headless harness impractical | M | L | macOS runner remains primary | 0, 7 |
 | R13 | Variables mode limits per plan block theming | M | L | `TOKEN_MODE_LIMIT` fallback to axis | 5 |

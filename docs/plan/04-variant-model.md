@@ -1,6 +1,6 @@
 # 04: Component & variant model
 
-> **Package:** `@figmabook/planner` (Node). **Inputs:** `StoryMeta`/`ProjectMeta` from [03](03-storybook.md), and config. **Outputs:** a `ComponentPlan` per component, consumed by `capture` ([05](05-capture.md)) and `mapper` ([07](07-mapping.md)).
+> **Package:** `@holotype/planner` (Node). **Inputs:** `StoryMeta`/`ProjectMeta` from [03](03-storybook.md), and config. **Outputs:** a `ComponentPlan` per component, consumed by `capture` ([05](05-capture.md)) and `mapper` ([07](07-mapping.md)).
 > **Governing decisions:** D-12 (variant source priority), D-13 (property classification by render-and-diff), D-14 (pseudo-states), D-24 (capture defaults).
 
 This chapter decides **which renders to make** and **what each arg becomes in Figma**. The principle is that a Figma component set must look like one a strong designer would build:
@@ -85,13 +85,13 @@ They are resolved per component, highest priority first. A higher source *replac
 
 | Priority | Source | Notes |
 |---|---|---|
-| 1 | `figmabook.config.ts` `components[<sid>]` | Curated by DS engineers outside the stories |
-| 2 | `parameters.figmabook` (story > meta > project, merged by Storybook) | Typed by the optional addon (§9) |
-| 2c | compat: `parameters.s2d.variantProperties`, `parameters.chromatic.modes` | Read only if no `figmabook` params exist (§10) |
+| 1 | `holotype.config.ts` `components[<sid>]` | Curated by DS engineers outside the stories |
+| 2 | `parameters.holotype` (story > meta > project, merged by Storybook) | Typed by the optional addon (§9) |
+| 2c | compat: `parameters.s2d.variantProperties`, `parameters.chromatic.modes` | Read only if no `holotype` params exist (§10) |
 | 3 | **Stories-as-variants** | Default when the component has ≥2 stories that differ only in args |
 | 4 | **Args matrix** from argTypes | Default when there is a single story, or `strategy: 'args'` |
 
-`parameters.figmabook.strategy` selects the source explicitly: `'auto' | 'stories' | 'args' | 'curated'`. The default is `'auto'`, which follows the table.
+`parameters.holotype.strategy` selects the source explicitly: `'auto' | 'stories' | 'args' | 'curated'`. The default is `'auto'`, which follows the table.
 
 ### 2.1 Stories-as-variants
 
@@ -208,7 +208,7 @@ Rules are evaluated per arg, in this order:
 
 **R2 TEXT** (`characters` binding). Probe with two strings:
 
-- **Probe strings.** Use `P1 = "Figmabook probe"` and `P2 = "Ag"`. Both are safe-listed for the URL fallback ([03 §5.4](03-storybook.md#render-loop-driver)), and they have different lengths so the reflow shows.
+- **Probe strings.** Use `P1 = "Holotype probe"` and `P2 = "Ag"`. Both are safe-listed for the URL fallback ([03 §5.4](03-storybook.md#render-loop-driver)), and they have different lengths so the reflow shows.
 - **Locating the bound node.** Exactly one TEXT node must differ in `text`, and its characters must contain the probe string. Text transforms are compared case-insensitively; `textCase` is applied in Figma.
 - **Allowed geometry changes.** All other changes must be geometry-only reflow, verified with `layout-sim`. The TEXT node uses `WIDTH_AND_HEIGHT` or `HEIGHT` auto-resize, so Figma reproduces the same reflow.
 - **Result.** If both conditions hold, the arg becomes a **TEXT** property bound to that node, with default value = the arg's base value (a string).
@@ -227,7 +227,7 @@ Rules are evaluated per arg, in this order:
 
 **R4 SLOT** (Figma `SLOT` property; plugin typings ≥1.140; `ComponentNode.createSlot()`).
 
-- **Candidates.** `children`, `{$node}` args, CEM `slots`, Vue slot categories, and `parameters.figmabook.slots`.
+- **Candidates.** `children`, `{$node}` args, CEM `slots`, Vue slot categories, and `parameters.holotype.slots`.
 - **Probes.** Render with the authored content (base) and with **empty** content (`undefined`, or `[]` for children).
 - **Slot site.** The slot site is the deepest aligned container that contains all of the base content's nodes and none of the other nodes. If the content is a sub-tree inside a wrapper with padding, the wrapper is the slot site.
 - **Result.** The slot site becomes a SLOT. Its default children are the base content (captured nodes). `slotSettings.minChildren`/`maxChildren` come from config, unset by default.
@@ -263,14 +263,14 @@ probe renders. The base render and any probe that coincides with a variant are r
 
 ### 5.1 Strategies
 
-`parameters.figmabook.matrix`, or the config default:
+`parameters.holotype.matrix`, or the config default:
 
 | Strategy | Combinations | When |
 |---|---|---|
 | `full` | the Cartesian product of all VARIANT axes | small components; explicit opt-in when the product is above `budget.warn` |
 | `pairwise` | covers every pair of values across axes (IPOG greedy). For 5×3×3×2 this is about 15 instead of 90 | large products. Note that the Figma set then has holes, so variant switching to a missing combination snaps to the nearest one. Emits `PLAN_SPARSE_SET` (warn) |
 | `one-at-a-time` | the base plus, for each axis, each value with the other axes at their default | a quick preview |
-| `curated` | exactly `parameters.figmabook.variants: Array<Record<axisName, label>>` | full control |
+| `curated` | exactly `parameters.holotype.variants: Array<Record<axisName, label>>` | full control |
 | **`auto` (default)** | `full` if the product is ≤ `budget.max`. Otherwise, keep the full product over the top-K axes by priority, then pin the remaining axes to their default (they become FIXED, with `PLAN_AXIS_DROPPED_BUDGET`). Each dropped axis's values are listed in the report with a one-click "include" | always |
 
 **Axis priority, for `auto`:**
@@ -337,7 +337,7 @@ Non-folded state-like booleans such as `checked` or `selected` stay their own VA
 
 The planner picks the element that receives the pseudo-state:
 
-1. `parameters.figmabook.stateTarget` (a CSS selector relative to the capture root, piercing `>>>`).
+1. `parameters.holotype.stateTarget` (a CSS selector relative to the capture root, piercing `>>>`).
 2. The first interactive element in the composed tree, as defined in §6.1. A native `input` inside a custom wrapper counts.
 3. The capture root.
 
@@ -382,13 +382,13 @@ interface ModePlan { dimensions: { global: string; values: { value: unknown; lab
 
 ### 7.2 Viewports and breakpoints
 
-- `parameters.figmabook.viewports: { mobile: 390, desktop: 1440 }`, or a compat import from `chromatic.modes[*].viewport` and `parameters.viewport.options`.
+- `parameters.holotype.viewports: { mobile: 390, desktop: 1440 }`, or a compat import from `chromatic.modes[*].viewport` and `parameters.viewport.options`.
 - `viewports.as`, default `'axis'`, becomes a `Viewport` axis.
 - `'components'` creates separate component sets `Name/Mobile` and `Name/Desktop`. This is the recommended choice for page-level patterns whose structure changes across breakpoints (`PLAN_VIEWPORT_STRUCTURE_CHANGE` suggests it automatically when the aligned trees differ structurally).
 
 ### 7.3 Size of the component
 
-`parameters.figmabook.width`:
+`parameters.holotype.width`:
 
 | Value | Behaviour |
 |---|---|
@@ -402,18 +402,18 @@ interface ModePlan { dimensions: { global: string; values: { value: unknown; lab
 
 ## 8. Naming and ordering
 
-- **Axis names.** Use `parameters.figmabook.axes[arg].name`. Otherwise Title Case the arg name (`iconPosition` → `Icon position`). The State axis is named `State`, the story axis `Story`, viewport `Viewport`, and global axes take the `globalTypes[g].name` or the title-cased key.
+- **Axis names.** Use `parameters.holotype.axes[arg].name`. Otherwise Title Case the arg name (`iconPosition` → `Icon position`). The State axis is named `State`, the story axis `Story`, viewport `Viewport`, and global axes take the `globalTypes[g].name` or the title-cased key.
 - **Value labels.** Use `control.labels[value]`, then the mapping key, then `String(value)` in Title Case for strings and `True`/`False` for booleans (Figma's convention; `true` maps to `True`). `undefined` becomes `Default`, or the `table.defaultValue.summary` parsed value.
 - **Sanitizing.** Strip `=`, `,`, `/` (variant-name delimiters) and trim. Make labels unique by suffixing `(2)`. Max 64 characters.
 - **Value order.** Use the `options` order. The base value moves to index 0 *unless* `axes[arg].order: 'options'` is set. Booleans are ordered by default value first. The State axis follows `states` order.
-- **Grid placement.** By default the first axis goes on columns and all other axes nest on rows, last axis innermost. Override with `parameters.figmabook.layout: { columns: ['State'], rows: ['Variant','Size'] }`. The default variant is at the top-left ([09](09-plugin.md)).
+- **Grid placement.** By default the first axis goes on columns and all other axes nest on rows, last axis innermost. Override with `parameters.holotype.layout: { columns: ['State'], rows: ['Variant','Size'] }`. The default variant is at the top-left ([09](09-plugin.md)).
 - **Default variant.** The variant with all base values: the base story's args, no pseudo-state, the default viewport.
 
 ---
 
 ## 9. Configuration schema {#schema}
 
-The same TypeBox schema is used for `parameters.figmabook` (any level) and `figmabook.config.ts → defaults | components[sid]`. The schema is defined in `@figmabook/ir` (D-07), and JSON Schema is published at `/schema/config/v1.json`.
+The same TypeBox schema is used for `parameters.holotype` (any level) and `holotype.config.ts → defaults | components[sid]`. The schema is defined in `@holotype/ir` (D-07), and JSON Schema is published at `/schema/config/v1.json`.
 
 ```ts
 import { Type as T, Static } from '@sinclair/typebox';
@@ -421,7 +421,7 @@ import { Type as T, Static } from '@sinclair/typebox';
 const PseudoStateT = T.Union(['hover','focus','focus-visible','active','focus-within','visited'].map(s => T.Literal(s)));
 const ArgValuesT = T.Array(T.Unknown());
 
-export const FigmabookParams = T.Object({
+export const HolotypeParams = T.Object({
   disable: T.Optional(T.Boolean()),                               // same as tag !figma
   name: T.Optional(T.String()),                                   // Figma component display name
   component: T.Optional(T.String()),                              // regroup into another component id
@@ -479,12 +479,12 @@ export const FigmabookParams = T.Object({
   keepLayout: T.Optional(T.Boolean()),
   textMode: T.Optional(T.Union([T.Literal('reflow'), T.Literal('locked-lines')])),  // D-17, used by [07]
 }, { additionalProperties: false });
-export type FigmabookParams = Static<typeof FigmabookParams>;
+export type HolotypeParams = Static<typeof HolotypeParams>;
 ```
 
 Unknown keys produce `PLAN_PARAM_UNKNOWN_KEY` (warn, with "did you mean…"). The addon's types prevent them at authoring time.
 
-**Precedence** follows README §7. `figmabook.config.ts` also accepts `components: Record<sid | glob, FigmabookParams>`; globs match the `sid` or title, and later entries win.
+**Precedence** follows README §7. `holotype.config.ts` also accepts `components: Record<sid | glob, HolotypeParams>`; globs match the `sid` or title, and later entries win.
 
 **Example: Button stories with explicit hints.**
 
@@ -492,7 +492,7 @@ Unknown keys produce `PLAN_PARAM_UNKNOWN_KEY` (warn, with "did you mean…"). Th
 export default {
   component: Button,
   tags: ['figma'],
-  parameters: { figmabook: {
+  parameters: { holotype: {
     args: { label: { as: 'text', name: 'Label' }, icon: { as: 'instance-swap' }, iconOnly: { as: 'boolean' } },
     states: { include: ['default', 'hover', 'focus-visible', 'active'], foldBooleans: ['disabled', 'loading'] },
     layout: { columns: ['State'], rows: ['Variant', 'Size'] },
@@ -506,9 +506,9 @@ export default {
 
 ### 10.1 story.to.design (`parameters.s2d`)
 
-This is read **only** when `parameters.figmabook` is absent and `compat.s2d !== false`. It is a migration path; we implement it from the public docs (https://story.to.design/docs/variant-properties-api), not from their code.
+This is read **only** when `parameters.holotype` is absent and `compat.s2d !== false`. It is a migration path; we implement it from the public docs (https://story.to.design/docs/variant-properties-api), not from their code.
 
-| s2d | figmabook |
+| s2d | holotype |
 |---|---|
 | `variantProperties: ['size']` | `args.size.as='variant'` |
 | `{fromArg, name, values:[{name, argValue, excludedArgs}]}` | `args[fromArg] = {as:'variant', name, values, labels}`. `excludedArgs` becomes a curated exclusion of combos |
@@ -607,7 +607,7 @@ The planner produces:
   2. **final plan**: after probe captures, with classification resolved and the matrix generated.
 
   Only the final plan is persisted in the bundle (`manifest.components[sid].plan`), so the plugin UI can explain every decision.
-- `figmabook plan <sid>` prints the plan, its provenance and its budget without capturing variants, but it does run probes unless `--fast`.
+- `holotype plan <sid>` prints the plan, its provenance and its budget without capturing variants, but it does run probes unless `--fast`.
 
 ---
 
@@ -636,7 +636,7 @@ The planner produces:
 | `PLAN_THEME_AS_AXIS` | warn | theme not token-explained; emitted as axis |
 | `PLAN_VIEWPORT_STRUCTURE_CHANGE` | info | suggest splitting viewports into components |
 | `PLAN_STORY_SPLIT` | info | too many unexplained stories; split into components |
-| `PLAN_PARAM_UNKNOWN_KEY` | warn | unknown key in `parameters.figmabook` |
+| `PLAN_PARAM_UNKNOWN_KEY` | warn | unknown key in `parameters.holotype` |
 | `PLAN_COMPAT_SPLIT` / `PLAN_COMPAT_UNSUPPORTED` | info / warn | s2d compat |
 | `PLAN_CHROMATIC_DISABLED_HINT` | info | Chromatic disableSnapshot seen |
 | `PLAN_SUGGEST_MERGE_AXES` | info | exclusive booleans could become one axis |

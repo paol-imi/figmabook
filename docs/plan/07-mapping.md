@@ -826,7 +826,7 @@ The token resolver ([08](08-tokens.md)) gives, per capture node and CSS property
 - All iteration over maps and sets is sorted.
 - Floating-point results are rounded at emission (06 §5). Comparisons inside algorithms use fixed tolerances, never equality.
 - Golden tests: the same Capture IR always maps to byte-identical canonical Scene IR. CI runs every fixture twice and compares.
-- Mapper version bumps that change output are minor or major bumps of `@figmabook/mapper`. The capture cache is reused; the Scene is recomputed.
+- Mapper version bumps that change output are minor or major bumps of `@holotype/mapper`. The capture cache is reused; the Scene is recomputed.
 
 ## 18. Worked example: Button
 

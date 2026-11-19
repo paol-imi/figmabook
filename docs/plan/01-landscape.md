@@ -1,6 +1,6 @@
 # 01 · Landscape & differentiation
 
-> **Purpose:** know exactly what exists, where it fails, and which ground figmabook takes. Every claim below is tagged:
+> **Purpose:** know exactly what exists, where it fails, and which ground holotype takes. Every claim below is tagged:
 > - **[V]**: verified in a cited source.
 > - **[I]**: inferred.
 >
@@ -139,9 +139,9 @@
 
 ## 4. Feature comparison matrix
 
-Key: ✅ yes, ◐ partial, ✗ no, ? unknown. "figmabook v1" means the end of Phase 7 ([14](14-roadmap.md)).
+Key: ✅ yes, ◐ partial, ✗ no, ? unknown. "holotype v1" means the end of Phase 7 ([14](14-roadmap.md)).
 
-| Capability | story.to.design | Figma code-to-canvas | html.to.design | Anima (legacy) | figit | **figmabook v1** |
+| Capability | story.to.design | Figma code-to-canvas | html.to.design | Anima (legacy) | figit | **holotype v1** |
 |---|---|---|---|---|---|---|
 | Component sets from stories | ✅ | ✗ | ✗ | ✅ | ✗ | ✅ |
 | Variants from args | ✅ (Cartesian) | ✗ | ✗ | ✅ | ✗ | ✅ (planned matrix, D-12) |
@@ -200,4 +200,4 @@ Key: ✅ yes, ◐ partial, ✗ no, ? unknown. "figmabook v1" means the end of Ph
 
 ## 7. Positioning statement (internal)
 
-> For design-system teams that ship components in Storybook, figmabook builds and keeps in sync a native Figma component library: real variants, properties, instances and variables. It runs from your CLI or CI. It is open source, and it is built so designers can safely edit around it.
+> For design-system teams that ship components in Storybook, holotype builds and keeps in sync a native Figma component library: real variants, properties, instances and variables. It runs from your CLI or CI. It is open source, and it is built so designers can safely edit around it.

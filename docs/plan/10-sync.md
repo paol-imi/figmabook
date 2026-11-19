@@ -1,9 +1,9 @@
 # 10 · Identity & sync
 
-> **Scope:** how figmabook recognises what it built before, and updates it **in place**. Designers' instance overrides survive (G5), designer additions survive, designer edits to managed layers are detected and resolved by policy, and every change is previewed first.
+> **Scope:** how holotype recognises what it built before, and updates it **in place**. Designers' instance overrides survive (G5), designer additions survive, designer edits to managed layers are detected and resolved by policy, and every change is previewed first.
 >
 > **Binding decisions:**
-> - **D-19:** shared plugin data namespace `figmabook`; keys `sid`, `vk`, `nk`, `irh`, `ah`, `v`; no delete-and-recreate of managed nodes.
+> - **D-19:** shared plugin data namespace `holotype`; keys `sid`, `vk`, `nk`, `irh`, `ah`, `v`; no delete-and-recreate of managed nodes.
 > - **D-20:** deprecate, never hard-delete while instances may exist.
 > - **D-09:** the plugin is a reconciler.
 
@@ -34,7 +34,7 @@ Contents:
 |---|---|---|
 | I-1 | A managed node is **never deleted and recreated** to apply a change of *properties*. Recreation happens only on a *type change* (§5.3), via the snapshot/restore path, and is reported | reconciler |
 | I-2 | **A no-op re-sync performs zero document writes** (unchanged bundle + unchanged file) | Merkle skip (§10); fake-op-log test (§12) |
-| I-3 | **Unmanaged nodes** (no `figmabook/nk`) inside managed components are never modified, moved relative to their managed neighbour, or removed | reconciler |
+| I-3 | **Unmanaged nodes** (no `holotype/nk`) inside managed components are never modified, moved relative to their managed neighbour, or removed | reconciler |
 | I-4 | **No managed property is overwritten** if a designer changed it since our last write, unless the user chose `overwrite` (§9) | `ah` check |
 | I-5 | **Component set, variant and component property identity** (Figma node ids, property `#id`s) are stable across syncs | §6, §7 |
 | I-6 | **Plugin data on nodes is the source of truth.** The root registry is a rebuildable cache | §2.3, §3 |
@@ -45,7 +45,7 @@ Contents:
 <a id="keys"></a>
 ## 2. Identity keys & plugin data layout
 
-All keys live in **shared** plugin data, under the namespace `figmabook`: `node.setSharedPluginData('figmabook', key, value)`.
+All keys live in **shared** plugin data, under the namespace `holotype`: `node.setSharedPluginData('holotype', key, value)`.
 
 - Shared, not private, because other tools, the REST API (`GET /v1/files/:key?plugin_data=shared`), CI and future plugin IDs (D-01 rename → new plugin id!) must be able to read it. Private plugin data is bound to the plugin ID and would be lost if the plugin were re-published under a new ID (research brief §1).
 - Values are strings, with at most 100 kB per entry (namespace + key + value).
@@ -101,7 +101,7 @@ Our own nested instances (managed `kind: 'instance'` nodes) are themselves index
 The registry is a cache, so that opening the plugin is fast and the sync status can be shown without scanning pages. It is rebuildable from node data (I-6).
 
 ```
-figma.root shared plugin data, namespace "figmabook":
+figma.root shared plugin data, namespace "holotype":
   registry:meta   = {"v":1,"rev":42,"chunks":3,"fp":"<bundle fp>","updatedAt":"…","session":"<random id>"}
   registry:0..N-1 = JSON string chunks, each ≤ 90 000 bytes (headroom under the 100 kB limit)
   registry:lease  = {"session":"…","expiresAt":"…"}            (§14)
@@ -153,7 +153,7 @@ async function buildIndex(port: FigmaPort, pages: PageNode[]): Promise<IdentityI
   port.skipInvisibleInstanceChildren = true;
   for (const page of pages) {
     await page.loadAsync();
-    const hits = page.findAllWithCriteria({ sharedPluginData: { namespace: 'figmabook', keys: ['nk'] } });
+    const hits = page.findAllWithCriteria({ sharedPluginData: { namespace: 'holotype', keys: ['nk'] } });
     for (const n of hits) {
       if (n.id.startsWith('I') || hasInstanceAncestorBelowVariant(n)) continue;   // §2.1
       classify(n);                       // set / variant / descendant / icon / doc
@@ -177,7 +177,7 @@ async function buildIndex(port: FigmaPort, pages: PageNode[]): Promise<IdentityI
 1. **Unique within a variant**, and **aligned across variants**. The same semantic layer has the same `nk` in every variant of the set. This lets Figma's variant-switch override matching (by layer name/hierarchy) and BOOLEAN/TEXT property bindings work. Layer *names* follow the same alignment.
 2. **Stable across syncs** when code changes are cosmetic: classes, styles, text.
 3. **Derivation priority:**
-   1. explicit `data-figma-name` / `data-figmabook-key`;
+   1. explicit `data-figma-name` / `data-holotype-key`;
    2. `data-testid`;
    3. framework component boundary name plus role (`Icon`, `Label`);
    4. ARIA role or name;
@@ -220,7 +220,7 @@ for each component C in plan (topological order, 09 §5.5):
 ```ts
 function reconcileNode(n: SceneNodeLike, d: SceneNode, ctx: Ctx) {
   if (isLocked(n)) return ctx.diag('SYNC_LOCKED_SKIPPED', d);
-  if (d.irh === n.getSharedPluginData('figmabook', 'irh') && ctx.sameEpoch(n)) return;    // subtree unchanged
+  if (d.irh === n.getSharedPluginData('holotype', 'irh') && ctx.sameEpoch(n)) return;    // subtree unchanged
   if (ctx.conflict(n, d) === 'keep') return markKeep(n, d);                                 // §9
   writeOwnProps(n, d);                                   // 09 §6 rules, update mode: write only changed fields
   reconcileChildren(n as ChildrenMixin, d.children, ctx);
@@ -250,7 +250,7 @@ function reconcileChildren(parent: ChildrenMixin, desired: SceneNode[], ctx: Ctx
 Notes:
 
 - **Moves keep identity.** `insertChild` on an existing node moves it and keeps its node id. Instance override mapping by internal id should therefore survive moves *within* the component (verify, S-02). Cross-parent moves are found via `index.findMoved` (same variant, same `nk`, different parent).
-- **Orphan removal policy** (`sync.orphans`): `'remove'` (default) or `'hide'` (`visible = false`, and kept with `figmabook/orphan = "1"`; if the `nk` returns, the node is revived with its overrides intact). Removal reports `SYNC_NODE_REMOVED`, with the local instance count of the variant as impact.
+- **Orphan removal policy** (`sync.orphans`): `'remove'` (default) or `'hide'` (`visible = false`, and kept with `holotype/orphan = "1"`; if the `nk` returns, the node is revived with its overrides intact). Removal reports `SYNC_NODE_REMOVED`, with the local instance count of the variant as impact.
 - **Unmanaged nodes** are never in `byNk`, so they are never removed. The cursor logic keeps them right after the managed sibling they followed.
 - **Designer-deleted managed nodes** (in the registry or the parent's previous `irh`, but absent now) are re-created and reported as `SYNC_MANAGED_NODE_DELETED` (info). With policy `keep`, they stay deleted: the `keep` marker records it.
 
@@ -276,7 +276,7 @@ Instances in **other files** (library consumers) can't be reached, so their over
 ## 6. Component property identity & renames
 
 - **The identity of a component property is its full name including `#id`** (`"Label#4:2"`) for BOOLEAN, TEXT, INSTANCE_SWAP and SLOT, and its plain name for VARIANT.
-- We key by **Storybook arg name** in the set's `figmabook/props` map ([09 §8](09-plugin.md#props)). The *Figma display name* is free to change.
+- We key by **Storybook arg name** in the set's `holotype/props` map ([09 §8](09-plugin.md#props)). The *Figma display name* is free to change.
 
 | Code change | Action | Instance effect |
 |---|---|---|
@@ -344,7 +344,7 @@ A mapped pair is reconciled **in place**: the old ComponentNode gets the new `vk
 
 ### 7.5 Delete (prune)
 
-- Hard deletion is **never automatic**. The explicit plugin action "Prune deprecated…" (or `figmabook prune` via the harness) lists deprecated items older than `sync.pruneAfterDays` (default 30).
+- Hard deletion is **never automatic**. The explicit plugin action "Prune deprecated…" (or `holotype prune` via the harness) lists deprecated items older than `sync.pruneAfterDays` (default 30).
 - For each item it shows `await node.getInstancesAsync()`, which counts **this file only**. It warns that library consumers can't be counted.
 - It requires typing the component name for sets that have instances.
 - Deletion is reported in the report and in the library release notes (§13).
@@ -442,13 +442,13 @@ The mismatch report includes *which groups* differ, by comparing per-group sub-h
 |---|---|---|
 | `overwrite` | component or node | write code values; the designer's managed-property changes are lost (old values are logged in the report) |
 | `keep` | component or node | skip writing this node's managed properties **and its subtree**; record `keep[nk] = irhAtDecision` on the set |
-| `fork` | component | before overwriting, duplicate the set (`set.clone()`) into section "Forks", strip all `figmabook` keys from the clone (so it becomes unmanaged), rename it `<name> (designer copy <date>)`, then overwrite the original |
+| `fork` | component | before overwriting, duplicate the set (`set.clone()`) into section "Forks", strip all `holotype` keys from the clone (so it becomes unmanaged), rename it `<name> (designer copy <date>)`, then overwrite the original |
 
 Defaults (`sync.conflicts`):
 
 - **Interactive:** component default `ask`. The plan pre-selects `keep` for nodes with conflicts, and the user must look at them before applying.
 - **Harness/auto/CI:** `keep`, which is safe and never loses designer work.
-- **Configurable:** a per-component default in `figmabook.config.ts` → `components[sid].conflicts`.
+- **Configurable:** a per-component default in `holotype.config.ts` → `components[sid].conflicts`.
 
 ### 9.3 Keep markers
 
@@ -456,7 +456,7 @@ On later syncs, a kept node is skipped while `irh` (code) equals `keep[nk]`. Whe
 
 ### 9.4 Locks & unmanaged layers
 
-- **`figmabook/lock = "1"`** is set via the plugin's "Lock layer (designer-owned)" action on any managed node, or on the set. It skips that subtree on every sync and shows a 🔒 in the report. This is an explicit, durable `keep`.
+- **`holotype/lock = "1"`** is set via the plugin's "Lock layer (designer-owned)" action on any managed node, or on the set. It skips that subtree on every sync and shows a 🔒 in the report. This is an explicit, durable `keep`.
 - **Unmanaged additions** (annotations, extra layers a designer added inside a variant) are preserved (I-3), but they may break auto layout geometry. Verification ignores unmanaged nodes when computing deltas, but runs with them present. If a fallback triggers *because* of an unmanaged node, the report says so (`SYNC_UNMANAGED_AFFECTS_LAYOUT`, info).
 - **Recommended practice**, printed in the doc frame: annotate *outside* the set, or use locks.
 
@@ -591,7 +591,7 @@ The test-suite runs in two layers:
 
 - **No publishing via API.** Neither the Plugin API nor the REST API can publish a library. After a sync, the plugin shows "Publish library to propagate N changes" and offers **"Copy release notes"**: generated from the plan, grouped Breaking, Added, Changed, ready to paste into Figma's publish dialog. Copying happens in the UI via a textarea + `document.execCommand('copy')` fallback (verify, S-06).
 - **Consumer files** get the changes when they accept library updates. Override survival there follows the same rules (S-02, cross-file column). Breaking changes are flagged before applying (§8.3).
-- **One managing file per component.** `figmabook.config.ts` → `figma.files: [{ name: 'Core', include: ['inputs/**', 'buttons/**'] }, { name: 'Patterns', include: ['patterns/**'] }]`, and the bundle can be scoped per file (`figmabook export --file Core`).
+- **One managing file per component.** `holotype.config.ts` → `figma.files: [{ name: 'Core', include: ['inputs/**', 'buttons/**'] }, { name: 'Patterns', include: ['patterns/**'] }]`, and the bundle can be scoped per file (`holotype export --file Core`).
 - **Cross-file nested instances**, e.g. Patterns using Core's Button: the Core file's registry exports `sid → published component key` (the "Export keys" action writes `keys.json` back to the CLI over the local server). Patterns' bundle then references `libraryComponents[sid] = key`, resolved with `importComponentByKeyAsync` ([09 §5.1](09-plugin.md#preflight)). The library must be published and enabled in the consuming file.
 - **Branches.** Figma branching works naturally: sync into a branch, review, merge. Plugin data merges with the branch (verify, S-02). Recommended for big upgrades.
 
@@ -608,7 +608,7 @@ Figma is multiplayer, and two people may sync the same file.
 2. **Optimistic check.** The plan records `registryRev`. At apply start, a changed `rev` gives `SYNC_STALE_PLAN` and an automatic re-plan. Finalize writes `rev + 1`.
 3. **Duplicate detection.** After apply, or at the next index, more than one set with the same `sid` gives `SYNC_DUPLICATE_SID` (warn).
    - The set referenced by the registry (`setId`) wins.
-   - For the others, the plugin offers to **unmanage** them (strip `figmabook` keys, append " (copy)"), never to delete them.
+   - For the others, the plugin offers to **unmanage** them (strip `holotype` keys, append " (copy)"), never to delete them.
    - This also catches designers copy-pasting managed sets.
 
 ---
@@ -634,7 +634,7 @@ Figma is multiplayer, and two people may sync the same file.
 
 Statuses are recomputed and written to the registry only (not to nodes) until a sync runs.
 
-- **Outside Figma.** `figmabook status --figma-file <key>` (CLI, using a Figma REST token) reads the file's root shared plugin data via `GET /v1/files/:key?plugin_data=shared&depth=1` and compares it with the local bundle (verify REST support for root plugin data; proposed spike S-14). The GitHub Action uses this to comment "Figma library is 4 components behind" on PRs ([02](02-architecture.md#topologies)).
+- **Outside Figma.** `holotype status --figma-file <key>` (CLI, using a Figma REST token) reads the file's root shared plugin data via `GET /v1/files/:key?plugin_data=shared&depth=1` and compares it with the local bundle (verify REST support for root plugin data; proposed spike S-14). The GitHub Action uses this to comment "Figma library is 4 components behind" on PRs ([02](02-architecture.md#topologies)).
 - The doc frame badge and the relaunch button ("Re-sync from Storybook") give designers a one-click path.
 
 ---
