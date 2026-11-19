@@ -96,7 +96,7 @@ Our own nested instances (managed `kind: 'instance'` nodes) are themselves index
 - Writing a key whose value is unchanged is skipped. The applier compares against the index snapshot first.
 
 <a id="root-registry"></a>
-### 2.3 Root registry (`figma.root`)
+### 2.3 Root registry (`figma.root`) <a id="registry"></a>
 
 The registry is a cache, so that opening the plugin is fast and the sync status can be shown without scanning pages. It is rebuildable from node data (I-6).
 
@@ -170,7 +170,7 @@ async function buildIndex(port: FigmaPort, pages: PageNode[]): Promise<IdentityI
 ---
 
 <a id="nk"></a>
-## 4. Stable node keys (`nk`)
+## 4. Stable node keys (`nk`) <a id="node-keys"></a>
 
 `nk` values are produced by the `mapper` ([07](07-mapping.md#alignment)). The plugin treats them as opaque. The contract the mapper must honour:
 
@@ -593,7 +593,7 @@ The test-suite runs in two layers:
 - **Consumer files** get the changes when they accept library updates. Override survival there follows the same rules (S-02, cross-file column). Breaking changes are flagged before applying (§8.3).
 - **One managing file per component.** `holotype.config.ts` → `figma.files: [{ name: 'Core', include: ['inputs/**', 'buttons/**'] }, { name: 'Patterns', include: ['patterns/**'] }]`, and the bundle can be scoped per file (`holotype export --file Core`).
 - **Cross-file nested instances**, e.g. Patterns using Core's Button: the Core file's registry exports `sid → published component key` (the "Export keys" action writes `keys.json` back to the CLI over the local server). Patterns' bundle then references `libraryComponents[sid] = key`, resolved with `importComponentByKeyAsync` ([09 §5.1](09-plugin.md#preflight)). The library must be published and enabled in the consuming file.
-- **Branches.** Figma branching works naturally: sync into a branch, review, merge. Plugin data merges with the branch (verify, S-02). Recommended for big upgrades.
+- **Branches (D-32).** Branch files are Figma-native branches of the main library file, one per git feature branch: sync into the branch, review, merge. Plugin data merges with the branch (verify, S-02). A duplicated file is the fallback only for accounts without branching. Details in [15](15-change-requests.md).
 
 ---
 

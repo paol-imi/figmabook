@@ -172,7 +172,7 @@ For each arg, `planner` first assigns a **prior** from type and naming, then **v
 
 ---
 
-## 4. Classification by render-and-diff (D-13) {#classification}
+## 4. Classification by render-and-diff (D-13) <a id="classification"></a>
 
 ### 4.1 Probe protocol
 
@@ -282,7 +282,7 @@ probe renders. The base render and any probe that coincides with a variant are r
 5. The `story` axis.
 6. Viewport.
 
-### 5.2 Budgets
+### 5.2 Budgets <a id="budgets"></a>
 
 | Setting | Default | Notes |
 |---|---|---|
@@ -311,7 +311,7 @@ After capture, variants whose normalized render hashes match are reported. The h
 
 ---
 
-## 6. States (D-14)
+## 6. States (D-14) <a id="states-d-14"></a><a id="states"></a>
 
 ### 6.1 The State axis
 
@@ -364,7 +364,7 @@ Prototype reactions (Hover → `ON_HOVER CHANGE_TO`, Pressed → `ON_PRESS`) are
 
 ---
 
-## 7. Themes, modes, viewports, sizes {#themes}
+## 7. Themes, modes, viewports, sizes <a id="themes"></a>
 
 ### 7.1 Themes → variable modes (default)
 
@@ -411,7 +411,7 @@ interface ModePlan { dimensions: { global: string; values: { value: unknown; lab
 
 ---
 
-## 9. Configuration schema {#schema}
+## 9. Configuration schema <a id="schema"></a><a id="config"></a>
 
 The same TypeBox schema is used for `parameters.holotype` (any level) and `holotype.config.ts → defaults | components[sid]`. The schema is defined in `@holotype/ir` (D-07), and JSON Schema is published at `/schema/config/v1.json`.
 
@@ -502,7 +502,7 @@ export default {
 
 ---
 
-## 10. Compatibility readers
+## 10. Compatibility readers <a id="compatibility-readers"></a>
 
 ### 10.1 story.to.design (`parameters.s2d`)
 
@@ -536,7 +536,7 @@ Every compat mapping is tagged `provenance: 'compat:s2d'` and listed in the repo
 
 ---
 
-## 11. Worked examples
+## 11. Worked examples <a id="worked-examples"></a>
 
 ### 11.1 Button
 

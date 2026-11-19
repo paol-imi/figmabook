@@ -4,7 +4,7 @@
 
 ---
 
-## 1. Test pyramid
+## 1. Test pyramid <a id="pyramid"></a>
 
 | Layer | What | Tools | Runs |
 |---|---|---|---|
@@ -12,7 +12,7 @@
 | **L1 unit** | pure functions per package | Vitest | every PR |
 | **L2 property-based** | invariants of canonical JSON, hashing, layout-sim, gradient math, color conversion | fast-check + Vitest | every PR |
 | **L3 snapshot** | DOM fixture → Capture IR; Capture IR → Scene IR; Scene IR → `figma-fake` scene graph | Vitest file snapshots (deterministic JSON, sorted keys) | every PR |
-| **L4 integration** | Storybook adapter against generated sandboxes per SB version × framework; capture end-to-end in Chromium | Playwright (pinned Chromium, D-05) | every PR (smoke subset), nightly (full matrix) |
+| **L4 integration** | Storybook adapter against generated sandboxes per SB version (react-vite until M5, D-26); capture end-to-end in Chromium | Playwright (pinned Chromium, D-05) | every PR (smoke subset), nightly (full matrix) |
 | **L5 fidelity** | T0/T1/T2 harness (§4) in real Figma | macOS runner + Figma desktop; S-11 path | nightly + release |
 | **L6 sync e2e** | apply → designer-edit simulation → re-sync → assert overrides/conflicts | real Figma (harness mode) + `figma-fake` mirror | nightly |
 | **L7 usability** | scripted tasks with 5 DS engineers + 5 designers per milestone M3, M5, M8 | moderated sessions | milestone |
@@ -41,11 +41,11 @@
 
 ---
 
-## 2. Fixture corpus
+## 2. Fixture corpus <a id="fixtures"></a>
 
 ### 2.1 Golden component library (`fixtures/`)
 
-Same component **spec** implemented in **React (Vite)**, **Vue 3**, **Lit**, and **Angular** (Angular added in Phase 3 as the docgen/Compodoc outlier). Each implementation styled three ways where meaningful: plain CSS modules, CSS-in-JS (emotion — exercises late-injected rules for D-14), Tailwind (exercises utility classes, rings, `--tw-*` vars).
+One component **spec**, implemented in **React + Vite on Storybook 10** (`@storybook/react-vite`, D-26). Until M5 this is the only implementation. **Vue 3**, **Lit** and **Angular** ports (Angular as the docgen/Compodoc outlier) come with the post-M5 renderer expansion. Each implementation is styled three ways where meaningful: plain CSS modules, CSS-in-JS (emotion — exercises late-injected rules for D-14), Tailwind (exercises utility classes, rings, `--tw-*` vars).
 
 | Component | Exercises |
 |---|---|
@@ -65,7 +65,7 @@ Same component **spec** implemented in **React (Vite)**, **Vue 3**, **Lit**, and
 | Typography specimen (headings, `line-height: normal`, letter-spacing, truncation, line clamp, RTL, CJK, emoji) | D-17, fonts |
 | Theme showcase (light/dark/brand) | modes, tokens, aliases |
 
-### 2.2 Per-feature micro-fixtures (`fixtures/micro/` — plain HTML stories, renderer `html`)
+### 2.2 Per-feature micro-fixtures (`fixtures/micro/` — plain-markup stories in the React + Vite Storybook, D-26)
 
 Each micro-fixture is one story that isolates one feature; ~200 total, grouped:
 
@@ -92,32 +92,34 @@ Each micro-fixture is one story that isolates one feature; ~200 total, grouped:
 
 ### 2.3 Real-world design systems (dogfooding, nightly, not pass/fail on fidelity — tracked as trend)
 
-| DS | Why | Renderer |
-|---|---|---|
-| **MUI** | most-used React DS; emotion CSS-in-JS; ripples (JS state); portals | React |
-| **shadcn/ui (Radix + Tailwind)** | Tailwind + rings + `data-state` driven states; huge adoption | React |
-| **Ant Design** | dense component set, CSS-in-JS tokens, many variants | React |
-| **Chakra UI v3** | CSS variables tokens + recipes → strong token/mode test | React |
-| **Carbon (IBM)** | official public Storybook, React + Web Components, rigorous tokens | React, WC |
-| **Web Awesome / Shoelace** | closed/open shadow DOM, CSS parts, CEM docgen | Lit / WC |
-| **Spectrum Web Components (Adobe)** | shadow DOM at scale, themes, Lit | Lit / WC |
-| **Angular Material** | Compodoc docgen, Angular dev-mode component detection (D-21) | Angular |
-| **Vuetify** or **PrimeVue** | Vue 3 docgen, slots | Vue |
+Until M5, dogfooding runs only the React systems, on Storybook 10 (D-11, D-26). The non-React rows join with the post-M5 renderer expansion.
 
-Selection criteria: public Storybook or buildable from source with a permissive license; covers each renderer and each styling approach; ≥1 heavy shadow-DOM system; ≥2 token-driven theming systems. Each pinned to a commit in `fixtures/real/lock.json`; built once per pin and cached.
+| DS | Why | Renderer | When |
+|---|---|---|---|
+| **MUI** | most-used React DS; emotion CSS-in-JS; ripples (JS state); portals | React | now |
+| **shadcn/ui (Radix + Tailwind)** | Tailwind + rings + `data-state` driven states; huge adoption | React | now |
+| **Ant Design** | dense component set, CSS-in-JS tokens, many variants | React | now |
+| **Chakra UI v3** | CSS variables tokens + recipes → strong token/mode test | React | now |
+| **Carbon (IBM)** | official public Storybook, React + Web Components, rigorous tokens | React, WC | now (React); WC post-M5 |
+| **Web Awesome / Shoelace** | closed/open shadow DOM, CSS parts, CEM docgen | Lit / WC | post-M5 |
+| **Spectrum Web Components (Adobe)** | shadow DOM at scale, themes, Lit | Lit / WC | post-M5 |
+| **Angular Material** | Compodoc docgen, Angular dev-mode component detection (D-21) | Angular | post-M5 |
+| **Vuetify** or **PrimeVue** | Vue 3 docgen, slots | Vue | post-M5 |
+
+Selection criteria: public Storybook or buildable from source with a permissive license; covers each styling approach (and, post-M5, each renderer); ≥1 heavy shadow-DOM system; ≥2 token-driven theming systems. Each pinned to a commit in `fixtures/real/lock.json`; built once per pin and cached.
 
 ---
 
 ## 3. Storybook adapter integration tests
 
-- **Sandboxes generated**, not hand-maintained: `npx storybook@<ver> sandbox <template>`-style templates (or `create-storybook` with pinned versions) for SB **8.6.x, 9.1.x, 10.6.x, 11.x (beta→GA)** and **7.6.x** (best effort, D-11) × renderers react-vite, vue3-vite, web-components-vite, angular (8.x+/11), svelte-vite. Our golden fixture stories are copied in.
-- Both **dev server** and **static build** per cell; static only for nightly full matrix to save time.
+- **Sandboxes generated**, not hand-maintained: `npx storybook@<ver> sandbox <template>`-style templates (or `create-storybook` with pinned versions) for renderer **react-vite** (D-26) on SB **10.6.x** (primary, full suite, PR gate) and **11.x** (tracked from beta, full nightly; PR gate at GA), plus **8.6.x / 9.1.x** as smoke tests only (best-effort, D-11). SB 7.x is not run. vue3-vite, web-components-vite, angular and svelte-vite cells are added by the post-M5 renderer expansion. Our golden fixture stories are copied in.
+- Both **dev server** and **static build** per SB 10/11 cell; static only for the nightly full matrix to save time.
 - Assertions: index parse, metadata (args/argTypes/docgen incl. SB11 `docgenServer` path via `manifests/components.json`), render loop (setCurrentStory/updateStoryArgs/updateGlobals), readiness (storyFinished ?? storyRendered), errors mapped to `SB_*` codes, pseudo-state strategies, theme discovery.
 - Matrix result published as a support table in docs (auto-generated).
 
 ---
 
-## 4. Fidelity harness
+## 4. Fidelity harness <a id="fidelity-harness"></a><a id="fidelity"></a><a id="harness"></a>
 
 ### 4.1 Tiers
 
@@ -368,7 +370,7 @@ Install id = random UUID stored locally; `DO_NOT_TRACK=1` and `CI=true` force of
 
 A release (any `@holotype/*` minor/major, plugin publish) requires:
 
-1. L0–L4 green on the full sandbox matrix for first-class SB versions (D-11).
+1. L0–L4 green on the full sandbox matrix for first-class SB versions (SB 10 react-vite; 11 once GA) and smoke green on 8.6/9.1 (D-11, D-26).
 2. Nightly fidelity within ratchet baseline; README §4 targets met from M5 onward (before: tracked, not gating).
 3. Sync e2e (L6): 100% override retention on the unchanged-structure suite; no unexpected `SYNC_OVERRIDE_NOT_RESTORED`.
 4. Perf budgets (§5) within 10% of baseline.

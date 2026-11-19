@@ -77,7 +77,7 @@ interface CaptureJob { id: JobId; sid: string; vk: string; request: RenderReques
   - Pages are distributed over a `BrowserContext` pool of size `min(cpus, 8)` (configurable).
   - Priority: (a) components the user selected in the plugin, (b) classification experiments, because they gate the plan, (c) the rest.
 - **Retries:**
-  - 2 attempts on `CAP_RENDER_TIMEOUT` / `SB_STORY_ERRORED`.
+  - 2 attempts on `SB_RENDER_TIMEOUT` / `SB_STORY_ERROR`.
   - The second attempt uses a fresh page navigation (`goto`) instead of the channel loop.
 - **Cancellation:**
   - A single `AbortController` per run, and one per component subtree.
@@ -157,7 +157,7 @@ The only workable variant needs our addon *installed in the target Storybook*, p
    1. `fetch GET /v1/health` with a 1.5 s timeout.
    2. Classify the error:
       - `TypeError` + CSP message → `NET_DOMAIN_NOT_ALLOWED` (a manifest bug, so it's ours);
-      - opaque network error in a browser client → `NET_LOOPBACK_BLOCKED`;
+      - opaque network error in a browser client → `NET_LNA_BLOCKED`;
       - connection refused or timeout in desktop → `NET_SERVER_UNREACHABLE`.
    3. Show the specific remedy:
       - "start `holotype serve`";
@@ -239,7 +239,7 @@ type Capability =
 - The plugin sends `x-holotype-client: plugin/<version>; protocol=1; scene=^1.0.0`.
 - **Mismatch rules:**
   - No common protocol major gives `NET_PROTOCOL_MISMATCH`, with an "update CLI" or "update plugin" hint depending on which side is older.
-  - Scene IR major mismatch: the plugin carries migrations for the previous major ([06](06-ir.md#versioning)). Otherwise `APPLY_IR_UNSUPPORTED`.
+  - Scene IR major mismatch: the plugin carries migrations for the previous major ([06](06-ir.md#versioning)). Otherwise `APPLY_IR_VERSION_UNSUPPORTED`.
   - Unknown capabilities are ignored, and a missing capability greys out its feature in the UI.
 
 ### 4.4 Event stream and message types
@@ -326,6 +326,7 @@ holotype-out/<runId>/
   report.json                   # RunReport: diagnostics, fidelity (if computed), timings
   report.html                   # human report (11)
   capture/                      # OPTIONAL (--include-capture): CaptureDoc per vk, for debugging / re-mapping
+  provenance/<sid>.json         # OPTIONAL (branch mode): field → CSS/JSX origin; excluded from irh, not sent to the plugin (15 §5.2)
 ```
 
 ```ts
@@ -335,6 +336,7 @@ interface BundleManifest {
   runId: string; createdAt: string;            // createdAt excluded from hashes
   generator: { name: "holotype"; version: string; chromium: string; playwright: string; mapper: string };
   storybook: { url?: string; version: string; framework: string; sbFingerprint: string };
+  git?: { sha: string; ref: string; dirty: boolean };   // required in branch mode (15 §2.2); `source.git` in the canonical 06 §4.2 schema
   irVersions: { scene: string; capture?: string };
   components: { sid: string; title: string; file: string; sceneHash: string; status: "ok"|"partial"|"failed"; variants: number }[];
   assets: { sha256: string; mime: string; bytes: number; width?: number; height?: number }[];
@@ -427,7 +429,7 @@ holotype/
     fidelity/           # scoring: pixelmatch, ssim.js, box-delta; HTML dashboard; ratchet thresholds
     harness/            # nightly real-Figma runner orchestration (S-11 / macOS desktop)
   fixtures/
-    react-sb/  vue-sb/  lit-sb/  # golden libraries (12), each a Storybook project built in CI
+    react-sb/           # golden library (12): React + Vite on SB 10 (D-26); vue-sb/, lit-sb/ come post-M5
   docs/                 # plan/, research/, later the docs site source
 ```
 
@@ -519,10 +521,10 @@ Nightly: the real-Figma fidelity harness ([12](12-quality.md)).
 **npm release:**
 - changesets opens a release PR. On merge, publish with `npm publish --provenance` (OIDC trusted publishing) ([13](13-security-legal.md#supply-chain)).
 
-**Plugin release:**
+**Plugin release** (private distribution, D-39):
 1. `pnpm --filter plugin build` produces `manifest.json`, `build/main.js` and `build/ui.js`, then a reproducible zip with fixed mtimes.
-2. Upload the artifact.
-3. A manual Figma publish step (there is no publish API).
+2. Upload the artifact. Until the org plugin exists, users unzip it and re-import `manifest.json` as a development plugin ([11](11-ux.md)).
+3. Once stable: a manual publish to the **organization only** (no Figma review; there is no publish API). The Community listing waits until after M8.
 4. Tag `plugin@x.y.z`.
 
 The manifest `id` is fixed forever, because `clientStorage` and plugin data are keyed by it.
@@ -533,21 +535,25 @@ The manifest `id` is fixed forever, because `clientStorage` and plugin data are 
 
 **Compatibility promise:**
 - The plugin accepts Scene IR of the current and previous major.
-- The CLI refuses to publish a bundle the current Community plugin can't read: `holotype export --check-plugin-compat`.
+- The CLI refuses to publish a bundle the current released plugin (dev or org build) can't read: `holotype export --check-plugin-compat`.
 
 ### 6.5 Compatibility matrix (targets)
 
-| | SB 7.6 | SB 8.x | SB 9.x | SB 10.x | SB 11.x |
-|---|---|---|---|---|---|
-| Support level (D-11) | best-effort | ✅ | ✅ | ✅ | ✅ by GA |
-| Discovery | `index.json` v4 / `stories.json` v3 | index v5 (8.1+) | v5 | v5 | v5 + manifests |
-| Metadata | `preview.storyStore` (verify, S-07) | `__STORYBOOK_PREVIEW__.loadStory` | same | same + `ARGTYPES_INFO_*` | same + **server docgen** (`manifests/components.json`, `services/core/docgen/*`) |
-| Done signal | `storyRendered` | `storyRendered` (8.x) / `storyFinished` | `storyFinished` + awaits animations | same | same |
-| Builders | webpack5, vite | webpack5, vite | vite, webpack5 | vite, webpack5, rsbuild (verify) | same |
+| | SB 8.x | SB 9.x | SB 10.x | SB 11.x |
+|---|---|---|---|---|
+| Support level (D-11) | best-effort (smoke CI) | best-effort (smoke CI) | **primary, first-class** | tracked from beta; first-class at GA |
+| Discovery | index v5 (8.1+) | v5 | v5 | v5 + manifests |
+| Metadata | `__STORYBOOK_PREVIEW__.loadStory` | same | same + `ARGTYPES_INFO_*` | same + **server docgen** (`manifests/components.json`, `services/core/docgen/*`) |
+| Done signal | `storyRendered` (8.x) / `storyFinished` | `storyFinished` + awaits animations | same | same |
+| Builders | webpack5, vite | vite, webpack5 | **vite** (primary, D-26), webpack5, rsbuild (verify) | same |
+
+SB 7.x and older are not supported (`SB_VERSION_UNSUPPORTED`).
+
+Renderers: React + Vite is the primary stack (D-26) and the only one with fixtures until M5. The other rows below work best-effort through the DOM pipeline and are untested until the post-M5 renderer expansion.
 
 | Renderer | Framework enhancer (names, boundaries, D-21) | Docgen source |
 |---|---|---|
-| React (incl. Next.js) | fiber `__reactFiber$*` → `type` | react-docgen / react-docgen-typescript / react-component-meta (11) |
+| React (incl. Next.js; **primary**, ships first) | fiber `__reactFiber$*` → `type` | react-docgen / react-docgen-typescript / react-component-meta (11) |
 | Vue 3 (incl. Nuxt) | `__vueParentComponent` | vue-docgen-api / vue-component-meta |
 | Angular | `ng.getComponent(el)` (dev builds only) | Compodoc |
 | Svelte 5 | best-effort (verify, S-13) | svelte2tsx (11) |
@@ -613,8 +619,8 @@ The manifest `id` is fixed forever, because `clientStorage` and plugin data are 
    | Failure | Effect |
    |---|---|
    | page crash, render timeout, story error | the variant fails; the component continues with the remaining variants and is `partial` |
-   | mapper exception (a bug) | the component fails with `APPLY_INTERNAL`-class info and a stack in `report.json` |
-   | Storybook unreachable | `SB_UNREACHABLE` is fatal for the run |
+   | mapper exception (a bug) | the component fails with `PLAN_MAPPER_FAILED` (error) and a stack in `report.json` |
+   | Storybook unreachable | `SB_INDEX_UNREACHABLE` is fatal for the run |
 
 5. **Exit codes (CLI):**
    - `0` ok;

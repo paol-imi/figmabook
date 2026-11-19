@@ -23,8 +23,9 @@ export interface MapperInput {
   tokens: TokenResolution;                  // from token resolver (08): cssName -> variable key, per-node var chains
   components: ComponentCatalog;             // sids + variant property maps of components available for instancing (D-21)
   config: MapperConfig;                     // resolved per-component config (README §7 precedence)
+  sourceLocs?: Map<string /* styleSheetId:startLine:startColumn */, SourceLoc>;   // branch mode: source-mapped rule locations (§16.1)
 }
-export interface MapperOutput { scene: SceneComponent; diagnostics: Diagnostic[] }
+export interface MapperOutput { scene: SceneComponent; provenance?: ProvenanceDoc /* branch mode, §16.1 */; diagnostics: Diagnostic[] }
 export function mapComponent(input: MapperInput): MapperOutput;   // pure, deterministic, no I/O, no Date, no Math.random
 ```
 
@@ -50,6 +51,7 @@ The mapper never touches `figma`, the DOM or the filesystem. It runs in Node (CL
 | 14 | **Fallback + expect emission** | variant | `fallback`, `expect` on every node (§6) |
 | 15 | **Hashing** | component | `irh` bottom-up (06 §6) |
 | 16 | **Invariant validation** | component | throws `PLAN_INVARIANT_VIOLATION` (06 §9) |
+| 17 | **Provenance emission** (branch mode only) | component | `provenance/<sid>.json`: one `FieldOrigin` per emitted Scene field (§16.1). Never feeds `irh` |
 
 **Ordering constraints:**
 
@@ -110,7 +112,7 @@ function classify(n: CNode): ContainerKind {
 
 ## 4. Flex / block → auto layout
 
-### 4.1 Mapping table
+### 4.1 Mapping table <a id="border-padding"></a>
 
 | CSS | Scene (`SceneLayout`) | Condition / note |
 |---|---|---|
@@ -258,7 +260,7 @@ For these, try in order:
 2. **Nested stacks.** A VERTICAL stack of HORIZONTAL row stacks with FIXED column widths. Requires no row spans.
 3. **Absolute** (`LAYOUT_GRID_UNREPRESENTABLE`).
 
-## 6. Verification, fallbacks and `expect` (D-15)
+## 6. Verification, fallbacks and `expect` (D-15) <a id="verification"></a>
 
 ### 6.1 `layout-sim`: Figma's layout model, reimplemented
 
@@ -424,7 +426,7 @@ Figma remeasures glyph advances slightly differently from Chromium (hinting, sha
   - Fewer lines than the browser means Figma is narrower-advancing. That is accepted when the block height is equal ±1px; otherwise `TEXT_LINE_MISMATCH`.
 - **`locked-lines`**: insert ` ` at the browser's break offsets (soft-hyphen breaks get a visible hyphen) and set `autoResize: WIDTH_AND_HEIGHT` or `HEIGHT` with buffer. Lines are identical, but editing reflows unnaturally. It is used by config, or forced when overlays exist (§8.4).
 
-### 8.6 Fonts → `SceneFontRequest`
+### 8.6 Fonts → `SceneFontRequest` <a id="fonts"></a>
 
 The mapper does **not** know which fonts the Figma user has. It emits a *request*, and the plugin preflight resolves it against `figma.listAvailableFontsAsync()`. The user can remap fonts there ([09](09-plugin.md#fonts), [11](11-ux.md)).
 
@@ -455,7 +457,7 @@ The mapper does **not** know which fonts the Figma user has. It emits a *request
 5. **`fallbackFamily`.** Choose by generic class (sans/serif/mono) and closest x-height. Default `Inter`, `Roboto Mono` or `Noto Serif`; the table is configurable. Missing fonts are *not* diagnosed here: the plugin emits `FONT_MISSING` / `FONT_SUBSTITUTED` after preflight.
 6. **Icon fonts** (`CFontUsage.iconFont`) are not text. Capture has already provided the outlined SVG asset ([05](05-capture.md#icon-fonts)), and the node becomes `svg` (S-09).
 
-## 9. Colors
+## 9. Colors <a id="color"></a>
 
 - Convert with **colorjs.io and gamut mapping** (`toGamut({space: 'srgb', method: 'css'})`). Raw `.srgb` conversion can produce out-of-range channels (figit). If the target file profile is `DISPLAY_P3` (`config.colorProfile`, confirmed by the plugin handshake from `figma.root.documentColorProfile`), emit P3 values instead.
 - When the source was `oklch`/`lab`/`p3`, attach `sourceColor` so Figma keeps the original color space (typings Update 141; feature `source-color`).
@@ -525,7 +527,7 @@ Verify the conic origin and direction in S-03 (`PAINT_CONIC_APPROX` until then).
 - **Elliptical-radial with non-uniform scale.** Representable by the matrix above.
 - **`radial-gradient` with `closest-side` and friends.** Resolved in capture; the mapper only sees px radii.
 
-### 10.3 Borders, outline, radius (D-16)
+### 10.3 Borders, outline, radius (D-16) <a id="radius"></a>
 
 | Case | Scene |
 |---|---|
@@ -594,7 +596,7 @@ Use the capture's page-space affine to compute `relativeTransform = inverse(pare
 - Skew is expressible only via `relativeTransform`.
 - `transform3d` is in beta in typings Update 142 and is not used in v1. `nonAffine` content is rasterized.
 
-### 10.7 SVG
+### 10.7 SVG <a id="icons"></a>
 
 `replaced.kind === 'svg'` becomes a `svg` SceneNode with `unwrap: true`: the plugin unwraps `createNodeFromSvg`'s single-child frame. Capture inlines computed styles, resolves `currentColor` and `<use>` (searching all shadow roots, as in modern-screenshot `embed-svg-use.ts`), and serializes the result.
 
@@ -613,7 +615,7 @@ These nodes carry `CAP_NATIVE_CONTROL_SYNTHESIZED` (info).
 
 ### 10.9 Rasterization criteria
 
-A subtree is replaced by an `image` node holding the capture's clip screenshot (`replaced.kind: 'raster'`, requested by the mapper in a *second capture pass*, [05](05-capture.md#raster-requests)) when **any** of these hold:
+A subtree is replaced by an `image` node holding the capture's clip screenshot (`replaced.kind: 'raster'`, requested by the mapper in a *second capture pass*, [05 §1](05-capture.md#orchestration)) when **any** of these hold:
 
 - non-affine transform;
 - an unsupported `filter` on a non-image;
@@ -644,7 +646,7 @@ Each node is named by the first match in this list:
 
 1. `source.figmaName` (`data-figma-name`)
 2. `source.testId`, humanized (`btn-label` → "Btn label")
-3. component boundary `displayName` (React fiber / Vue / Angular / custom-element tag, [05](05-capture.md#boundaries))
+3. component boundary `displayName` (React fiber / Vue / Angular / custom-element tag, [03 §10](03-storybook.md#framework-enhancers))
 4. root only: `"Variant=…, Size=…"`, the Figma variant name built from property values
 5. ARIA: `aria-label`, or `role` → `"Button"`, `"Icon"`, …
 6. semantic tag map: `nav` → Navigation, `ul` → List, `li` → Item, `img` → Image, `svg` → Icon, `input` → Input, `label` → Label, `h1`–`h6` → Heading, `p` → Paragraph, `a` → Link (figit `naming.ts`)
@@ -659,7 +661,7 @@ Each node is named by the first match in this list:
 
 Names are finalized after alignment, and **identical across all variants** for the same `nk`. The only exception is text-derived names when the text differs between variants. Those take the default variant's name.
 
-## 13. Cross-variant alignment {#alignment}
+## 13. Cross-variant alignment <a id="alignment"></a>
 
 **Why.**
 
@@ -764,7 +766,7 @@ Inputs come from the planner ([04](04-variant-model.md)): each arg's classificat
 | `BOOLEAN` | the aligned node(s) whose presence or visibility differs between the true and false renders get `propRefs.visible = key`. If several disjoint subtrees toggle together, each gets the same ref. The *placeholder* (§13.4) carries the ref in variants where the arg is false. The default value comes from the default variant |
 | `TEXT` | the single aligned `text` node whose `characters` changed between the sample-string renders gets `propRefs.characters = key`. The default value is the default variant's characters. If several text nodes changed (e.g. a label echoed into aria-hidden text), all are bound. If *non-text* geometry changed beyond auto-layout reflow, the planner demotes the arg to VARIANT or FIXED (D-13) |
 | `INSTANCE_SWAP` | the aligned `instance` node gets `propRefs.mainComponent = key`; the property's `preferredValues` lists all observed `SceneComponentRef`s (e.g. every mapped icon) |
-| `SLOT` | the aligned frame that wraps the slotted content (from the slot boundary, [05](05-capture.md#slots)) gets `slot: {propKey}`. Its children in the default variant become the slot's default content. Feature `slots`; downgraded to a plain frame when unsupported |
+| `SLOT` | the aligned frame that wraps the slotted content (from the slot site, [04 §4](04-variant-model.md#classification)) gets `slot: {propKey}`. Its children in the default variant become the slot's default content. Feature `slots`; downgraded to a plain frame when unsupported |
 | `FIXED` / `IGNORED` | nothing |
 
 **Constraints checked:**
@@ -819,6 +821,22 @@ The token resolver ([08](08-tokens.md)) gives, per capture node and CSS property
 - **Pure chains only.** A value from `calc()`, `color-mix()` or a used var fallback is not bound: `TOKEN_NOT_PURE` (info).
 - **Value-equality fallback** (D-18, opt-in `config.tokens.matchByValue`) emits `confidence: 'value'`. It binds only when exactly one variable of the right type has that value in the current mode; ambiguity gives `TOKEN_VALUE_AMBIGUOUS`.
 - **Themes as modes.** When themes are modes ([04](04-variant-model.md), [08](08-tokens.md)), the mapper emits one variant set (not one per theme), with bindings from the default-mode capture. It then verifies that every other mode's capture resolves to the same bindings with that mode's values; a mismatch gives `TOKEN_MODE_MISMATCH` (warn), and the planner falls back to a theme VARIANT axis.
+
+### 16.1 Provenance side file (branch mode, D-36)
+
+Every stage that writes a Scene field already knows which CSS properties produced it. In branch mode (`config.provenance: true`, set by `holotype branch *`) the mapper records that knowledge as a `FieldOrigin` per field, keyed by `(vk, nk, Scene field path)`, in `ProvenanceDoc` ([06 §4.1](06-ir.md), shapes in [15 §5.2](15-change-requests.md#provenance)).
+
+| Scene field | `css` | `transform` |
+|---|---|---|
+| `layout.padding.*` | `padding-*`, plus `border-*-width` when D-16 folds the border in | `border-included` or `none` |
+| `layout.itemSpacing` / `counterAxisSpacing` | `gap`/`row-gap`/`column-gap`, or the sibling `margin-*` (§4.2) | `margin-to-gap` or `none` |
+| `size.*` / `min*` / `max*` | `width`/`height`/`min-*`/`max-*` | `percent-resolved` when the intent was `%` |
+| `fills[i]`, `strokes.*`, `radius.*`, `effects[i]`, text range fields | the property in the §16 table | `none` |
+
+- `authored`, `selector`, `varChain` come from `CAuthored` (`varRefs`, `rules`); `rule` is the `CRuleRef` resolved through `CaptureDoc.styleSheets` and the stylesheet's source map to a repo-relative `SourceLoc` (the CLI passes the resolved locations in as `MapperInput.sourceLocs`), with CSS-module classes de-hashed to the original selector ([05 §6.2](05-capture.md)). `dom.loc` is `CSource.loc`.
+- Merged or simplified nodes (§11) keep the origin of the node that survives; an absorbed wrapper's fields are listed under the survivor with `css` from the wrapper.
+- A field with no CSS source (`cornerSmoothing`, rasterized subtrees, fallback-only geometry) gets no entry; the DCR reports it as `DCR_FIELD_UNMAPPABLE` if a designer edits it.
+- Same determinism rules as the Scene (§17): sorted keys, canonical JSON, golden-tested. Source-map resolution is memoized per `styleSheetId` revision and is the only I/O, done by the CLI before calling the pure mapper.
 
 ## 17. Determinism
 

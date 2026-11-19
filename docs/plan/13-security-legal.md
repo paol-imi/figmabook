@@ -15,7 +15,7 @@ Legal goal: ship under a name and license that cannot be taken down, using only 
 | Local-server session tokens | `~/.holotype/sessions.json`, plugin `clientStorage` | Secret |
 | Registry tokens | CI secrets, plugin `clientStorage` | Secret |
 | Figma document | Figma | Confidential (the user's) |
-| Our release artifacts (npm packages, plugin bundle) | npm, Figma Community | Integrity-critical |
+| Our release artifacts (npm packages, plugin bundle) | npm, plugin zip (dev plugin), private org plugin; Figma Community only after M8 (D-39) | Integrity-critical |
 
 ```
  [Browser tab: any website] ──X──► [CLI server 127.0.0.1:47321] ◄── [Figma plugin UI (null origin)]
@@ -133,7 +133,7 @@ A headless browser fetching user-supplied URLs is an SSRF tool by construction (
 - **Data flows in default mode:**
   - Storybook → user's machine → user's Figma file. Nothing reaches us.
   - In CI: Storybook → user's CI → user's registry → user's Figma file. Still nothing reaches us.
-- **Privacy policy** is required for Community publishing whenever the plugin processes user data or sends data out of Figma ([developer terms](https://www.figma.com/developer-terms/), [review guidelines](https://help.figma.com/hc/en-us/articles/360039958914)). It covers:
+- **Privacy policy** is required for Community publishing (post-M8, D-39) whenever the plugin processes user data or sends data out of Figma ([developer terms](https://www.figma.com/developer-terms/), [review guidelines](https://help.figma.com/hc/en-us/articles/360039958914)). It covers:
   - the local, registry and hosted data paths;
   - opt-in telemetry (fields listed below);
   - retention (hosted);
@@ -215,7 +215,13 @@ The approved alternatives are the Plugin API, and Figma's MCP `use_figma`, which
 
 ## 7. Figma publishing <a id="publishing"></a>
 
-**Community plugin requirements and review** ([publishing](https://developers.figma.com/docs/plugins/publishing), [review guidelines](https://help.figma.com/hc/en-us/articles/360039958914)):
+Distribution is private (D-39), in three stages:
+
+1. **Now: development plugin.** A release zip whose `manifest.json` the user and their boss import in the Figma desktop app (Plugins ▸ Development ▸ Import plugin from manifest). Any plan, no review, no listing. Install steps: [11 §2.0](11-ux.md#install).
+2. **Once stable: private organization plugin** (below). The account has Organization/Enterprise features.
+3. **After M8 only: Community listing**, after the D-01 trademark search. The requirements below apply only then.
+
+**Stage 3: Community plugin requirements and review** ([publishing](https://developers.figma.com/docs/plugins/publishing), [review guidelines](https://help.figma.com/hc/en-us/articles/360039958914)):
 - **Review:** the help center states up to about 2 weeks or 5–10 business days. Forum reports in 2026 mention longer waits. Plan 3 weeks of slack before launch dates.
 - **Network:** every domain declared with `reasoning`. The listing shows them. HTTPS is expected; loopback HTTP is accepted in practice (precedent: [cursor-talk-to-figma-mcp](https://github.com/grab/cursor-talk-to-figma-mcp)).
 - **Disclosure:** the listing must disclose that a CLI (a separate, free, open-source tool) is needed for topologies A/B/D. The required wording states that it only *serves data* and does not manipulate Figma. The rule against requiring "packages that manipulate Figma" doesn't apply, but it is stated explicitly to pre-empt review questions.
@@ -227,9 +233,9 @@ The approved alternatives are the Plugin API, and Figma's MCP `use_figma`, which
   - support contact;
   - a stable plugin `id`, never changed.
 
-**Private organization plugin path** (Organization/Enterprise plans):
-- Not reviewed ([publishing](https://developers.figma.com/docs/plugins/publishing)). This is the fastest route for design partners in P3–P6.
-- It uses the same build with a different manifest `id` and name suffix "(Preview)".
+**Stage 2: private organization plugin** (Organization/Enterprise plans; the planned path, D-39):
+- Not reviewed ([publishing](https://developers.figma.com/docs/plugins/publishing)). Published to the organization only; members run it without importing anything.
+- It uses the same build and manifest `id` as the development plugin, so settings carry over (verify). A later Community listing may need its own `id` (verify).
 - Telemetry is off, and the registry domain may be customer-specific (enterprise registries).
 
 **Payments:** see §8. If used, set `permissions:["payments"]` and `figma.payments` with `status.type` `PAID|UNPAID|NOT_SUPPORTED` ([payments](https://developers.figma.com/docs/plugins/api/figma-payments/)). Purchases are verified server-side via the Payments REST API ([REST payments](https://developers.figma.com/docs/rest-api/payments)).

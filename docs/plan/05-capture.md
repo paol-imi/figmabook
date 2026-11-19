@@ -19,7 +19,7 @@ All inference (auto layout, sizing, simplification, token binding) happens in `m
 
 ---
 
-## 1. Orchestration {#orchestration}
+## 1. Orchestration <a id="orchestration"></a>
 
 ### 1.1 Process model
 
@@ -82,7 +82,7 @@ GPU stays default, because rasterization does not affect DOM geometry. Headless 
 
 ---
 
-## 2. Injection {#injection}
+## 2. Injection <a id="injection"></a>
 
 ### 2.1 Serializer bundle
 
@@ -135,7 +135,7 @@ There is one `CDPSession` per page. Domains enabled: `DOM`, `CSS`, `Page`, `Netw
 
 ---
 
-## 3. Composed-tree walk {#walk}
+## 3. Composed-tree walk <a id="walk"></a><a id="tree-walk"></a>
 
 ```ts
 function* composedChildren(n: Node): Iterable<Node> {
@@ -269,7 +269,7 @@ interface LineFact { top: number; height: number; baseline?: number; left: numbe
   - The **full** source text is captured, because the ellipsis is drawn by the browser.
 - **Directionality.** Store `direction` and resolve `text-align: start|end`. For RTL, `lines[].left` is the visual left.
 
-### 4.3 Fonts actually used (D-17)
+### 4.3 Fonts actually used (D-17) <a id="fonts"></a>
 
 For each text-bearing block, and for each distinct run style key, take the run's parent element. The CDP method reports for an element's child text nodes, so a run whose parent is shared with other runs is attributed by majority.
 
@@ -285,7 +285,7 @@ interface FontUse { familyName: string; postScriptName: string; isCustom: boolea
 - **Web font inventory.** Record `document.fonts` with `family`, `weight`, `style`, `stretch`, `unicodeRange`, `status` and the `src` URL. The URL is resolved by scanning `@font-face` rules through CDP `CSS.getStyleSheetText` on stylesheets whose rule text contains `@font-face`. This goes into `CaptureDoc.fonts`, so the plugin's font preflight ([09](09-plugin.md), [11](11-ux.md)) can say "Acme Sans 600 is a web font loaded from …/acme-600.woff2; install it in Figma".
 - **Variable fonts.** Record `font-variation-settings` and, through the face inventory, whether the face is variable. This uses `fvar` detection: the CLI fetches the font file (cached by URL hash) and parses it with `fontkit`, which runs in Node, not in the page. It records the axes and the ascender, descender, lineGap and unitsPerEm metrics needed by [07](07-mapping.md) for baseline and line-height checks.
 
-### 4.4 Icon fonts (S-09)
+### 4.4 Icon fonts (S-09) <a id="icon-fonts"></a>
 
 A run is classified as an icon font if any of these hold:
 
@@ -303,7 +303,7 @@ The run is then marked `iconFont: { family, text, codepoints }`.
 
 ## 5. Replaced content, form controls, media, SVG
 
-### 5.1 Images
+### 5.1 Images <a id="images"></a>
 
 - **`<img>`.** Use `currentSrc`, which is the resolved candidate from `srcset`/`picture`. Record `naturalWidth/Height`, `object-fit` and `object-position`, plus `alt`.
 - **CSS images.** Record `background-image` (`url()`), `mask-image`, `border-image-source` and `list-style-image`, each layer with its `background-size/position/repeat/origin/clip`. Gradients are **not** assets; they are parsed into paint facts (§7.2).
@@ -314,7 +314,7 @@ The run is then marked `iconFont: { family, text, codepoints }`.
 |---|---|
 | PNG/JPEG ≤4096 | as-is |
 | GIF | as-is. Animated GIFs keep their first frame plus `CAP_ANIMATED_GIF` (info) |
-| WebP/AVIF/HEIC/ICO/BMP | decoded with `sharp` and re-encoded as PNG (lossless sources: lossless PNG) or JPEG q92 (photographic: entropy heuristic) |
+| WebP/AVIF/HEIC/ICO/BMP | decoded with `sharp` and re-encoded as PNG (lossless sources: lossless PNG) or JPEG q92 (photographic: entropy heuristic), with `CAP_IMAGE_TRANSCODED` (info) |
 | SVG referenced by `<img>`/CSS | **kept as SVG** (vector, [09](09-plugin.md)) when it has no `<script>`/`<foreignObject>` and is ≤256 kB. Otherwise rasterized at DPR 2 |
 | any >4096 px on an axis | downscaled to fit 4096, preserving aspect ratio (`CAP_IMAGE_DOWNSCALED`) |
 
@@ -332,7 +332,7 @@ The run is then marked `iconFont: { family, text, codepoints }`.
   - if that fails, take a screenshot.
 - **`<object>`/`<embed>`** are captured by screenshot.
 
-### 5.3 Form controls
+### 5.3 Form controls <a id="controls"></a>
 
 - **`appearance: none`** (most design systems): walk the control as an ordinary box. Add its text, which is `value`, or `placeholder` when the value is empty, along with the `::placeholder` computed color (§5.5).
 - **Native appearance:** record `nativeControl` facts so the mapper can synthesize ([07](07-mapping.md)):
@@ -387,7 +387,7 @@ Pseudo-elements become child `CaptureNode`s with `source.pseudo` set. `::before`
 
 ---
 
-## 6. Authored styles (needed by [07](07-mapping.md) and [08](08-tokens.md)) {#authored}
+## 6. Authored styles (needed by [07](07-mapping.md) and [08](08-tokens.md)) <a id="authored"></a>
 
 Computed style loses *intent*: `auto`, `fr`, `minmax()`, `var(--x)` and percentages all arrive resolved to px or colors. Two sources recover it.
 
@@ -423,9 +423,14 @@ The winner is chosen by the cascade: important > specificity > order. CDP return
 
 ```ts
 interface AuthoredDecl { value: string /* raw, e.g. "var(--btn-bg, var(--color-primary))" */;
-  source: 'inline'|'rule'|'attr'|'inherited'; selector?: string; media?: string; container?: string; important?: boolean }
+  source: 'inline'|'rule'|'attr'|'inherited'; selector?: string; media?: string; container?: string; important?: boolean;
+  sheet?: { styleSheetId: string; range: { startLine: number; startColumn: number; endLine: number; endColumn: number } } }  // branch mode
 type AuthoredStyles = Record<string /* property */, AuthoredDecl>;
 ```
+
+**Rule locations (branch mode, D-36).** For DCR provenance ([15 §5](15-change-requests.md#provenance)) the orchestrator also keeps, for each winning `rule` declaration, `rule.styleSheetId` and the declaration's `style.range` (0-based line/column in the *served* stylesheet). It listens to `CSS.styleSheetAdded` from `CSS.enable` onward and records each header's `sourceURL` and `sourceMapURL` in a per-document table (`CaptureDoc.styleSheets`, [06 §2](06-ir.md)). Resolution to the original file:line through the source map (Vite dev serves inline maps, including CSS modules) happens later, in the CLI right before mapping (the mapper itself stays pure, [07 §16.1](07-mapping.md)), and is cached per `styleSheetId` revision (verify coverage per styling approach, S-19). The ranges cost nothing extra: they are already in the `getMatchedStylesForNode` response. Outside branch mode `sheet` is omitted, so library captures and their cache keys are unchanged.
+
+**JSX locations.** When the optional `@holotype/vite-plugin` is installed, host elements carry `data-holotype-loc="src/components/Button/Button.tsx:42:7"`. The serializer reads it into `CSource.loc` (`{file, line, col}`), validates that the path is repo-relative with no `..` segments ([15 §10.3](15-change-requests.md#security)), and strips the attribute from `attrs` so it never affects alignment or naming. Without the plugin `loc` is absent and provenance falls back to the CSS rule (`DCR_PROVENANCE_MISSING` only if both are missing).
 
 **Custom properties.**
 
@@ -438,7 +443,7 @@ type AuthoredStyles = Record<string /* property */, AuthoredDecl>;
 - Matched styles are the most expensive CDP call, at about 1–3ms each. They are fetched only for nodes that will become Scene nodes, meaning not culled and not inside rasterized subtrees, and only in `mode:'full'`.
 - Results are memoized per `(stylesheet revision, selector-match signature)`. The signature is `tag + sorted classes + attribute set + pseudo state`, so 50 identical list items cost one call (verify the hit-rate, S-06).
 
-**Media and container queries** found on winning declarations are recorded. Their presence makes the layout probe (§11) narrower, and raises `LAYOUT_BREAKPOINT_DEPENDENT` in [07](07-mapping.md).
+**Media and container queries** found on winning declarations are recorded. Their presence makes the layout probe (§11) narrower, and raises `LAYOUT_BREAKPOINT_IN_PROBE` in [07](07-mapping.md).
 
 **Adopted stylesheets.** CDP covers constructable stylesheets and shadow DOM styles (verify, S-07). If `getMatchedStylesForNode` fails for a node inside a shadow root, authored styles are omitted for it. Token binding then degrades for that node (`TOKEN_AUTHORED_UNAVAILABLE`, info).
 
@@ -500,7 +505,7 @@ The serializer computes, per node:
 
 ---
 
-## 9. Pseudo-state application {#pseudo-states}
+## 9. Pseudo-state application <a id="pseudo-states"></a>
 
 Policy is in [04 §6](04-variant-model.md#states-d-14). Mechanics:
 
@@ -530,7 +535,7 @@ async function forceState(cdp: CDPSession, target: ElementHandle, rootFxId: stri
 
 ---
 
-## 10. Determinism and cache key {#determinism}
+## 10. Determinism and cache key <a id="determinism"></a>
 
 ### 10.1 Determinism measures
 
@@ -562,7 +567,7 @@ The cache stores the Capture IR (zstd JSON), the assets (CAS) and the screenshot
 
 ---
 
-## 11. Layout probing {#probing}
+## 11. Layout probing <a id="probing"></a>
 
 This is enabled by `width: { probe: [...] }` ([04 §7.3](04-variant-model.md#themes)). It is also enabled automatically for components that the mapper flags as having ambiguous sizing after the first pass. The mapper requests re-probes through `planner`, at most once.
 
@@ -571,7 +576,7 @@ This is enabled by `width: { probe: [...] }` ([04 §7.3](04-variant-model.md#the
 3. Measure `rect` for every `[data-fx-id]` with `__fb.measure(ids)`. This is a batched `getBoundingClientRect`. Re-query text `lines` only for text blocks.
 4. **Re-mount detection.** If more than 10% of ids are missing (the framework re-mounted on resize), match nodes by `source.path` plus tag/class signature instead, and emit `CAP_PROBE_REMOUNTED` (info).
 5. Record `probes: [{ width: W, rects: Record<fxId, Rect>, lines?: Record<fxId, LineFact[]> }]`. Interpretation (FILL/HUG/FIXED via `k = Δchild/ΔparentInner`) is done in the mapper ([07](07-mapping.md)).
-6. If any winning declaration has `@media`/`@container` (§6.2), probe widths are restricted to the range that doesn't cross a breakpoint boundary. The breakpoint values are parsed from the media text. Crossing widths are skipped, with `LAYOUT_BREAKPOINT_DEPENDENT` (info).
+6. If any winning declaration has `@media`/`@container` (§6.2), probe widths are restricted to the range that doesn't cross a breakpoint boundary. The breakpoint values are parsed from the media text. Crossing widths are skipped, with `LAYOUT_BREAKPOINT_IN_PROBE` (info).
 
 Default probe widths are `[0.75W, W, 1.25W, 320]`, where W is the natural width. Each probe costs about one short settle plus one measure, roughly 30–60ms.
 
@@ -655,6 +660,7 @@ All of these are verified in S-06 (capture side) and S-07.
 | `CAP_NON_AFFINE_RASTERIZED` | warn | 3D transform subtree rasterized |
 | `CAP_ANIMATED_GIF` | info | first frame only |
 | `CAP_IMAGE_DOWNSCALED` | info | image >4096 px downscaled |
+| `CAP_IMAGE_TRANSCODED` | info | WebP/AVIF/HEIC/ICO/BMP re-encoded as PNG or JPEG |
 | `CAP_CANVAS_RASTERIZED` | info | canvas captured as an image |
 | `CAP_PSEUDO_UNMEASURED` | warn | pseudo-element could not be measured |
 | `CAP_FOCUS_VISIBLE_UNREACHED` | warn | Tab navigation did not reach the target |
@@ -669,6 +675,6 @@ All of these are verified in S-06 (capture side) and S-07.
 | `FONT_SYNTHETIC` | warn | synthetic bold or italic |
 | `FONT_UNRESOLVED` | warn | platform font unknown |
 | `SVG_ICON_FONT_RASTERIZED` | warn | icon-font glyph rasterized |
-| `SVG_RASTERIZED` | info | SVG with filter, mask or foreignObject rasterized |
+| `SVG_RASTERIZED` | warn | SVG with filter, mask or foreignObject rasterized (emitted by the mapper, [07](07-mapping.md)) |
 | `PAINT_COLOR_READBACK` | info | color resolved through canvas readback |
 | `TOKEN_AUTHORED_UNAVAILABLE` | info | no matched styles for node; token binding degraded |

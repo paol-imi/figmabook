@@ -55,11 +55,11 @@
 
 | Option | Plan requirement | How it is created | Pros | Cons |
 |---|---|---|---|---|
-| **A. Figma-native branch** of the main library file | Organization / Enterprise | in the Figma UI ("Create branch"). There is no REST or Plugin API for creation (verify, S-17) | merges back into the main file natively; library context preserved; REST lists branches via `GET /v1/files/:key?branch_data=true` | plan-gated; branch merge semantics for plugin data need checking (verify, S-02 / S-17) |
-| **B. Duplicated file per branch** (default) | any plan | the developer duplicates a template file (an empty file with the plugin's relaunch data) or creates a blank file, then pastes its URL into `holotype branch link` | works everywhere; fully isolated | manual creation step; not merged back: the code PR is the merge, and the main library re-syncs from code |
+| **A. Figma-native branch** of the main library file (**default**, D-32) | Organization / Enterprise (the user's account has it) | in the Figma UI ("Create branch"). There is no REST or Plugin API for creation (verify, S-17) | merges back into the main file natively; library context preserved; REST lists branches via `GET /v1/files/:key?branch_data=true` | plan-gated; branch merge semantics for plugin data need checking (verify, S-02 / S-17) |
+| **B. Duplicated file per branch** (fallback) | any plan | the developer duplicates a template file (an empty file with the plugin's relaunch data) or creates a blank file, then pastes its URL into `holotype branch link` | works everywhere; fully isolated | manual creation step; not merged back: the code PR is the merge, and the main library re-syncs from code |
 | **C. Automated creation** | any | via Figma MCP, if a create-file tool exists and is permitted (verify, S-17) | zero manual steps | depends on S-17 |
 
-**Default: B, with A detected automatically.** If `figma.fileKey` belongs to a branch (REST `branch_data` shows `mainFileKey`), the plugin records `kind: 'figma-branch'`. Neither the Plugin API nor REST can create files (research brief), so a CLI-only "create the file for me" exists only if S-17 finds a sanctioned path.
+**Default: A (D-32); B is the fallback for accounts without branching.** If `figma.fileKey` belongs to a branch (REST `branch_data` shows `mainFileKey`), the plugin records `kind: 'figma-branch'`. Neither the Plugin API nor REST can create files (research brief), so a CLI-only "create the file for me" exists only if S-17 finds a sanctioned path.
 
 ### 2.2 Linking and keys
 
@@ -76,8 +76,10 @@ The branch ↔ file link is written in two places. Both carry the same data:
      baselineRunId?: string;    // registry run id (topology D), if published
      kind: 'duplicate' | 'figma-branch';
      mode: 'proposal';          // D-33
-     status: 'editing' | 'submitted' | 'verifying' | 'merged' | 'archived';
+     status: 'editing' | 'submitted' | 'approved' | 'verifying' | 'merged' | 'archived';   // 'approved' only with dcr.requireApproval (§7.4)
      lastDcr?: { id: string; hash: string };
+     excluded?: string[];       // item ids excluded on the Changes screen (§7.2)
+     approval?: { state: 'approved' | 'changes-requested'; dcrHash: string; at: string };  // bound to one dcrHash; no approver identity (§10.2)
    }
    ```
 2. **In the repo.** `.holotype/branches/<branch-slug>.json`, which is git-ignored local state, holds `{ figmaFileKey, ...BranchMeta }`. The registry, if used, adds `channels/<branch>.json` ([02 §5.3](02-architecture.md)).
@@ -130,7 +132,10 @@ The plugin chooses the mode from `branch:meta.mode`. A main library file never h
 | Add a value to a variant axis, or a new BOOLEAN/TEXT/INSTANCE_SWAP/SLOT property | `property.added` / `property.changed` | compared with the baseline `props` / `axes` set keys ([10 §2.1](10-sync.md#keys)) |
 | Add or remove a layer inside a managed variant | `node.added` / `node.removed` | an added layer has no `nk`, or carries a duplicated `nk` (the copy is the later one in canonical order) |
 | Create a new local component or component set | `component.new` | no `holotype/sid` |
-| Compose screens from instances, frames and text | `screen` | only in scope (Ready for dev, a page, or a selection) |
+| Compose screens from instances, frames and text | `screen` | only in scope (Ready for dev, a page, or a selection). Frames of the same screen at other widths or states are grouped into one item (§4.10) |
+| Wire prototype interactions (on click → navigate / overlay / back; hover / pressed via *Change to*) | `screen.interactions[]` | read from `reactions` (§4.11) |
+| Annotate copy or accessibility (role, label, focus order) | `screen.content` / `screen.a11y` | annotation category *Accessibility* (configurable, §4.12) |
+| Use an instance of an older library version, or of a deprecated component | `instance.outdated` / `instance.deprecated` | not a request to rebuild the old look: the agent uses the current component (§4.13) |
 | Detach an instance | `instance.detached` | `FrameNode.detachedInfo` (verify, S-15) |
 | Override an instance beyond its properties | `instance.deviation` | `instance.overrides` fields not explained by component properties (§4.5) |
 | Edit a variable value or add a variable | `token.changed` / `token.added` | variable `holotype/ah` mismatch ([08](08-tokens.md)); a new variable has no `tok` |
@@ -251,8 +256,10 @@ interface FieldChange {
 | `property.added` / `property.changed` | new axis value, new or renamed component property | add or rename the prop in code; add stories |
 | `node.added` / `node.removed` | inside a managed variant | add or remove the element |
 | `component.new` | local component without `sid` | create a new component + story |
-| `screen` | top-level frame in scope | compose existing components (usage tree, §4.6) |
+| `screen` | top-level frame(s) in scope, grouped by screen name (§4.10) | compose existing components (usage tree §4.6, snippet §7.3) in `targets.screens` (§5.5), with the listed interactions, content and accessibility |
 | `instance.detached` / `instance.deviation` | §3.2 | either extend the component or treat it as a one-off (open question) |
+| `instance.outdated` | instance whose main component's `irh` is older than the baseline's for that `vk`, or whose `vk` no longer exists (§4.13) | use the **current** component as it is in code; the mock shows an old look, which is not a request |
+| `instance.deprecated` | instance of a deprecated component or variant (D-20) | use the replacement component named in the item; if none, open question |
 | `token.changed` / `token.added` | variable values or new variables | change the token definitions (CSS custom properties) |
 | `unknown` | anything else that changed | listed with raw before/after; `DCR_UNKNOWN_CHANGE` |
 
@@ -273,6 +280,8 @@ interface UsageInstance {
   props: Record<string /* arg name */, JsonValue | { unmapped: JsonValue }>;
   slots?: Record<string /* arg */, UsageNode[]>;
   deviations?: FieldChange[];
+  content?: Record<string /* TEXT arg */, ContentKind>;   // copy vs placeholder per TEXT prop (§4.12)
+  defaults?: string[];                                    // arg names whose value equals the component default (omitted from the snippet, §7.3)
 }
 ```
 
@@ -284,7 +293,7 @@ A `screen` item is the ordered tree of a top-level frame:
 type UsageNode =
   | { t: 'instance'; key: string; inst: UsageInstance }
   | { t: 'frame'; key: string; name: string; layout?: LayoutHint; fills?: TokenOrValue[]; radius?: TokenOrValue; children: UsageNode[] }
-  | { t: 'text'; key: string; characters: string /* untrusted, §10.3 */; style: TextHint }
+  | { t: 'text'; key: string; characters: string /* untrusted, §10.3 */; style: TextHint; content: ContentKind /* §4.12 */ }
   | { t: 'image'; key: string; asset: string /* asset role id */ }
   | { t: 'new-component-ref'; key: string; itemId: string };   // instance of a component.new item
 interface LayoutHint { direction: 'row'|'column'|'grid'|'none'; gap?: TokenOrValue; padding?: [TokenOrValue,TokenOrValue,TokenOrValue,TokenOrValue];
@@ -334,6 +343,156 @@ name        = 1 − normalizedLevenshtein( tokens(name_new), tokens(name_existin
 | Hash | `dcrHash = h16(canonical(DCR without header.generated))`. `header.generated` (tool version, time) is the only volatile block and is excluded |
 | Assets outside the hash | PNG bytes from Figma exports aren't guaranteed byte-stable, so items reference assets by **role id** (`<itemId>:before`), and `assets.json` maps role → sha256 outside `dcrHash` |
 | Golden tests | `fixtures/dcr/*`: saved REST JSON + baseline + capture provenance → expected `dcr.json` and `prompt.md`. Run twice with shuffled input order (object keys, node arrays): output must be byte-identical. A plugin-vs-REST parity fixture is added after S-18 |
+| Config is part of the input | screen naming, placeholder patterns, a11y categories, targets and deprecation maps (§4.10–§4.13, §5.5) are hashed into `extractor.configHash`; the same file + baseline + config give the same DCR |
+
+### 4.10 Screens: breakpoints, states and grouping <a id="screens"></a>
+
+Designers draw one screen several times: at several widths, and in several states. The extractor groups those frames into **one `screen` item** with `variants`, so the agent builds one responsive, stateful screen instead of five near-duplicates.
+
+**Naming convention** (default, configurable): `<Screen> / <Breakpoint> / <State>`, e.g. `Checkout / Mobile / Empty`. Segments are split on the separator and classified **by vocabulary, not by position**:
+
+| Segment matches | Becomes | Default vocabulary (case-insensitive) |
+|---|---|---|
+| a breakpoint name | `breakpoint` | `Mobile` 0, `Tablet` 768, `Desktop` 1280 (name → min width in px) |
+| a state name or alias | `state` | `default` (`Default`, `Filled`), `empty`, `loading` (`Skeleton`), `error`, `success`, plus any listed in config |
+| anything else | part of the screen name | — |
+
+- **Sections.** With `groupBySection` (default on), a top-level frame inside a Figma Section takes the **section name** as the screen name, and its own name supplies the breakpoint and state segments only (Section `Checkout` › frame `Mobile / Empty`). Nested sections join with ` / `.
+- **Missing segments.** No breakpoint segment: the breakpoint is inferred from the frame width (the largest `min` ≤ width) and marked `inferred: true`. No state segment: `default`.
+- **Unparsed names.** A frame whose name yields neither a breakpoint nor a state is its own screen with one variant (`DCR_SCREEN_NAME_UNPARSED`, info, only when the same screen name appears at several widths).
+- **Collisions.** Two frames with the same `(screen, breakpoint, state)`: the first in canonical order wins; the other becomes a separate screen item suffixed `#2` (`DCR_SCREEN_VARIANT_DUPLICATE`, warn).
+- **Base variant and deltas.** The base is `state=default` at the widest breakpoint (`base: 'widest' | 'narrowest'`, config). Each other variant carries its full usage tree **and** a `delta` against the base, matched by path key: nodes added or removed, props changed, layout direction / sizing changed. The prompt shows the base tree once and only the deltas for the rest.
+- **Expected states** (opt-in). `expectStates: ['empty', 'loading', 'error']` makes a missing state an open question ("Checkout has no Error state. What should it show?", `DCR_SCREEN_STATE_MISSING`, info). Off by default.
+
+```ts
+// holotype.config.ts → dcr.screens (11 §4)
+interface ScreenGroupingConfig {
+  separator: string;                                   // default " / "
+  groupBySection: boolean;                             // default true
+  breakpoints: Record<string, number>;                 // name → min width px; default { Mobile: 0, Tablet: 768, Desktop: 1280 }
+  states: Record<string, string[]>;                    // canonical state → aliases; order = render order
+  base: 'widest' | 'narrowest';                        // default 'widest'
+  expectStates?: string[];                             // default []
+}
+
+interface ScreenVariant {
+  breakpoint: { name: string; minWidth: number; inferred?: true };
+  state: string;                                       // canonical state name
+  figmaNodeId: string; frameName: string /* untrusted */; width: number; height: number;
+  structure: UsageNode[];                              // full tree (§4.6)
+  delta?: UsageDelta[];                                // vs the base variant; absent on the base
+  interactions: DcrInteraction[];                      // §4.11
+  a11y: A11yAnnotation[];                              // §4.12
+  snippet: UsageSnippet;                               // §7.3
+  asset: string;                                       // role id "<itemId>:<breakpoint>:<state>"
+}
+type UsageDelta =
+  | { key: string; op: 'added'; node: UsageNode } | { key: string; op: 'removed' }
+  | { key: string; op: 'props'; before: Record<string, JsonValue>; after: Record<string, JsonValue> }
+  | { key: string; op: 'layout'; before: LayoutHint; after: LayoutHint }
+  | { key: string; op: 'text'; before: string; after: string };
+```
+
+Variants are sorted by breakpoint `minWidth` descending, then by the configured state order.
+
+### 4.11 Interactions (prototype reactions) <a id="interactions"></a>
+
+Prototype wiring is real product intent: "Pay opens the confirmation overlay", "Back returns to the cart". The extractor reads it and lists it per screen variant.
+
+| Source | Plugin API | REST | Read as |
+|---|---|---|---|
+| Reactions on a node in scope | `node.reactions: Reaction[]`, each `{ trigger, actions[] }` (older files: single `action`) | `interactions[]` on nodes (verify, S-18) | one `DcrInteraction` per (trigger, action) |
+| Interactive components | `ON_HOVER` / `ON_PRESS` / `MOUSE_ENTER` with `CHANGE_TO` a sibling variant in the main component | same | `state` action: `{ State: "Hover" }` |
+
+| Figma trigger → `trigger` | Figma action → `action.kind` |
+|---|---|
+| `ON_CLICK` → `click`; `ON_HOVER` → `hover`; `ON_PRESS` → `press`; `ON_KEY_DOWN` → `key` (with `keyCodes`); `AFTER_TIMEOUT` → `timeout` (with `delayMs`); `MOUSE_ENTER`/`MOUSE_LEAVE` → `enter`/`leave`; `ON_DRAG` → `drag` | `NODE` + `NAVIGATE` → `navigate`; `NODE` + `OVERLAY` → `overlay`; `NODE` + `SWAP` → `swap-overlay`; `NODE` + `SCROLL_TO` → `scroll-to`; `NODE` + `CHANGE_TO` → `state`; `BACK` → `back`; `CLOSE` → `close-overlay`; `URL` → `open-url` |
+
+```ts
+interface DcrInteraction {
+  from: string;                                        // usage-node key of the trigger
+  trigger: 'click' | 'hover' | 'press' | 'key' | 'timeout' | 'enter' | 'leave' | 'drag';
+  keyCodes?: number[]; delayMs?: number;
+  action:
+    | { kind: 'navigate' | 'overlay' | 'swap-overlay'; to: ScreenRef; overlay?: { position: string; closeOnOutside: boolean } }
+    | { kind: 'scroll-to'; to: string /* usage key */ }
+    | { kind: 'state'; values: Record<string, string>; coveredByCode: boolean }   // CHANGE_TO a variant
+    | { kind: 'back' } | { kind: 'close-overlay' }
+    | { kind: 'open-url'; url: string /* untrusted */ }
+    | { kind: 'unsupported'; figma: string };          // SET_VARIABLE, CONDITIONAL, … → DCR_INTERACTION_UNSUPPORTED
+}
+interface ScreenRef { itemId?: string; variant?: { breakpoint: string; state: string }; figmaNodeId: string; name: string /* untrusted */ }
+```
+
+- **Destinations** resolve to a screen item and variant when they are in scope. Otherwise `itemId` is absent and `DCR_INTERACTION_TARGET_OUT_OF_SCOPE` (info) is raised; the name is kept so the agent can still wire a route placeholder.
+- **Hover / pressed states.** A `state` action whose target variant already exists in code (a `State=Hover` variant produced from a pseudo-state, D-14/D-30) is `coveredByCode: true` and renders as "built into `<Button>`": no work. Otherwise it points at the `variant.added` item that introduces it.
+- Animation, easing and transition durations are ignored in v1 (listed as `transition` in the raw data only).
+- Order: by `from` key, then trigger, then action kind.
+
+### 4.12 Content and accessibility <a id="content"></a>
+
+**Copy vs placeholder.** Every text node and TEXT prop value in a usage tree is classified:
+
+```ts
+type ContentKind =
+  | { kind: 'copy' }                                                // final copy: use exactly (or add as an i18n key)
+  | { kind: 'placeholder'; reason: 'lorem' | 'template' | 'component-default' | 'pattern'; variable?: string };
+```
+
+| Rule (in order) | Default | Result |
+|---|---|---|
+| Template | text contains `{{…}}` | `template`, `variable` = the trimmed inner text (`{{user.firstName}}` → `user.firstName`): dynamic data, not copy |
+| Lorem | `/\blorem ipsum\b/i`, `/\bdolor sit amet\b/i` | `lorem` |
+| Component default | the value equals the component's default TEXT arg (an untouched `Button` label) | `component-default` |
+| Configured patterns | `dcr.content.placeholders: RegExp[]`, e.g. `/^XX+$/`, `/^\[.*\]$/` | `pattern` |
+| Otherwise | — | `copy` |
+
+Placeholders render as `{/* placeholder: lorem */}` in snippets and are counted in the summary; copy is listed in an "Copy" table per screen so a reviewer can check it at a glance. `DCR_CONTENT_PLACEHOLDER` (info) is raised once per screen that still has placeholders.
+
+**Accessibility annotations.** Only what designers annotated is reported; nothing is inferred. An annotation counts when its category name is in `dcr.a11y.categories` (default `["Accessibility", "A11y"]`). Its label is parsed line by line with a strict grammar `key: value`:
+
+| Key | Field | Validation |
+|---|---|---|
+| `role` | `role` | WAI-ARIA 1.2 role table in the `dcr` package; unknown → kept, `DCR_A11Y_UNKNOWN_ROLE` (info) |
+| `label` / `aria-label` | `label` | text, ≤200 chars |
+| `focus` / `focus order` | `focusOrder` | positive integer; duplicates or gaps per screen variant → `DCR_A11Y_FOCUS_ORDER_GAP` (info) |
+| `heading` | `heading` | 1–6 |
+| `alt` | `alt` | text; `alt: ""` means decorative |
+| `live` | `live` | `polite` \| `assertive` \| `off` |
+| anything else | `notes[]` | free text |
+
+```ts
+interface A11yAnnotation {
+  key: string;                                          // usage-node key the annotation is attached to
+  role?: string; label?: string; focusOrder?: number; heading?: 1|2|3|4|5|6; alt?: string;
+  live?: 'polite' | 'assertive' | 'off'; notes?: string[];
+}
+```
+
+Sorted by `focusOrder` (unset last), then key. **All of it is untrusted designer text (D-38, §10.3):** labels, alt text and notes appear only in escaped table cells or fenced blocks, and the agent contract treats them as values to implement, never as instructions (§8).
+
+### 4.13 Outdated and deprecated instances <a id="instance-versions"></a>
+
+Screens are often built from instances that are not current: placed before the library was updated, or of a component that has since been deprecated. Neither is a request to rebuild the old look. Both items point the agent at the **current** component.
+
+| Kind | Detected when | Points to |
+|---|---|---|
+| `instance.outdated` | the instance's main component carries `irh` ≠ the baseline's `irh` for the same `vk` (local main, or the remote main's shared plugin data / registry `keys.json`, S-15); or its `vk` no longer exists in the baseline | the current variant: same `vk`, or, when `vk` is gone, the baseline variant with the most equal variant values (ties by `vk`) |
+| `instance.deprecated` | the main component's `sid` or `vk` is deprecated: on the Deprecated page (D-20), registry `deprecated: true`, or story tag `deprecated` | the replacement: `parameters.holotype.replacedBy` on the old meta, else `dcr.deprecations[sid]` in config, else an open question (`DCR_DEPRECATED_NO_REPLACEMENT`) |
+
+```ts
+interface InstanceVersionRef {
+  used: { sid: string; vk: string; irh: string; values: Record<string, string> };
+  current: { sid: string; vk: string; code: CodeRef };                 // what to use instead
+  argMap?: Record<string /* old arg */, string /* new arg */>;          // deprecated → replacement, from replacedBy.args
+  visualChanges?: FieldChange[];                                        // old main vs current baseline (so reviewers expect a different look)
+  occurrences: Array<{ screenItemId: string; key: string }>;            // every usage, sorted
+}
+```
+
+- **One item per `(kind, used.sid, used.vk)`**, listing every occurrence, so 40 outdated buttons give one item, not 40.
+- Usage trees and snippets already use `current` (the snippet never shows the deprecated name). The item exists so the reviewer knows the mock will look different, and so verify can check that the old component is not imported.
+- Severity: `DCR_INSTANCE_OUTDATED` (info), `DCR_INSTANCE_DEPRECATED` (warn).
 
 ---
 
@@ -350,7 +509,7 @@ Provenance needs source maps, so **branch workflows capture from the Vite dev se
 | CSS modules | hashed class `_btn_x7a3` → the original `.btn` selector, via the source map | S-19 |
 | Tailwind v4 | utility classes on the element; theme values are CSS variables (`--spacing`, `--color-*`), so `var()` chains work. Provenance = the **class list + JSX location**; a value change becomes a utility suggestion `p-3 → p-4`, derived deterministically from the theme scale | adapter, Phase 7 |
 | CSS-in-JS (emotion, styled-components) | injected sheets; source maps only if the babel/SWC plugin emits them | best-effort |
-| JSX location | React 19 removed `_debugSource`. The optional dev-only Vite plugin **`@holotype/vite-plugin`** injects `data-fb-loc="src/components/Button/Button.tsx:42:7"` on host JSX elements, the same technique as locator-style inspectors. Capture reads it into `CSource.loc` | S-19 |
+| JSX location | React 19 removed `_debugSource`. The optional dev-only Vite plugin **`@holotype/vite-plugin`** injects `data-holotype-loc="src/components/Button/Button.tsx:42:7"` on host JSX elements, the same technique as locator-style inspectors. Capture reads it into `CSource.loc` | S-19 |
 | `var()` chain | already captured (`CVarChain`, [06 §2.1](06-ir.md)) | in use |
 
 ### 5.2 Field → CSS property map (`origin`)
@@ -399,8 +558,34 @@ These come from the Storybook model ([03](03-storybook.md)). The CSF `importPath
 | `variant.added` | `CodeRef`; the `derivedFrom` variant's args and story id; field changes vs that variant (same provenance as above) |
 | `property.added/changed` | `CodeRef`; the arg's argTypes entry (type, control, current options) |
 | `component.new` | nearest existing `CodeRef`s; tokens used; usage of existing components inside it |
-| `screen` | `CodeRef` for every instanced component; tokens |
+| `screen` | `CodeRef` for every instanced component; tokens; the import specifier for `targets.screens` (§5.5) |
+| `instance.outdated` / `instance.deprecated` | `CodeRef` of the current or replacement component; `argMap` |
 | `token.*` | the token's definition site (`CCustomPropertyTable` selector + file:line when mapped) |
+
+### 5.5 Where screens live: `targets` <a id="targets"></a>
+
+The UI repo is often **only the component library**; screens are built in a separate app repo that consumes the published package. The DCR supports both layouts:
+
+```ts
+interface DcrTargets {
+  components: RepoRef;                 // where component.*, variant.*, property.*, node.*, token.* items are implemented (= header.repo)
+  screens?: RepoRef;                   // where screen items are implemented; absent = same as components (default)
+}
+interface RepoRef {
+  repo: string;                        // normalized remote, "github.com/acme/shop"
+  path?: string;                       // sub-directory in a monorepo, "apps/web"
+  package?: string;                    // components only: the published package name, "@acme/ui"
+  branch?: string;                     // screens only: default = header.branch
+}
+```
+
+- Configured in `holotype.config.ts` → `dcr.targets` ([11 §4](11-ux.md#config)). `components.package` defaults to the `package` of the components' `CodeRef` (nearest `package.json` name).
+- **Import specifier** for a component used in a screen (`importSpecifier(code, targets)`, pure):
+  - **Different repo:** always `targets.components.package` (`import { Button } from "@acme/ui"`). The component must be exported from the package entry; if `CodeRef.exportName` is unknown or the package is unset, `DCR_IMPORT_UNRESOLVED` (warn) and the snippet shows the import as a comment.
+  - **Same repo:** the package name when the screens live in another workspace package of the same monorepo; otherwise the repo-relative module path without extension (`src/components/Button/Button`), which the agent adapts to the repo's alias conventions.
+  - **New components** (`component.new`) never get an import line: they don't exist yet. When the repos differ, the new component is built in the components repo first, exported, and then imported from the package.
+- **Prompt split.** When `targets.screens` differs, `prompt.md` contains everything, and the CLI also renders `prompt.components.md` and `prompt.screens.md`, each holding only the items for that repo plus the shared summary. Same DCR, same id and hash; `holotype dcr --part screens --out <app-repo>/.holotype/requests` copies the request into the app repo.
+- **Verify** of screen items runs in the screens repo only if it has a Storybook; otherwise they are `not-verifiable` (§9.2).
 
 ---
 
@@ -417,12 +602,24 @@ export interface DesignChangeRequest {
   header: DcrHeader;
   items: DcrItem[];                            // sorted (§4.9)
   questions: DcrQuestion[];                    // deterministic open questions
-  summary: { counts: Record<DcrItemKind, number>; components: string[] /* sids touched */ };
+  summary: DcrSummary;                         // the human review page (§7.4)
   diagnostics: Diagnostic[];
+}
+
+export interface DcrSummary {
+  counts: Record<DcrItemKind, number>;         // kinds with 0 omitted
+  components: string[];                        // sids touched (modified / variant / property / node items), sorted
+  newComponents: Array<{ itemId: string; name: string /* untrusted */; nearest?: string /* sid */ }>;
+  screens: Array<{ itemId: string; name: string /* untrusted */; breakpoints: string[]; states: string[]; interactions: number }>;
+  tokens: { changed: number; added: number; untokenized: number };
+  content: { placeholders: number };           // screens still holding placeholder text
+  questions: number;
+  headline: string[];                          // ≤ 8 template-built lines, e.g. "Button: padding 12 → 16 (Space/3 → Space/4)"
 }
 
 export interface DcrHeader {
   repo: string; branch: string; baseCommit: string; dirty: boolean;
+  targets: DcrTargets;                         // §5.5; screens absent = same repo
   figma: { fileKey: string; fileVersion?: string; kind: 'duplicate' | 'figma-branch'; snapshotHash: string };
   baseline: { fp: string; runId?: string; storybookVersion: string; framework: string };
   scope: DcrScope;
@@ -433,7 +630,8 @@ export interface DcrHeader {
 export type DcrItemKind =
   | 'component.modified' | 'variant.added' | 'variant.removed' | 'property.added' | 'property.changed'
   | 'node.added' | 'node.removed' | 'component.new' | 'screen'
-  | 'instance.detached' | 'instance.deviation' | 'token.changed' | 'token.added' | 'unknown';
+  | 'instance.detached' | 'instance.deviation' | 'instance.outdated' | 'instance.deprecated'
+  | 'token.changed' | 'token.added' | 'unknown';
 
 export interface DcrItem {
   id: string; kind: DcrItemKind;
@@ -444,7 +642,10 @@ export interface DcrItem {
                                   token?: { before?: string; after?: string; candidates?: string[] } }>;
   variant?: { values: Record<string, string>; args?: Record<string, JsonValue> };       // variant.added
   property?: { type: string; name: string; values?: string[]; default?: JsonValue };   // property.*
-  structure?: UsageNode[];                     // component.new / screen / node.added
+  structure?: UsageNode[];                     // component.new / node.added (screens: per variant, below)
+  screen?: { name: string /* untrusted */; target: 'components' | 'screens'; variants: ScreenVariant[] };   // §4.10
+  snippet?: UsageSnippet;                      // component.new (screens: per variant), §7.3
+  instanceRef?: InstanceVersionRef;            // instance.outdated / instance.deprecated, §4.13
   nearest?: Array<{ sid: string; score: number; code: CodeRef }>;
   notes?: DcrNote[];                           // designer text: untrusted (§10.3)
   acceptance: Acceptance;                      // §9.2
@@ -461,7 +662,8 @@ export interface Acceptance {
   fields?: Array<{ field: string; expect: JsonValue; tol?: number }>;   // component.modified
   token?: Array<{ field: string; expect: string }>;                     // binding must be exactly this var
   visual?: { sMaskedMin: number; boxDeltaMax: number };                 // variant.added / component.new (12)
-  story: 'existing' | 'must-add';                                       // every new or changed item needs a story
+  usage?: { mustImport: string[] /* sids */; mustNotImport?: string[] /* deprecated sids */ };   // screen / instance.*
+  story: 'existing' | 'must-add' | 'optional';                          // every new or changed item needs a story; screens: optional
 }
 ```
 
@@ -470,7 +672,8 @@ export interface Acceptance {
 ```
 .holotype/requests/<id>/
   dcr.json            canonical DCR
-  prompt.md           rendered prompt (§7)
+  prompt.md           rendered prompt (§7), review summary on top (§7.4)
+  prompt.components.md / prompt.screens.md   only when targets.screens differs (§5.5)
   assets.json         { "<itemId>:before": "<sha>", "<itemId>:after": "<sha>" }
   assets/<sha>.png    before = Playwright screenshot of the baseline story (cache); after = Figma export @2x
   verify.json         written by `holotype verify` (§9)
@@ -478,16 +681,22 @@ export interface Acceptance {
 
 ### 6.1 Worked example
 
-The `feat/price-tag` branch has three changes:
+The `feat/price-tag` branch has five changes:
 - the Button padding changes;
 - Button gets a new `Tone=Danger` variant;
-- a new component, PriceTag, is created.
+- a new component, PriceTag, is created;
+- a **Checkout** screen is drawn three times: `Checkout / Desktop`, `Checkout / Mobile`, `Checkout / Mobile / Empty`, with prototype links and accessibility annotations;
+- that screen still uses the deprecated `LegacyAlert`, which was replaced by `Banner`.
+
+The component library lives in `github.com/acme/ui` (published as `@acme/ui`); screens are built in the app repo `github.com/acme/shop` (§5.5).
 
 ```jsonc
 {
   "kind": "holotype/dcr", "dcrVersion": "1.0.0", "id": "a41c09e2b7d35f10", "dcrHash": "5d0e…",
   "header": {
     "repo": "github.com/acme/ui", "branch": "feat/price-tag", "baseCommit": "9f3c2e1", "dirty": false,
+    "targets": { "components": { "repo": "github.com/acme/ui", "package": "@acme/ui" },
+                 "screens": { "repo": "github.com/acme/shop", "path": "apps/web" } },
     "figma": { "fileKey": "AbC123", "kind": "duplicate", "snapshotHash": "77aa…" },
     "baseline": { "fp": "b7e1…", "storybookVersion": "10.6.7", "framework": "react-vite" },
     "scope": { "kind": "ready" }, "extractor": { "version": "1.0.0", "configHash": "c0de…" }
@@ -541,8 +750,65 @@ The `feat/price-tag` branch has three changes:
           { "t": "instance", "key": "PriceTag:0/Icon:0", "inst": { "sid": "icons-tag", "component": { "…": "…" }, "props": {} } },
           { "t": "text", "key": "PriceTag:0/Price:1", "characters": "€ 24,90", "style": { "token": "--text-sm-strong" } } ] } ],
       "nearest": [ { "sid": "components-badge", "score": 0.82, "code": { "…": "…" } } ],
+      "snippet": { "lang": "jsx-sketch", "imports": ["import { TagIcon } from \"src/icons/TagIcon\";"],
+                   "code": "<frame name=\"PriceTag\" direction=\"row\" gap=\"--space-1\" padding=\"--space-1 --space-2\" radius=\"6px /* ? --radius-md */\">\n  <TagIcon />\n  <text style=\"--text-sm-strong\">€ 24,90</text>\n</frame>" },
       "acceptance": { "type": "visual", "visual": { "sMaskedMin": 0.97, "boxDeltaMax": 1 }, "story": "must-add" },
       "assets": { "after": "e0d1c2b3a4958677:after" }
+    },
+    {
+      "id": "c3b2a1f0e9d8c7b6", "kind": "screen", "title": "Screen \"Checkout\" · 2 breakpoints · 2 states",
+      "target": { "key": "Checkout", "figmaNodeId": "60:1" },
+      "screen": { "name": "Checkout", "target": "screens", "variants": [
+        { "breakpoint": { "name": "Desktop", "minWidth": 1280 }, "state": "default",
+          "figmaNodeId": "60:2", "frameName": "Checkout / Desktop", "width": 1440, "height": 900,
+          "structure": [ { "t": "frame", "key": "Checkout:0", "name": "Checkout",
+            "layout": { "direction": "column", "gap": { "token": "--space-6", "value": 24 }, "sizing": { "w": "fill", "h": "hug" } },
+            "children": [
+              { "t": "text", "key": "Checkout:0/Title:0", "characters": "Your cart", "style": { "token": "--text-2xl" }, "content": { "kind": "copy" } },
+              { "t": "instance", "key": "Checkout:0/Banner:1", "inst": { "sid": "components-banner", "component": { "exportName": "Banner", "package": "@acme/ui", "…": "…" },
+                "props": { "tone": "info", "children": "Free shipping over €50" }, "content": { "children": { "kind": "copy" } } } },
+              { "t": "frame", "key": "Checkout:0/Summary:2", "name": "Summary", "layout": { "direction": "row", "justify": "space-between" },
+                "children": [ { "t": "text", "key": "Checkout:0/Summary:2/Total:0", "characters": "Total", "style": { "token": "--text-md" }, "content": { "kind": "copy" } },
+                              { "t": "new-component-ref", "key": "Checkout:0/Summary:2/PriceTag:1", "itemId": "e0d1c2b3a4958677" } ] },
+              { "t": "instance", "key": "Checkout:0/Pay:3", "inst": { "sid": "components-button", "component": { "exportName": "Button", "package": "@acme/ui", "…": "…" },
+                "props": { "variant": "primary", "size": "lg", "children": "Pay {{order.total}}" },
+                "content": { "children": { "kind": "placeholder", "reason": "template", "variable": "order.total" } }, "defaults": ["disabled"] } } ] } ],
+          "interactions": [
+            { "from": "Checkout:0/Pay:3", "trigger": "click", "action": { "kind": "navigate", "to": { "figmaNodeId": "70:1", "name": "Order confirmation" } } },
+            { "from": "Checkout:0/Pay:3", "trigger": "hover", "action": { "kind": "state", "values": { "State": "Hover" }, "coveredByCode": true } } ],
+          "a11y": [
+            { "key": "Checkout:0/Title:0", "heading": 1, "focusOrder": 1 },
+            { "key": "Checkout:0/Banner:1", "role": "status", "live": "polite" },
+            { "key": "Checkout:0/Pay:3", "label": "Pay now", "focusOrder": 2 } ],
+          "snippet": { "lang": "jsx-sketch", "imports": ["import { Banner, Button } from \"@acme/ui\";"], "code": "… (rendered in §7.3)" },
+          "asset": "c3b2a1f0e9d8c7b6:Desktop:default" },
+        { "breakpoint": { "name": "Mobile", "minWidth": 0 }, "state": "default", "figmaNodeId": "60:3", "frameName": "Checkout / Mobile", "width": 390, "height": 844,
+          "structure": [ "… full tree …" ],
+          "delta": [ { "key": "Checkout:0/Summary:2", "op": "layout", "before": { "direction": "row" }, "after": { "direction": "column" } },
+                     { "key": "Checkout:0/Pay:3", "op": "layout", "before": { "direction": "none", "sizing": { "w": "hug", "h": "hug" } }, "after": { "direction": "none", "sizing": { "w": "fill", "h": "hug" } } } ],
+          "interactions": [ "… same as Desktop …" ], "a11y": [ "…" ], "snippet": { "…": "…" }, "asset": "c3b2a1f0e9d8c7b6:Mobile:default" },
+        { "breakpoint": { "name": "Mobile", "minWidth": 0 }, "state": "empty", "figmaNodeId": "60:4", "frameName": "Checkout / Mobile / Empty", "width": 390, "height": 844,
+          "structure": [ "…" ],
+          "delta": [ { "key": "Checkout:0/Summary:2", "op": "removed" }, { "key": "Checkout:0/Pay:3", "op": "removed" },
+                     { "key": "Checkout:0/Empty:2", "op": "added", "node": { "t": "text", "key": "Checkout:0/Empty:2", "characters": "Your cart is empty", "style": { "token": "--text-md" }, "content": { "kind": "copy" } } },
+                     { "key": "Checkout:0/Browse:3", "op": "added", "node": { "t": "instance", "key": "Checkout:0/Browse:3", "inst": { "sid": "components-button", "props": { "variant": "secondary", "children": "Browse products" }, "…": "…" } } } ],
+          "interactions": [ { "from": "Checkout:0/Browse:3", "trigger": "click", "action": { "kind": "navigate", "to": { "figmaNodeId": "80:1", "name": "Catalog" } } } ],
+          "a11y": [], "snippet": { "…": "…" }, "asset": "c3b2a1f0e9d8c7b6:Mobile:empty" } ] },
+      "acceptance": { "type": "usage", "usage": { "mustImport": ["components-banner", "components-button"], "mustNotImport": ["components-legacyalert"] }, "story": "optional" },
+      "assets": { "after": "c3b2a1f0e9d8c7b6:Desktop:default" },
+      "diagnostics": [ { "code": "DCR_INTERACTION_TARGET_OUT_OF_SCOPE", "severity": "info", "message": "2 destinations are not in scope" },
+                       { "code": "DCR_CONTENT_PLACEHOLDER", "severity": "info", "message": "1 placeholder text" } ]
+    },
+    {
+      "id": "7a6b5c4d3e2f1a0b", "kind": "instance.deprecated", "title": "LegacyAlert is deprecated: use Banner (1 occurrence)",
+      "target": { "sid": "components-legacyalert", "figmaNodeId": "60:9" },
+      "instanceRef": {
+        "used": { "sid": "components-legacyalert", "vk": "aa01…", "irh": "41f2…", "values": { "Kind": "Info" } },
+        "current": { "sid": "components-banner", "vk": "bb02…", "code": { "exportName": "Banner", "package": "@acme/ui", "…": "…" } },
+        "argMap": { "kind": "tone", "message": "children" },
+        "occurrences": [ { "screenItemId": "c3b2a1f0e9d8c7b6", "key": "Checkout:0/Banner:1" } ] },
+      "acceptance": { "type": "usage", "usage": { "mustImport": ["components-banner"], "mustNotImport": ["components-legacyalert"] }, "story": "optional" },
+      "assets": { "after": "7a6b5c4d3e2f1a0b:after" }
     }
   ],
   "questions": [
@@ -551,7 +817,14 @@ The `feat/price-tag` branch has three changes:
     { "id": "q2", "itemId": "e0d1c2b3a4958677", "code": "DCR_NEAREST_COMPONENT",
       "text": "PriceTag is structurally similar to Badge (0.82). Extend Badge or create a new component?", "options": ["extend Badge", "new component"] }
   ],
-  "summary": { "counts": { "component.modified": 1, "variant.added": 1, "component.new": 1 }, "components": ["components-button"] },
+  "summary": {
+    "counts": { "component.modified": 1, "variant.added": 1, "component.new": 1, "screen": 1, "instance.deprecated": 1 },
+    "components": ["components-button"],
+    "newComponents": [ { "itemId": "e0d1c2b3a4958677", "name": "PriceTag", "nearest": "components-badge" } ],
+    "screens": [ { "itemId": "c3b2a1f0e9d8c7b6", "name": "Checkout", "breakpoints": ["Desktop", "Mobile"], "states": ["default", "empty"], "interactions": 5 } ],
+    "tokens": { "changed": 0, "added": 0, "untokenized": 1 }, "content": { "placeholders": 1 }, "questions": 2,
+    "headline": [ "Button: padding 12 → 16 (Space/3 → Space/4)", "Button: new tone Danger", "New component PriceTag (similar to Badge)",
+                  "Screen Checkout: Desktop, Mobile, Mobile/Empty", "LegacyAlert → Banner (1 use)" ] },
   "diagnostics": []
 }
 ```
@@ -562,13 +835,15 @@ The `feat/price-tag` branch has three changes:
 
 `renderPrompt(dcr): string` is a pure template with no conditionals on volatile data. Its section order is fixed:
 
-1. **Context.** Repo, branch, base commit, Storybook version and framework, and the DCR id and hash.
-2. **Rules (agent contract, §8).** Fixed text, versioned with `dcrVersion`.
-3. **Summary.** Counts, and the components touched.
+1. **Review summary** (§7.4). The page a reviewer reads before any AI starts: headline, counts, components touched, new components, screens, open questions, approval state.
+2. **Context.** Repo, branch, base commit, targets (§5.5), Storybook version and framework, and the DCR id and hash.
+3. **Rules (agent contract, §8).** Fixed text, versioned with `dcrVersion`.
 4. **Items.** One section per item, in DCR order:
    - title;
-   - code location: export, file, story;
+   - code location: export, file, story (screens: target repo and import specifier);
    - a table of changes: property | before | after | token | where in code (file:line, selector);
+   - screens: a variants table (breakpoint × state), the base **usage snippet** (§7.3), the deltas for each other variant, then **Interactions**, **Copy** and **Accessibility** tables;
+   - `instance.*`: the component to use instead, the arg map, and every occurrence;
    - acceptance criteria;
    - image references (`assets/<sha>.png`).
 5. **Open questions.** Numbered, with options. The agent must resolve each one: ask the human, or pick and state the choice in the PR.
@@ -588,6 +863,53 @@ Code: `Button` — src/components/Button/Button.tsx · stories: src/components/B
 Acceptance: padding 16px on both sides, bound to `--space-4`; existing stories must still render.
 Images: before `assets/3e…png` · after `assets/9a…png`
 ```
+
+And for the screen item (designer strings escaped; the snippet is rendered by §7.3):
+
+````md
+### 4. Screen "Checkout" · 2 breakpoints · 2 states   `id: c3b2a1f0e9d8c7b6`
+Build in: `github.com/acme/shop` › `apps/web`. Import components from the published package `@acme/ui`; do not copy component code.
+
+| Variant | Frame | Size | Image |
+|---|---|---|---|
+| **Desktop · default** (base) | Checkout / Desktop | 1440×900 | `assets/5c…png` |
+| Mobile · default | Checkout / Mobile | 390×844 | `assets/0b…png` |
+| Mobile · empty | Checkout / Mobile / Empty | 390×844 | `assets/d4…png` |
+
+Usage (Desktop · default). A spec sketch, not code to paste:
+```jsx-sketch
+import { Banner, Button } from "@acme/ui";
+// PriceTag: new component, item e0d1c2b3a4958677 (build it in github.com/acme/ui first)
+
+<frame name="Checkout" direction="column" gap="--space-6" w="fill">
+  <text style="--text-2xl">Your cart</text>
+  <Banner tone="info">Free shipping over €50</Banner>
+  <frame name="Summary" direction="row" justify="space-between">
+    <text style="--text-md">Total</text>
+    <PriceTag />
+  </frame>
+  <Button variant="primary" size="lg">Pay {order.total}</Button>
+</frame>
+```
+Mobile · default: `Summary` direction row → column; `Pay` width hug → fill.
+Mobile · empty: removes `Summary`, `Pay`; adds `<text style="--text-md">Your cart is empty</text>`, `<Button variant="secondary">Browse products</Button>`.
+
+**Interactions**
+| From | Trigger | Action |
+|---|---|---|
+| Pay | click | navigate → "Order confirmation" (not in this request: add a route placeholder) |
+| Pay | hover | State=Hover, already built into `Button` |
+| Browse (Mobile · empty) | click | navigate → "Catalog" (not in this request) |
+
+**Copy** (use exactly): "Your cart", "Free shipping over €50", "Total", "Your cart is empty", "Browse products". **Dynamic:** `order.total` in "Pay …".
+
+**Accessibility** (from annotations)
+| Element | Role | Label | Focus | Other |
+|---|---|---|---|---|
+| Title | — | — | 1 | heading 1 |
+| Pay | — | Pay now | 2 | — |
+| Banner | status | — | — | live: polite |
+````
 
 **Readable by non-developers.** The plugin's Submit preview (§7.2) renders the same DCR in a "designer view": the item titles, before/after thumbnails, the tokens by their Figma names ("Space/4"), and the open questions. File paths sit behind a "Show code details" toggle. Both views come from the same `dcr.json`, so there is one source of truth.
 
@@ -768,7 +1090,7 @@ S-14 (REST read of root shared plugin data for CI status, [10 §15](10-sync.md))
 
 | ID | Decision |
 |---|---|
-| D-32 | **Branch files.** There is one Figma file per git feature branch: a duplicated file by default, or a Figma-native branch when the plan allows. The link is stored in root `branch:meta` and in `.holotype/branches/` |
+| D-32 | **Branch files** (decided, README §5). There is one Figma file per git feature branch: a Figma-native branch of the main library file, with a duplicated file as the fallback for accounts without branching. The link is stored in root `branch:meta` and in `.holotype/branches/` |
 | D-33 | **Proposal mode.** In branch files, designer edits to managed nodes are proposals, not conflicts. Library files keep D-29 |
 | D-34 | **Embedded baseline.** In proposal mode, the applier stores a compressed, normalized applied snapshot per variant (`base:*`, same normalizer as `ah`). The DCR is diffed against that snapshot, never against the Scene IR's intent |
 | D-35 | **Deterministic DCR.** The extraction is a pure function with no LLM, clock or randomness, using canonical JSON, stable item ids and asset bytes outside the hash. The same file version and baseline give a byte-identical `dcr.json` and `prompt.md` |
@@ -780,7 +1102,7 @@ S-14 (REST read of root shared plugin data for CI status, [10 §15](10-sync.md))
 
 ## 14. Open questions
 
-1. **Which Figma plan does the team use?** It decides between Figma-native branches (Organization/Enterprise) and duplicated files (any plan). The design supports both. Native branching is nicer, but it is plan-gated and UI-only.
+1. ~~Which Figma plan does the team use?~~ Answered (D-32): the account has Organization/Enterprise features, so Figma-native branches are the default; duplicated files stay as the fallback. Open part: branch creation is UI-only unless S-17 finds an API.
 2. **Who edits branch files:** designers only, or also the feature developer? It changes how much the Submit preview has to explain. The default assumes both, with the designer view as the default and code details behind a toggle.
 3. Should screens without stories be verifiable? One option is a story generated by the agent as part of the contract ("page stories").
 4. Should excluded items and declined decisions sync back to Figma as annotations, so designers see why something wasn't built?

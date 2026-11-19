@@ -49,7 +49,7 @@ create-figma-plugin generates `manifest.json` from the `"figma-plugin"` field of
 ```jsonc
 {
   "name": "holotype",                         // public name pending D-01
-  "id": "<assigned by Figma on first publish>",
+  "id": "<generated once by Figma, then fixed forever>",
   "api": "1.0.0",
   "main": "build/main.js",
   "ui": "build/ui.html",                       // single inlined file (create-figma-plugin bundles CSS/JS)
@@ -75,7 +75,8 @@ create-figma-plugin generates `manifest.json` from the `"figma-plugin"` field of
 Notes:
 
 - **Ports.** Every port is listed explicitly; port wildcards are not documented (verify, S-01). `127.0.0.1` is preferred over `localhost`, because it avoids IPv6/`::1` resolution differences (verify, S-01). If Chrome's Local Network Access permission ("Apps on device", Chrome 142+) blocks loopback in the browser app, the UI detects it ([§3.4](#connect)) and steers the user to the desktop app or to file import (D-10).
-- **No `"*"` entry.** A wildcard would put "unrestricted network access" on the Community listing ([13](13-security-legal.md#publishing)).
+- **Distribution (D-39).** The same manifest is imported as a development plugin now and published as a private organization plugin later; Community only after M8 ([13](13-security-legal.md#publishing); install steps in [11 §2.0](11-ux.md#install)).
+- **No `"*"` entry.** A wildcard would show "unrestricted network access" to every user, and on a later Community listing ([13](13-security-legal.md#publishing)).
 - **Self-hosted registries** that are not on `registry.holotype.dev` go through file import, or through a CORS-enabled proxy on the registry domain ([02](02-architecture.md#topologies)).
 - **Relaunch commands.** `setRelaunchData` is set on every managed component set and on the documentation frame ([§9](#doc-frame)). `resync` re-runs the pipeline scoped to the selected sets' `sid`s.
 
@@ -220,7 +221,7 @@ open ─► preflight ─► index ─► plan ─► [user review] ─► token
 RO = read-only, W = writes. No stage before `tokens` writes to the document, which makes cancelling before apply free.
 
 <a id="preflight"></a>
-### 5.1 Preflight (read-only)
+### 5.1 Preflight (read-only) <a id="fonts"></a>
 
 | Check | How | Outcome |
 |---|---|---|
@@ -357,7 +358,7 @@ async function writeNode(port: FigmaPort, s: SceneNode, parent: ChildrenMixin & 
 }
 ```
 
-### 6.1 Text sequence
+### 6.1 Text sequence <a id="text"></a>
 
 ```ts
 async function writeText(port, t: TextNode, x: SceneText) {
@@ -608,7 +609,7 @@ interface SceneInstanceNode extends SceneNodeBase {
 ---
 
 <a id="verify"></a>
-## 11. Read-back verification & fallback
+## 11. Read-back verification & fallback <a id="fallback"></a>
 
 Figma lays out synchronously, so reads right after writes are valid. To avoid forcing layout repeatedly, verification runs **once per variant, after the whole variant tree is written** (D-15).
 

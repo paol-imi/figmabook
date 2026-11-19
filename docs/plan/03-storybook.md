@@ -1,18 +1,21 @@
 # 03: Storybook integration
 
 > Package: `@holotype/storybook` (Node + in-page). Consumers: `planner` ([04](04-variant-model.md)) and `capture` ([05](05-capture.md)).
-> Governing decisions: D-05, D-11, D-12, D-14, D-24.
+> Governing decisions: D-05, D-11, D-12, D-14, D-24, D-26.
 > Research: [docs/research](../research/) and the Storybook monorepo at `next`@0cdcdc9 (11.0.0-beta.3). Paths below are relative to `code/`.
 
 This package is the only one that knows Storybook internals. Everything downstream sees a version-neutral `StorybookAdapter`.
 
 Version landscape on 2026-11-18:
 
-| Line | Version | Status |
-|---|---|---|
-| latest | 10.6.7 | current stable |
-| next | 11.0.0-beta.3 | beta |
-| maintained | 9.1.21, 8.6.19, 7.6.24 | maintenance releases |
+| Line | Version | Status | Holotype support (D-11) |
+|---|---|---|---|
+| latest | 10.6.7 | current stable | **primary, first-class**: all fixtures, dogfooding and gates |
+| next | 11.0.0-beta.3 | beta | tracked from beta; first-class at GA |
+| maintained | 9.1.21, 8.6.19 | maintenance releases | best-effort: code paths kept, CI smoke only |
+| maintained | 7.6.24 | maintenance releases | not supported |
+
+Primary stack: React + Vite (`@storybook/react-vite`) on SB 10 (D-26). Other renderers are best-effort and untested until the post-M5 renderer expansion.
 
 `storybook-addon-pseudo-states`, `@storybook/addon-themes` and `@storybook/addon-mcp` ship in lock-step with core.
 
@@ -45,7 +48,7 @@ type StorybookSource =
 Probe order for `url`:
 
 1. `GET <url>/index.json`. A 200 with `{v, entries}` means SB ≥7.
-2. `GET <url>/stories.json` (v3, SB 6/7 with `buildStoriesJson`). This is accepted only to *list*: SB 6 is unsupported (D-11), so emit `SB_VERSION_UNSUPPORTED` if `project.json` reports <7.
+2. `GET <url>/stories.json` (v3, SB 6/7 with `buildStoriesJson`). This is accepted only to *list*: SB 7.x and older are unsupported (D-11), so emit `SB_VERSION_UNSUPPORTED` if `project.json` reports <8.
 3. `GET <url>/project.json`, which gives `storybookVersion`, `framework`, `renderer`, `builder`, `language`, `storybookPackages` (written by `utils/metadata.ts`). It is optional: dev servers may 404 it.
 4. `GET <url>/iframe.html` must be 200, otherwise `SB_IFRAME_UNREACHABLE`.
 
@@ -65,7 +68,7 @@ type IndexEntry =
       storiesImports: string[]; tags?: string[] }
 ```
 
-- v5 (SB ≥8.1) only adds the automatic `dev`/`test` tags. v4 entries are treated the same, with `tags ?? []`. For SB 7.x v3 `stories.json`, map `{kind, story, parameters.__id}` the way `transformStoryIndexV3toV4` in `manager-api/lib/stories.ts` does.
+- v5 (SB ≥8.1) only adds the automatic `dev`/`test` tags. v4 entries are treated the same, with `tags ?? []`. A v3 `stories.json` (SB 6/7, unsupported) is parsed only so `list` can name what is skipped: map `{kind, story, parameters.__id}` the way `transformStoryIndexV3toV4` in `manager-api/lib/stories.ts` does.
 - **Filter.** Keep `type==='story' && subtype!=='test'`. Drop entries tagged `!figma`, or not tagged `figma` when `config.requireTag` is set. Apply `config.include`/`exclude` globs against `title` and `id`. Docs entries are never captured.
 - **Fingerprint.** `indexHash = sha256(canonicalJSON(filteredEntries))`. It goes into the cache key ([12](12-quality.md)) and into `bundle.manifest.source`.
 
@@ -110,7 +113,7 @@ The manifest schema is documented as "not yet stable… not a public API", so it
 const v = {
   hasPreview: !!window.__STORYBOOK_PREVIEW__,
   hasStoreValue: !!window.__STORYBOOK_PREVIEW__?.storyStoreValue,   // 8.0+
-  hasReady: typeof window.__STORYBOOK_PREVIEW__?.ready === 'function', // 8.x+ (verify 7.6, S-07)
+  hasReady: typeof window.__STORYBOOK_PREVIEW__?.ready === 'function', // 8.x+ (verify S-07)
   hasStoryFinished: !!window.__STORYBOOK_MODULE_CORE_EVENTS__?.STORY_FINISHED,
   hasArgTypesInfo: !!window.__STORYBOOK_MODULE_CORE_EVENTS__?.ARGTYPES_INFO_REQUEST, // 10.x
   globalsVersion: window.__STORYBOOK_PREVIEW__?.storyStoreValue?.userGlobals ? 2 : 1,
@@ -143,7 +146,7 @@ interface StorybookAdapter {
 }
 ```
 
-- Adapters: `adapter-v7` (7.6, best-effort), `adapter-v8` (8.x; also 9.x and 10.x via capability flags) and `adapter-v11` (adds docgen-service merge).
+- Adapters (D-11): `adapter-v8` (10.x primary; 8.x/9.x best-effort via the same capability flags) and `adapter-v11` (adds docgen-service merge; first-class at 11 GA). There is no 7.x adapter.
 - Capability flags, not version branches, drive behaviour inside the shared code.
 - Unknown future major → use the newest adapter and emit `SB_VERSION_UNTESTED` (warn).
 
@@ -159,7 +162,7 @@ Open **one** page on `iframe.html?id=__holotype__&viewMode=story`. The bogus id 
 await page.waitForFunction(() => (window as any).__STORYBOOK_PREVIEW__);
 const out = await page.evaluate(async (ids: string[]) => {
   const p = (window as any).__STORYBOOK_PREVIEW__;
-  await (p.ready?.() ?? p.storyStore?.initializationPromise);  // 8+ / 7.6 fallback (verify S-07)
+  await (p.ready?.() ?? p.storyStore?.initializationPromise);  // 8+; legacy fallback (verify S-07)
   const res: Record<string, unknown> = {};
   for (const id of ids) {
     try {
@@ -207,7 +210,7 @@ finalArgTypes = deepMerge(serviceArgTypes(componentId) /* from services/core/doc
 
 ### 4.3 Project metadata
 
-From `preview.storyStoreValue.projectAnnotations` (or `storyStore.projectAnnotations` on 7.6):
+From `preview.storyStoreValue.projectAnnotations`:
 
 - `globalTypes` (with `toolbar.items`)
 - `initialGlobals` (`globals` on <8.2)
@@ -253,11 +256,11 @@ type ControlType = 'boolean'|'text'|'number'|'range'|'color'|'date'|'object'|'fi
 - `array` → `object`
 - `function`/`symbol` → no control
 
-Apply it for argTypes that lack a control, so v7–v11 behave identically.
+Apply it for argTypes that lack a control, so v8–v11 behave identically.
 
 ---
 
-## 5. Render-loop driver
+## 5. Render-loop driver <a id="render-loop-driver"></a><a id="render-loop"></a>
 
 One `RenderDriver` wraps one Playwright `Page` that stays on `iframe.html` for its whole life. The worker pool is in [05 §1](05-capture.md#orchestration).
 
@@ -362,7 +365,7 @@ Used when the preview API is unavailable (an exotic or older build), or when `--
 - **Before navigating, the planner validates every arg set against these rules.** Anything that cannot be encoded produces `SB_URL_ARG_UNENCODABLE` and that variant is skipped. Free text in TEXT probes is restricted to `[A-Za-z0-9 _-]`.
 - One navigation per variant is about 5–10× slower than the channel. The UI shows a "slow mode" badge.
 
-### 5.5 Settle protocol
+### 5.5 Settle protocol <a id="settle-protocol"></a>
 
 The goal is a deterministic frame. Run in order:
 
@@ -392,7 +395,7 @@ The goal is a deterministic frame. Run in order:
 
 ## 6. Root element, decorators, portals, layout
 
-### 6.1 Story root
+### 6.1 Story root <a id="root"></a>
 
 - **Always use `viewMode=story`**. Docs mode applies different decorators and inline rendering.
 - The root container is `#storybook-root` (SB ≥7), falling back to `#root`. `parameters.holotype.rootSelector` overrides it; it is evaluated relative to the document, and it pierces open shadow roots via `>>>`-style segments (`host >>> inner`).
@@ -418,7 +421,7 @@ function isTransparentWrapper(el: Element): boolean {
 - When there are multiple root children (fragments), the capture root is a **virtual group**: their union rect, recorded as `rootMode: 'multi'` in the Capture IR.
 - Known wrappers are always transparent even with a box. They are matched by id/class: `[data-theme]` provider divs with no paint, `#root-inner`, and `.docs-story` outside docs. Themed wrappers that *paint* a background are reported as `SB_DECORATOR_PAINTS` (info). The background is **not** included in the component, but it is recorded as the "canvas background" for the documentation frame ([09](09-plugin.md)).
 
-### 6.3 Portals and overlays
+### 6.3 Portals and overlays <a id="portals-and-overlays"></a>
 
 1. **Before** the render, snapshot `document.body.children` (identity set) and the ids of top-layer elements (`:popover-open`, `dialog[open]`).
 2. **After** settle, look for new body children outside `#storybook-root`, elements with `[data-radix-portal]`, `[data-floating-ui-portal]`, `.MuiPopover-root`, `.cdk-overlay-container`, `[data-headlessui-portal]` or `[role=dialog]`, and newly top-layer elements.
@@ -481,7 +484,7 @@ interface ComponentIdentity {
 
 ---
 
-## 8. Globals, themes and modes discovery
+## 8. Globals, themes and modes discovery <a id="globals-themes-and-modes-discovery"></a><a id="themes"></a>
 
 Sources, merged in this order:
 
@@ -505,7 +508,7 @@ To iterate a mode: `updateGlobals({globals:{theme:'dark'}})`, then wait for `glo
 
 ---
 
-## 9. Access modes
+## 9. Access modes <a id="access"></a>
 
 ### 9.1 Static build (reference target)
 
@@ -514,7 +517,7 @@ To iterate a mode: `updateGlobals({globals:{theme:'dark'}})`, then wait for `glo
 - `storybookBuildHash = sha256(index.json + sorted list of hashed asset filenames referenced by iframe.html)`. This is a cache-key input ([05 §10](05-capture.md#determinism)).
 - Static builds send no CSP or host checks and accept postMessage from any origin.
 
-### 9.2 Dev server
+### 9.2 Dev server <a id="dev-server"></a>
 
 - Since 8.6.19, 9.1.21 and 10.6.2+, the dev server sends `Content-Security-Policy: frame-ancestors 'self' http://localhost:* http://127.0.0.1:*`. This does not affect Playwright top-level navigation to `iframe.html`.
 - Host validation (`core-server/utils/getHostValidationMiddleware.ts`): non-localhost hostnames must be in `core.allowedHosts`. A 403 or 400 with a host message gives `SB_HOST_NOT_ALLOWED`, with the fix-it text "add `<host>` to `core.allowedHosts` in .storybook/main".
@@ -548,13 +551,15 @@ Rendering inside the plugin iframe is rejected (D-10; [02](02-architecture.md#to
 
 ---
 
-## 10. Framework enhancers
+## 10. Framework enhancers <a id="framework-enhancers"></a>
 
 Enhancers run in-page during serialization ([05 §3](05-capture.md#walk)) and annotate DOM elements with `{componentName, componentRef?, props?}`. They are **optional and best-effort** (G8). The CSS-level capture never depends on them. Their uses:
 
 - naming ([07](07-mapping.md)),
 - component boundaries for nested-instance detection (D-21, [09](09-plugin.md)),
 - props for mapping a nested instance to the variant it should be.
+
+Enhancers ship for **React first** (D-26). The other rows are designed now but stay best-effort and untested until the post-M5 renderer expansion gives them fixtures.
 
 | Framework | How |
 |---|---|
@@ -575,7 +580,7 @@ Enhancers run in-page during serialization ([05 §3](05-capture.md#walk)) and an
 
 ---
 
-## 11. Optional Storybook addon (`@holotype/storybook-addon`)
+## 11. Optional Storybook addon (`@holotype/storybook-addon`) <a id="addon"></a><a id="optional-storybook-addon-holotypestorybook-addon"></a>
 
 It is not required: a zero-install capture uses `page.addInitScript` with the same serializer bundle. Installing it adds:
 
@@ -588,23 +593,22 @@ It is not required: a zero-install capture uses `page.addInitScript` with the sa
    - Provides "Copy capture command" (`npx holotype capture --story <id>`).
 5. **Lint.** A preset hook warns at dev time about stories whose args cannot be encoded for the URL fallback, and about argTypes missing `options`.
 
-Compatibility: addon versions track Storybook majors (10.x and 11.x first). The 8.x and 9.x presets are published from the same source, behind a capability shim.
+Compatibility: addon versions track Storybook majors (10.x first, 11.x at its GA). The 8.x and 9.x presets are published best-effort from the same source, behind a capability shim (D-11).
 
 ---
 
-## 12. Version and framework test matrix
+## 12. Version and framework test matrix <a id="version-and-framework-test-matrix"></a><a id="matrix"></a>
 
-Fixture Storybooks live under `fixtures/` ([12](12-quality.md#fixtures)). CI runs this matrix nightly; PRs run the starred cells.
+Fixture Storybooks live under `fixtures/` ([12](12-quality.md#fixtures)). Until M5 they are all React + Vite (D-26). CI runs this matrix nightly; PRs run the starred cells.
 
-| SB \ renderer | React (Vite) | React (Webpack) | Vue 3 | Angular | Lit/WC | Svelte | HTML |
-|---|---|---|---|---|---|---|---|
-| 7.6 | ○ smoke | ○ | ○ | – | ○ | – | – |
-| 8.6 | ● | ● | ● | ○ | ● | ○ | ○ |
-| 9.1 | ● | ○ | ● | ○ | ● | ○ | ○ |
-| 10.6 | ★ | ● | ★ | ● | ★ | ● | ● |
-| 11.0 (beta → GA) | ★ | – | ● | ● | ● | ● | ○ |
+| SB \ renderer | React (Vite) | Other renderers (React Webpack, Vue 3, Angular, Lit/WC, Svelte, HTML) |
+|---|---|---|
+| 10.6 (primary) | ★ | post-M5 |
+| 11.0 (beta → GA) | ● until GA, then ★ | post-M5 |
+| 9.1 | ○ smoke | – |
+| 8.6 | ○ smoke | – |
 
-Legend: ★ PR gate; ● nightly, full; ○ nightly, smoke; – not run.
+Legend: ★ PR gate; ● nightly, full; ○ nightly, smoke; – not run; post-M5: added by the renderer expansion, best-effort and untested until then. 7.x and older are not run (unsupported, D-11).
 
 Per cell, these checks run:
 
@@ -625,7 +629,7 @@ Also run each cell against the **dev server** once per night (CSP and host valid
 
 | Code | Severity | Meaning |
 |---|---|---|
-| `SB_VERSION_UNSUPPORTED` | error | SB <7 |
+| `SB_VERSION_UNSUPPORTED` | error | SB <8 (D-11) |
 | `SB_VERSION_UNTESTED` | warn | newer major than the newest adapter |
 | `SB_IFRAME_UNREACHABLE` | error | `iframe.html` not 200 |
 | `SB_MANIFEST_UNPARSEABLE` | info | components manifest shape unknown |

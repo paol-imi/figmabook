@@ -240,7 +240,7 @@ The default transform is applied in order:
 
 Collisions after transformation, e.g. `--color-bg` (flat) vs `--color--bg`, get a numeric suffix and `TOKEN_NAME_COLLISION` (warn). The `codeSyntax.WEB` keeps the original name, so code ↔ design mapping stays exact.
 
-### 6.3 Type inference
+### 6.3 Type inference <a id="types"></a>
 
 | Evidence (first hit wins) | Figma `resolvedType` |
 |---|---|
@@ -626,7 +626,7 @@ tokens: {
 - **Padding + border (D-16).** D-16 folds the border width into padding, so `padding: var(--space-3)` with a 1px border yields Scene padding 13, which is not bindable. Mitigation, a switch to test in S-05 and S-12: when a node's padding is token-bound *and* it has a uniform border, prefer `strokesIncludedInLayout: true` + padding = CSS padding for that node. That is geometrically exact for INSIDE strokes when the border is uniform (verify, S-05). If verified, the mapper uses this per node and keeps the binding. Otherwise it reports `TOKEN_PADDING_BORDER_OFFSET`.
 - **Hover-state tokens.** A forced `:hover` render is captured as its own variant. Provenance is recomputed for that state, because the matched rules differ, so `State=Hover` binds to `--color-bg-hover` naturally.
 - **Shadow DOM / adopted sheets.** Discovery must include `adoptedStyleSheets` (Lit, Stencil). `:host { --x: … }` declarations are component-private unless the host is outside the captured component ([§3.1](#discovery)).
-- **CSS-in-JS runtime injection.** Rules are inserted after first paint. Discovery runs *after* `storyRendered` + settle ([05](05-capture.md#stabilize)), and CDP `CSS.getStyleSheetText` sees `insertRule` content.
+- **CSS-in-JS runtime injection.** Rules are inserted after first paint. Discovery runs *after* `storyRendered` + settle ([03 §5.5](03-storybook.md#settle-protocol)), and CDP `CSS.getStyleSheetText` sees `insertRule` content.
 - **Tokens defined only via JS** (`element.style.setProperty('--x', …)` on root by a provider). These are inline custom properties on root or wrapper, captured as scope `decorator`.
 - **`@media`-conditioned tokens** (responsive tokens that differ by viewport). Capture at the configured viewport only. If token values differ between the viewport variants of a component, emit `TOKEN_MODE_UNTOKENIZED_DIFF` with `reason: 'viewport'`. Viewport modes are a possible later feature.
 - **Binding rejected.** Example: scope mismatch on a library variable, where a variable scoped to `TEXT_FILL` can't be bound to a frame fill. Catch, keep the literal, and emit `TOKEN_BIND_FAILED`.

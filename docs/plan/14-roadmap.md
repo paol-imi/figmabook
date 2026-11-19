@@ -1,6 +1,6 @@
 # 14 — Roadmap: phases, spikes, milestones, risks
 
-> Assumptions for estimates: **3 engineers** (E1 capture/Storybook, E2 mapper/layout/text, E3 plugin/sync/UX), plus ~0.3 FTE design/UX review from M2. Estimates are in **engineer-weeks (ew)**, include tests and docs, and carry ±30% uncertainty until Phase 0 closes. Calendar estimates assume parallel work: ~11–13 months from start to public launch (M8).
+> Assumptions for estimates: **3 engineers** (E1 capture/Storybook, E2 mapper/layout/text, E3 plugin/sync/UX), plus ~0.3 FTE design/UX review from M2. Estimates are in **engineer-weeks (ew)**, include tests and docs, and carry ±30% uncertainty until Phase 0 closes. Calendar estimates assume parallel work: ~11–13 months from start to launch (M8; private distribution, D-39).
 
 ---
 
@@ -23,7 +23,7 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 | 5 | Tokens | 12 | 4–5 wk (parallel with 4) | M5 |
 | 6 | Composition | 12 | 4–5 wk | M6 |
 | 7 | Automation | 15 | 5–6 wk | M7 |
-| 8 | Public launch | 10 | 4 wk | M8 |
+| 8 | Launch (private org plugin) | 10 | 4 wk | M8 |
 | | **Total** | **~131 ew** | | |
 
 ---
@@ -35,7 +35,7 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 **Goal:** a working skeleton and evidence for every decision marked 🟡 or "(verify)" in README §5 and the chapters.
 
 **Deliverables:**
-- Monorepo per D-04 with all packages from README §6 as empty, building, tested skeletons; CI (lint, typecheck, unit, schema emission check); changesets; Apache-2.0 headers (D-02 provisional).
+- Monorepo per D-04 with all packages from README §6 as empty, building, tested skeletons; CI (lint, typecheck, unit, schema emission check); changesets; MIT license headers (D-02).
 - `ir`: TypeBox schemas v0 for Capture IR, Scene IR, bundle manifest, report ([06](06-ir.md)); canonical JSON + hashing with property tests.
 - `shared`: diagnostics registry scaffold + docs page check ([12](12-quality.md#diagnostics)).
 - `plugin`: create-figma-plugin scaffold, manifest with `documentAccess: "dynamic-page"`, candidate `networkAccess`, a "spike runner" UI that executes spike scripts and exports results JSON.
@@ -52,13 +52,13 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 | **S-04** | Text parity Chromium vs Figma: advance-width drift, line-break agreement, `line-height: normal` resolution, baseline placement, letter-spacing %, for Inter, Roboto, SF/system, Noto CJK, a variable font | 300 paragraphs × widths × sizes; compare line breaks and per-line boxes (T1); measure needed width buffer distribution | Drift distribution; default buffer policy; whether `locked-lines` must be default for some fonts; baseline offset correction table if needed | 5 d | D-17 |
 | **S-05** | Border/stroke model: INSIDE stroke + `padding+border` with `strokesIncludedInLayout:false` vs `true`; per-side weights in auto layout; dash phase; outline | Fixture sweep; T1 box compare and T2 pixels; editing ergonomics review with a designer | Choose default (D-16 confirmed or flipped); documented edge cases | 2 d | D-16 |
 | **S-06** | Plugin performance at scale: build 1k and 5k variants (20–200 nodes), `combineAsVariants` cost vs set size, `addComponentProperty` binding cost, memory growth over repeated applies, time-slicing overhead, `exportAsync` throughput | Synthetic Scene IR generator; harness timing + `performance.memory` where available; vary batch sizes and slice lengths | Measured curves; practical max variants per set (sets the default budget, [04](04-variant-model.md)); slicing params; confirm README §4 build-throughput target or revise | 4 d | perf budgets, budget defaults |
-| **S-07** | Storybook render loop robustness across 8.6 / 9.1 / 10.6 / 11-beta: `loadStory`, `setCurrentStory`, `updateStoryArgs` with non-serializable values, `updateGlobals`, readiness events (`storyFinished ?? storyRendered`), `StorybookTestRunner` UA animation snapping, SB11 `docgenServer` + `manifests/components.json` argTypes merge | Generated sandboxes × renderers (react, vue3, web-components, angular); scripted 200-variant loop; failure injection (story throws, play fails) | Adapter compatibility layer spec; per-version quirks list; throughput numbers; go/no-go on 7.6 | 5 d | D-11, [03](03-storybook.md) |
-| **S-08** | Pseudo-state strategies on real DSs: CDP `CSS.forcePseudoState` (target + ancestors) vs Playwright real interaction vs pseudo-states addon global; CSS-in-JS late rules; JS-driven hover (Radix `data-state`, MUI ripple) | Run all three on MUI, shadcn, Shoelace, golden fixtures; diff renders | Per-strategy success rates; default strategy ordering & auto-detection heuristics (e.g. hover handlers present ⇒ interact) | 3 d | D-14 |
+| **S-07** | Storybook render loop robustness, deep on 10.6 plus 11-beta, with 8.6 / 9.1 as smoke only (D-11): `loadStory`, `setCurrentStory`, `updateStoryArgs` with non-serializable values, `updateGlobals`, readiness events (`storyFinished ?? storyRendered`), `StorybookTestRunner` UA animation snapping, SB11 `docgenServer` + `manifests/components.json` argTypes merge | Generated react-vite sandboxes (D-26); scripted 200-variant loop; failure injection (story throws, play fails) | Adapter compatibility layer spec; per-version quirks list; throughput numbers | 5 d | D-11, [03](03-storybook.md) |
+| **S-08** | Pseudo-state strategies on real DSs: CDP `CSS.forcePseudoState` (target + ancestors) vs Playwright real interaction vs pseudo-states addon global; CSS-in-JS late rules; JS-driven hover (Radix `data-state`, MUI ripple) | Run all three on MUI, shadcn and the React golden fixtures (Shoelace post-M5, D-26); diff renders | Per-strategy success rates; default strategy ordering & auto-detection heuristics (e.g. hover handlers present ⇒ interact) | 3 d | D-14 |
 | **S-09** | `createNodeFromSvg` fidelity (gradients, clipPath, mask, `<use>`, stroke alignment, `<text>`) and icon-font → outline pipeline (opentype.js/fontkit + harfbuzzjs ligatures) | SVG corpus from 3 icon sets + DS icons; T2 compare; outline extraction for Material Symbols / Font Awesome | Rules for when to rasterize; icon-font converter prototype; diagnostics list | 3 d | [05](05-capture.md), [07](07-mapping.md) |
 | **S-10** | Figma GRID auto layout vs CSS grid: FLEX(fr)/FIXED/HUG tracks, gaps, spans, alignment, HUG containers (Update 120+), defaults for plugin-created grids (FIXED container, FLEX tracks) | Grid micro-fixtures; build with `layoutMode:'GRID'`, `setGridChildPosition`; T1 compare | Supported-subset table; `layout-sim` grid model calibrated | 3 d | [07](07-mapping.md) grid |
 | **S-11** | Can Figma MCP `use_figma` run our applier server-side for CI harness or headless builds? Input size limits, execution time, images (`upload_assets`), fonts (account-uploaded only), determinism, pricing outlook | Bundle applier into a self-contained script; drive via remote MCP from a Node client; apply 10 fixtures; read back boxes; compare to desktop results | Feasibility verdict; limits table; harness design if viable; ToS/terms review note ([13](13-security-legal.md)) | 3 d | [12](12-quality.md) §4.4, Phase 7 MCP |
 | **S-12** | Variables: bindable-field coverage in practice (padding, gap, radius, typography, effects), `setExplicitVariableModeForCollection`, mode limits per plan, `codeSyntax.WEB` matching and `importVariableByKeyAsync` against a team library, aliases across collections; `documentationLinks` on sets | Test file on Starter/Pro/Org bot accounts; scripted bindings; library publish + consume | Coverage matrix; plan-limit handling (`TOKEN_MODE_LIMIT` fallback); library-matching algorithm confirmed | 3 d | D-18, [08](08-tokens.md) |
-| **S-13** | Nested component detection per framework: React fiber `type` ↔ Storybook `component` refs (dev & prod builds), Vue `__vueParentComponent.type`, Angular `ng.getComponent` (dev only?), custom-element tags + CEM; structural-hash fallback accuracy | Golden fixtures with nesting (Card→Button→Icon) in each renderer, dev & static builds | Detection precision/recall per framework/build mode; prop-extraction reliability (`memoizedProps`); decision on default enablement | 3 d | D-21, [09](09-plugin.md) |
+| **S-13** | Nested component detection: React fiber `type` ↔ Storybook `component` refs (dev & prod builds); structural-hash fallback accuracy. Vue `__vueParentComponent.type`, Angular `ng.getComponent` and custom-element tags + CEM are post-M5 (D-26) | React + Vite golden fixtures with nesting (Card→Button→Icon), dev & static builds | Detection precision/recall per build mode; prop-extraction reliability (`memoizedProps`); decision on default enablement | 3 d | D-21, [09](09-plugin.md) |
 
 **Exit criteria (M0):** all 13 spike reports merged; README §5 updated (every 🟡 resolved or re-dated); CI green; one micro-fixture flows CLI → bundle → plugin as a rectangle-only smoke test.
 
@@ -94,7 +94,7 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 | `plugin` | auto-layout build-order rules, read-back verification + per-container fallback, `LAYOUT_*` diagnostics in report |
 | `fixtures` | More React + Vite golden fixtures; real DS dogfooding pipeline on Storybook 10 (MUI, shadcn/ui, Radix-based kits). Vue/Lit ports deferred to post-M5 renderer expansion (D-26) |
 
-**Exit criteria:** auto-layout coverage ≥75% on golden fixtures (≥85% target at M5), geometry p95 ≤1px maintained, text parity ≥97%, ≤5% layers with generic names (`div`, `span`) on golden fixtures. **Decision checkpoint M2:** D-11 (SB matrix), D-22 (file organization). **Effort:** 20 ew.
+**Exit criteria:** auto-layout coverage ≥75% on golden fixtures (≥85% target at M5), geometry p95 ≤1px maintained, text parity ≥97%, ≤5% layers with generic names (`div`, `span`) on golden fixtures. **Decision checkpoint M2:** D-22 (file organization). **Effort:** 20 ew.
 
 ---
 
@@ -111,7 +111,7 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 | `cli` | `init`, `list --plan`, `serve` (pairing token, Host check, ports per S-01), streaming protocol |
 | `storybook-addon` | typed `parameters.holotype` (types only) |
 
-**Exit criteria:** golden Button/Input/Checkbox/Card imported as sets with ≥70% property quality; states captured where they have visual effect; first-run flow ≤5 min in usability test (5 DS engineers); budgets enforced. **Decision checkpoint M3:** D-02 license final. **Effort:** 20 ew.
+**Exit criteria:** golden Button/Input/Checkbox/Card imported as sets with ≥70% property quality; states captured where they have visual effect; first-run flow ≤5 min in usability test (5 DS engineers); budgets enforced. **Effort:** 20 ew.
 
 ---
 
@@ -150,7 +150,7 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 
 | Package | Deliverables |
 |---|---|
-| `capture` | framework boundary hooks (React fiber, Vue, Angular, custom elements) → component id + props per subtree (S-13) |
+| `capture` | framework boundary hooks → component id + props per subtree (S-13): React fiber (D-26); Vue, Angular and custom-element hooks come with the post-M5 renderer expansion |
 | `planner` | INSTANCE_SWAP classification (mapping/icon args), SLOT classification (children/ReactNode args), dependency graph + topological import order |
 | `mapper` | instance substitution with props → variant/property values; icon extraction (repeated normalized SVG hash, `split` components), slot regions |
 | `plugin` | instance creation + `setProperties`, preferred values, `createSlot`/SLOT properties, Icons page, instance-vs-capture verification (`APPLY_INSTANCE_MISMATCH`) |
@@ -175,17 +175,18 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 
 ---
 
-## Phase 8 — Public launch (M8)
+## Phase 8 — Launch (M8)
 
-**Goal:** public release.
+**Goal:** 1.0 release, distributed privately (D-39).
 
-- Community listing (name per D-01, trademark-compliant title), privacy policy, security disclosure, network domains justified ([13](13-security-legal.md)); submit ≥3 weeks before target date (review delays).
+- **Private organization plugin** published to the org only (no Figma review); dev-plugin users move to it ([11](11-ux.md)). Network domains justified, security disclosure ([13](13-security-legal.md#publishing)).
+- **Community listing is deferred until after M8** (D-39): name per D-01 after the trademark search, trademark-compliant title, privacy policy; submit ≥3 weeks before the target date (review delays).
 - Docs site: getting started, config reference (generated from TypeBox), diagnostics pages, recipes (themes, portals, icons, private Storybooks), migration guide from story.to.design (`parameters.s2d.variantProperties` reader, [04](04-variant-model.md)).
 - Benchmarks published ([12](12-quality.md) §4.5).
 - Hardening: crash-free plugin sessions ≥99.5% in beta; top-20 diagnostics reviewed for fixability.
 - After launch (not in M8 scope): hosted renderer (topology C) with sandboxing ([13](13-security-legal.md)), decision gated on demand.
 
-**Exit criteria:** README §4 targets met on golden + micro corpus; beta with ≥5 external teams, ≥3 using CI mode; no open P0/P1. **Effort:** 10 ew.
+**Exit criteria:** README §4 targets met on golden + micro corpus; org beta with ≥5 teams, ≥3 using CI mode; no open P0/P1. **Effort:** 10 ew.
 
 ---
 
@@ -193,15 +194,15 @@ Milestones: M0   M1    M2      M3     M4    M5     M6    M7    M8
 
 | M | Name | Definition of done | Decisions due |
 |---|---|---|---|
-| M0 | Foundations | Phase 0 exit criteria | D-25, D-16, D-11 (preliminary), D-10 confirmed |
+| M0 | Foundations | Phase 0 exit criteria | D-25, D-16, D-10 confirmed |
 | M1 | Snapshot | Phase 1 exit | — |
-| M2 | Native structure | Phase 2 exit | D-11, D-22 |
-| M3 | Components alpha | Phase 3 exit; private alpha with 2 friendly teams | D-02, D-01 shortlist |
+| M2 | Native structure | Phase 2 exit | D-22 |
+| M3 | Components alpha | Phase 3 exit; private alpha for the user and their boss (dev plugin, D-39) | D-01 shortlist |
 | M4 | Sync beta | Phase 4 exit | — |
 | M5 | Tokens | Phase 5 exit; metrics gating | — |
-| M6 | Composition | Phase 6 exit; public beta (private org plugin or unlisted) | distribution (README §9 Q4) |
+| M6 | Composition | Phase 6 exit; org beta (private organization plugin, D-39) | — |
 | M7 | Automation | Phase 7 exit | registry hosting |
-| M8 | Launch | Phase 8 exit | hosted tier go/no-go |
+| M8 | Launch | Phase 8 exit | hosted tier go/no-go; Community listing (post-M8, D-39) |
 
 ---
 
@@ -219,7 +220,7 @@ L = likelihood, I = impact (H/M/L).
 | R6 | Text wrap drift Chromium vs Figma | H | M | S-04 data; width buffer; `locked-lines` mode; per-font policy | 0, 2 |
 | R7 | Combinatorial explosion / giant sets degrade Figma | M | M | Budgets, pairwise, render-and-diff dedupe, properties instead of axes (D-12, D-13), S-06 limits | 3 |
 | R8 | Plugin freezes or OOM on big imports | M | H | Time-slicing, chunked NDJSON, per-component commits, S-06 measured limits, cancel | 1, 3 |
-| R9 | Community review delays / rejection (network access, localhost reasoning) | M | M | Minimal domains, clear reasoning, privacy policy, early private org plugin, submit early | 8 |
+| R9 | Community review delays / rejection (network access, localhost reasoning) | M | M | Private org plugin first (no review, D-39); Community only after M8 with minimal domains, clear reasoning, privacy policy, early submission | post-M8 |
 | R10 | Trademark conflict over name | H (if unchanged) | M | Name chosen early (Holotype, D-01); formal trademark search before any public listing; repo renamed from `figmabook` | 3–8 |
 | R11 | CSS-in-JS late rules / JS-driven states missed | M | M | CDP force + interact fallback (S-08), "no visual effect" detection | 3 |
 | R12 | `use_figma` pricing/limits make headless harness impractical | M | L | macOS runner remains primary | 0, 7 |
@@ -236,7 +237,7 @@ From README §9 (user decisions):
 1. D-01 public name (in progress).
 2. ~~License~~ → MIT (decided).
 3. ~~Fixture target~~ → React + Vite on Storybook 10 (decided, D-26). Vue/Lit/Angular fixtures move out of Phases 2–3 to post-M5 ("renderer expansion"); the pipeline stays DOM-based so they work best-effort meanwhile.
-4. Distribution: Community public vs private org plugin first.
+4. ~~Distribution~~ → private: dev plugin from `manifest.json` now, private org plugin once stable, Community after M8 (decided, D-39).
 5. ~~Storybook 7.6~~ → not supported; SB10 primary, 11 at GA, 8/9 best-effort (decided, D-11).
 
 Technical (answered by spikes or during phases):
@@ -265,10 +266,10 @@ Week 1 — repo & contracts
 
 Week 2 — spikes batch A
 8. S-01 LNA connectivity matrix + report. (E3)
-9. S-07 Storybook sandboxes generator script (8.6/9.1/10.6/11-beta × react/vue/wc) + render loop prototype. (E1)
+9. S-07 Storybook sandboxes generator script (react-vite on 10.6 + 11-beta; 8.6/9.1 smoke) + render loop prototype. (E1)
 10. S-03 gradient/shadow/blur sweeps (micro-fixtures + Figma builder script). (E2)
 11. S-05 border model sweep. (E2)
-12. Fixtures: first 30 micro-fixtures (flex, borders, backgrounds, text basics) as plain HTML stories. (E1)
+12. Fixtures: first 30 micro-fixtures (flex, borders, backgrounds, text basics) as plain-markup stories in the React + Vite Storybook (D-26). (E1)
 
 Week 3 — spikes batch B
 13. S-02 override preservation matrix (local + library). (E3)
