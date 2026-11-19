@@ -1,19 +1,12 @@
 /**
  * S-06 step 1, main thread: which runtime features exist in Figma's plugin sandbox (D-31),
- * whether `figma.fileKey` is readable with `enablePrivatePluginApi` (BUILD §11 gap 8), and
- * echo tasks for the `postMessage` size test.
+ * including code generation for TypeBox's compiled validators, whether `figma.fileKey` is
+ * readable with `enablePrivatePluginApi` (BUILD §11 gap 8), and echo tasks for the
+ * `postMessage` size test.
  */
 import { fingerprint, probe } from '../_shared/figma.ts';
 import type { MainContext } from '../_shared/spike.ts';
-
-/** SHA-256("abc"), FIPS 180-2 test vector. */
-export const SHA256_ABC = 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad';
-
-type Globals = Record<string, unknown>;
-
-function toHex(buffer: ArrayBuffer): string {
-  return Array.from(new Uint8Array(buffer), (byte) => byte.toString(16).padStart(2, '0')).join('');
-}
+import { codegenFacts, cryptoFacts, type Globals, runtimeFacts } from './sandbox.ts';
 
 /** Resolves with the delay `setTimeout` really took, or `null` when it is missing. */
 async function timerProbe(globals: Globals, delayMs: number): Promise<number | null> {
@@ -22,39 +15,6 @@ async function timerProbe(globals: Globals, delayMs: number): Promise<number | n
   const started = Date.now();
   await new Promise<void>((resolve) => timer(resolve, delayMs));
   return Date.now() - started;
-}
-
-export type CryptoFacts = {
-  available: boolean;
-  subtle: boolean;
-  digestSha256: 'ok' | 'wrong' | 'missing' | 'error';
-  digestError: string | null;
-  getRandomValues: boolean;
-  randomUUID: boolean;
-};
-
-/** Same probe in main and in the UI iframe. */
-export async function cryptoFacts(globals: Globals): Promise<CryptoFacts> {
-  const crypto = globals.crypto as Partial<Crypto> | undefined;
-  const subtle = crypto?.subtle;
-  let digestSha256: CryptoFacts['digestSha256'] = 'missing';
-  let digestError: string | null = null;
-  if (subtle && typeof subtle.digest === 'function') {
-    const result = await probe(() => subtle.digest('SHA-256', new TextEncoder().encode('abc')));
-    if (result.ok) digestSha256 = toHex(result.value) === SHA256_ABC ? 'ok' : 'wrong';
-    else {
-      digestSha256 = 'error';
-      digestError = result.error;
-    }
-  }
-  return {
-    available: typeof crypto === 'object' && crypto !== null,
-    subtle: typeof subtle === 'object' && subtle !== null,
-    digestSha256,
-    digestError,
-    getRandomValues: typeof crypto?.getRandomValues === 'function',
-    randomUUID: typeof crypto?.randomUUID === 'function',
-  };
 }
 
 async function mainChecks({ figma }: MainContext, _input: null) {
@@ -72,8 +32,8 @@ async function mainChecks({ figma }: MainContext, _input: null) {
     setInterval: typeof globals.setInterval === 'function',
     queueMicrotask: typeof globals.queueMicrotask === 'function',
     crypto: await cryptoFacts(globals),
-    textEncoder: typeof globals.TextEncoder === 'function' && typeof globals.TextDecoder === 'function',
-    structuredClone: typeof globals.structuredClone === 'function',
+    codegen: await codegenFacts(globals),
+    runtime: await runtimeFacts(globals),
     performanceNow: typeof (globals.performance as Partial<Performance> | undefined)?.now === 'function',
     webAssembly: typeof globals.WebAssembly === 'object',
     fetch: typeof globals.fetch === 'function',

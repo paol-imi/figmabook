@@ -12,10 +12,27 @@ describe('S-06 step 1 dry run', () => {
     expect(run.envelope.status).toBe('done');
     expect(schemaErrors(envelopeSchema('S-06', 'step1', S06Answers.step1), run.envelope)).toEqual([]);
     const answers = run.envelope.results.answers as Record<string, unknown>;
+    expect(typeof answers.originInUi).toBe('string');
     expect(answers).toMatchObject({
       setTimeoutInMain: true,
       cryptoSubtleInMain: true,
       cryptoSubtleDigestInMain: true,
+      newFunctionInMain: true,
+      evalInMain: true,
+      typeboxCompiledCheckInMain: true,
+      structuredCloneInMain: true,
+      textEncoderInMain: true,
+      textDecoderInMain: true,
+      newFunctionInUi: true,
+      evalInUi: true,
+      typeboxCompiledCheckInUi: true,
+      cryptoSubtleInUi: true,
+      cryptoSubtleDigestInUi: true,
+      getRandomValuesInUi: true,
+      randomUUIDInUi: true,
+      // happy-dom has no Worker; Node's fflate inflates large entries in a worker thread.
+      blobWorkerInUi: false,
+      fflateUnzipPathInUi: 'async-worker',
       fileKeyReadable: true,
       blobDownloadFromUi: 'yes',
       postMessageMaxOkBytes: { largestTried: 32 * 1024 * 1024 },

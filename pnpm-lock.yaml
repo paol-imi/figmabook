@@ -292,6 +292,12 @@ importers:
 
   spikes:
     dependencies:
+      '@sinclair/typebox':
+        specifier: 0.34.52
+        version: 0.34.52
+      fflate:
+        specifier: 0.8.3
+        version: 0.8.3
       preact:
         specifier: 10.29.8
         version: 10.29.8
@@ -302,18 +308,12 @@ importers:
       '@holotype/figma-fake':
         specifier: workspace:*
         version: link:../packages/figma-fake
-      '@sinclair/typebox':
-        specifier: 0.34.52
-        version: 0.34.52
       '@testing-library/preact':
         specifier: 3.2.6
         version: 3.2.6(preact@10.29.8)
       esbuild:
         specifier: 0.27.7
         version: 0.27.7
-      fflate:
-        specifier: 0.8.3
-        version: 0.8.3
       happy-dom:
         specifier: 21.0.4
         version: 21.0.4

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { cryptoFacts, SHA256_ABC } from '../plugin.ts';
-import { measureSeries, withTimeout } from '../steps.ts';
+import { measureSeries } from '../steps.ts';
+import { withTimeout } from '../timeout.ts';
 
 let clock = 0;
 const now = () => (clock += 5);
@@ -45,29 +45,5 @@ describe('withTimeout', () => {
   it('passes values and errors through', async () => {
     await expect(withTimeout(Promise.resolve(1), 10, 'x')).resolves.toBe(1);
     await expect(withTimeout(Promise.reject(new Error('nope')), 10, 'x')).rejects.toThrow('nope');
-  });
-});
-
-describe('cryptoFacts', () => {
-  it('checks SHA-256 against the FIPS test vector', async () => {
-    const facts = await cryptoFacts(globalThis as unknown as Record<string, unknown>);
-    expect(facts).toMatchObject({ available: true, subtle: true, digestSha256: 'ok', getRandomValues: true });
-  });
-
-  it('reports a missing crypto object', async () => {
-    expect(await cryptoFacts({})).toEqual({
-      available: false,
-      subtle: false,
-      digestSha256: 'missing',
-      digestError: null,
-      getRandomValues: false,
-      randomUUID: false,
-    });
-    expect(SHA256_ABC).toHaveLength(64);
-  });
-
-  it('reports a wrong digest', async () => {
-    const subtle = { digest: async () => new Uint8Array(32).buffer };
-    expect((await cryptoFacts({ crypto: { subtle } })).digestSha256).toBe('wrong');
   });
 });

@@ -1,7 +1,7 @@
 /**
  * JSON Schema (TypeBox) of the result envelope. Per-spike `schema.ts` files describe the
  * `results.answers` block, so tests prove each result answers its spike's questions.
- * Test-only: the plugin bundles never import TypeBox.
+ * Test-only: the plugin bundles never import these schemas (S-06 bundles only TypeBox's compiler).
  */
 import { type TSchema, Type } from '@sinclair/typebox';
 import { ENVELOPE_FORMAT } from './envelope.ts';

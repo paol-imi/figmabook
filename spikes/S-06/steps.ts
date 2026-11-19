@@ -5,7 +5,10 @@
 import { copyText, downloadFile } from '../_shared/dom.ts';
 import { errorMessage } from '../_shared/json.ts';
 import { type SpikeDefinition, type StepIO, taskClient } from '../_shared/spike.ts';
-import { cryptoFacts, type s06Tasks } from './plugin.ts';
+import { blobWorkerFacts, contextFacts, fflateFacts } from './iframe.ts';
+import type { s06Tasks } from './plugin.ts';
+import { codegenFacts, cryptoFacts, type Globals, isOk, runtimeFacts } from './sandbox.ts';
+import { withTimeout } from './timeout.ts';
 
 const KB = 1024;
 const MB = 1024 * KB;
@@ -23,23 +26,6 @@ export type PayloadSeries = {
   trials: PayloadTrial[];
   maxOkBytes: number;
 };
-
-/** Rejects after `ms` unless `promise` settles first. */
-export function withTimeout<T>(promise: Promise<T>, ms: number, what: string): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error(`${what}: no answer after ${ms} ms`)), ms);
-    promise.then(
-      (value) => {
-        clearTimeout(timer);
-        resolve(value);
-      },
-      (error: unknown) => {
-        clearTimeout(timer);
-        reject(error instanceof Error ? error : new Error(String(error)));
-      },
-    );
-  });
-}
 
 /**
  * Sends growing payloads through `send` until one fails or returns the wrong length.
@@ -89,14 +75,26 @@ async function clipboardFacts(doc: Document) {
   return { execCommandCopy, navigatorClipboardWriteText: writeText };
 }
 
+/** The same probes as main where they apply, plus the iframe-only ones. */
+async function uiChecks(globals: Globals) {
+  return {
+    crypto: await cryptoFacts(globals),
+    codegen: await codegenFacts(globals),
+    runtime: await runtimeFacts(globals),
+    context: await contextFacts(globals),
+    blobWorker: await blobWorkerFacts(globals),
+    fflate: await fflateFacts(),
+    clipboard: await clipboardFacts(document),
+  };
+}
+
 async function quickChecks(io: StepIO) {
   const call = taskClient<typeof s06Tasks>(io);
   io.progress('Checking the main thread…');
   const main = await call('S-06/main-checks', null);
 
   io.progress('Checking the plugin window…');
-  const uiGlobals = globalThis as unknown as Record<string, unknown>;
-  const ui = { crypto: await cryptoFacts(uiGlobals), clipboard: await clipboardFacts(document) };
+  const ui = await uiChecks(globalThis as unknown as Globals);
 
   const now = () => performance.now();
   const options = { sizes: PAYLOAD_SIZES, timeoutMs: PAYLOAD_TIMEOUT_MS, now };
@@ -146,7 +144,24 @@ async function quickChecks(io: StepIO) {
     answers: {
       setTimeoutInMain: main.setTimeout.fired,
       cryptoSubtleInMain: main.crypto.subtle,
-      cryptoSubtleDigestInMain: main.crypto.digestSha256 === 'ok',
+      cryptoSubtleDigestInMain: isOk(main.crypto.digestSha256),
+      newFunctionInMain: isOk(main.codegen.newFunction),
+      evalInMain: isOk(main.codegen.eval),
+      typeboxCompiledCheckInMain: isOk(main.codegen.typeboxCompiled),
+      structuredCloneInMain: isOk(main.runtime.structuredClone),
+      textEncoderInMain: isOk(main.runtime.textEncoder),
+      textDecoderInMain: isOk(main.runtime.textDecoder),
+      newFunctionInUi: isOk(ui.codegen.newFunction),
+      evalInUi: isOk(ui.codegen.eval),
+      typeboxCompiledCheckInUi: isOk(ui.codegen.typeboxCompiled),
+      cryptoSubtleInUi: ui.crypto.subtle,
+      cryptoSubtleDigestInUi: isOk(ui.crypto.digestSha256),
+      getRandomValuesInUi: isOk(ui.crypto.getRandomValues),
+      randomUUIDInUi: isOk(ui.crypto.randomUUID),
+      secureContextInUi: ui.context.isSecureContext,
+      originInUi: ui.context.origin,
+      blobWorkerInUi: isOk(ui.blobWorker),
+      fflateUnzipPathInUi: ui.fflate.path,
       postMessageMaxOkBytes: {
         uiToMain: { string: max('string', 'uiToMain'), bytes: max('bytes', 'uiToMain') },
         mainToUi: { string: max('string', 'mainToUi'), bytes: max('bytes', 'mainToUi') },
@@ -165,7 +180,7 @@ export const s06: SpikeDefinition = {
   id: 'S-06',
   title: 'Plugin environment',
   question:
-    'Which runtime features exist in the plugin sandbox, how big can messages be, and can the plugin read the file key and download a file?',
+    'Which runtime features exist in the plugin sandbox and the plugin window (code generation, crypto, workers, unzip), how big can messages be, and can the plugin read the file key and download a file?',
   userTime: '2 min',
   steps: [
     {

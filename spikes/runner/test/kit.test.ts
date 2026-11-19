@@ -75,11 +75,25 @@ describe('buildKit', () => {
   });
 
   it('keeps test-only and Node code out of the bundles', () => {
+    for (const inputs of [kit.inputs.main, kit.inputs.ui]) {
+      expect(inputs.length).toBeGreaterThan(0);
+      // Answer schemas, tests and TypeBox's Value module are test-only; S-06 bundles only the compiler.
+      expect(inputs.filter((path) => /(^|\/)schema\.ts$|\/test\//.test(path))).toEqual([]);
+      expect(inputs.filter((path) => /typebox\/build\/esm\/value\/value\//.test(path))).toEqual([]);
+    }
     for (const bundle of [kit.main, kit.ui]) {
-      expect(bundle).not.toMatch(/sinclair|typebox/i);
       expect(bundle).not.toContain('playwright');
       expect(bundle).not.toContain('node:');
     }
+  });
+
+  it('bundles the TypeBox compiler for the S-06 code-generation probe, and fflate only in the UI', () => {
+    const typeboxCompiler = (path: string) => /@sinclair\/typebox\/build\/esm\/compiler\//.test(path);
+    const fflate = (path: string) => /\/fflate\//.test(path);
+    expect(kit.inputs.main.some(typeboxCompiler)).toBe(true);
+    expect(kit.inputs.ui.some(typeboxCompiler)).toBe(true);
+    expect(kit.inputs.ui.some(fflate)).toBe(true);
+    expect(kit.inputs.main.some(fflate)).toBe(false);
   });
 
   it('ships the UI as one HTML document with the S-05 references inside', () => {

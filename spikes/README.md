@@ -67,7 +67,7 @@ Checks whether Holotype should keep its way of turning CSS borders into Figma st
 
 ### S-06 · Plugin environment (about 2 minutes)
 
-Checks what the plugin can do inside Figma: timers, encryption functions, how big messages can be, reading the file key, and downloading a file.
+Checks what the plugin can do inside Figma: timers, encryption functions, running generated code, background workers, unzipping files, how big messages can be, reading the file key, and downloading a file. You only click and answer one question; the plugin does the rest.
 
 1. In a new empty design file (Spikes Scratch is fine), run **Step 1 (quick checks)**. Figma may pause for a few seconds.
 2. The plugin tries to download a small file named `holotype-s06-download-test.txt`. Answer whether a download appeared. Paste.
