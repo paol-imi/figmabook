@@ -71,6 +71,7 @@ All keys live in **shared** plugin data, under the namespace `holotype`: `node.s
 | | `story` | story id |
 | | `args` | canonical JSON of `{ args, globals, state, viewport }`. Truncated to 8 kB with `…` (identity uses `vk`; this is for humans and debugging) |
 | | `dep` | if the variant is deprecated |
+| | `base:0..n`, `base:h` | **proposal mode only**: the baseline snapshot, deflated + base64 in ≤90 kB chunks, plus its hash (the set holds its property/axes snapshot the same way). Never written in library files ([15 §3.3](15-change-requests.md#proposal-mode), D-34) |
 | **Managed descendant** (frame, text, vector, instance…) | `nk` | node key, unique within its variant (§4) |
 | | `irh` | subtree Merkle hash |
 | | `ah` | applied hash of this node's managed properties (§9.1) |
@@ -107,6 +108,7 @@ figma.root shared plugin data, namespace "holotype":
   registry:lease  = {"session":"…","expiresAt":"…"}            (§14)
   fontmap         = {"Acme Sans|SemiBold":{"family":"Inter","style":"Semi Bold"}}
   report:meta / report:0..M = last report summary (chunked, capped at 5 chunks)
+  branch:meta     = BranchMeta JSON (branch files only; its presence selects proposal mode, 15 §2.2)
 ```
 
 Registry payload (after joining the chunks):
@@ -459,6 +461,21 @@ On later syncs, a kept node is skipped while `irh` (code) equals `keep[nk]`. Whe
 - **`holotype/lock = "1"`** is set via the plugin's "Lock layer (designer-owned)" action on any managed node, or on the set. It skips that subtree on every sync and shows a 🔒 in the report. This is an explicit, durable `keep`.
 - **Unmanaged additions** (annotations, extra layers a designer added inside a variant) are preserved (I-3), but they may break auto layout geometry. Verification ignores unmanaged nodes when computing deltas, but runs with them present. If a fallback triggers *because* of an unmanaged node, the report says so (`SYNC_UNMANAGED_AFFECTS_LAYOUT`, info).
 - **Recommended practice**, printed in the doc frame: annotate *outside* the set, or use locks.
+
+### 9.5 Proposal mode: the exception to D-29 <a id="proposal-mode"></a>
+
+In a **branch file** (root `branch:meta` with `mode: 'proposal'`, D-32/D-33), a designer edit to a managed node is a **proposal**, not a conflict. The policies of §9.2 don't apply there, and `SYNC_CONFLICT` is never emitted for designer edits.
+
+| Situation | Library file (D-29) | Branch file (proposal mode) |
+|---|---|---|
+| Designer edited the node; code unchanged | skip (I-4) | skip; the edit stays a proposal |
+| Designer edited the node; code changed too | `SYNC_CONFLICT`, default `keep` | keep the designer value; move the node's baseline to the new code value; `DCR_BASELINE_SHIFTED` (warn) |
+| Code now produces the designer's value (within verify tolerance) | n/a | overwrite with the managed version and rewrite the baseline; the proposal is implemented and leaves the next DCR ([15 §9.3](15-change-requests.md#verify)) |
+| Variants or properties added by the designer | unmanaged, tolerated | first-class proposals (`variant.added`, `property.added`) |
+
+- The apply plan shows proposals in their own "Proposals" group (count only, no decision needed), not under Conflicts.
+- `lock` still works: a locked subtree is designer-owned and excluded from the DCR.
+- **Merging back.** When a Figma-native branch is merged into the main file, `branch:meta` and `base:*` must not survive in the main file. `branch:meta.fileKey` records the branch file's own key. In a file whose `figma.fileKey` differs (a merged branch, or a duplicate of a branch file), the plugin ignores `branch:meta`, runs in library mode, and the next library sync clears both keys (sets them to `''`). The file is then back under D-29 (verify how branch merges carry shared plugin data, S-17).
 
 ---
 

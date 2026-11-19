@@ -32,6 +32,7 @@
 | `figma-fake` | contract tests: each `FigmaPort` method throws exactly where Figma throws (e.g. FILL without auto-layout parent, HUG on non-AL frame) — table generated from S-05/S-06 observations | — | — | conformance replay vs real Figma (record ops in harness, replay in fake, compare final graph) |
 | `cli` | flag parsing, exit codes, config loading | — | `--json` output snapshots | e2e on fixture Storybook |
 | `storybook-addon` | parameter typing, manifest emission | — | — | sandbox build |
+| `dcr` | identification, field diff + noise filter, classification, reverse prop mapping, screen grouping, interaction mapping, placeholder rules, a11y grammar, `importSpecifier`, `renderSnippet`, `renderPrompt` | **shuffle invariance** (§2.4); `normalizeRest(x)` ≡ `normalizePlugin(x)` on the parity fixture; escaping never lets designer text leave its fence or cell | **`fixtures/dcr/*` → `dcr.json` + `prompt.md`** (§2.4) | `holotype verify` e2e on the react-vite fixture branch |
 
 ### 1.2 Determinism requirements (prerequisite for snapshots and caching)
 
@@ -198,7 +199,7 @@ Benchmarks live in `bench/` (Vitest bench + Playwright), run nightly; >10% regre
 // packages/shared/src/diagnostics.ts — single registry; codes are API (never renamed, only deprecated)
 export interface DiagnosticDef {
   code: string;                 // UPPER_SNAKE, domain-prefixed
-  domain: 'SB'|'PLAN'|'CAP'|'LAYOUT'|'TEXT'|'FONT'|'PAINT'|'SVG'|'TOKEN'|'APPLY'|'SYNC'|'NET'|'SEC';
+  domain: 'SB'|'PLAN'|'CAP'|'LAYOUT'|'TEXT'|'FONT'|'PAINT'|'SVG'|'TOKEN'|'APPLY'|'SYNC'|'NET'|'SEC'|'DCR';
   severity: 'info'|'warn'|'error';  // default; emitters may raise, never lower below 'info'
   message: string;              // ICU template, e.g. "Font {family} {style} is not available in Figma; used {substitute}."
   fallback?: string;            // what we did instead
@@ -209,24 +210,45 @@ export interface DiagnosticDef {
 // Emitted instance (see 06-ir): { code, severity, nodeKey?, variantKey?, sid?, message, data? }
 ```
 
-Process: a new code is added to `diagnostics.ts` + a docs page `docs/diagnostics/<CODE>.md` (cause, example, fix, related config) in the same PR; a CI check fails on unregistered codes or missing docs pages. Severity semantics: **info** = lossless choice worth knowing; **warn** = visible approximation; **error** = component/variant not produced or produced incorrectly. The catalog below is the base set; sibling chapters may coin more following this process.
+Process: a new code is added to `diagnostics.ts` + a docs page `docs/diagnostics/<CODE>.md` (cause, example, fix, related config) in the same PR; a CI check fails on unregistered codes or missing docs pages. Severity semantics: **info** = lossless choice worth knowing; **warn** = visible approximation; **error** = component/variant not produced or produced incorrectly. The catalog below is the **complete** set. Every code used in any chapter appears here exactly once, under one canonical name chosen after the stage that emits it (`NOUN_CONDITION` style). A chapter that coins a code adds its row here in the same change. Severities follow the defining chapter: where a chapter says a code fails the component or the run, it is an error. In these tables, *warning* is the registry's `'warn'`.
 
-### 6.2 Base catalog
+### 6.2 Catalog
 
-| Code | Sev | Meaning / fallback |
-|---|---|---|
-| **Storybook (SB_)** | | |
-| `SB_INDEX_UNREACHABLE` | error | `index.json`/`stories.json` not loadable |
-| `SB_VERSION_UNSUPPORTED` | warn | SB version outside D-11 matrix; best effort |
-| `SB_PREVIEW_INIT_TIMEOUT` | error | preview never became ready |
-| `SB_STORY_RENDER_ERROR` | error | `storyErrored`/`storyThrewException` |
-| `SB_PLAY_FUNCTION_ERROR` | warn | play function threw; captured pre-play state |
-| `SB_RENDER_TIMEOUT` | error | no `storyRendered`/`storyFinished` within timeout |
-| `SB_UNSAFE_URL_ARGS` | info | arg not URL-encodable; used channel update instead |
-| `SB_ARG_UNKNOWN` | warn | configured arg has no argType; dropped |
-| `SB_DOCGEN_UNAVAILABLE` | warn | no docgen/manifest (e.g. SB11 dev with docgenServer); argTypes limited |
-| `SB_ROOT_NOT_FOUND` | error | capture root selector matched nothing |
-| `SB_PORTAL_AMBIGUOUS` | warn | multiple candidate portal roots; used union |
+**265 codes in 14 domains:** SB 27 · PLAN 43 · CAP 30 · LAYOUT 16 · TEXT 10 · FONT 7 · PAINT 16 · SVG 5 · TOKEN 21 · APPLY 20 · SYNC 20 · NET 7 · SEC 6 · DCR 37.
+
+Columns: **Emitted by** is the package that raises the code ([02 §6](02-architecture.md#monorepo)). **User remedy** is the text the report, the plugin and the docs page lead with: what the user can do, in plain words. "Nothing to do" means the result is correct and the code is only there to explain a choice. **Defined in** is the chapter that specifies the behaviour.
+
+#### Storybook (SB_) — 27
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `SB_INDEX_UNREACHABLE` | error | `storybook` | `index.json`/`stories.json` could not be loaded; fatal for the run (exit 3) | Check the URL and that Storybook is running. For a static build, run `storybook build` and point Holotype at `storybook-static/` | [03](03-storybook.md) |
+| `SB_IFRAME_UNREACHABLE` | error | `storybook` | `iframe.html` did not return 200 | Make sure your host serves `iframe.html` next to `index.json` (check base path and rewrite rules) | [03](03-storybook.md) |
+| `SB_VERSION_UNSUPPORTED` | error | `storybook` | Storybook older than 8 (D-11) | Upgrade to Storybook 10 (8 and 9 work best-effort) | [03](03-storybook.md) |
+| `SB_VERSION_UNTESTED` | warning | `storybook` | newer Storybook major than the newest adapter; the newest adapter was used | Update Holotype. If the output looks wrong, report it with the run's `report.json` | [03](03-storybook.md) |
+| `SB_MANIFEST_UNPARSEABLE` | info | `storybook` | the components manifest has an unknown shape; in-page docgen was used instead | Nothing to do. Update Holotype if props look incomplete | [03](03-storybook.md) |
+| `SB_DOCGEN_DEGRADED` | warning | `storybook` | Storybook 11 dev server without its docgen service; argTypes are reduced | Capture from a static build (`storybook build`), or add `@storybook/addon-mcp` | [03](03-storybook.md) |
+| `SB_REF_AUTH_REQUIRED` | warning | `storybook` | a composed Storybook ref needs a login; its stories were skipped | Run `holotype login <ref URL>`, then re-run | [03](03-storybook.md) |
+| `SB_AUTH_FAILED` | error | `storybook` | 401/403 on `index.json` | Set `HOLOTYPE_SB_TOKEN` (or headers) or run `holotype login <url>` | [03](03-storybook.md) |
+| `SB_AUTH_REDIRECT` | error | `storybook` | `index.json` redirected to a login page | Run `holotype login <url>` and sign in once in the window that opens | [03](03-storybook.md) |
+| `SB_STORY_LOAD_FAILED` | error | `storybook` | `loadStory` threw (CSF import error); the story was skipped | Open the story in Storybook and fix the import error shown in the report | [03](03-storybook.md) |
+| `SB_METADATA_TIMEOUT` | error | `storybook` | a metadata batch hung for 30 s; retried on a fresh page | Look for a story file that hangs on import (top-level `await`, network call) and fix it, or leave it out with `exclude` | [03](03-storybook.md) |
+| `SB_PREVIEW_INIT_TIMEOUT` | error | `storybook` | the preview never became ready | Open `iframe.html` in a browser and fix the errors in its console, then re-run | [03](03-storybook.md) |
+| `SB_RENDER_TIMEOUT` | error | `storybook` | no `storyRendered`/`storyFinished` within `T.render` (15 s); retried twice, then the variant fails | Check loaders and play functions that wait on network or timers, and mock them for capture | [03](03-storybook.md) |
+| `SB_STORY_UNRENDERABLE` | error | `storybook` | the story kept failing after three reloads; the component fails | Fix the story in Storybook, or tag it `!figma` to leave it out | [03](03-storybook.md) |
+| `SB_STORY_ERROR` | error | `storybook` | Storybook reported `storyErrored`/`storyThrewException`; the variant fails (retried twice) | Open the story with the args in the report and fix the error message shown | [03](03-storybook.md) |
+| `SB_PLAY_ERROR` | error | `storybook` | the play function threw; the variant fails | Fix the play function (the report shows its error and stack) | [03](03-storybook.md) |
+| `SB_STORY_MISSING` | error | `storybook` | the story id is not in the index (renamed or removed) | Re-run after rebuilding Storybook; update ids pinned in config | [03](03-storybook.md) |
+| `SB_CONSOLE_ERROR` | info | `storybook` | console errors were logged during the render | Nothing to do unless the render looks blank; then read the logged errors | [03](03-storybook.md) |
+| `SB_URL_ARG_UNENCODABLE` | warning | `planner` | in URL-fallback mode an arg value cannot be encoded in the URL; the variant was skipped | Drop `--no-channel` (or use a build where the preview API works), or limit values to letters, digits, space, `_` and `-` | [03](03-storybook.md) |
+| `SB_ARG_UNKNOWN` | warning | `planner` | a configured arg has no argType; it was dropped | Fix the arg name in config, or add an argType for it | [03](03-storybook.md) |
+| `SB_DECORATOR_PAINTS` | info | `storybook` | a decorator paints a background; it is used as the canvas background, not part of the component | Nothing to do. Remove the background from the decorator if you want a transparent canvas | [03](03-storybook.md) |
+| `SB_COMPONENT_MULTI_TITLE` | info | `storybook` | one component appears under several titles; they were not merged | To merge them into one component set, set `component:` in config | [03](03-storybook.md) |
+| `SB_HOST_NOT_ALLOWED` | error | `storybook` | the Storybook dev server rejected our host (its `allowedHosts` check) | Add the host to `core.allowedHosts` in `.storybook/main` | [03](03-storybook.md) |
+| `SB_HMR_DURING_CAPTURE` | warning | `storybook` | the dev server reloaded mid-run; the component was retried once | Avoid saving files during a run, or capture from a static build | [03](03-storybook.md) |
+| `SB_ROOT_NOT_FOUND` | error | `storybook` | the capture root selector matched nothing | Fix `parameters.holotype.rootSelector` (or remove it to use `#storybook-root`) | [03](03-storybook.md) |
+| `SB_PORTAL_AMBIGUOUS` | warning | `storybook` | several candidate portal roots; their union was used | Set `parameters.holotype.portal.selector` to the right overlay | [03](03-storybook.md#portals-and-overlays) |
+| `SB_NOT_A_STORYBOOK` | error | `cli` (hosted) | the target has no `index.json` plus `iframe.html` with a Storybook preview | Point Holotype at the root URL of a Storybook | [13](13-security-legal.md) |
 | **Planner (PLAN_)** | | |
 | `PLAN_BUDGET_EXCEEDED` | warn | matrix > budget; reduced via pairwise/priority |
 | `PLAN_AXIS_NO_VISUAL_EFFECT` | info | arg values render identically; axis dropped |

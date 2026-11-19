@@ -109,6 +109,11 @@ type UiToMain =
   | { t: 'cancel' }
   | { t: 'export.request'; scope: Scope; scale: 1 | 2 }                       // fidelity mode (§14)
   | { t: 'select'; nodeKey: string; sid: string }                             // report → select node in canvas
+  | { t: 'branch.link'; meta: BranchMeta }                                    // proposal mode: write branch:meta (§20)
+  | { t: 'changes.request' }                                                  // live Changes list, ah sub-hash diff (§20.2)
+  | { t: 'snapshot.request'; scope: DcrScope }                                // read-back for the DCR extractor (§20.3)
+  | { t: 'branch.meta.patch'; patch: Partial<Pick<BranchMeta, 'status' | 'lastDcr' | 'excluded' | 'approval'>> }
+  | { t: 'devstatus.set'; nodeIds: string[] }                                 // Ready for dev on submitted screens (S-18)
   | { t: 'pong'; id: number };                                                // yield round-trip (§12)
 
 type MainToUi =
@@ -121,6 +126,8 @@ type MainToUi =
   | { t: 'export.png'; vk: string; bytes: Uint8Array; boxes: NodeBox[] }      // fidelity mode
   | { t: 'done'; summary: ApplySummary }
   | { t: 'error'; code: string; message: string; recoverable: boolean }
+  | { t: 'changes'; items: ChangeSummary[] }                                  // §20.2
+  | { t: 'snapshot'; json: string; part: number; parts: number }              // FigmaSnapshot, split ≤ 1 MB (§20.3)
   | { t: 'ping'; id: number };
 
 type UnitRef =
@@ -226,7 +233,7 @@ RO = read-only, W = writes. No stage before `tokens` writes to the document, whi
 | Check | How | Outcome |
 |---|---|---|
 | **IR compatibility** | `manifest.irVersion` major ∈ `SUPPORTED_MAJORS`; unknown minors are ignored ([06](06-ir.md#versioning)) | else `APPLY_IR_VERSION_UNSUPPORTED` (error, blocks) |
-| **Fonts** | Collect every `FontName` the bundle needs: text runs, plus every mode value of font-family/weight variables ([08](08-tokens.md#edge)). `await figma.listAvailableFontsAsync()` is cached once per session. Resolve each one: (1) exact family+style; (2) a saved mapping (root shared plugin data `holotype/fontmap`, plus clientStorage for user-level defaults); (3) a style-name normalization table ([07](07-mapping.md#fonts)); (4) `{ family, variationSettings }` for variable fonts (`figma.getFontFamilyVariationAxes`) | missing fonts are listed in the **Fonts** screen; the user maps or accepts the fallback (default Inter of the nearest weight). Emits `FONT_MISSING_IN_FIGMA` (warn) or `FONT_SUBSTITUTED` (info) |
+| **Fonts** | Collect every `FontName` the bundle needs: text runs, plus every mode value of font-family/weight variables ([08](08-tokens.md#edge)). `await figma.listAvailableFontsAsync()` is cached once per session. Resolve each one: (1) exact family+style; (2) a saved mapping (root shared plugin data `holotype/fontmap`, plus clientStorage for user-level defaults); (3) a style-name normalization table ([07](07-mapping.md#fonts)); (4) `{ family, variationSettings }` for variable fonts (`figma.getFontFamilyVariationAxes`) | missing fonts are listed in the **Fonts** screen; the user maps or accepts the fallback (default Inter of the nearest weight). Emits `FONT_MISSING` (warn) or `FONT_SUBSTITUTED` (info) |
 | **Images** | For each asset sha: the registry image map (sha → Figma image hash), then `figma.getImageByHash` | request only the missing ones |
 | **Variables / styles** | The full matching procedure of [08 §10](08-tokens.md#matching) | a matching summary for the Tokens tab |
 | **Libraries** (components) | If `options.libraryComponents` maps `sid` → published component key (e.g. icons already exist in a team library), resolve with `importComponentByKeyAsync` / `importComponentSetByKeyAsync` | use library components as instance targets ([§10](#nested)) |
@@ -270,7 +277,7 @@ Each written variable gets `holotype/tok` and `holotype/ah`. Library-matched var
    1. Ensure the page and section exist ([§9](#pages)).
    2. Reconcile variants: create missing `ComponentNode`s and update existing ones in place ([10 §5](10-sync.md#reconcile)).
    3. For each variant, apply its node tree with the write rules ([§6](#apply-order)).
-   4. Verify the variant ([§11](#verify)) and apply fallbacks.
+   4. Verify the variant ([§11](#verify)) and apply fallbacks. **Proposal mode only** (branch files): then write the baseline snapshot `base:0..n` from the same read-back ([§20](#proposal)).
    5. Ensure the `ComponentSetNode` exists and the variant names are correct ([§7](#sets)).
    6. Reconcile component properties and bindings ([§8](#props)).
    7. Lay out the variants grid and labels ([§7.4](#grid)).
@@ -280,7 +287,7 @@ Each written variable gets `holotype/tok` and `holotype/ah`. Library-matched var
 
 ### 5.6 Finalize (write)
 
-1. Write the root registry, chunked ([10 §2.3](10-sync.md#root-registry)).
+1. Write the root registry, chunked ([10 §2.3](10-sync.md#root-registry)). In proposal mode, also write root `branch:meta` (`baseCommit`, `baselineFp`, `status`) ([§20](#proposal)).
 2. Write the report summary to root shared plugin data `holotype/report:*`.
 3. Post `done`.
 4. `figma.notify('Synced 12 components (3 updated, 1 conflict)', { timeout: 6000 })`.
@@ -417,7 +424,7 @@ The fake enforces these rules, so tests catch ordering regressions ([§18](#test
 
 ### 6.3 Images & SVG
 
-- **Image.** `const img = port.createImage(bytes)`, then use `img.hash`. Paint: `{ type: 'IMAGE', imageHash, scaleMode, imageTransform?, scalingFactor? }`. Capture guarantees PNG/JPEG/GIF at ≤4096px ([05](05-capture.md#images)). The applier asserts this and emits `PAINT_IMAGE_REJECTED` when Figma refuses an image.
+- **Image.** `const img = port.createImage(bytes)`, then use `img.hash`. Paint: `{ type: 'IMAGE', imageHash, scaleMode, imageTransform?, scalingFactor? }`. Capture guarantees PNG/JPEG/GIF at ≤4096px ([05](05-capture.md#images)). The applier asserts this and emits `APPLY_IMAGE_REJECTED` when Figma refuses an image.
 - **SVG.** `const f = port.createNodeFromSvg(svgText)` returns a FrameNode wrapper.
   - If the wrapper has a single child and no own visuals, unwrap it: move the child into the parent at the same index, then remove the wrapper.
   - The resulting vector layers are named from the Scene IR (`Icon / chevron-down`).
@@ -636,13 +643,13 @@ async function verifyVariant(root: ComponentNode, scene: SceneVariant, tol = 1):
 
 `relaxOrFallback(container)` tries the following in order, re-measuring after each, and stops at the first that passes:
 
-1. **Relax child sizing.** HUG → FIXED, then FILL → FIXED for children whose own size mismatched. Emit `LAYOUT_RELAXED_FIXED` (info).
+1. **Relax child sizing.** HUG → FIXED, then FILL → FIXED for children whose own size mismatched. Emit `APPLY_LAYOUT_RELAXED` (info).
 2. **Text width buffer** for text children that wrapped differently ([§11.1](#text-check)).
 3. **Absolute fallback (container).**
    1. `container.layoutMode = 'NONE'`. Children keep their current, wrong positions.
    2. Then, for each child, set `x`/`y` and `resizeWithoutConstraints(w, h)` from `scene.fallback.children[nk]`.
    3. The container gets `resizeWithoutConstraints(expect.w, expect.h)`.
-   4. Emit `LAYOUT_READBACK_FALLBACK` (warn) with `{ maxDelta, reason }`. The planner records this, so the mapper can learn which patterns fail (S-06/S-10 corpus).
+   4. Emit `APPLY_LAYOUT_FALLBACK` (warn) with `{ maxDelta, reason }`. The planner records this, so the mapper can learn which patterns fail (S-06/S-10 corpus).
 
 A fallback never touches ancestors. The container's outer size is forced to `expect`, so the ancestors' layout is unchanged.
 
@@ -792,17 +799,17 @@ These are coined in this chapter. The catalog is in [12](12-quality.md#diagnosti
 | `APPLY_INSTANCE_OVERRIDE` | info | literal override applied on an instance (suggests adding a TEXT/BOOLEAN prop) |
 | `APPLY_INSTANCE_CYCLE` | warn | cyclic nesting broken with frames |
 | `APPLY_IMAGE_SKIPPED` | warn | image not applied (use_figma path or upload failure) |
-| `PAINT_IMAGE_REJECTED` | warn | `createImage` refused the bytes (format or size) |
+| `APPLY_IMAGE_REJECTED` | warn | `createImage` refused the bytes (format or size) |
 | `SVG_IMPORT_FAILED` | warn | `createNodeFromSvg` failed; raster fallback used |
-| `FONT_MISSING_IN_FIGMA` | warn | required font not available; fallback applied |
+| `FONT_MISSING` | warn | required font not available; fallback applied |
 | `FONT_SUBSTITUTED` | info | font mapped via user or saved mapping |
-| `LAYOUT_RELAXED_FIXED` | info | HUG/FILL relaxed to FIXED to pass verification |
-| `LAYOUT_READBACK_FALLBACK` | warn | container converted to absolute positioning after read-back failure |
+| `APPLY_LAYOUT_RELAXED` | info | HUG/FILL relaxed to FIXED to pass verification |
+| `APPLY_LAYOUT_FALLBACK` | warn | container converted to absolute positioning after read-back failure |
 | `TEXT_WIDTH_BUFFERED` | info | text box widened by ≤ buffer to match the browser's line count |
 | `TEXT_LINE_MISMATCH` | warn | Figma line count ≠ browser line count after buffering |
-| `NET_SERVER_UNREACHABLE` | warn | local server not reachable (not running, or LNA-blocked) |
+| `NET_SERVER_UNREACHABLE` | warn | local server not reachable (not running); a browser LNA block is `NET_LNA_BLOCKED` |
 | `NET_PAIRING_FAILED` | error | pairing code rejected or expired |
-| `NET_BUNDLE_INTEGRITY` | error | component sha256 mismatch on transfer |
+| `APPLY_BUNDLE_CORRUPT` | error | component sha256 mismatch on transfer or import ([02](02-architecture.md)) |
 
 ---
 
@@ -841,3 +848,47 @@ The overall strategy is in [12](12-quality.md#pyramid).
 5. **S-10:** grid track/HUG/FLEX combinations accepted by the API; `setGridChildPosition` vs auto flow.
 6. **S-11:** `use_figma` input/output limits, `upload_assets` interplay, cost.
 7. **S-13:** SLOT property creation and binding sequence; `preferredValues` with local component keys; instance verification tolerance.
+8. **S-17 / S-18:** whether Figma branches carry shared plugin data (`branch:meta`, `base:*`) on branch creation and merge; whether plugins can write `devStatus`; `reactions` coverage of interactive components.
+
+---
+
+<a id="proposal"></a>
+## 20. Proposal mode (branch files)
+
+The workflow is in [15](15-change-requests.md#proposal-mode). This section covers what the plugin does differently.
+
+### 20.1 Mode, baseline and `branch:meta`
+
+- **Mode.** Main reads root `holotype/branch:meta` on `hello`. If it is present with `mode: 'proposal'`, the session runs in proposal mode, and `ready` reports it. A main library file never has `branch:meta`, so it never runs in this mode. The UI writes `branch:meta` through `branch.link` once `holotype branch start|link` pairs with the file.
+- **Plan.** A designer-edited managed node (an `ah` mismatch) is a **proposal**: it is kept and marked `proposal` in the plan, and it is not a conflict ([10 §9](10-sync.md#designer-edits)). Untouched nodes update as usual.
+- **Baseline write (D-34).** After step 4 of §5.5, main normalizes the read-back of each variant with the **same normalizer as `ah`** (shared module, [10 §9.1](10-sync.md#designer-edits)) into a `BaselineSnapshot` ([15 §3.3](15-change-requests.md#proposal-mode)). It then does canonical JSON → fflate deflate → base64, and writes chunks of ≤90 kB to variant shared plugin data `base:0..n`. The set gets its property/axes snapshot the same way.
+  - **Budget:** ≤16 kB compressed per variant. Over budget, nothing is written to the file. The snapshot goes to the CLI in `ApplyReport.baselines`, and `DCR_BASELINE_EXTERNAL` is raised.
+  - **No-op rule:** `base:*` is rewritten only when the snapshot's hash differs from the stored `base:h`, so a no-op re-sync still makes 0 writes.
+  - **Edited nodes on refresh** keep the designer's value. Their baseline entry moves to the new code value, flagged `DCR_BASELINE_SHIFTED` when the code changed underneath.
+- **Finalize** writes `branch:meta` (`baseCommit`, `baselineFp`, `status: 'editing'`) in the same undo step as the registry.
+
+### 20.2 Changes screen (live)
+
+- On `changes.request`, main compares each managed node's per-group `ah` sub-hashes with its baseline. No full diff runs, so this is cheap.
+- It also lists components without `sid` (new), screens in scope, and outdated or deprecated instances ([15 §4.13](15-change-requests.md#instance-versions)).
+- It returns `ChangeSummary[]`: `{ group: sid | 'new' | 'screens', title, kinds, nodeId, excluded }`.
+- The UI refreshes on the current page's `nodechange` events, debounced to 500 ms. `documentchange` needs `loadAllPagesAsync`, which is never called (D-06; verify, S-06).
+- **Exclude** toggles are written to `branch:meta.excluded` with `branch.meta.patch`.
+- Screen spec: [11 §6.14](11-ux.md#changes).
+
+### 20.3 Submit flow
+
+```
+UI: snapshot.request{scope} ─► main: normalizePlugin() over nodes in scope (read-only) ─► snapshot chunks
+UI: dcr.extract(snapshot, baseline, config)   (package dcr, pure; WebCrypto for h16)
+UI: render designer-view preview (review summary first, 15 §7.4) ─► user: Submit
+UI: export "after" images (exportAsync PNG @2x, via the fidelity-export path §14)
+UI: POST /v1/dcr (02 §4.1)  |  Download .zip  |  Copy prompt
+UI ─► main: branch.meta.patch { status: 'submitted', lastDcr } · devstatus.set(screens)   (one commitUndo)
+```
+
+- **Read-only until Submit.** Only the final `branch.meta.patch` and `devstatus.set` write to the document, in one undo step.
+- **Approve / Request changes** (`dcr.requireApproval`, [15 §7.4](15-change-requests.md#review)) is a single `branch.meta.patch { approval, status }`, bound to the previewed `dcrHash`.
+- **Budget:** snapshot plus extraction take ≤2 s for 200 items. Larger scopes show progress and can be cancelled (verify, S-06).
+- **Without the CLI**, the plugin still produces `dcr.json` and `prompt.md`, but with no file:line provenance (`DCR_PROVENANCE_MISSING`).
+- Screen specs, with empty, loading, error and success states: [11 §6.15–6.16](11-ux.md#submit) (D-40).
