@@ -39,30 +39,32 @@ export function pageSlug(fileName: string): string | undefined {
   return match?.[1];
 }
 
-const PLAN_LINK = /\[([^\]]*)\]\(\.\.\/plan\/([^)\s]+)\)/g;
+/** A link from `docs/diagnostics/` into an internal docs folder: text, folder, path. */
+const INTERNAL_DOCS_LINK = /\[([^\]]*)\]\(\.\.\/(plan|research)\/([^)\s]*)\)/g;
 const INDEX_LINK = /\]\(README\.md(#[^)\s]*)?\)/g;
 
 /**
  * Adapts a generated page to the site:
  * - links to the index (`README.md`) point at the site's index page;
- * - links into `docs/plan/`, which the site does not publish, point at the repository, or
- *   become plain text when no repository URL is known.
+ * - links into `docs/plan/` and `docs/research/`, which the site never publishes, become
+ *   their plain text, or point at the repository when `designDocsRepo` is given (the
+ *   `HOLOTYPE_SITE_PLAN_LINKS=repo` opt-in).
  * Every other link is kept, so VitePress's dead-link check still sees it.
  */
-export function toSiteMarkdown(markdown: string, repoUrl: string | undefined): string {
+export function toSiteMarkdown(markdown: string, designDocsRepo: string | undefined): string {
   return markdown
-    .replace(PLAN_LINK, (_, text: string, target: string) =>
-      repoUrl ? `[${text}](${repoLink(repoUrl, `docs/plan/${target}`)})` : text,
+    .replace(INTERNAL_DOCS_LINK, (_, text: string, folder: string, target: string) =>
+      designDocsRepo ? `[${text}](${repoLink(designDocsRepo, `docs/${folder}/${target}`)})` : text,
     )
     .replace(INDEX_LINK, (_, hash: string | undefined) => `](./index.md${hash ?? ''})`);
 }
 
-/** Reads every generated page in `dir`, sorted by file name. */
-export function loadDiagnosticPages(dir: string, repoUrl: string | undefined): DiagnosticPage[] {
+/** Reads every generated page in `dir`, sorted by file name; `designDocsRepo` as in {@link toSiteMarkdown}. */
+export function loadDiagnosticPages(dir: string, designDocsRepo: string | undefined): DiagnosticPage[] {
   const pages: DiagnosticPage[] = [];
   for (const name of readdirSync(dir).sort()) {
     const slug = pageSlug(name);
-    if (slug) pages.push({ slug, content: toSiteMarkdown(readFileSync(join(dir, name), 'utf8'), repoUrl) });
+    if (slug) pages.push({ slug, content: toSiteMarkdown(readFileSync(join(dir, name), 'utf8'), designDocsRepo) });
   }
   if (!pages.some((page) => page.slug === 'index')) {
     throw new Error(`${dir} has no ${DIAGNOSTICS_INDEX}. Run \`pnpm diag:gen\` at the repository root.`);

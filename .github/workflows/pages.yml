@@ -2,8 +2,10 @@ name: Pages
 
 # Builds the documentation site (website/, W-01) and deploys it to GitHub Pages.
 # Pull requests only build it, which also fails on dead links.
-# Deploying is inert until the owner enables Pages: Settings ▸ Pages ▸ Source: GitHub Actions.
-# Until then the build still runs and the deploy job is skipped, so nothing fails.
+# Deploying is inert until the owner enables Pages: Settings ▸ Pages ▸ Build and deployment ▸
+# Source: GitHub Actions. Until then the build still runs and the deploy job is skipped.
+# "Run workflow" and push runs need this file on the default branch (main).
+# Setup steps: website/README.md, "Deploying to GitHub Pages".
 # Published Pages are public on the internet, even from a private repository.
 
 on:
@@ -62,19 +64,39 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile --filter @holotype/website
 
-      # Deploy only when Pages is enabled with "GitHub Actions" as its source.
+      # Deploy only when Pages is enabled with "GitHub Actions" as its source. Choosing that
+      # source in Settings > Pages creates the Pages site, so the first deploy needs no earlier
+      # one. "Not enabled" (HTTP 404, or another source) skips the deploy; any other API error
+      # fails the run, so a broken check never skips deploys silently.
       - name: Check GitHub Pages
         id: pages
         if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
         run: |
-          build_type="$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq .build_type 2>/dev/null || true)"
+          if build_type="$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq .build_type 2> "$RUNNER_TEMP/pages-error")"; then
+            :
+          elif grep -q "HTTP 404" "$RUNNER_TEMP/pages-error"; then
+            build_type=""
+          else
+            cat "$RUNNER_TEMP/pages-error" >&2
+            echo "::error title=Pages check failed::Could not read the GitHub Pages settings of ${GITHUB_REPOSITORY}."
+            exit 1
+          fi
           if [ "$build_type" = "workflow" ]; then
             echo "enabled=true" >> "$GITHUB_OUTPUT"
           else
             echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "::notice title=Site not deployed::GitHub Pages is not enabled for GitHub Actions. To publish the site, open Settings > Pages and set Source to GitHub Actions."
+            # A manual run asked for a deploy, so say it louder than on a push.
+            level=notice
+            if [ "$EVENT" = "workflow_dispatch" ]; then level=warning; fi
+            case "$build_type" in
+              "") reason="Pages is off" ;;
+              legacy) reason="the source is Deploy from a branch" ;;
+              *) reason="the source is ${build_type}" ;;
+            esac
+            echo "::${level} title=Site not deployed::GitHub Pages is not enabled for GitHub Actions (${reason}). To publish the site, open Settings > Pages > Build and deployment and set Source to GitHub Actions, then run this workflow again."
           fi
 
       - name: Configure Pages

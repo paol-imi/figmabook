@@ -1,7 +1,7 @@
 /** Build-time values shared by the site config and the dynamic route loaders. */
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { resolveRepoUrl, siteBase } from './site.ts';
+import { designDocsRepo, planLinks, resolveRepoUrl, siteBase } from './site.ts';
 
 /** Repository root (the site lives in `website/`). */
 export const REPO_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
@@ -28,3 +28,12 @@ export const REPO_URL = resolveRepoUrl({
   githubRepository: process.env.GITHUB_REPOSITORY,
   gitRemote,
 });
+
+/** `HOLOTYPE_SITE_PLAN_LINKS`: `text` by default, `repo` to link the design docs. */
+export const PLAN_LINKS = planLinks(process.env.HOLOTYPE_SITE_PLAN_LINKS);
+
+/**
+ * Repository that links into `docs/plan/` and `docs/research/` point at, and that the nav's
+ * "Design docs" opens; `undefined` unless `HOLOTYPE_SITE_PLAN_LINKS=repo` (then no such links).
+ */
+export const DESIGN_DOCS_REPO_URL = designDocsRepo(PLAN_LINKS, REPO_URL);
