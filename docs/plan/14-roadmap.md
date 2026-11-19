@@ -267,38 +267,40 @@ A quarterly **first-party check** re-verifies Figma's agent tools and the compet
 | `mapper` | instance substitution with props → variant/property values; icon extraction (repeated normalized SVG hash, `split` components), slot regions |
 | `plugin` | instance creation + `setProperties`, preferred values, `createSlot`/SLOT properties, Icons page, instance-vs-capture verification (`APPLY_INSTANCE_MISMATCH`) |
 
-**Exit criteria:** Card→Button→Icon nesting produces instances in the React + Vite golden fixtures (D-26); instance precision ≥98% (no wrong instance), recall ≥85%; icon swaps work in designer test. **Effort:** 12 ew.
+**Exit criteria:** Card→Button→Icon nesting produces instances in the React + Vite golden fixtures (D-26); instance precision ≥98% (no wrong instance), recall ≥85%; icon swaps work in designer test. **Effort:** 10 agent-weeks, ~8 owner-hours.
 
 ---
 
-## Phase 7 — Automation (M7)
+## Automation (M7; was Phase 7)
 
-**Goal:** G6 — CI, registry, addon, Code Connect, MCP.
+**Goal:** G6 — CI, Code Connect, MCP sync tools.
 
 | Package | Deliverables |
 |---|---|
-| `action` | GitHub Action: build-or-use static Storybook, capture, publish bundle + `latest.json` (registry / Pages / artifact), PR summary + annotations, fidelity delta |
-| registry | minimal first-party registry domain (static bucket + CDN with `ACAO:*`) listed in manifest; GitHub Pages/raw support per S-01 findings |
-| `storybook-addon` | manager panel (sync status, "open in Figma"), `experimental_manifests` emitting `manifests/holotype.json`, optional in-preview capture hooks |
-| `cli` | `codeconnect` (generate Code Connect files from plugin-exported node map), `mcp` server, `login` |
-| `plugin` | Registry source, poll `latest.json`, export node map for Code Connect |
+| `cli` | `codeconnect` (generate Code Connect files from plugin-exported node map), MCP **sync** tools (the server itself ships in H-E), `publish` (url / s3 / gh-pages), `status --figma-file`. `login --storybook` moves to L0/L1 (private Storybooks need it early) and `login --figma` to L4 |
+| `plugin` | export node map for Code Connect |
 
-**Exit criteria:** fixture repo runs the Action on every PR in <10 min for 50 components; designers see Outdated within one poll after merge; Code Connect files validate with Figma's CLI; MCP tools usable from an agent in an end-to-end demo. **Effort:** 15 ew.
+Code Connect generation stays here; the bake-off uses hand-written Code Connect mappings. **Deferred until there is a second team:** the GitHub Action, the registry (and its manifest domains, D-10) and the Storybook addon panel.
+
+**Exit criteria:** Code Connect files validate with Figma's CLI; MCP sync tools usable from an agent in an end-to-end demo; `publish` and `status --figma-file` tested on the fixture repo. **Effort:** 12 agent-weeks, ~6 owner-hours.
 
 ---
 
-## Phase 8 — Launch (M8)
+## Private org plugin (M8; was Phase 8)
 
 **Goal:** 1.0 release, distributed privately (D-39).
 
 - **Private organization plugin** published to the org only (no Figma review); dev-plugin users move to it ([11](11-ux.md)). Network domains justified, security disclosure ([13](13-security-legal.md#publishing)).
-- **Community listing is deferred until after M8** (D-39): name per D-01 after the trademark search, trademark-compliant title, privacy policy; submit ≥3 weeks before the target date (review delays).
-- Docs site: getting started, config reference (generated from TypeBox), diagnostics pages, recipes (themes, portals, icons, private Storybooks), migration guide from story.to.design (`parameters.s2d.variantProperties` reader, [04](04-variant-model.md)).
-- Benchmarks published ([12](12-quality.md) §4.5).
-- Hardening: crash-free plugin sessions ≥99.5% in beta; top-20 diagnostics reviewed for fixability.
+- Quality: crash-free plugin sessions ≥99.5% in real use; top-20 diagnostics reviewed for fixability.
 - After launch (not in M8 scope): hosted renderer (topology C) with sandboxing ([13](13-security-legal.md)), decision gated on demand.
 
-**Exit criteria:** README §4 targets met on golden + micro corpus; org beta with ≥5 teams, ≥3 using CI mode; no open P0/P1. **Effort:** 10 ew.
+**Exit criteria:** README §4 targets met on golden + micro corpus; owner + designer acceptance on the owner's repo; no open P0/P1. **Effort:** 6 agent-weeks, ~10 owner-hours.
+
+<a id="public-track"></a>
+
+### Public track (optional, post-M8)
+
+Only if the project goes public: docs site (getting started, config reference generated from TypeBox, diagnostics pages, recipes, migration guide from story.to.design with the `parameters.s2d.variantProperties` reader, [04](04-variant-model.md)); published benchmarks ([12](12-quality.md) §4.5); Community listing (D-39: trademark-compliant title, privacy policy, submit ≥3 weeks before the target date); trademark search and repo rename ([13](13-security-legal.md#publishing)); the Action, registry and addon once a second team exists. Risks R9 and R10 belong here.
 
 ---
 

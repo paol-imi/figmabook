@@ -475,7 +475,7 @@ Hardening: B-140 (SB 11 docgen server), B-141 (SB 8/9 smoke), B-118 (globals/the
 
 **Path** `packages/capture/src/{page/walk,page/collectors/geometry,cdp}` · **Depends** B-11, B-40 · **Runs** container · **Size** L
 
-Build ([05 §3](05-capture.md#walk), §3.1–3.2, §8): light DOM + open shadow roots + `display:contents`; `data-fx-id` stamping and the CDP id map ([05 §2.3](05-capture.md#injection)); CDP box model; computed-style subset diffed against defaults; stacking order. Rotated or transformed nodes: capture the quad and mark the node for rasterization in hardening (`CAP_TRANSFORM_RASTERIZED` or the catalog's equivalent).
+Build ([05 §3](05-capture.md#walk), §3.1–3.2, §8): light DOM + open shadow roots + `display:contents`; `data-fx-id` stamping and the CDP id map ([05 §2.3](05-capture.md#injection)); CDP box model; computed-style subset diffed against defaults; stacking order. Rotated or transformed nodes: capture the quad and mark the node for rasterization in hardening (`CAP_NON_AFFINE_RASTERIZED` for 3D or perspective transforms; the mapper reports `PAINT_SUBTREE_RASTERIZED`).
 
 Acceptance: unit tests; `test:e2e` snapshots for `micro-flex--*`, `micro-borders--uniform`, and every ds-react story; T0: every captured rect equals a live re-measure within 0.01 px.
 
