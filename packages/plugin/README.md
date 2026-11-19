@@ -66,10 +66,17 @@ The manifest is the `figma-plugin` field of `package.json` (09 §2). Its `id` is
   `styleWeight`, `rankStyles`, `nearestStyle`, `fontRequestKey`.
 - `writeNode`, `WRITERS` and `orderedWriters()` (`write/index.ts`: one line per writer, append only;
   writers run in 09 §6 step order), `NodeWriter`, `WriteContext`, `WriteTarget`.
-- `writeIdentity`, `writeProvisionalKey`, `identityVersion`, `variantArgs`, `IDENTITY_NAMESPACE`,
-  `APPLIER_EPOCH`; `ensureComponentsPage`, `COMPONENTS_PAGE`; `variantGrid`, `nextComponentTop`,
-  `contentBottom`; `readbackDelta`; `toPaint(s)`, `toEffect(s)`; `createSlicer`, `NO_SLICING`;
-  `utf8Decode`; `SUPPORTED_FEATURES`, `unsupportedFeatures` (`features.ts`).
+- `writeIdentity`, `writeProvisionalKey`, `writeAppliedHash`, `identityVersion`, `variantArgs`,
+  `IDENTITY_NAMESPACE`, `APPLIER_EPOCH`; `ensureComponentsPage`, `COMPONENTS_PAGE`; `variantGrid`,
+  `nextComponentTop`, `contentBottom`; `readbackDelta`; `toPaint(s)`, `toEffect(s)`;
+  `createSlicer`, `NO_SLICING`; `utf8Decode`; `SUPPORTED_FEATURES`, `unsupportedFeatures`
+  (`features.ts`).
+- `readGroups(node)` → `ReadGroups` (`readback/`): the read-back of a node's seven managed property
+  groups (06 §6), plain JSON with Figma property names; `appliedHashOf(node)` =
+  `appliedHash(normalizeGroups(readGroups(node)))` from `@holotype/ir/core`. Every node of a variant
+  gets its `ah` once the variant is complete (10 §9.1). The group conventions are listed in
+  `readback/groups.ts`; `fixtures/dcr` relies on them, and `test/apply/readback-fixtures.test.ts`
+  rebuilds that fixture's component sets in the fake to check them.
 
 What the slice applier writes, and what it falls back on:
 

@@ -98,15 +98,21 @@ is the render order. `canonicalSnapshot` sorts the same arrays; `header.figma.sn
 They follow `fixtures/ds-react` as the mapper and applier would produce it: Button (Variant × Size, 9
 variants, TEXT `Label`, BOOLEAN `Show icon`), Badge (Tone, BOOLEAN `Dot`, TEXT `Label`) and Card
 (`Story` axis), every ds-react token as a variable in one `Tokens` collection, root `branch:meta` and a
-one-chunk registry. The read-back conventions they assume, until B-58 fixes `readGroups`:
+one-chunk registry. The read-back conventions they assume are those of the plugin's `readGroups`
+(B-58, `packages/plugin/src/apply/readback/groups.ts`; its tests rebuild the `no-change` sets in
+`figma-fake` and read them back to the same groups):
 
 - **Groups** use Figma property names (06 §6): `layout.paddingLeft`, `paint.fills`, radii per corner in
   `paint`, single-segment text flattened into `text` (`fontSize`, `lineHeight`, `fills`, …).
 - **`bind`** is flat: bound fields map to variable ids (`bind.paddingLeft`, `bind.fills: [id]`), plus
   `componentPropertyReferences`. A rebinding is reported on the value field with `token.before/after`.
 - **D-16:** padding includes the 1px border and is not bound (`TOKEN_PADDING_BORDER_OFFSET`).
+- **Card** variants hug vertically while their `Content` fills that axis. Figma switches such a
+  parent to FIXED (layout-sim assumption `fill-breaks-hug`, S-05 confirms); the `readGroups` test
+  expects the fake's FIXED there. If S-05 confirms it, the Card baselines move to FIXED (reseal).
 - **`ah`** of every managed node is the applied hash of its baseline groups, so an edit shows as a
-  sub-hash mismatch. **Set baselines** carry `props` and `nodes.set`, and reuse the default variant's `vk`.
+  sub-hash mismatch (`test/applied-hash.test.ts` recomputes it with `normalizeGroups` and lists,
+  per case, the groups each edit changes). **Set baselines** carry `props` and `nodes.set`, and reuse the default variant's `vk`.
 - **Variables** carry Figma `scopes` (an open field, not in 15 §4.1). Candidates for a raw value are the
   variables of the same type, scope and value; for a padding the CSS value after removing the stroke.
 - **Nearest** scores read 15 §4.8 as: shingles are root-to-node paths of `TYPE[:layoutMode]` up to depth

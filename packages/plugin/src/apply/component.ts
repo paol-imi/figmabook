@@ -7,9 +7,9 @@
 import type { SceneComponent, SceneVariant } from '@holotype/ir';
 import { createDiagnostic, type Diagnostic, diagnostic, HolotypeError } from '@holotype/shared';
 import type { FigmaPort } from '../port';
-import { identityVersion } from './identity';
+import { identityVersion, writeAppliedHash } from './identity';
 import { variantGrid } from './placement';
-import { readbackDelta } from './readback';
+import { appliedHashOf, readbackDelta } from './readback';
 import type { ResourceCache } from './resources';
 import { type TreeWriter, writeNode } from './write/node';
 
@@ -44,6 +44,18 @@ export function variantFrameName(scene: SceneComponent, variant: SceneVariant): 
   return scene.variants.length === 1 ? scene.meta.name : `${scene.meta.name} / ${variant.root.name}`;
 }
 
+/**
+ * Reads back every node of a complete variant and stores its `ah` (10 §9.1). It runs after the
+ * whole variant is written, so a parent's groups already reflect its children (hug sizes).
+ */
+async function stampAppliedHashes(writer: TreeWriter, tick: () => Promise<void>): Promise<void> {
+  for (const [nk, { node }] of writer.written) {
+    writer.current = nk;
+    writeAppliedHash(node, await appliedHashOf(node));
+    await tick();
+  }
+}
+
 export async function applyComponent(scene: SceneComponent, run: ComponentRun): Promise<ComponentOutcome> {
   const grid = variantGrid(scene, { x: 0, y: run.top });
   const variants: AppliedVariant[] = [];
@@ -65,7 +77,9 @@ export async function applyComponent(scene: SceneComponent, run: ComponentRun): 
           variant,
           v: identityVersion(run.sceneMajor),
         });
-        variants.push({ vk: variant.vk, node, maxDelta: readbackDelta(node, writer.written.values()) });
+        const maxDelta = readbackDelta(node, writer.written.values());
+        await stampAppliedHashes(writer, run.tick);
+        variants.push({ vk: variant.vk, node, maxDelta });
       } finally {
         current = writer.current;
       }
