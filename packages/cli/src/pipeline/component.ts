@@ -4,7 +4,7 @@ import { mapComponent } from '@holotype/mapper';
 import { compareSeverity, type Diagnostic, HolotypeError } from '@holotype/shared';
 import type { IndexStory, StorybookSource } from '@holotype/storybook';
 import type { RunComponent } from '../run-report';
-import { redactSource, storybookLinks } from './source';
+import { storybookLinks } from './source';
 
 /** One component of a capture run: one story, in this version. */
 export interface ComponentWork {
@@ -26,22 +26,6 @@ export interface MapContext {
   readonly baseUrl: string;
   readonly settings: MapperSettings;
   readonly elapsed: () => number;
-}
-
-/**
- * A capture as the bundle keeps it. A static build is served on an ephemeral loopback port
- * (03 §9.1); that port is not a fact of the design, and in `target.storybookUrl` it would
- * change the scene's `captureHash` on every run. It is replaced by the redacted source.
- */
-export function portableCapture(doc: CaptureDoc, source: StorybookSource): CaptureDoc {
-  if (source.kind !== 'static') return doc;
-  let path = '/';
-  try {
-    path = new URL(doc.target.storybookUrl).pathname;
-  } catch {
-    // keep '/'
-  }
-  return { ...doc, target: { ...doc.target, storybookUrl: `${redactSource(source)}${path}` } };
 }
 
 /** What the storybook adapter knows of the component, for the mapper (06 §1.1). */
@@ -75,7 +59,7 @@ export function mapWork(work: ComponentWork, context: MapContext): void {
   const captures = new Map<string, CaptureDoc>();
   for (const variant of planned) {
     const capture = work.captures.get(variant.vk);
-    if (capture !== undefined) captures.set(variant.vk, portableCapture(capture.doc, context.source));
+    if (capture !== undefined) captures.set(variant.vk, capture.doc);
   }
   const t0 = context.elapsed();
   try {

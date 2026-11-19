@@ -12,22 +12,27 @@ import type { CaptureOutcome, CaptureSuccess } from '../../src/types';
 /** A fixture Storybook served on 127.0.0.1: built fresh, or `HOLOTYPE_STORYBOOK_STATIC` when set. */
 export interface FixtureStorybook {
   readonly storybook: ConnectedStorybook;
+  /** The static build directory. */
+  readonly dir: string;
   close(): Promise<void>;
 }
 
 export async function openFixtureStorybook(): Promise<FixtureStorybook> {
   const prebuilt = process.env.HOLOTYPE_STORYBOOK_STATIC;
-  let outDir: string | undefined;
+  let tempDir: string | undefined;
+  let dir = prebuilt ?? '';
   if (prebuilt === undefined || prebuilt === '') {
-    outDir = await mkdtemp(join(tmpdir(), 'holotype-capture-e2e-'));
-    await buildStorybook(outDir);
+    tempDir = await mkdtemp(join(tmpdir(), 'holotype-capture-e2e-'));
+    dir = join(tempDir, 'storybook-static');
+    await buildStorybook(dir);
   }
-  const storybook = unwrap(await connectStorybook({ source: { kind: 'static', dir: outDir ?? prebuilt ?? '' } }));
+  const storybook = unwrap(await connectStorybook({ source: { kind: 'static', dir } }));
   return {
     storybook,
+    dir,
     close: async () => {
       await storybook.close();
-      if (outDir !== undefined) await rm(outDir, { recursive: true, force: true });
+      if (tempDir !== undefined) await rm(tempDir, { recursive: true, force: true });
     },
   };
 }
@@ -53,22 +58,29 @@ export function loopbackOnly(outside: string[]): (page: Page) => Promise<void> {
   };
 }
 
+/** Requests outside 127.0.0.1, collected but not routed: routing changes what Chromium fetches. */
+export function watchLoopback(page: Page, outside: string[]): void {
+  page.on('request', (request) => {
+    const url = new URL(request.url());
+    if (url.protocol !== 'data:' && url.protocol !== 'blob:' && url.hostname !== '127.0.0.1') outside.push(url.href);
+  });
+}
+
 export function expectCaptured(outcome: CaptureOutcome): CaptureSuccess {
   if (!outcome.ok) throw new Error(`capture failed: ${JSON.stringify(outcome.diagnostic)}`);
   return outcome;
 }
 
 /**
- * The golden form of a capture: volatile timing zeroed, the ephemeral server port and the
- * screenshot bytes hash replaced (the hash is checked across runs instead), pretty-printed
- * canonical JSON.
+ * The golden form of a capture: volatile timing zeroed, the static build's folder name (it
+ * differs under `HOLOTYPE_STORYBOOK_STATIC`) and the screenshot bytes hash replaced (the hash
+ * is checked across runs instead), pretty-printed canonical JSON.
  */
 export function goldenCapture(doc: CaptureDoc): string {
   const stable = stableCapture(doc);
-  const url = new URL(stable.target.storybookUrl);
-  url.port = '6006';
+  const storybookUrl = stable.target.storybookUrl.replace(/^static:[^/]*/, 'static:storybook-static');
   const shot = stable.screenshot?.sha;
-  let json = canonicalCapture({ ...stable, target: { ...stable.target, storybookUrl: url.href } });
+  let json = canonicalCapture({ ...stable, target: { ...stable.target, storybookUrl } });
   if (shot !== undefined) json = json.replaceAll(shot, '0'.repeat(64));
   return `${JSON.stringify(JSON.parse(json), null, 2)}\n`;
 }

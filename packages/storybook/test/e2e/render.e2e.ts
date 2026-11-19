@@ -175,6 +175,43 @@ describe('URL render', () => {
   });
 });
 
+describe('console watch (SB_CONSOLE_ERROR)', () => {
+  it("leaves out the 404 of the browser's own /favicon.ico request", async () => {
+    // New headless Chromium (the capture browser, 05 §1.3) asks for the favicon once per
+    // context, and only while no request routing is installed: this needs a browser and a
+    // context of its own. Requests are watched instead of routed (BUILD §3.1 rule 8).
+    const path = process.env.HOLOTYPE_CHROMIUM_PATH;
+    const own = await chromium.launch(
+      path === undefined || path === '' ? { channel: 'chromium' } : { executablePath: path },
+    );
+    try {
+      const fresh = await own.newContext({ viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' });
+      const freshPage = await fresh.newPage();
+      freshPage.on('request', (request) => {
+        const url = new URL(request.url());
+        if (url.protocol !== 'data:' && url.protocol !== 'blob:' && url.hostname !== '127.0.0.1') {
+          outsideRequests.push(url.href);
+        }
+      });
+      const favicon: string[] = [];
+      const faviconUrl = new URL('/favicon.ico', storybook.baseUrl).href;
+      freshPage.on('console', (message) => {
+        if (message.location().url === faviconUrl) favicon.push(message.text());
+      });
+      const freshDriver = await storybook.openDriver(freshPage);
+      const first = expectOk(await freshDriver.render({ storyId: 'micro-flex--row' }));
+      await expect.poll(() => favicon.length, { timeout: 5000 }).toBeGreaterThan(0);
+      const second = expectOk(await freshDriver.render({ storyId: 'components-badge--default' }));
+      // The browser logged it; no render reports it.
+      expect(favicon[0]).toMatch(/^Failed to load resource/);
+      expect([...first.warnings, ...second.warnings]).toEqual([]);
+      await freshDriver.dispose();
+    } finally {
+      await own.close();
+    }
+  });
+});
+
 describe('driver lifecycle', () => {
   it('reload() leaves the preview; render() then starts from a fresh document', async () => {
     expectOk(await driver.render({ storyId: 'components-badge--default' }));

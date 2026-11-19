@@ -5,8 +5,12 @@ import type { LaunchOptions, Page } from 'playwright';
 import type { CaptureConfig } from './environment';
 
 export interface CapturerOptions {
-  /** The Storybook to render from (`connectStorybook`). The capturer does not close it. */
-  readonly storybook: Pick<ConnectedStorybook, 'openDriver'>;
+  /**
+   * The Storybook to render from (`connectStorybook`). The capturer does not close it. Its
+   * `origin` names it in `target.storybookUrl`, so captures of a static build hash the same
+   * whatever loopback port served it.
+   */
+  readonly storybook: Pick<ConnectedStorybook, 'openDriver' | 'origin'>;
   /** The `capture` config namespace (16 §7). `svg`, `rasterize` and `devSourcemap` are not used yet. */
   readonly config?: CaptureConfig;
   /** `--concurrency`: overrides `config.workers`. */

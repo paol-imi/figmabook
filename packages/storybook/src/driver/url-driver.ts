@@ -1,6 +1,5 @@
 /// <reference lib="dom" />
-import { createDiagnostic, type Diagnostic, diagnostic } from '@holotype/shared';
-import type { ConsoleMessage, ElementHandle, Page } from 'playwright';
+import type { ElementHandle, Page } from 'playwright';
 import type {
   DriverOptions,
   RenderDriver,
@@ -11,6 +10,7 @@ import type {
   SbErrorCode,
 } from '../types';
 import { encodeUrlParam } from '../url-args';
+import { watchConsole } from './console-watch';
 import { type ErrorDetails, outcomeError, renderError, unencodableError } from './errors';
 import {
   displayedChildren,
@@ -32,9 +32,6 @@ export const DEFAULT_ROOT_SELECTORS: readonly string[] = ['#storybook-root', '#r
 
 /** How long the post-timeout probe of the page may take. */
 const PROBE_TIMEOUT_MS = 1000;
-
-/** Console errors kept per render in `SB_CONSOLE_ERROR`. */
-const MAX_CONSOLE_MESSAGES = 20;
 
 export interface UrlDriverContext {
   readonly page: Page;
@@ -81,34 +78,6 @@ class Deadline {
       clearTimeout(timer);
     }
   }
-}
-
-/** Collects console errors and page errors while a render runs (`SB_CONSOLE_ERROR`, 03 §5.3). */
-function watchConsole(page: Page): { stop(): Diagnostic[] } {
-  const messages: string[] = [];
-  let stopped = false;
-  const onConsole = (message: ConsoleMessage) => {
-    if (message.type() === 'error') messages.push(message.text());
-  };
-  const onPageError = (error: Error) => messages.push(error.message);
-  page.on('console', onConsole);
-  page.on('pageerror', onPageError);
-  return {
-    stop: () => {
-      if (stopped) return [];
-      stopped = true;
-      page.off('console', onConsole);
-      page.off('pageerror', onPageError);
-      if (messages.length === 0) return [];
-      const kept = messages.slice(0, MAX_CONSOLE_MESSAGES);
-      return [
-        createDiagnostic(diagnostic('SB_CONSOLE_ERROR'), undefined, {
-          value: kept[0] ?? '',
-          data: { count: messages.length, messages: kept },
-        }),
-      ];
-    },
-  };
 }
 
 /**
@@ -219,7 +188,7 @@ export async function createUrlDriver(context: UrlDriverContext, options: Driver
       if (disposed) throw new Error('RenderDriver.render() was called after dispose().');
       if (busy) throw new Error('RenderDriver.render() was called while another render is in progress.');
       busy = true;
-      const consoleWatch = watchConsole(page);
+      const consoleWatch = watchConsole(page, baseUrl);
       try {
         const result = await renderOnce(request, new Deadline(timeoutMs));
         const logged = consoleWatch.stop();

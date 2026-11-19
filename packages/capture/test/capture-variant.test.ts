@@ -61,6 +61,8 @@ function png(): Buffer {
 
 interface FakeOptions {
   readonly render?: RenderResult | SbError;
+  /** The URL of the default successful render. */
+  readonly url?: string;
   /** What successive serialize calls return or throw. */
   readonly serialize?: (PageCapture | Error)[];
   readonly frozen?: number;
@@ -84,7 +86,7 @@ function fakeSession(options: FakeOptions = {}) {
   const render: RenderResult = {
     ok: true,
     storyId: 'micro-flex--row',
-    url: 'http://127.0.0.1:6006/iframe.html?id=micro-flex--row&viewMode=story',
+    url: options.url ?? 'http://127.0.0.1:6006/iframe.html?id=micro-flex--row&viewMode=story',
     renderMs: 50,
     phase: 'finished',
     container: { ...handle } as ElementHandle<Element>,
@@ -117,6 +119,7 @@ function fakeSession(options: FakeOptions = {}) {
 const context: VariantContext = {
   env: DEFAULT_ENVIRONMENT,
   engine: { version: '0.0.0', chromium: '153.0.8010.12', playwright: '1.63.0' },
+  origin: 'http://127.0.0.1:6006',
   attempt: 0,
 };
 
@@ -138,6 +141,23 @@ describe('captureVariant', () => {
     expect(outcome.doc.assets[sha]).toEqual({ mime: 'image/png', bytes: 24, natural: { w: 96, h: 64 } });
     expect(outcome.assets.get(sha)?.byteLength).toBe(24);
     expect(calls.screenshot).toBe(1);
+  });
+
+  it('names a static build by its origin, so the loopback port does not reach the hash', async () => {
+    const statics = { ...context, origin: 'static:storybook-static' };
+    const outcomes = await Promise.all(
+      [41234, 53111].map(async (port) => {
+        const { session } = fakeSession({ url: `http://127.0.0.1:${port}/iframe.html?id=micro-flex--row&args=` });
+        const outcome = await captureVariant(session, { storyId: 'micro-flex--row' }, statics);
+        if (!outcome.ok) throw new Error(JSON.stringify(outcome.diagnostic));
+        return outcome;
+      }),
+    );
+    expect(outcomes.map((outcome) => outcome.doc.target.storybookUrl)).toEqual([
+      'static:storybook-static/iframe.html',
+      'static:storybook-static/iframe.html',
+    ]);
+    expect(outcomes[0]?.hash).toBe(outcomes[1]?.hash);
   });
 
   it('keeps the planned vk and sid, and can skip the screenshot', async () => {

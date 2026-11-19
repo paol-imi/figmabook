@@ -583,7 +583,7 @@
     "sid": "micro-flex",
     "state": null,
     "storyId": "micro-flex--row",
-    "storybookUrl": "http://127.0.0.1:6006/iframe.html",
+    "storybookUrl": "static:storybook-static/iframe.html",
     "viewport": {
       "h": 800,
       "w": 1280

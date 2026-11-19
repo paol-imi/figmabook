@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { componentIdFromStoryId, isStoryId, normalizeStorybookUrl, parseSource } from '../src';
+import {
+  componentIdFromStoryId,
+  documentOrigin,
+  documentUrl,
+  isStoryId,
+  normalizeStorybookUrl,
+  parseSource,
+} from '../src';
 
 describe('parseSource', () => {
   it.each([
@@ -36,6 +43,30 @@ describe('normalizeStorybookUrl (03 §2.1)', () => {
 
   it.each(['not a url', 'ftp://example.test/'])('rejects %s', (input) => {
     expect(() => normalizeStorybookUrl(input)).toThrow(TypeError);
+  });
+});
+
+describe('documentOrigin (06 §2 target.storybookUrl)', () => {
+  it.each([
+    [{ kind: 'static', dir: '/home/someone/project/storybook-static' }, 'static:storybook-static'],
+    [{ kind: 'static', dir: '/srv/storybook-static/' }, 'static:storybook-static'],
+    [{ kind: 'url', url: 'http://127.0.0.1:6006/?path=/story/a--b' }, 'http://127.0.0.1:6006'],
+    [{ kind: 'url', url: 'https://user:secret@sb.example.test/design/system/' }, 'https://sb.example.test'],
+  ] as const)('%j → %s', (source, origin) => {
+    expect(documentOrigin(source)).toBe(origin);
+  });
+
+  it('names a relative static directory by its resolved folder', () => {
+    expect(documentOrigin({ kind: 'static', dir: '.' })).toMatch(/^static:[^/]+$/);
+  });
+
+  it('builds the document URL from the origin and the page path only', () => {
+    expect(documentUrl('http://127.0.0.1:53111/iframe.html?id=a--b&args=x#top', 'static:sb')).toBe(
+      'static:sb/iframe.html',
+    );
+    expect(documentUrl('https://u:p@sb.example.test/ui/iframe.html?id=a--b', 'https://sb.example.test')).toBe(
+      'https://sb.example.test/ui/iframe.html',
+    );
   });
 });
 

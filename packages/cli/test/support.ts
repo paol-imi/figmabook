@@ -78,6 +78,7 @@ export const PNG_SHA = sha256Hex(PNG);
 export function fakeStorybook(closed: string[] = []): ConnectedStorybook {
   return {
     baseUrl: MODEL.baseUrl,
+    origin: 'static:storybook-static',
     caps: CAPS,
     model: MODEL,
     diagnostics: [],
@@ -120,7 +121,8 @@ export function fakeCapturer(options: FakeCapturerOptions = {}): Capturer {
         target: {
           ...golden.target,
           vk: request.vk ?? golden.target.vk,
-          storybookUrl: 'http://127.0.0.1:41234/iframe.html',
+          // What the capturer records for a static build (`ConnectedStorybook.origin`).
+          storybookUrl: 'static:storybook-static/iframe.html',
         },
       };
       const canonical = canonicalJSON(doc, { numKind: captureNumKind });

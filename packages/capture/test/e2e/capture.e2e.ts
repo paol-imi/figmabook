@@ -1,4 +1,6 @@
 import { type CaptureDoc, type CNode, validateCaptureDoc } from '@holotype/ir';
+import { unwrap } from '@holotype/shared';
+import { connectStorybook } from '@holotype/storybook';
 import type { Page } from 'playwright';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { type Capturer, canonicalCapture, captureHash, createCapturer, stableCapture } from '../../src';
@@ -9,6 +11,7 @@ import {
   goldenCapture,
   loopbackOnly,
   openFixtureStorybook,
+  watchLoopback,
 } from './support';
 
 /**
@@ -70,6 +73,47 @@ describe('determinism (05 §10.1)', () => {
     expect(second.hash).toBe(first.hash);
     expect(goldenCapture(second.doc)).toBe(goldenCapture(first.doc));
     await expect(goldenCapture(first.doc)).toMatchFileSnapshot(`__golden__/${storyId}.capture.json`);
+  });
+});
+
+describe('portable captures (06 §2 target.storybookUrl)', () => {
+  it('hashes a static build the same on another port, with no favicon console error', async () => {
+    const again = unwrap(await connectStorybook({ source: { kind: 'static', dir: fixture.dir } }));
+    const faviconLogged: string[] = [];
+    // A fresh capturer: its first render is the one the browser's own favicon request lands on.
+    // Chromium skips that request while routing is on, so requests are watched, not routed.
+    const other = createCapturer({
+      storybook: again,
+      workers: 1,
+      ...chromiumPath(),
+      preparePage: (page) => {
+        watchLoopback(page, outside);
+        page.on('console', (message) => {
+          if (message.location().url === new URL('/favicon.ico', again.baseUrl).href) {
+            faviconLogged.push(message.text());
+          }
+        });
+      },
+    });
+    try {
+      expect(again.baseUrl).not.toBe(fixture.storybook.baseUrl);
+      expect(again.origin).toBe(fixture.storybook.origin);
+      const here = expectCaptured(await capturer.capture({ storyId: 'micro-flex--row' }));
+      const there = expectCaptured(await other.capture({ storyId: 'micro-flex--row' }));
+      expect(here.doc.target.storybookUrl).toBe(`${fixture.storybook.origin}/iframe.html`);
+      expect(here.doc.target.storybookUrl).toMatch(/^static:[^/:]+\/iframe\.html$/);
+      expect(there.doc.target.storybookUrl).toBe(here.doc.target.storybookUrl);
+      expect(there.hash).toBe(here.hash);
+      expect(canonicalCapture(stableCapture(there.doc))).toBe(canonicalCapture(stableCapture(here.doc)));
+      // The browser did ask for /favicon.ico and logged the 404; the render does not report it.
+      await expect.poll(() => faviconLogged.length, { timeout: 5000 }).toBeGreaterThan(0);
+      expect(there.warnings).toEqual([]);
+      const next = expectCaptured(await other.capture({ storyId: 'components-badge--default' }));
+      expect(next.warnings).toEqual([]);
+    } finally {
+      await other.close();
+      await again.close();
+    }
   });
 });
 

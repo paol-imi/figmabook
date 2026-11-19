@@ -53,6 +53,8 @@ describe('connectStorybook: static build (03 §9.1)', () => {
   it('serves the recorded Storybook 10 build and fills the model', async () => {
     const storybook = await connected({ source: { kind: 'static', dir: fixtureDir('sb10-ds-react') } });
     expect(storybook.baseUrl).toMatch(/^http:\/\/127\.0\.0\.1:\d+\/$/);
+    // Documents name the build, not the ephemeral port it is served on.
+    expect(storybook.origin).toBe('static:sb10-ds-react');
     expect(storybook.caps).toMatchObject({ version: '10.6.7', indexFormat: 'v5', storyFinishedEvent: true });
     expect(storybook.diagnostics).toEqual([]);
     const stories = await storybook.listStories();
@@ -150,6 +152,7 @@ describe('connectStorybook: URL (03 §2.1, §9)', () => {
       source: `${server.url}index.html?path=/story/components-button--primary`,
     });
     expect(storybook.baseUrl).toBe(server.url);
+    expect(storybook.origin).toBe(new URL(server.url).origin);
     expect(storybook.model.defaultStoryId).toBe('components-button--primary');
     expect(storybook.model.stories).toHaveLength(52);
   });
