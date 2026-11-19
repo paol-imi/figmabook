@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+packages/plugin/build/
+packages/plugin/manifest.json
+*.tsbuildinfo
+
+# Tooling caches
+.turbo/
+coverage/
+
+# Holotype local workspace (02 §5.4); committed design change requests stay tracked
+.holotype/*
+!.holotype/requests/
+
+# Logs and OS / editor noise
+*.log
+.DS_Store

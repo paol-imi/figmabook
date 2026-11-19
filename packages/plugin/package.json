@@ -1,0 +1,56 @@
+{
+  "name": "@holotype/plugin",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The Holotype Figma plugin: applies Scene IR bundles by keyed in-place reconciliation.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    "./port": {
+      "types": "./src/port.ts"
+    }
+  },
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "build-figma-plugin --minify && node scripts/check-bundle-size.mjs",
+    "watch": "build-figma-plugin --watch",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@create-figma-plugin/ui": "4.0.3",
+    "@create-figma-plugin/utilities": "4.0.3",
+    "@holotype/ir": "workspace:*",
+    "@holotype/layout-sim": "workspace:*",
+    "@holotype/shared": "workspace:*",
+    "preact": "10.29.8"
+  },
+  "devDependencies": {
+    "@create-figma-plugin/build": "4.0.3",
+    "@figma/plugin-typings": "1.142.0"
+  },
+  "figma-plugin": {
+    "id": "holotype",
+    "name": "Holotype",
+    "api": "1.0.0",
+    "editorType": ["figma"],
+    "main": "src/main.ts",
+    "ui": "src/ui.tsx",
+    "documentAccess": "dynamic-page",
+    "networkAccess": {
+      "allowedDomains": [
+        "http://127.0.0.1:47321",
+        "http://127.0.0.1:47322",
+        "http://127.0.0.1:47323",
+        "ws://127.0.0.1:47321",
+        "ws://127.0.0.1:47322",
+        "ws://127.0.0.1:47323"
+      ],
+      "devAllowedDomains": ["http://localhost:47321", "ws://localhost:47321"],
+      "reasoning": "Connects only to the Holotype CLI running on your own machine (127.0.0.1, ports 47321-47323) to receive the component data you exported from your Storybook. No Figma document data is sent anywhere else."
+    },
+    "permissions": ["teamlibrary"]
+  }
+}

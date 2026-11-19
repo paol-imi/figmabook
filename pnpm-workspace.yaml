@@ -1,0 +1,7 @@
+packages:
+  - packages/*
+  - tools/*
+
+# pnpm 10 blocks dependency lifecycle scripts by default; allow only what is needed.
+onlyBuiltDependencies:
+  - esbuild

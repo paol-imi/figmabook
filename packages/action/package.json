@@ -1,0 +1,23 @@
+{
+  "name": "@holotype/action",
+  "version": "0.0.0",
+  "private": true,
+  "description": "GitHub Action wrapper around the Holotype CLI.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "ncc build src/main.ts --out dist --minify --target es2022",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@holotype/cli": "workspace:*",
+    "@holotype/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "0.45.0"
+  }
+}

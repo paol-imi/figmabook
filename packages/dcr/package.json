@@ -1,0 +1,32 @@
+{
+  "name": "@holotype/dcr",
+  "version": "0.0.0",
+  "description": "Deterministic Design Change Requests: Figma snapshot vs baseline diff, classification and prompt rendering. Isomorphic and pure.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@holotype/ir": "workspace:*",
+    "@holotype/shared": "workspace:*"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "@holotype/storybook",
+  "version": "0.0.0",
+  "description": "Storybook adapter: index, metadata, docgen and globals discovery, plus the render-loop driver.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@holotype/ir": "workspace:*",
+    "@holotype/shared": "workspace:*"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "@holotype/planner",
+  "version": "0.0.0",
+  "description": "Variant planner: variant matrix, property classification experiments and budgets.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "@holotype/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@holotype/storybook": "workspace:*",
+    "@holotype/ir": "workspace:*",
+    "@holotype/shared": "workspace:*"
+  }
+}
