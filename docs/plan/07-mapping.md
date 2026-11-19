@@ -69,9 +69,9 @@ Rules are applied top-down. Each rule that drops or changes content records an `
 | `display:none`, `<script>` and friends | already skipped by capture |
 | `visibility:hidden` element | drop its own paint; keep `visibility:visible` descendants, reparented under a transparent frame at the same rect |
 | `opacity:0` | keep with `visible:false` if `config.keepInvisible` (default **true** for alignment: states often toggle opacity), else drop |
-| `srOnly` | drop (`CAP_SR_ONLY_DROPPED`, info) |
+| `srOnly` | already skipped by capture (`CAP_SR_ONLY_SKIPPED`, info, [05](05-capture.md#walk)) |
 | zero-size element with no visible stroke, outline, shadow or overflowing children | drop |
-| fully clipped by an ancestor's overflow | drop (`LAYOUT_CLIPPED_DROPPED`, info) |
+| fully clipped by an ancestor's overflow | already culled by capture (`CAP_CLIPPED_CULLED`, info, [05](05-capture.md#walk)); planner-bound nodes that capture kept are kept here too |
 | **anonymous flex/grid items**: direct non-whitespace text in a flex/grid container | wrap in a synthetic `text` node with rect from the text lines' union; `source.tag = '#anon'` |
 | whitespace-only text between blocks | drop |
 | pseudo `::before`/`::after` | already real nodes (`type:'pseudo'`) and treated as elements |
@@ -354,7 +354,7 @@ Verification runs **bottom-up**, so a container is simulated with its children's
 2. **Flow order vs paint order.** In auto layout, child order *is* flow order. If the paint sort reorders *in-flow* children of a stack:
    - a full reversal → `itemReverseZIndex: true`;
    - otherwise → the out-of-order children become `ABSOLUTE` siblings, which can sit anywhere in the child list, if the remaining flow still verifies;
-   - else the container is absolute.
+   - else the container is absolute (`LAYOUT_ZORDER_FLOW_CONFLICT`, warn).
 
    `order:` sorting is applied *before* this check, because it changes flow and paint identically.
 3. **Z-index escapes.** A descendant that paints above a sibling of one of its ancestors cannot be expressed in a tree. Hoist it to the nearest common stacking-context frame as `ABSOLUTE`, with `xy` recomputed and clipping preserved. The clip is preserved only if the clipping ancestor is also the target; otherwise the node is wrapped in a clip frame with the ancestor's clip rect. Report `LAYOUT_ZINDEX_HOIST`. The hoisted node keeps its `nk` derived from the original path, so alignment and identity are stable.
@@ -453,7 +453,7 @@ The mapper does **not** know which fonts the Figma user has. It emits a *request
 
    The plugin picks the first candidate that exists.
 3. **Variable fonts.** When `variation` is present, or the family is known to be variable, emit `variation: {wght, opsz, …}`. The plugin uses `FontName.variationSettings` with `style` omitted (typings Update 138), and drops axes not reported by `figma.getFontFamilyVariationAxes`.
-4. **Synthetic bold or italic** (`synthetic`). Request the real style (e.g. Bold) and report `FONT_SYNTHETIC` (info). The capture drew a faux bold, and Figma will draw the real one.
+4. **Synthetic bold or italic** (`synthetic`). Request the real style (e.g. Bold) and keep the `FONT_SYNTHETIC` (warn) that capture raised ([05](05-capture.md)). The capture drew a faux bold, and Figma will draw the real one.
 5. **`fallbackFamily`.** Choose by generic class (sans/serif/mono) and closest x-height. Default `Inter`, `Roboto Mono` or `Noto Serif`; the table is configurable. Missing fonts are *not* diagnosed here: the plugin emits `FONT_MISSING` / `FONT_SUBSTITUTED` after preflight.
 6. **Icon fonts** (`CFontUsage.iconFont`) are not text. Capture has already provided the outlined SVG asset ([05](05-capture.md#icon-fonts)), and the node becomes `svg` (S-09).
 
@@ -558,7 +558,7 @@ Verify the conic origin and direction in S-03 (`PAINT_CONIC_APPROX` until then).
 
 **Ring shadows** (`0 0 0 Npx c`, Tailwind `ring-*`) on fill-less frames render as nothing in Figma (figit):
 
-- no border → promote the widest ring to an OUTSIDE stroke;
+- no border → promote the widest ring to an OUTSIDE stroke (`PAINT_RING_PROMOTED`, info);
 - otherwise use the backing-rect rule.
 
 **`showShadowBehindNode: false`** for shadows under translucent fills, emulating CSS (verify, S-03).
@@ -795,7 +795,7 @@ For each boundary whose `matchedSid` is in the catalog and is not the component 
    The node's own `child` sizing comes from its slot in the parent.
 5. **Fail.** On failure, keep the expanded frames and report `PLAN_INSTANCE_MISMATCH` (info, data: delta). The structure still aligns, and a later phase can retry after the dependency is imported.
 
-`dependencies` lists the referenced sids. The plugin builds in topological order and breaks cycles by expanding (`PLAN_INSTANCE_CYCLE`).
+`dependencies` lists the referenced sids. The plugin builds in topological order and breaks cycles by expanding (`APPLY_INSTANCE_CYCLE`, [09](09-plugin.md)).
 
 ## 16. Token binding emission
 
@@ -808,7 +808,7 @@ The token resolver ([08](08-tokens.md)) gives, per capture node and CSS property
 | `color` | text range `fills[0].bind` |
 | `border-*-color` (uniform) | `strokes.paints[0].bind` |
 | `border-*-width` | `strokes.bindWeight.{t,r,b,l}` |
-| `padding-*` | `bind.padding{Top,Right,Bottom,Left}`. Bound only when the Scene padding equals the CSS padding, i.e. border 0 or `borderModel: 'native'`; otherwise `TOKEN_BINDING_SKIPPED_COMPOSITE` (info) |
+| `padding-*` | `bind.padding{Top,Right,Bottom,Left}`. Bound only when the Scene padding equals the CSS padding, i.e. border 0 or `borderModel: 'native'`; otherwise `TOKEN_PADDING_BORDER_OFFSET` (info, [08](08-tokens.md)) |
 | `gap` / `column-gap` / `row-gap` | `bind.itemSpacing` / `counterAxisSpacing` / `gridColumnGap` / `gridRowGap`; bound only when the measured spacing equals the token value |
 | `border-*-radius` | `bind.{topLeft,…}Radius` |
 | `width`/`height`/`min-*`/`max-*` (px intent) | `bind.width/height/minWidth/…`, only for FIXED sizing |
@@ -818,7 +818,7 @@ The token resolver ([08](08-tokens.md)) gives, per capture node and CSS property
 
 **Rules:**
 
-- **Pure chains only.** A value from `calc()`, `color-mix()` or a used var fallback is not bound: `TOKEN_NOT_PURE` (info).
+- **Pure chains only.** A value from `calc()` or `color-mix()` is not bound (`TOKEN_EXPRESSION_UNBOUND`, info), nor is a used var fallback (`TOKEN_FALLBACK_USED`, info).
 - **Value-equality fallback** (D-18, opt-in `config.tokens.matchByValue`) emits `confidence: 'value'`. It binds only when exactly one variable of the right type has that value in the current mode; ambiguity gives `TOKEN_VALUE_AMBIGUOUS`.
 - **Themes as modes.** When themes are modes ([04](04-variant-model.md), [08](08-tokens.md)), the mapper emits one variant set (not one per theme), with bindings from the default-mode capture. It then verifies that every other mode's capture resolves to the same bindings with that mode's values; a mismatch gives `TOKEN_MODE_MISMATCH` (warn), and the planner falls back to a theme VARIANT axis.
 
