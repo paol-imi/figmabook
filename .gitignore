@@ -7,6 +7,7 @@ packages/plugin/build/
 packages/plugin/manifest.json
 packages/plugin/src/**/*.d.css.ts
 storybook-static/
+spikes/runner/build/
 *.tsbuildinfo
 
 # Tooling caches

@@ -260,6 +260,37 @@ importers:
         specifier: 8.3.8
         version: 8.3.8(@types/node@22.20.5)(esbuild@0.27.7)
 
+  spikes:
+    dependencies:
+      preact:
+        specifier: 10.29.8
+        version: 10.29.8
+    devDependencies:
+      '@figma/plugin-typings':
+        specifier: 1.142.0
+        version: 1.142.0
+      '@holotype/figma-fake':
+        specifier: workspace:*
+        version: link:../packages/figma-fake
+      '@sinclair/typebox':
+        specifier: 0.34.52
+        version: 0.34.52
+      '@testing-library/preact':
+        specifier: 3.2.6
+        version: 3.2.6(preact@10.29.8)
+      esbuild:
+        specifier: 0.27.7
+        version: 0.27.7
+      fflate:
+        specifier: 0.8.3
+        version: 0.8.3
+      happy-dom:
+        specifier: 21.0.4
+        version: 21.0.4
+      playwright:
+        specifier: 1.63.0
+        version: 1.63.0
+
   tools/diag-gen: {}
 
   tools/fidelity:
@@ -1459,6 +1490,12 @@ packages:
     peerDependencies:
       preact: '>=10 || ^10.0.0-alpha.0 || ^10.0.0-beta.0'
 
+  '@testing-library/preact@3.2.6':
+    resolution: {integrity: sha512-qvl5x9zxY50sY3XukHT874eGK5Q7k+JzWrC1bQIN0vbiXWPfVGjHtBmT78cEQpI6NoDoN8bUbwLvOXDK5p5Fzw==}
+    engines: {node: '>= 12'}
+    peerDependencies:
+      preact: '>=10 || ^10.0.0-alpha.0 || ^10.0.0-beta.0'
+
   '@testing-library/user-event@14.6.1':
     resolution: {integrity: sha512-vq7fv0rnt+QTXgPxr5Hjc210p6YKq2kmdziLgnsZGgLJ9e6VAShx1pACLuRjd/AS/sr7phAR58OIIpf0LlmQNw==}
     engines: {node: '>=12', npm: '>=6'}
@@ -2108,6 +2145,9 @@ packages:
 
   fflate@0.8.2:
     resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
+
+  fflate@0.8.3:
+    resolution: {integrity: sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -4669,6 +4709,11 @@ snapshots:
       '@testing-library/dom': 8.20.1
       preact: 10.29.8
 
+  '@testing-library/preact@3.2.6(preact@10.29.8)':
+    dependencies:
+      '@testing-library/dom': 10.4.2
+      preact: 10.29.8
+
   '@testing-library/user-event@14.6.1(@testing-library/dom@10.4.2)':
     dependencies:
       '@testing-library/dom': 10.4.2
@@ -5377,6 +5422,8 @@ snapshots:
       picomatch: 4.0.7
 
   fflate@0.8.2: {}
+
+  fflate@0.8.3: {}
 
   fill-range@7.1.1:
     dependencies:

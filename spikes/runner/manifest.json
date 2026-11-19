@@ -1,0 +1,14 @@
+{
+  "name": "Holotype Spikes",
+  "id": "holotype-spikes-dev",
+  "api": "1.0.0",
+  "main": "build/main.js",
+  "ui": "build/ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "enablePrivatePluginApi": true,
+  "permissions": ["teamlibrary"],
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
+}
