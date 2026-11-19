@@ -1,10 +1,18 @@
 /**
- * `FigmaPort`: the narrow seam between the applier and the Plugin API (09 §4). It is a
- * `Pick<>` of the official typings, so production binds the real `figma` object with no
- * glue code and `@holotype/figma-fake` is type-checked against Figma's own definitions.
+ * `FigmaPort`: the narrow seam between the applier and the Plugin API (09 §4).
+ *
+ * It is a `Pick<>` of the official typings (`@figma/plugin-typings@1.142.0`), so production
+ * binds the real `figma` object with no glue code, and `@holotype/figma-fake` is type-checked
+ * against Figma's own definitions: `createFakeFigma()` must satisfy this type with no casts.
+ *
+ * The port grows additively (BUILD §2.3): each fake item adds the members it needs.
+ * B-06 holds the "Global" row of BUILD §8.1; node members (BaseNode … Text rows) come with
+ * the node types these functions return. The rest of 09 §4 (variables, styles, library
+ * imports, `teamLibrary`) is added by B-54, B-139 and B-142 together with its fake.
  */
 export type FigmaPort = Pick<
   PluginAPI,
+  // Node creation (BUILD §8.1 "Global").
   | 'createFrame'
   | 'createComponent'
   | 'createText'
@@ -12,46 +20,26 @@ export type FigmaPort = Pick<
   | 'createEllipse'
   | 'createVector'
   | 'createNodeFromSvg'
-  | 'createImage'
-  | 'getImageByHash'
   | 'createPage'
   | 'createSection'
   | 'combineAsVariants'
-  | 'loadFontAsync'
-  | 'listAvailableFontsAsync'
+  // Images (09 §6.3).
+  | 'createImage'
+  | 'getImageByHash'
+  // Document access under `documentAccess: "dynamic-page"` (async getters only, 09 §6.2).
   | 'getNodeByIdAsync'
-  | 'commitUndo'
-  | 'notify'
   | 'root'
   | 'currentPage'
   | 'setCurrentPageAsync'
-  | 'mixed'
   | 'skipInvisibleInstanceChildren'
-  | 'importComponentByKeyAsync'
-  | 'importComponentSetByKeyAsync'
-  | 'importStyleByKeyAsync'
-  | 'createTextStyle'
-  | 'createEffectStyle'
-  | 'createPaintStyle'
-  | 'getLocalTextStylesAsync'
-  | 'getLocalEffectStylesAsync'
-  | 'getLocalPaintStylesAsync'
+  | 'fileKey'
+  // Fonts (09 §5.1 preflight).
+  | 'loadFontAsync'
+  | 'listAvailableFontsAsync'
+  // Session.
+  | 'commitUndo'
+  | 'notify'
+  | 'mixed'
 > & {
-  variables: Pick<
-    VariablesAPI,
-    | 'createVariableCollection'
-    | 'createVariable'
-    | 'createVariableAlias'
-    | 'getLocalVariablesAsync'
-    | 'getLocalVariableCollectionsAsync'
-    | 'getVariableByIdAsync'
-    | 'importVariableByKeyAsync'
-    | 'setBoundVariableForPaint'
-    | 'setBoundVariableForEffect'
-  >;
-  teamLibrary: Pick<
-    TeamLibraryAPI,
-    'getAvailableLibraryVariableCollectionsAsync' | 'getVariablesInLibraryCollectionAsync'
-  >;
   clientStorage: Pick<ClientStorageAPI, 'getAsync' | 'setAsync'>;
 };
