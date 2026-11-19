@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "VarRef confidence is chain or value.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/0/root/fills/0/bind/confidence",
+      "value": "guess"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/variants/0/root/fills/0/bind/confidence",
+      "kind": "invalid"
+    }
+  ]
+}

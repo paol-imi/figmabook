@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "Node kinds are the Scene IR set.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/0/root/children/1/kind",
+      "value": "polygon"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/variants/0/root/children/1/kind",
+      "kind": "invalid"
+    }
+  ]
+}

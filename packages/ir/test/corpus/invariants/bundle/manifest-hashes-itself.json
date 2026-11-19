@@ -1,0 +1,11 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/integrity/files/manifest.json",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "expect": ["integrity-manifest"]
+}

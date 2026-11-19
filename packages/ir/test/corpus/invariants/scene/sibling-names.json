@@ -1,0 +1,11 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/0/root/children/1/name",
+      "value": "Icon"
+    }
+  ],
+  "expect": ["sibling-names"]
+}

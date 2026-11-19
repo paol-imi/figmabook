@@ -1,0 +1,17 @@
+{
+  "base": "branch.json",
+  "why": "The dcr scope is a known form.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/branch/dcrConfig/scope",
+      "value": "everything"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/branch/dcrConfig/scope",
+      "kind": "invalid"
+    }
+  ]
+}

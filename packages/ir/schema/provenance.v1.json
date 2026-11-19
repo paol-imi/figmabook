@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Holotype provenance side file (ProvenanceDoc)",
+  "type": "object",
+  "required": [
+    "kind",
+    "v",
+    "sid",
+    "nodes"
+  ],
+  "properties": {
+    "kind": {
+      "const": "holotype/provenance",
+      "type": "string"
+    },
+    "v": {
+      "const": 1,
+      "type": "number"
+    },
+    "sid": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "nodes": {
+      "type": "object",
+      "patternProperties": {
+        "^(.*)$": {
+          "type": "object",
+          "patternProperties": {
+            "^(.*)$": {
+              "type": "object",
+              "required": [
+                "dom",
+                "fields"
+              ],
+              "properties": {
+                "dom": {
+                  "type": "object",
+                  "required": [
+                    "path",
+                    "tag"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    },
+                    "tag": {
+                      "type": "string"
+                    },
+                    "classes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "loc": {
+                      "type": "object",
+                      "required": [
+                        "file",
+                        "line",
+                        "col"
+                      ],
+                      "properties": {
+                        "file": {
+                          "minLength": 1,
+                          "pattern": "^(?![A-Za-z]:)(?!/)(?!(?:.*/)?\\.\\.(?:/|$))[^\\\\\\u0000]+$",
+                          "type": "string"
+                        },
+                        "line": {
+                          "minimum": 1,
+                          "type": "integer"
+                        },
+                        "col": {
+                          "minimum": 1,
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "fields": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^(.*)$": {
+                      "type": "object",
+                      "required": [
+                        "css"
+                      ],
+                      "properties": {
+                        "css": {
+                          "minItems": 1,
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "authored": {
+                          "type": "string"
+                        },
+                        "selector": {
+                          "type": "string"
+                        },
+                        "rule": {
+                          "type": "object",
+                          "required": [
+                            "file",
+                            "line",
+                            "col"
+                          ],
+                          "properties": {
+                            "file": {
+                              "minLength": 1,
+                              "pattern": "^(?![A-Za-z]:)(?!/)(?!(?:.*/)?\\.\\.(?:/|$))[^\\\\\\u0000]+$",
+                              "type": "string"
+                            },
+                            "line": {
+                              "minimum": 1,
+                              "type": "integer"
+                            },
+                            "col": {
+                              "minimum": 1,
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "varChain": {
+                          "type": "array",
+                          "items": {
+                            "pattern": "^--",
+                            "type": "string"
+                          }
+                        },
+                        "transform": {
+                          "anyOf": [
+                            {
+                              "const": "border-included",
+                              "type": "string"
+                            },
+                            {
+                              "const": "margin-to-gap",
+                              "type": "string"
+                            },
+                            {
+                              "const": "percent-resolved",
+                              "type": "string"
+                            },
+                            {
+                              "const": "none",
+                              "type": "string"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

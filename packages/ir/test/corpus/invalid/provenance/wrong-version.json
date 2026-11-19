@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "v is the literal 1.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/v",
+      "value": 2
+    }
+  ],
+  "expect": [
+    {
+      "path": "/v",
+      "kind": "invalid"
+    }
+  ]
+}

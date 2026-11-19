@@ -1,0 +1,16 @@
+{
+  "base": "file-import.json",
+  "why": "fileKey is required (null when unavailable).",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/fileKey"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/fileKey",
+      "kind": "invalid"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "base": "button-primary.json",
+  "why": "The kind literal identifies the document type.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/kind",
+      "value": "holotype/scene-component"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/kind",
+      "kind": "invalid"
+    }
+  ]
+}

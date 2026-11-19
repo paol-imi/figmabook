@@ -1,0 +1,107 @@
+{
+  "kind": "holotype/bundle",
+  "bundleVersion": "0.1.0",
+  "sceneVersion": "0.1.0",
+  "runId": "r-0b1c2d3e",
+  "createdAt": "2026-11-19T11:30:00.250+01:00",
+  "features": ["library-refs"],
+  "generator": {
+    "name": "@holotype/cli",
+    "version": "0.3.0",
+    "mapper": "0.3.0",
+    "capture": "0.3.0",
+    "chromium": "141.0.7390.37",
+    "playwright": "1.56.1"
+  },
+  "createdBy": "cli",
+  "source": {
+    "storybookVersion": "10.6.7",
+    "renderer": "react",
+    "builder": "vite",
+    "origin": "http://127.0.0.1:6006",
+    "fingerprint": "abcdef0000000000000000000000000000000000000000000000000000abcdef",
+    "git": {
+      "sha": "3f9a1c0d2b4e6f8a0c1e3d5b7f9a1c3e5d7b9f1a",
+      "ref": "feat/price-tag",
+      "dirty": true
+    }
+  },
+  "config": {
+    "hash": "9a8b7c6d5e4f3a2b"
+  },
+  "components": [
+    {
+      "sid": "components-badge",
+      "name": "Badge",
+      "titlePath": ["Components", "Badge"],
+      "irh": "aaaabbbbccccdddd",
+      "file": "components/components-badge.json",
+      "bytes": 9000,
+      "variants": 4,
+      "nodes": 8,
+      "dependencies": [],
+      "status": "partial"
+    }
+  ],
+  "assets": [],
+  "fonts": [],
+  "totals": {
+    "components": 1,
+    "variants": 4,
+    "nodes": 8,
+    "assetBytes": 0
+  },
+  "integrity": {
+    "algo": "sha256",
+    "files": {
+      "components/components-badge.json": "3333333333333333333333333333333333333333333333333333333333333333",
+      "report.json": "4444444444444444444444444444444444444444444444444444444444444444",
+      "provenance/components-badge.json": "5555555555555555555555555555555555555555555555555555555555555555"
+    }
+  },
+  "libraryComponents": {
+    "icons-star": "4f1c2d9e8b7a6c5d4e3f2a1b0c9d8e7f6a5b4c3d"
+  },
+  "branch": {
+    "repo": "github.com/acme/ui",
+    "branch": "feat/price-tag",
+    "baseCommit": "3f9a1c0d2b4e6f8a0c1e3d5b7f9a1c3e5d7b9f1a",
+    "dirty": true,
+    "dcrConfig": {
+      "scope": "changed",
+      "requireApproval": false,
+      "targets": {
+        "components": {
+          "package": "@acme/ui"
+        }
+      },
+      "screens": {
+        "separator": " / ",
+        "groupBySection": true,
+        "breakpoints": {
+          "Mobile": 0,
+          "Tablet": 768,
+          "Desktop": 1280
+        },
+        "states": {
+          "default": ["Default", "Filled"],
+          "empty": ["Empty"],
+          "loading": ["Loading", "Skeleton"],
+          "error": ["Error"],
+          "success": ["Success"]
+        },
+        "base": "widest",
+        "expectStates": []
+      },
+      "content": {
+        "placeholders": ["/^XX+$/"],
+        "i18n": "auto"
+      },
+      "a11y": {
+        "categories": ["Accessibility", "A11y"]
+      },
+      "deprecations": {}
+    },
+    "configHash": "193b92148997baa0"
+  }
+}

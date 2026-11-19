@@ -1,0 +1,12 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/0/root/bind/itemSpacing/key",
+      "value": "var:space/3"
+    }
+  ],
+  "expect": ["var-ref"],
+  "tokens": "ds-react.json"
+}

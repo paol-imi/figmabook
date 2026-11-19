@@ -1,0 +1,17 @@
+{
+  "base": "annotated-example.json",
+  "why": "Nested objects are strict too.",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/mapper/borderMode",
+      "value": "native"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/mapper/borderMode",
+      "kind": "unknown-key"
+    }
+  ]
+}

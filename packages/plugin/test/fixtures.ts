@@ -7,6 +7,8 @@ export const SESSION = 'session-1';
 export const manifest: BundleManifest = {
   kind: 'holotype/bundle',
   bundleVersion: '0.1.0',
+  runId: 'r-test',
+  createdAt: '2026-11-19T10:00:00Z',
   sceneVersion: '0.1.0',
   features: [],
   generator: {
@@ -24,6 +26,7 @@ export const manifest: BundleManifest = {
   assets: [],
   fonts: [],
   totals: { components: 0, variants: 0, nodes: 0, assetBytes: 0 },
+  integrity: { algo: 'sha256', files: {} },
 };
 
 /** One valid body of every UI → main type. */

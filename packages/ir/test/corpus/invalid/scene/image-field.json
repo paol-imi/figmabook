@@ -1,0 +1,17 @@
+{
+  "base": "button.json",
+  "why": "Images are IMAGE paints, never an `image` field.",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/variants/0/root/image",
+      "value": {}
+    }
+  ],
+  "expect": [
+    {
+      "path": "/variants/0/root/image",
+      "kind": "invalid"
+    }
+  ]
+}

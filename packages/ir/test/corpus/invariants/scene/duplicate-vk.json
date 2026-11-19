@@ -1,0 +1,11 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/variants/1/vk",
+      "value": "5e1b0c77a9d24f03"
+    }
+  ],
+  "expect": ["vk-unique"]
+}

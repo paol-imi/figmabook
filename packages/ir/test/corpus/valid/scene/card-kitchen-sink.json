@@ -1,0 +1,623 @@
+{
+  "kind": "holotype/scene-component",
+  "sceneVersion": "0.1.0",
+  "sid": "components-card",
+  "irh": "f595f9c73ac753d2",
+  "meta": {
+    "name": "Card",
+    "titlePath": ["Components", "Card"],
+    "description": "",
+    "descriptionSource": "none",
+    "links": [],
+    "storyIds": ["components-card--default"],
+    "kind": "component"
+  },
+  "properties": [
+    {
+      "type": "INSTANCE_SWAP",
+      "key": "arg:icon",
+      "name": "Icon",
+      "defaultValue": {
+        "kind": "local",
+        "sid": "icons-star"
+      },
+      "preferredValues": [
+        {
+          "kind": "local",
+          "sid": "icons-star"
+        },
+        {
+          "kind": "library",
+          "key": "4f1c2d9e8b7a6c5d4e3f2a1b0c9d8e7f6a5b4c3d"
+        }
+      ],
+      "source": {
+        "kind": "arg",
+        "argName": "icon",
+        "classification": "INSTANCE_SWAP",
+        "evidence": "render-diff"
+      }
+    },
+    {
+      "type": "SLOT",
+      "key": "slot:children",
+      "name": "Content",
+      "settings": {
+        "minChildren": 0
+      },
+      "source": {
+        "kind": "slot",
+        "argName": "children",
+        "classification": "SLOT",
+        "evidence": "declared"
+      }
+    }
+  ],
+  "setLayout": {
+    "mode": "grid",
+    "columnsBy": [],
+    "rowsBy": [],
+    "gap": {
+      "x": 24,
+      "y": 24
+    },
+    "padding": 32,
+    "labels": false
+  },
+  "docFrame": {
+    "title": "Card",
+    "description": "",
+    "axisLabels": {
+      "columns": [],
+      "rows": []
+    }
+  },
+  "dependencies": ["icons-star"],
+  "variants": [
+    {
+      "vk": "0a1b2c3d4e5f6071",
+      "irh": "8f66ad1ada0fc293",
+      "values": {},
+      "provenance": {
+        "storyId": "components-card--default",
+        "args": {
+          "title": "Plan",
+          "icon": "[fn Star]"
+        },
+        "globals": {
+          "theme": "light"
+        },
+        "state": {
+          "classes": ["hover"],
+          "method": "force"
+        },
+        "viewport": {
+          "w": 1280,
+          "h": 800
+        },
+        "captureHash": "c0ffee0000000003"
+      },
+      "grid": {
+        "row": 0,
+        "col": 0
+      },
+      "root": {
+        "nk": "root",
+        "kind": "component",
+        "name": "Card",
+        "irh": "0c680ec79ca357e5",
+        "size": {
+          "w": 320,
+          "h": 200
+        },
+        "expect": {
+          "x": 0,
+          "y": 0,
+          "w": 320,
+          "h": 200
+        },
+        "visible": true,
+        "clipsContent": true,
+        "fills": [
+          {
+            "type": "GRADIENT_LINEAR",
+            "gradientTransform": [[1, 0, 0], [0, 1, 0]],
+            "gradientStops": [
+              {
+                "position": 0,
+                "color": {
+                  "r": 1,
+                  "g": 1,
+                  "b": 1,
+                  "a": 1
+                }
+              },
+              {
+                "position": 1,
+                "color": {
+                  "r": 0.95,
+                  "g": 0.96,
+                  "b": 0.98,
+                  "a": 1
+                }
+              }
+            ]
+          },
+          {
+            "type": "SOLID",
+            "color": {
+              "r": 0.2,
+              "g": 0.3,
+              "b": 0.9
+            },
+            "opacity": 0.1,
+            "sourceColor": {
+              "original": "oklch(0.5 0.2 260)",
+              "space": "display-p3"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "DROP_SHADOW",
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0.1
+            },
+            "offset": {
+              "x": 0,
+              "y": 2
+            },
+            "radius": 8,
+            "spread": 0,
+            "bind": {
+              "radius": {
+                "key": "var:shadow/md-blur",
+                "confidence": "value"
+              }
+            }
+          },
+          {
+            "type": "BACKGROUND_BLUR",
+            "radius": 4
+          }
+        ],
+        "layout": {
+          "mode": "GRID",
+          "padding": {
+            "t": 16,
+            "r": 16,
+            "b": 16,
+            "l": 16
+          },
+          "columns": [
+            {
+              "type": "FIXED",
+              "value": 24
+            },
+            {
+              "type": "FLEX",
+              "value": 1
+            }
+          ],
+          "rows": [
+            {
+              "type": "HUG"
+            },
+            {
+              "type": "FLEX",
+              "value": 1
+            }
+          ],
+          "columnGap": 12,
+          "rowGap": 8,
+          "primaryAxisSizingMode": "FIXED",
+          "counterAxisSizingMode": "FIXED",
+          "verified": {
+            "simulator": "0.3.0",
+            "maxDelta": 0,
+            "tolerance": 0.6,
+            "responsive": "probed"
+          }
+        },
+        "fallback": {
+          "size": {
+            "w": 320,
+            "h": 200
+          },
+          "children": {
+            "root/icon": {
+              "x": 16,
+              "y": 16,
+              "w": 24,
+              "h": 24
+            },
+            "root/title": {
+              "x": 52,
+              "y": 16,
+              "w": 252,
+              "h": 24
+            },
+            "root/content": {
+              "x": 16,
+              "y": 48,
+              "w": 288,
+              "h": 136
+            },
+            "root/divider": {
+              "x": 16,
+              "y": 44,
+              "w": 288,
+              "h": 1
+            }
+          }
+        },
+        "children": [
+          {
+            "nk": "root/icon",
+            "kind": "instance",
+            "name": "Icon",
+            "irh": "acde403c430aa929",
+            "size": {
+              "w": 24,
+              "h": 24
+            },
+            "expect": {
+              "x": 16,
+              "y": 16,
+              "w": 24,
+              "h": 24
+            },
+            "visible": true,
+            "child": {
+              "positioning": "AUTO",
+              "sizingH": "FIXED",
+              "sizingV": "FIXED",
+              "grid": {
+                "row": 0,
+                "col": 0,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "alignH": "CENTER"
+              }
+            },
+            "instance": {
+              "component": {
+                "kind": "local",
+                "sid": "icons-star"
+              },
+              "properties": {},
+              "overrides": [
+                {
+                  "nk": "root/path",
+                  "fields": {
+                    "fills": []
+                  }
+                }
+              ],
+              "match": {
+                "method": "reference",
+                "maxDelta": 0.2
+              },
+              "fallback": {
+                "nk": "root/icon/fallback",
+                "kind": "svg",
+                "name": "Icon",
+                "irh": "ac5895f177d090c4",
+                "size": {
+                  "w": 24,
+                  "h": 24
+                },
+                "expect": {
+                  "x": 16,
+                  "y": 16,
+                  "w": 24,
+                  "h": 24
+                },
+                "visible": true,
+                "svg": {
+                  "asset": {
+                    "sha": "1111111111111111111111111111111111111111111111111111111111111111"
+                  },
+                  "unwrap": true
+                }
+              }
+            },
+            "propRefs": {
+              "mainComponent": "arg:icon"
+            }
+          },
+          {
+            "nk": "root/title",
+            "kind": "text",
+            "name": "Title",
+            "irh": "a996ba7f4837f01e",
+            "size": {
+              "w": 252,
+              "h": 24
+            },
+            "expect": {
+              "x": 52,
+              "y": 16,
+              "w": 252,
+              "h": 24
+            },
+            "visible": true,
+            "child": {
+              "positioning": "AUTO",
+              "sizingH": "FILL",
+              "sizingV": "HUG",
+              "min": {
+                "w": 40
+              },
+              "intent": {
+                "h": "grow"
+              }
+            },
+            "text": {
+              "characters": "Plan Pro",
+              "autoResize": "TRUNCATE",
+              "truncation": {
+                "maxLines": 1
+              },
+              "alignH": "LEFT",
+              "alignV": "CENTER",
+              "wrapStyle": "BALANCE",
+              "leadingTrim": "CAP_HEIGHT",
+              "wrapMode": "locked-lines",
+              "widthBuffer": {
+                "max": 0
+              },
+              "lines": [
+                {
+                  "startChar": 0,
+                  "endChar": 5
+                },
+                {
+                  "startChar": 5,
+                  "endChar": 8
+                }
+              ],
+              "styleRef": {
+                "kind": "local",
+                "key": "text:heading/sm"
+              },
+              "ranges": [
+                {
+                  "start": 0,
+                  "end": 5,
+                  "font": {
+                    "family": "Inter",
+                    "weight": 700,
+                    "italic": false,
+                    "styleCandidates": ["Bold"],
+                    "variation": {
+                      "wght": 700
+                    },
+                    "fallbackFamily": "Inter",
+                    "isCustom": false
+                  },
+                  "fontSize": 16,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": -0.16
+                  },
+                  "textCase": "UPPER",
+                  "decoration": "UNDERLINE",
+                  "decorationStyle": "WAVY",
+                  "decorationColor": {
+                    "type": "SOLID",
+                    "color": {
+                      "r": 1,
+                      "g": 0,
+                      "b": 0
+                    },
+                    "opacity": 1
+                  },
+                  "fills": [
+                    {
+                      "type": "SOLID",
+                      "color": {
+                        "r": 0.1,
+                        "g": 0.1,
+                        "b": 0.1
+                      },
+                      "opacity": 1
+                    }
+                  ],
+                  "hyperlink": "https://example.com/plans",
+                  "openTypeFeatures": {
+                    "tnum": true
+                  },
+                  "bind": {
+                    "fontSize": {
+                      "key": "var:font/size-md",
+                      "confidence": "chain"
+                    }
+                  }
+                },
+                {
+                  "start": 5,
+                  "end": 8,
+                  "font": {
+                    "family": "Inter",
+                    "weight": 400,
+                    "italic": true,
+                    "styleCandidates": ["Italic", "Regular Italic"],
+                    "fallbackFamily": "Inter",
+                    "isCustom": false
+                  },
+                  "fontSize": 16,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "textCase": "ORIGINAL",
+                  "decoration": "NONE",
+                  "fills": []
+                }
+              ]
+            }
+          },
+          {
+            "nk": "root/divider",
+            "kind": "vector",
+            "name": "Divider",
+            "irh": "06dba9ab02b5c318",
+            "size": {
+              "w": 288,
+              "h": 1
+            },
+            "xy": {
+              "x": 16,
+              "y": 44
+            },
+            "expect": {
+              "x": 16,
+              "y": 44,
+              "w": 288,
+              "h": 1
+            },
+            "visible": true,
+            "blendMode": "MULTIPLY",
+            "opacity": 0.5,
+            "child": {
+              "positioning": "ABSOLUTE",
+              "sizingH": "FIXED",
+              "sizingV": "FIXED",
+              "constraints": {
+                "horizontal": "STRETCH",
+                "vertical": "MIN"
+              }
+            },
+            "vector": {
+              "paths": [
+                {
+                  "windingRule": "NONZERO",
+                  "data": "M 0 0 L 288 0 L 288 1 L 0 1 Z"
+                }
+              ]
+            },
+            "fills": [
+              {
+                "type": "IMAGE",
+                "asset": {
+                  "sha": "2222222222222222222222222222222222222222222222222222222222222222"
+                },
+                "scaleMode": "TILE",
+                "scalingFactor": 0.5
+              }
+            ]
+          },
+          {
+            "nk": "root/content",
+            "kind": "frame",
+            "name": "Content",
+            "irh": "dc427124550f2095",
+            "size": {
+              "w": 288,
+              "h": 136
+            },
+            "expect": {
+              "x": 16,
+              "y": 48,
+              "w": 288,
+              "h": 136
+            },
+            "visible": true,
+            "relativeTransform": [[1, 0, 16], [0, 1, 48]],
+            "fills": [],
+            "strokes": {
+              "paints": [
+                {
+                  "type": "SOLID",
+                  "color": {
+                    "r": 0.9,
+                    "g": 0.9,
+                    "b": 0.92
+                  },
+                  "opacity": 1
+                }
+              ],
+              "align": "INSIDE",
+              "weight": {
+                "t": 1,
+                "r": 0,
+                "b": 0,
+                "l": 0
+              },
+              "dashPattern": [4, 2],
+              "cap": "ROUND",
+              "join": "MITER",
+              "bindWeight": {
+                "t": {
+                  "key": "var:border/width",
+                  "confidence": "chain"
+                }
+              }
+            },
+            "child": {
+              "positioning": "AUTO",
+              "sizingH": "FILL",
+              "sizingV": "FILL",
+              "grid": {
+                "row": 1,
+                "col": 0,
+                "rowSpan": 1,
+                "colSpan": 2
+              },
+              "max": {
+                "h": 400
+              }
+            },
+            "slot": {
+              "propKey": "slot:children"
+            },
+            "bind": {
+              "explicitModes": [
+                {
+                  "collection": "col:theme",
+                  "mode": "mode:dark"
+                }
+              ]
+            },
+            "diagnostics": [
+              {
+                "code": "LAYOUT_SLOT_EMPTY",
+                "severity": "info",
+                "message": "The slot has no default content.",
+                "nodeKey": "root/content"
+              }
+            ]
+          }
+        ]
+      },
+      "fidelity": {
+        "ssim": 0.991,
+        "maxBoxDelta": 0.4
+      },
+      "diagnostics": []
+    }
+  ],
+  "diagnostics": [
+    {
+      "code": "PLAN_SLOT_UNVERIFIED",
+      "severity": "info",
+      "message": "Slot inferred without an empty probe.",
+      "sid": "components-card",
+      "data": {
+        "arg": "children"
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "base": "annotated-example.json",
+  "why": "headersFromEnv names an env variable, never a value.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/storybook/auth/headersFromEnv/CF-Access-Client-Id",
+      "value": "Bearer abc123"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/storybook/auth/headersFromEnv/CF-Access-Client-Id",
+      "kind": "invalid"
+    }
+  ]
+}

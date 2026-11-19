@@ -1,0 +1,28 @@
+{
+  "args": {
+    "label": { "as": "text", "name": "Label" },
+    "icon": { "as": "instance-swap" },
+    "iconOnly": { "as": "boolean" },
+    "size": {
+      "as": "variant",
+      "values": ["sm", "md", "lg"],
+      "labels": { "sm": "Small", "md": "Medium", "lg": "Large" }
+    }
+  },
+  "states": {
+    "include": ["default", "hover", "focus-visible", "active"],
+    "foldBooleans": ["disabled", "loading"],
+    "target": "button"
+  },
+  "grid": { "columns": ["State"], "rows": ["Variant", "Size"] },
+  "excludeCombos": [{ "Variant": "Link", "Size": "Large" }],
+  "split": false,
+  "budget": { "max": 64, "warn": 32, "hardLimit": 256 },
+  "width": { "probe": [320, 640, 960] },
+  "portal": { "selector": "[role=tooltip]", "frame": "union" },
+  "slots": { "children": { "selector": ".content", "min": 0, "max": 3 } },
+  "modes": { "globals": ["theme"], "values": { "theme": ["light", "dark"] }, "as": "variables" },
+  "implements": ["1f2e3d4c5b6a7980"],
+  "replacedBy": { "sid": "components-button-v2", "args": { "kind": "variant" } },
+  "channelCapture": true
+}

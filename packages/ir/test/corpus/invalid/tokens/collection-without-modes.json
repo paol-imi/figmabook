@@ -1,0 +1,17 @@
+{
+  "base": "ds-react.json",
+  "why": "A collection has at least one mode.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/collections/0/modes",
+      "value": []
+    }
+  ],
+  "expect": [
+    {
+      "path": "/collections/0/modes",
+      "kind": "invalid"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/integrity/files/components~1icons-star.json"
+    }
+  ],
+  "expect": ["integrity-files"]
+}

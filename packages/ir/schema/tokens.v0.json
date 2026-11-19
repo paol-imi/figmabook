@@ -30,17 +30,60 @@
         "required": [
           "key",
           "name",
+          "modes",
           "defaultMode"
         ],
         "properties": {
           "key": {
+            "minLength": 1,
             "type": "string"
           },
           "name": {
+            "minLength": 1,
             "type": "string"
           },
+          "modes": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "name",
+                "source"
+              ],
+              "properties": {
+                "key": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "name": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "global": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "description": "Any JSON value"
+                    },
+                    "selector": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "defaultMode": {
+            "minLength": 1,
             "type": "string"
+          },
+          "hiddenFromPublishing": {
+            "type": "boolean"
           }
         }
       }
@@ -53,16 +96,23 @@
           "key",
           "collection",
           "name",
-          "type"
+          "type",
+          "valuesByMode",
+          "scopes",
+          "codeSyntax",
+          "provenance"
         ],
         "properties": {
           "key": {
+            "minLength": 1,
             "type": "string"
           },
           "collection": {
+            "minLength": 1,
             "type": "string"
           },
           "name": {
+            "minLength": 1,
             "type": "string"
           },
           "type": {
@@ -82,8 +132,1198 @@
               {
                 "const": "BOOLEAN",
                 "type": "string"
+              },
+              {
+                "const": "TIMING",
+                "type": "string"
+              },
+              {
+                "const": "EASING",
+                "type": "string"
               }
             ]
+          },
+          "valuesByMode": {
+            "type": "object",
+            "patternProperties": {
+              "^(.*)$": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "kind",
+                      "r",
+                      "g",
+                      "b",
+                      "a"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "const": "color",
+                        "type": "string"
+                      },
+                      "r": {
+                        "minimum": 0,
+                        "maximum": 1,
+                        "type": "number"
+                      },
+                      "g": {
+                        "minimum": 0,
+                        "maximum": 1,
+                        "type": "number"
+                      },
+                      "b": {
+                        "minimum": 0,
+                        "maximum": 1,
+                        "type": "number"
+                      },
+                      "a": {
+                        "minimum": 0,
+                        "maximum": 1,
+                        "type": "number"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "kind",
+                      "value"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "const": "float",
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "number"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "kind",
+                      "value"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "const": "string",
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "kind",
+                      "value"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "const": "boolean",
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "kind",
+                      "variable"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "const": "alias",
+                        "type": "string"
+                      },
+                      "variable": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "codeSyntax": {
+            "type": "object",
+            "required": [
+              "WEB"
+            ],
+            "properties": {
+              "WEB": {
+                "type": "string"
+              }
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "provenance": {
+            "type": "object",
+            "required": [
+              "cssName",
+              "declaredAt",
+              "usedBy"
+            ],
+            "properties": {
+              "cssName": {
+                "pattern": "^--",
+                "type": "string"
+              },
+              "declaredAt": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "usedBy": {
+                "minimum": 0,
+                "type": "integer"
+              }
+            }
+          },
+          "match": {
+            "type": "object",
+            "required": [
+              "kind",
+              "by"
+            ],
+            "properties": {
+              "kind": {
+                "anyOf": [
+                  {
+                    "const": "library",
+                    "type": "string"
+                  },
+                  {
+                    "const": "local",
+                    "type": "string"
+                  }
+                ]
+              },
+              "key": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "by": {
+                "anyOf": [
+                  {
+                    "const": "codeSyntax",
+                    "type": "string"
+                  },
+                  {
+                    "const": "name",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "textStyles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "range"
+        ],
+        "properties": {
+          "key": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "range": {
+            "type": "object",
+            "required": [
+              "font",
+              "fontSize",
+              "lineHeight",
+              "letterSpacing",
+              "textCase",
+              "decoration"
+            ],
+            "properties": {
+              "font": {
+                "type": "object",
+                "required": [
+                  "family",
+                  "weight",
+                  "italic",
+                  "styleCandidates",
+                  "fallbackFamily",
+                  "isCustom"
+                ],
+                "properties": {
+                  "family": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "postScriptName": {
+                    "type": "string"
+                  },
+                  "weight": {
+                    "minimum": 1,
+                    "maximum": 1000,
+                    "type": "number"
+                  },
+                  "italic": {
+                    "type": "boolean"
+                  },
+                  "stretch": {
+                    "type": "string"
+                  },
+                  "styleCandidates": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "variation": {
+                    "type": "object",
+                    "patternProperties": {
+                      "^(.*)$": {
+                        "type": "number"
+                      }
+                    }
+                  },
+                  "fallbackFamily": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "isCustom": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "fontSize": {
+                "exclusiveMinimum": 0,
+                "type": "number"
+              },
+              "lineHeight": {
+                "type": "object",
+                "required": [
+                  "unit",
+                  "value"
+                ],
+                "properties": {
+                  "unit": {
+                    "const": "PIXELS",
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                }
+              },
+              "letterSpacing": {
+                "type": "object",
+                "required": [
+                  "unit",
+                  "value"
+                ],
+                "properties": {
+                  "unit": {
+                    "const": "PIXELS",
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                }
+              },
+              "textCase": {
+                "anyOf": [
+                  {
+                    "const": "ORIGINAL",
+                    "type": "string"
+                  },
+                  {
+                    "const": "UPPER",
+                    "type": "string"
+                  },
+                  {
+                    "const": "LOWER",
+                    "type": "string"
+                  },
+                  {
+                    "const": "TITLE",
+                    "type": "string"
+                  },
+                  {
+                    "const": "SMALL_CAPS",
+                    "type": "string"
+                  }
+                ]
+              },
+              "decoration": {
+                "anyOf": [
+                  {
+                    "const": "NONE",
+                    "type": "string"
+                  },
+                  {
+                    "const": "UNDERLINE",
+                    "type": "string"
+                  },
+                  {
+                    "const": "STRIKETHROUGH",
+                    "type": "string"
+                  }
+                ]
+              },
+              "decorationStyle": {
+                "anyOf": [
+                  {
+                    "const": "SOLID",
+                    "type": "string"
+                  },
+                  {
+                    "const": "WAVY",
+                    "type": "string"
+                  },
+                  {
+                    "const": "DOTTED",
+                    "type": "string"
+                  }
+                ]
+              },
+              "decorationColor": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "type",
+                      "color",
+                      "opacity"
+                    ],
+                    "properties": {
+                      "type": {
+                        "const": "SOLID",
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "object",
+                        "required": [
+                          "r",
+                          "g",
+                          "b"
+                        ],
+                        "properties": {
+                          "r": {
+                            "minimum": 0,
+                            "maximum": 1,
+                            "type": "number"
+                          },
+                          "g": {
+                            "minimum": 0,
+                            "maximum": 1,
+                            "type": "number"
+                          },
+                          "b": {
+                            "minimum": 0,
+                            "maximum": 1,
+                            "type": "number"
+                          }
+                        }
+                      },
+                      "opacity": {
+                        "minimum": 0,
+                        "maximum": 1,
+                        "type": "number"
+                      },
+                      "bind": {
+                        "type": "object",
+                        "required": [
+                          "key",
+                          "confidence"
+                        ],
+                        "properties": {
+                          "key": {
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "confidence": {
+                            "anyOf": [
+                              {
+                                "const": "chain",
+                                "type": "string"
+                              },
+                              {
+                                "const": "value",
+                                "type": "string"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "sourceColor": {
+                        "type": "object",
+                        "required": [
+                          "original",
+                          "space"
+                        ],
+                        "properties": {
+                          "original": {
+                            "type": "string"
+                          },
+                          "space": {
+                            "anyOf": [
+                              {
+                                "const": "srgb",
+                                "type": "string"
+                              },
+                              {
+                                "const": "display-p3",
+                                "type": "string"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "type",
+                      "gradientTransform",
+                      "gradientStops"
+                    ],
+                    "properties": {
+                      "type": {
+                        "anyOf": [
+                          {
+                            "const": "GRADIENT_LINEAR",
+                            "type": "string"
+                          },
+                          {
+                            "const": "GRADIENT_RADIAL",
+                            "type": "string"
+                          },
+                          {
+                            "const": "GRADIENT_ANGULAR",
+                            "type": "string"
+                          },
+                          {
+                            "const": "GRADIENT_DIAMOND",
+                            "type": "string"
+                          }
+                        ]
+                      },
+                      "gradientTransform": {
+                        "type": "array",
+                        "items": false,
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "prefixItems": [
+                          {
+                            "type": "array",
+                            "items": false,
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "prefixItems": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "array",
+                            "items": false,
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "prefixItems": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "gradientStops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "position",
+                            "color"
+                          ],
+                          "properties": {
+                            "position": {
+                              "minimum": 0,
+                              "maximum": 1,
+                              "type": "number"
+                            },
+                            "color": {
+                              "type": "object",
+                              "required": [
+                                "r",
+                                "g",
+                                "b",
+                                "a"
+                              ],
+                              "properties": {
+                                "r": {
+                                  "minimum": 0,
+                                  "maximum": 1,
+                                  "type": "number"
+                                },
+                                "g": {
+                                  "minimum": 0,
+                                  "maximum": 1,
+                                  "type": "number"
+                                },
+                                "b": {
+                                  "minimum": 0,
+                                  "maximum": 1,
+                                  "type": "number"
+                                },
+                                "a": {
+                                  "minimum": 0,
+                                  "maximum": 1,
+                                  "type": "number"
+                                }
+                              }
+                            },
+                            "bind": {
+                              "type": "object",
+                              "required": [
+                                "key",
+                                "confidence"
+                              ],
+                              "properties": {
+                                "key": {
+                                  "minLength": 1,
+                                  "type": "string"
+                                },
+                                "confidence": {
+                                  "anyOf": [
+                                    {
+                                      "const": "chain",
+                                      "type": "string"
+                                    },
+                                    {
+                                      "const": "value",
+                                      "type": "string"
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "sourceColor": {
+                              "type": "object",
+                              "required": [
+                                "original",
+                                "space"
+                              ],
+                              "properties": {
+                                "original": {
+                                  "type": "string"
+                                },
+                                "space": {
+                                  "anyOf": [
+                                    {
+                                      "const": "srgb",
+                                      "type": "string"
+                                    },
+                                    {
+                                      "const": "display-p3",
+                                      "type": "string"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "opacity": {
+                        "minimum": 0,
+                        "maximum": 1,
+                        "type": "number"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "type",
+                      "asset",
+                      "scaleMode"
+                    ],
+                    "properties": {
+                      "type": {
+                        "const": "IMAGE",
+                        "type": "string"
+                      },
+                      "asset": {
+                        "type": "object",
+                        "required": [
+                          "sha"
+                        ],
+                        "properties": {
+                          "sha": {
+                            "pattern": "^[0-9a-f]{64}$",
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "scaleMode": {
+                        "anyOf": [
+                          {
+                            "const": "FILL",
+                            "type": "string"
+                          },
+                          {
+                            "const": "FIT",
+                            "type": "string"
+                          },
+                          {
+                            "const": "CROP",
+                            "type": "string"
+                          },
+                          {
+                            "const": "TILE",
+                            "type": "string"
+                          }
+                        ]
+                      },
+                      "imageTransform": {
+                        "type": "array",
+                        "items": false,
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "prefixItems": [
+                          {
+                            "type": "array",
+                            "items": false,
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "prefixItems": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "array",
+                            "items": false,
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "prefixItems": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "scalingFactor": {
+                        "exclusiveMinimum": 0,
+                        "type": "number"
+                      },
+                      "opacity": {
+                        "minimum": 0,
+                        "maximum": 1,
+                        "type": "number"
+                      }
+                    }
+                  }
+                ]
+              },
+              "decorationThickness": {
+                "type": "number"
+              },
+              "decorationOffset": {
+                "type": "number"
+              },
+              "openTypeFeatures": {
+                "type": "object",
+                "patternProperties": {
+                  "^(.*)$": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "bind": {
+                "type": "object",
+                "properties": {
+                  "fontSize": {
+                    "type": "object",
+                    "required": [
+                      "key",
+                      "confidence"
+                    ],
+                    "properties": {
+                      "key": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "confidence": {
+                        "anyOf": [
+                          {
+                            "const": "chain",
+                            "type": "string"
+                          },
+                          {
+                            "const": "value",
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "fontFamily": {
+                    "type": "object",
+                    "required": [
+                      "key",
+                      "confidence"
+                    ],
+                    "properties": {
+                      "key": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "confidence": {
+                        "anyOf": [
+                          {
+                            "const": "chain",
+                            "type": "string"
+                          },
+                          {
+                            "const": "value",
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "fontWeight": {
+                    "type": "object",
+                    "required": [
+                      "key",
+                      "confidence"
+                    ],
+                    "properties": {
+                      "key": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "confidence": {
+                        "anyOf": [
+                          {
+                            "const": "chain",
+                            "type": "string"
+                          },
+                          {
+                            "const": "value",
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "lineHeight": {
+                    "type": "object",
+                    "required": [
+                      "key",
+                      "confidence"
+                    ],
+                    "properties": {
+                      "key": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "confidence": {
+                        "anyOf": [
+                          {
+                            "const": "chain",
+                            "type": "string"
+                          },
+                          {
+                            "const": "value",
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "letterSpacing": {
+                    "type": "object",
+                    "required": [
+                      "key",
+                      "confidence"
+                    ],
+                    "properties": {
+                      "key": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "confidence": {
+                        "anyOf": [
+                          {
+                            "const": "chain",
+                            "type": "string"
+                          },
+                          {
+                            "const": "value",
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "effectStyles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "effects"
+        ],
+        "properties": {
+          "key": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "effects": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "color",
+                    "offset",
+                    "radius",
+                    "spread"
+                  ],
+                  "properties": {
+                    "type": {
+                      "anyOf": [
+                        {
+                          "const": "DROP_SHADOW",
+                          "type": "string"
+                        },
+                        {
+                          "const": "INNER_SHADOW",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "color": {
+                      "type": "object",
+                      "required": [
+                        "r",
+                        "g",
+                        "b",
+                        "a"
+                      ],
+                      "properties": {
+                        "r": {
+                          "minimum": 0,
+                          "maximum": 1,
+                          "type": "number"
+                        },
+                        "g": {
+                          "minimum": 0,
+                          "maximum": 1,
+                          "type": "number"
+                        },
+                        "b": {
+                          "minimum": 0,
+                          "maximum": 1,
+                          "type": "number"
+                        },
+                        "a": {
+                          "minimum": 0,
+                          "maximum": 1,
+                          "type": "number"
+                        }
+                      }
+                    },
+                    "offset": {
+                      "type": "object",
+                      "required": [
+                        "x",
+                        "y"
+                      ],
+                      "properties": {
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        }
+                      }
+                    },
+                    "radius": {
+                      "minimum": 0,
+                      "type": "number"
+                    },
+                    "spread": {
+                      "type": "number"
+                    },
+                    "showShadowBehindNode": {
+                      "type": "boolean"
+                    },
+                    "blendMode": {
+                      "const": "NORMAL",
+                      "type": "string"
+                    },
+                    "bind": {
+                      "type": "object",
+                      "properties": {
+                        "color": {
+                          "type": "object",
+                          "required": [
+                            "key",
+                            "confidence"
+                          ],
+                          "properties": {
+                            "key": {
+                              "minLength": 1,
+                              "type": "string"
+                            },
+                            "confidence": {
+                              "anyOf": [
+                                {
+                                  "const": "chain",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "value",
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "radius": {
+                          "type": "object",
+                          "required": [
+                            "key",
+                            "confidence"
+                          ],
+                          "properties": {
+                            "key": {
+                              "minLength": 1,
+                              "type": "string"
+                            },
+                            "confidence": {
+                              "anyOf": [
+                                {
+                                  "const": "chain",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "value",
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "spread": {
+                          "type": "object",
+                          "required": [
+                            "key",
+                            "confidence"
+                          ],
+                          "properties": {
+                            "key": {
+                              "minLength": 1,
+                              "type": "string"
+                            },
+                            "confidence": {
+                              "anyOf": [
+                                {
+                                  "const": "chain",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "value",
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "offsetX": {
+                          "type": "object",
+                          "required": [
+                            "key",
+                            "confidence"
+                          ],
+                          "properties": {
+                            "key": {
+                              "minLength": 1,
+                              "type": "string"
+                            },
+                            "confidence": {
+                              "anyOf": [
+                                {
+                                  "const": "chain",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "value",
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "offsetY": {
+                          "type": "object",
+                          "required": [
+                            "key",
+                            "confidence"
+                          ],
+                          "properties": {
+                            "key": {
+                              "minLength": 1,
+                              "type": "string"
+                            },
+                            "confidence": {
+                              "anyOf": [
+                                {
+                                  "const": "chain",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "value",
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "radius"
+                  ],
+                  "properties": {
+                    "type": {
+                      "anyOf": [
+                        {
+                          "const": "LAYER_BLUR",
+                          "type": "string"
+                        },
+                        {
+                          "const": "BACKGROUND_BLUR",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "radius": {
+                      "minimum": 0,
+                      "type": "number"
+                    },
+                    "bind": {
+                      "type": "object",
+                      "properties": {
+                        "radius": {
+                          "type": "object",
+                          "required": [
+                            "key",
+                            "confidence"
+                          ],
+                          "properties": {
+                            "key": {
+                              "minLength": 1,
+                              "type": "string"
+                            },
+                            "confidence": {
+                              "anyOf": [
+                                {
+                                  "const": "chain",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "value",
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
           }
         }
       }

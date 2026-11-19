@@ -1,0 +1,10 @@
+{
+  "base": "button.json",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/variants/0/root/children/1/text"
+    }
+  ],
+  "expect": ["kind-content"]
+}
