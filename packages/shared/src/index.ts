@@ -1,12 +1,9 @@
 export {
   createDiagnostic,
   createDiagnosticRegistry,
-  DIAGNOSTIC_DOMAINS,
   type Diagnostic,
-  type DiagnosticCode,
   type DiagnosticContext,
   type DiagnosticDef,
-  type DiagnosticDomain,
   type DiagnosticRegistry,
   type DiagnosticSpec,
   defineDiagnostic,
@@ -15,7 +12,7 @@ export {
   type MessageParamValue,
   renderMessage,
 } from './diagnostic';
-export * from './diagnostics';
+export * from './diagnostics/index';
 export { HolotypeError, NotImplementedError } from './errors';
 export {
   isLevelEnabled,

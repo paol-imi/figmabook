@@ -1,0 +1,5 @@
+docs/plan/12-quality.md:19: summary lists domains "SB CAP", the sections are "SB SB"
+docs/plan/12-quality.md:19: summary says SB 3, the SB_ heading says 2
+docs/plan/12-quality.md:31: domain SB_ also has a section at line 23
+docs/plan/12-quality.md:40: CAP_TREE_TOO_LARGE: code CAP_TREE_TOO_LARGE is not in domain SB_
+docs/plan/12-quality.md:41: CAP_LICENSE_UNKNOWN: code CAP_LICENSE_UNKNOWN is not in domain SB_
