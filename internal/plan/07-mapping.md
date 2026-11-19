@@ -357,6 +357,8 @@ Verification runs **bottom-up**, so a container is simulated with its children's
    6. positive z-index.
 
    Use the `CPaintOrder` facts. Figma's child order is bottom → top.
+
+   The sort only reorders siblings whose boxes overlap, where paint order is visible: it is a stable topological sort of the "paints below" constraints between overlapping pairs, taking the earliest child whenever it can. Siblings that do not overlap keep DOM (flow) order, so the flow-order check below (and B-49's) sees the author's order wherever paint order makes no difference.
 2. **Flow order vs paint order.** In auto layout, child order *is* flow order. If the paint sort reorders *in-flow* children of a stack:
    - a full reversal → `itemReverseZIndex: true`;
    - otherwise → the out-of-order children become `ABSOLUTE` siblings, which can sit anywhere in the child list, if the remaining flow still verifies;
@@ -542,11 +544,13 @@ Verify the conic origin and direction in S-03 (`PAINT_CONIC_APPROX` until then).
 | uniform color & style, any widths | `strokes {paints:[SOLID], align: INSIDE, weight {t,r,b,l}}`; layout padding includes the border (§4.1) |
 | `dashed` | `dashPattern: [2w, w]` (Chrome draws dashes about 2× the width) + `PAINT_DASH_APPROX` (info), because Figma phases dashes around corners continuously |
 | `dotted` | `dashPattern: [0, 2w]`, `cap: ROUND` |
-| per-side **colors or styles** differ, no radius | decompose into four absolute VECTOR siblings (mitered trapezoids, figit `border-decomposition.ts`), `nk` `…/border-{t,r,b,l}`; node `strokes` removed; `PAINT_BORDER_DECOMPOSED` (info) |
-| per-side differ, with radius | rounded-path decomposition (figit `rounded-dash-border.ts`) when `mapper.exactBorders` ([16](16-config.md#mapper)); else dominant color + `PAINT_BORDER_DOMINANT` (warn) |
+| per-side **colors or styles** differ, square box, every side solid-like (`solid`, or a style drawn as solid: `double`, `groove`, `ridge`, `inset`, `outset`) | decompose into four absolute VECTOR siblings (mitred trapezoids, figit `border-decomposition.ts`), `nk` `…/border-{t,r,b,l}`; node `strokes` removed; `PAINT_BORDER_DECOMPOSED` (info), plus `PAINT_BORDER_STYLE_APPROX` for a non-`solid` side |
+| per-side differ, some side `dashed` or `dotted` | no decomposition: one stroke in the dominant side's color and style (the style with the largest total width), per-side weights kept; `PAINT_BORDER_DOMINANT` (warn) |
+| per-side differ, with radius | dominant color + `PAINT_BORDER_DOMINANT` (warn); rounded-path decomposition (figit `rounded-dash-border.ts`) only with `mapper.exactBorders` ([16](16-config.md#mapper), hardening) |
 | `double`, `groove`, `ridge`, `inset`, `outset` | decomposition (figit `border-3d.ts`) or solid approximation + `PAINT_BORDER_STYLE_APPROX` |
 | `outline`, no border | stroke `align: OUTSIDE`, weight = outline-width (only if `outline-offset` = 0) |
-| `outline`, with border or offset ≠ 0 | absolute sibling FRAME (no fill) inflated by `offset + width`, radius + offset, INSIDE stroke; `nk` `…/outline` |
+| `outline`, with border or offset ≠ 0 | absolute sibling FRAME (no fill) inflated by `offset + width`, INSIDE stroke; its radius is the outline's outer edge, `r + offset + width` per rounded corner (a square corner stays 0); `nk` `…/outline` |
+| the same outline frame on the component root | no sibling exists: the frame is the root's last child. A root that clips its content (`clipsContent`) cannot show it, so it is dropped with `CAP_CSS_UNSUPPORTED` (`data.property: 'outline'`) |
 | `border-radius` | corner px with the CSS overlap reduction `f = min(1, w/(tl+tr), w/(bl+br), h/(tl+bl), h/(tr+br))`; `smoothing: 0` |
 | elliptical radii (`h ≠ v`) | `mapper.exactRadii` ([16](16-config.md#mapper)) → vector path (`kind: 'vector'`, mask for children if needed); else `min(h, v)` + `PAINT_ELLIPTICAL_RADIUS_APPROX` |
 | percent radius | resolved by capture (the computed value is px or %; resolve against w/h) |
@@ -562,7 +566,9 @@ Verify the conic origin and direction in S-03 (`PAINT_CONIC_APPROX` until then).
 **Spread.** It is honoured only on rectangles and ellipses, or on frames with a visible fill *and* `clipsContent` (`plugin-api.d.ts` around L4369). For a frame with spread ≠ 0 that does not qualify:
 
 - If the frame has a fill and no overflowing children, set `clipsContent: true`. This is only safe when the subtree has nothing outside the frame bounds: check the children's `expect` against the frame.
-- Otherwise move the shadow onto an absolute backing RECTANGLE (`nk` `…/shadow`) as the first child, with the same size and radius and a fill equal to the element background (or 1% alpha black when there is no background, with `showShadowBehindNode: false`). Report `PAINT_SPREAD_BACKING_RECT` (info).
+- Otherwise move the shadow onto an absolute backing RECTANGLE (`nk` `…/shadow`) as the first child, with the same size and radius and a fill equal to the element background when it is opaque. Report `PAINT_SPREAD_BACKING_RECT` (info).
+
+**Fill-less and translucent boxes.** Figma draws a fill-less frame's shadow from its content, not its box. So a box with no visible fill and **any** shadow (spread or not) gets the `…/shadow` backing rectangle too, after ring promotion below. A translucent box's backing rectangle has a 1% black fill and its drop shadows `showShadowBehindNode: false`, so the shadow does not show through (pending S-03 confirmation). Both report `PAINT_SPREAD_BACKING_RECT`.
 
 **Ring shadows** (`0 0 0 Npx c`, Tailwind `ring-*`) on fill-less frames render as nothing in Figma (figit):
 
@@ -642,7 +648,7 @@ These rules run bottom-up after layout and visuals, and before alignment. A node
 
 1. **Pass-through wrapper.** No fills, strokes, effects, clip or opacity, no own layout semantics (or the same layout as its single child), and a single child with an equal rect. The node is replaced by its child, which inherits the wrapper's `child` sizing and keeps the better name (§12).
 2. **Same-direction nesting.** A stack inside a stack with the same `mode`, where the inner stack is FILL on the primary axis, has 0 padding and no visuals → merge, if the merged `itemSpacing` is uniform.
-3. **Text-only element.** A block with a single text child and no visuals → the TEXT node takes the element's place, name and `child` props (figit `isPlainTextElement`), unless the element carries an `nk` anchor; then it stays a frame wrapping the TEXT.
+3. **Text-only element.** A block with a single text child and no visuals → the TEXT node takes the element's place, box, `nk`, name and `child` props (figit `isPlainTextElement`), unless the element carries an `nk` anchor; then it stays a frame wrapping the TEXT. All of these must hold (as built in B-48): zero padding and zero border on every side; the element is not an anchor (test id, `data-holotype-name`/`-key`, component boundary) and not a hoist origin; it draws nothing (no fills, strokes, effects, opacity, blend mode or clip), is visible, untransformed, not replaced and carries no diagnostics; and the TEXT node's captured lines are reproducible inside the element's box (line placement check). Otherwise the frame stays.
 4. **Adjacent text siblings** with identical style on the same line, in a non-auto-layout parent → merge.
 5. **Leaf frame.** Stays a `frame` for managed element boxes (never `rectangle`; [10 §4](10-sync.md#nk) rule 5). `rectangle` is used only for synthetic nodes (`/bg`, `/shadow`). `mapper.preferFrames` ([16](16-config.md#mapper)) affects synthetic nodes only.
 6. **Groups.** Emitted only for transparent absolute wrappers in absolute parents. Never inside auto layout.
@@ -841,10 +847,11 @@ Every stage that writes a Scene field already knows which CSS properties produce
 | `size.*` / `min*` / `max*` | `width`/`height`/`min-*`/`max-*` | `percent-resolved` when the intent was `%` |
 | `fills[i]`, `strokes.*`, `radius.*`, `effects[i]`, text range fields | the property in the §16 table | `none` |
 
-- `authored`, `selector`, `varChain` come from `CAuthored` (`varRefs`, `rules`); `rule` is the `CRuleRef` resolved through `CaptureDoc.styleSheets` and the stylesheet's source map to a repo-relative `SourceLoc` (the CLI passes the resolved locations in as `MapperInput.sourceLocs`), with CSS-module classes de-hashed to the original selector ([05 §6.2](05-capture.md)). `dom.loc` is `CSource.loc`.
+- `authored`, `selector`, `varChain` come from `CAuthored` (`varRefs`, `rules`); `rule` is the `CRuleRef` resolved through `CaptureDoc.styleSheets` and the stylesheet's source map to a repo-relative `SourceLoc` right after capture (the CLI passes the resolved locations in as `MapperInput.sourceLocs`; the map itself is never in the Capture IR), with CSS-module classes de-hashed to the original selector ([05 §6.2](05-capture.md)). `dom.loc` is `CSource.loc`.
 - Merged or simplified nodes (§11) keep the origin of the node that survives; an absorbed wrapper's fields are listed under the survivor with `css` from the wrapper.
 - A field with no CSS source (`cornerSmoothing`, rasterized subtrees, fallback-only geometry) gets no entry; the DCR reports it as `DCR_FIELD_UNMAPPABLE` if a designer edits it.
-- Same determinism rules as the Scene (§17): sorted keys, canonical JSON, golden-tested. Source-map resolution is memoized per `styleSheetId` revision and is the only I/O, done by the CLI before calling the pure mapper.
+- A field whose cascade winner has no author rule (a browser default such as `<button>` `padding-block: 1px`, or an initial value) gets `default: 'user-agent' | 'initial'` and a `suggested` rule instead of `rule` ([15 §5.2](15-change-requests.md#provenance)); the capture-side resolver supplies both with the resolved locations.
+- Same determinism rules as the Scene (§17): sorted keys, canonical JSON, golden-tested. Source-map resolution is the only I/O: the capture orchestrator does it right after each capture, cached per (dev id or `sourceURL`, sheet text hash) ([05 §6.2](05-capture.md#authored), D-36), and the CLI passes the result to the pure mapper.
 
 ## 17. Determinism
 

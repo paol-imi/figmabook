@@ -6,7 +6,7 @@ Holotype reports every fallback, approximation and failure as a diagnostic with 
 Search this page for the code shown in the report, the plugin or the CLI output.
 Each code links to its own page with what happened, what to do and where the behaviour is specified.
 
-278 codes in 14 areas. Severities:
+279 codes in 14 areas. Severities:
 
 - **info**: a lossless choice worth knowing about. Usually nothing to do.
 - **warning**: a visible approximation. The result differs from the code in a way you can see.
@@ -17,7 +17,7 @@ The source of truth is the [diagnostics catalog](../../internal/plan/12-quality.
 ## Areas
 
 - [Storybook (`SB_`)](#domain-sb): 27
-- [Planner, config and mapper structure (`PLAN_`)](#domain-plan): 43
+- [Planner, config and mapper structure (`PLAN_`)](#domain-plan): 44
 - [Capture (`CAP_`)](#domain-cap): 30
 - [Layout (`LAYOUT_`)](#domain-layout): 16
 - [Text (`TEXT_`)](#domain-text): 11
@@ -54,7 +54,7 @@ The source of truth is the [diagnostics catalog](../../internal/plan/12-quality.
 | <a id="SB_STORY_ERROR"></a>[`SB_STORY_ERROR`](SB_STORY_ERROR.md) | error | Storybook reported `storyErrored`/`storyThrewException`; the variant fails (retried twice). | Open the story with the args in the report and fix the error message shown. |
 | <a id="SB_PLAY_ERROR"></a>[`SB_PLAY_ERROR`](SB_PLAY_ERROR.md) | error | The play function threw; the variant fails. | Fix the play function (the report shows its error and stack). |
 | <a id="SB_STORY_MISSING"></a>[`SB_STORY_MISSING`](SB_STORY_MISSING.md) | error | The story id is not in the index (renamed or removed). | Re-run after rebuilding Storybook; update ids pinned in config. |
-| <a id="SB_CONSOLE_ERROR"></a>[`SB_CONSOLE_ERROR`](SB_CONSOLE_ERROR.md) | info | Console errors were logged during the render. | Nothing to do unless the render looks blank; then read the logged errors. |
+| <a id="SB_CONSOLE_ERROR"></a>[`SB_CONSOLE_ERROR`](SB_CONSOLE_ERROR.md) | info | Console errors were logged during the render (the browser's own `/favicon.ico` request excluded). | Nothing to do unless the render looks blank; then read the logged errors. |
 | <a id="SB_URL_ARG_UNENCODABLE"></a>[`SB_URL_ARG_UNENCODABLE`](SB_URL_ARG_UNENCODABLE.md) | warning | In URL-fallback mode an arg value cannot be encoded in the URL; the variant was skipped. | Drop `--no-channel` (or use a build where the preview API works), or limit values to letters, digits, space, `_` and `-`. |
 | <a id="SB_ARG_UNKNOWN"></a>[`SB_ARG_UNKNOWN`](SB_ARG_UNKNOWN.md) | warning | A configured arg has no argType; it was dropped. | Fix the arg name in config, or add an argType for it. |
 | <a id="SB_DECORATOR_PAINTS"></a>[`SB_DECORATOR_PAINTS`](SB_DECORATOR_PAINTS.md) | info | A decorator paints a background; it is used as the canvas background, not part of the component. | Nothing to do. Remove the background from the decorator if you want a transparent canvas. |
@@ -89,6 +89,7 @@ The source of truth is the [diagnostics catalog](../../internal/plan/12-quality.
 | <a id="PLAN_UNVERIFIED_CLASSIFICATION"></a>[`PLAN_UNVERIFIED_CLASSIFICATION`](PLAN_UNVERIFIED_CLASSIFICATION.md) | info | `classification: 'fast'` used priors without probes. | Use the default classification for the final sync. |
 | <a id="PLAN_SPARSE_SET"></a>[`PLAN_SPARSE_SET`](PLAN_SPARSE_SET.md) | warning | The set has missing combinations; switching to one snaps to the nearest. | Raise `budget.max`, or accept the sparse set. |
 | <a id="PLAN_AXIS_DROPPED_BUDGET"></a>[`PLAN_AXIS_DROPPED_BUDGET`](PLAN_AXIS_DROPPED_BUDGET.md) | warning | An axis was pinned to its default to stay within budget. | Use "include" in the report, or raise `budget.max`. |
+| <a id="PLAN_MATRIX_NONE"></a>[`PLAN_MATRIX_NONE`](PLAN_MATRIX_NONE.md) | info | `matrix: 'none'`: the component was built as one component from its default variant; its variant args and states were pinned (`data.pinned`). | Nothing to do. To get variants, set `matrix` back to `auto` (or drop `--variants none`). |
 | <a id="PLAN_BUDGET_EXCEEDED"></a>[`PLAN_BUDGET_EXCEEDED`](PLAN_BUDGET_EXCEEDED.md) | error | The matrix is over `budget.hardLimit`; the component was refused. | Reduce axes or values, or pass `--force`. |
 | <a id="PLAN_PROBE_BUDGET"></a>[`PLAN_PROBE_BUDGET`](PLAN_PROBE_BUDGET.md) | warning | The probe budget ran out; the remaining args were classified by priors. | Raise `budget.maxProbes`, or classify those args in config. |
 | <a id="PLAN_CONDITIONAL_DUPLICATE"></a>[`PLAN_CONDITIONAL_DUPLICATE`](PLAN_CONDITIONAL_DUPLICATE.md) | info | An argType `if` collapses combinations; the duplicates are built as clones. | Nothing to do, or set `conditional: 'sparse'` to omit them. |
@@ -224,10 +225,10 @@ Auto-layout relaxations and read-back fallbacks in the plugin are `APPLY_LAYOUT_
 | <a id="PAINT_TABLE_BORDER_APPROX"></a>[`PAINT_TABLE_BORDER_APPROX`](PAINT_TABLE_BORDER_APPROX.md) | info | `border-collapse` was drawn by giving shared borders to one side. | Nothing to do. |
 | <a id="PAINT_DASH_APPROX"></a>[`PAINT_DASH_APPROX`](PAINT_DASH_APPROX.md) | info | Dashed borders use a Figma dash pattern; corners phase differently. | Nothing to do. |
 | <a id="PAINT_BORDER_DECOMPOSED"></a>[`PAINT_BORDER_DECOMPOSED`](PAINT_BORDER_DECOMPOSED.md) | info | Per-side border colors or styles became four vector layers. | Nothing to do. |
-| <a id="PAINT_BORDER_DOMINANT"></a>[`PAINT_BORDER_DOMINANT`](PAINT_BORDER_DOMINANT.md) | warning | Per-side borders on a rounded box use the dominant color. | Set `mapper.exactBorders: true` for exact paths. |
+| <a id="PAINT_BORDER_DOMINANT"></a>[`PAINT_BORDER_DOMINANT`](PAINT_BORDER_DOMINANT.md) | warning | Per-side borders on a rounded box, or with a dashed or dotted side, use one stroke in the dominant side's color and style. | Use one border color and style, or (rounded boxes) set `mapper.exactBorders: true` for exact paths. |
 | <a id="PAINT_BORDER_STYLE_APPROX"></a>[`PAINT_BORDER_STYLE_APPROX`](PAINT_BORDER_STYLE_APPROX.md) | info | A `double`/`groove`/`ridge`/`inset`/`outset` border was approximated. | Nothing to do. |
 | <a id="PAINT_ELLIPTICAL_RADIUS_APPROX"></a>[`PAINT_ELLIPTICAL_RADIUS_APPROX`](PAINT_ELLIPTICAL_RADIUS_APPROX.md) | warning | Elliptical corner radii used the smaller radius. | Set `mapper.exactRadii: true` for an exact path. |
-| <a id="PAINT_SPREAD_BACKING_RECT"></a>[`PAINT_SPREAD_BACKING_RECT`](PAINT_SPREAD_BACKING_RECT.md) | info | A shadow spread was moved to a backing rectangle. | Nothing to do. |
+| <a id="PAINT_SPREAD_BACKING_RECT"></a>[`PAINT_SPREAD_BACKING_RECT`](PAINT_SPREAD_BACKING_RECT.md) | info | A shadow (with spread, or on a box without a visible fill) was moved to a backing rectangle. | Nothing to do. |
 | <a id="PAINT_RING_PROMOTED"></a>[`PAINT_RING_PROMOTED`](PAINT_RING_PROMOTED.md) | info | A ring shadow (e.g. Tailwind `ring-*`) became an outside stroke. | Nothing to do. |
 | <a id="PAINT_FILTER_RASTERIZED"></a>[`PAINT_FILTER_RASTERIZED`](PAINT_FILTER_RASTERIZED.md) | warning | A CSS filter other than blur/drop-shadow was rasterized. | Nothing to do, or apply the effect to an image asset instead. |
 | <a id="PAINT_BLEND_UNSUPPORTED"></a>[`PAINT_BLEND_UNSUPPORTED`](PAINT_BLEND_UNSUPPORTED.md) | warning | A blend mode (e.g. `plus-lighter`) has no exact Figma match. | Check the layer in Figma; use a standard blend mode. |
@@ -384,9 +385,9 @@ Reused from other domains: `SYNC_DUPLICATE_SID`, `SYNC_LOCKED_SKIPPED`, `SYNC_MA
 | <a id="DCR_VALUE_UNTOKENIZED"></a>[`DCR_VALUE_UNTOKENIZED`](DCR_VALUE_UNTOKENIZED.md) | warning | A raw value is used; matching tokens are listed. | Bind the variable in Figma, or pick a token in the question. |
 | <a id="DCR_VALUE_NO_TOKEN"></a>[`DCR_VALUE_NO_TOKEN`](DCR_VALUE_NO_TOKEN.md) | warning | A raw value matches no token. | Answer the question: new token or literal. |
 | <a id="DCR_NEAREST_COMPONENT"></a>[`DCR_NEAREST_COMPONENT`](DCR_NEAREST_COMPONENT.md) | info | A new component looks like an existing one (similarity ≥ 0.6). | Answer the question: extend the existing one or create a new one. |
-| <a id="DCR_PROVENANCE_MISSING"></a>[`DCR_PROVENANCE_MISSING`](DCR_PROVENANCE_MISSING.md) | warning | No code location (no CDP or source map, or plugin-only extraction). | Capture from the dev server through the CLI. |
+| <a id="DCR_PROVENANCE_MISSING"></a>[`DCR_PROVENANCE_MISSING`](DCR_PROVENANCE_MISSING.md) | warning | No code location (no CDP or source map, or plugin-only extraction); not raised for a browser default or initial value (`FieldOrigin.default`). | Capture from the dev server through the CLI. |
 | <a id="DCR_PROVENANCE_MINIFIED"></a>[`DCR_PROVENANCE_MINIFIED`](DCR_PROVENANCE_MINIFIED.md) | info | Code locations point at built CSS (static build). | Use the dev server for branch mode. |
-| <a id="DCR_PROVENANCE_NO_SOURCEMAP"></a>[`DCR_PROVENANCE_NO_SOURCEMAP`](DCR_PROVENANCE_NO_SOURCEMAP.md) | warning | A dev-server stylesheet has no `sourceMapURL` / `data-vite-dev-id`. | Enable `css.devSourcemap` (Holotype does this automatically in branch mode); check a custom Vite config. |
+| <a id="DCR_PROVENANCE_NO_SOURCEMAP"></a>[`DCR_PROVENANCE_NO_SOURCEMAP`](DCR_PROVENANCE_NO_SOURCEMAP.md) | warning | A dev-server stylesheet has no source map (`sourceMapURL`). With a `data-vite-dev-id` the file is known and its served line numbers are kept (`data.approximate: true`: the line may be off); without one only the selector is known (`data.approximate: false`). | Enable `css.devSourcemap` (Holotype does this automatically in branch mode); check a custom Vite config. |
 | <a id="DCR_PROVENANCE_STALE"></a>[`DCR_PROVENANCE_STALE`](DCR_PROVENANCE_STALE.md) | warning | A code location could not be remapped from `baseCommit` to HEAD. | Code moved since this file was built. Run `holotype branch refresh`. |
 | <a id="DCR_UNKNOWN_CHANGE"></a>[`DCR_UNKNOWN_CHANGE`](DCR_UNKNOWN_CHANGE.md) | warning | A change could not be classified; listed raw. | Add an annotation that says what you meant. |
 | <a id="DCR_TOO_LARGE"></a>[`DCR_TOO_LARGE`](DCR_TOO_LARGE.md) | warning | More than 200 items. | Split by component with `--split`. |

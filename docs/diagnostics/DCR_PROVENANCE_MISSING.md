@@ -10,7 +10,7 @@
 
 ## What happened
 
-No code location (no CDP or source map, or plugin-only extraction).
+No code location (no CDP or source map, or plugin-only extraction); not raised for a browser default or initial value (`FieldOrigin.default`).
 
 ## What to do
 

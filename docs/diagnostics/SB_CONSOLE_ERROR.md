@@ -10,7 +10,7 @@
 
 ## What happened
 
-Console errors were logged during the render.
+Console errors were logged during the render (the browser's own `/favicon.ico` request excluded).
 
 ## What to do
 

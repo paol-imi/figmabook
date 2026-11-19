@@ -240,7 +240,7 @@ Reference machine: Apple M2 / 16 GB (local) and GitHub `ubuntu-latest` 4 vCPU (C
 | Metadata for 500 stories (`loadStory` loop) | ≤10 s | |
 | Variant capture (warm page: args update → settled → serialized) | median ≤400 ms, p95 ≤1.2 s (README §4) | per-variant timing in report |
 | Serializer on a 200-node component | ≤60 ms in-page | `performance.now` in page |
-| CDP enrichment (platform fonts, matched styles) per variant | ≤80 ms | |
+| CDP enrichment (platform fonts, matched styles) per variant | ≤80 ms with matched styles memoized by match signature ([05 §6.2](05-capture.md#authored)); `CSS.getMatchedStylesForNode` ≤10 ms per call (S-19 measured 7–9 ms) | |
 | Mapper per variant (200 nodes) | ≤15 ms; component alignment ≤50 ms for 50 variants | `bench:mapper` |
 | Bundle size | ≤50 KB per 20-node variant before assets; assets deduped by sha256 | |
 | Plugin apply, 20-node variant | ≤60 ms | harness timing |
@@ -269,7 +269,7 @@ export interface DiagnosticDef {
   message: string;              // ICU template, e.g. "Font {family} {style} is not available in Figma; used {substitute}."
   fallback?: string;            // what we did instead
   remedyDesigner?: string;      // designer-facing remedy; the plugin shows it when it was never paired with a CLI
-  docs: `/docs/diagnostics/${string}`;
+  docs: `/reference/diagnostics/${string}`;   // route on the public docs site; the page source is docs/diagnostics/<CODE>.md
   since: string;                // version introduced
   deprecated?: string;
 }
@@ -280,7 +280,7 @@ Process: a new code is added to `diagnostics.ts` + a docs page `docs/diagnostics
 
 ### 6.2 Catalog
 
-**278 codes in 14 domains:** SB 27 · PLAN 43 · CAP 30 · LAYOUT 16 · TEXT 11 · FONT 8 · PAINT 16 · SVG 5 · TOKEN 21 · APPLY 21 · SYNC 21 · NET 9 · SEC 6 · DCR 44.
+**279 codes in 14 domains:** SB 27 · PLAN 44 · CAP 30 · LAYOUT 16 · TEXT 11 · FONT 8 · PAINT 16 · SVG 5 · TOKEN 21 · APPLY 21 · SYNC 21 · NET 9 · SEC 6 · DCR 44.
 
 Columns: **Emitted by** is the package that raises the code ([02 §6](02-architecture.md#monorepo)). **User remedy** is the text the report, the plugin and the docs page lead with: what the user can do, in plain words. "Nothing to do" means the result is correct and the code is only there to explain a choice. **Defined in** is the chapter that specifies the behaviour.
 
@@ -305,7 +305,7 @@ Columns: **Emitted by** is the package that raises the code ([02 §6](02-archite
 | `SB_STORY_ERROR` | error | `storybook` | Storybook reported `storyErrored`/`storyThrewException`; the variant fails (retried twice) | Open the story with the args in the report and fix the error message shown | [03](03-storybook.md) |
 | `SB_PLAY_ERROR` | error | `storybook` | the play function threw; the variant fails | Fix the play function (the report shows its error and stack) | [03](03-storybook.md) |
 | `SB_STORY_MISSING` | error | `storybook` | the story id is not in the index (renamed or removed) | Re-run after rebuilding Storybook; update ids pinned in config | [03](03-storybook.md) |
-| `SB_CONSOLE_ERROR` | info | `storybook` | console errors were logged during the render | Nothing to do unless the render looks blank; then read the logged errors | [03](03-storybook.md) |
+| `SB_CONSOLE_ERROR` | info | `storybook` | console errors were logged during the render (the browser's own `/favicon.ico` request excluded) | Nothing to do unless the render looks blank; then read the logged errors | [03](03-storybook.md) |
 | `SB_URL_ARG_UNENCODABLE` | warning | `planner` | in URL-fallback mode an arg value cannot be encoded in the URL; the variant was skipped | Drop `--no-channel` (or use a build where the preview API works), or limit values to letters, digits, space, `_` and `-` | [03](03-storybook.md) |
 | `SB_ARG_UNKNOWN` | warning | `planner` | a configured arg has no argType; it was dropped | Fix the arg name in config, or add an argType for it | [03](03-storybook.md) |
 | `SB_DECORATOR_PAINTS` | info | `storybook` | a decorator paints a background; it is used as the canvas background, not part of the component | Nothing to do. Remove the background from the decorator if you want a transparent canvas | [03](03-storybook.md) |
@@ -316,7 +316,7 @@ Columns: **Emitted by** is the package that raises the code ([02 §6](02-archite
 | `SB_PORTAL_AMBIGUOUS` | warning | `storybook` | several candidate portal roots; their union was used | Set `parameters.holotype.portal.selector` to the right overlay | [03](03-storybook.md#portals-and-overlays) |
 | `SB_NOT_A_STORYBOOK` | error | `cli` (hosted) | the target has no `index.json` plus `iframe.html` with a Storybook preview | Point Holotype at the root URL of a Storybook | [13](13-security-legal.md) |
 
-#### Planner, config and mapper structure (PLAN_) — 43
+#### Planner, config and mapper structure (PLAN_) — 44
 
 | Code | Severity | Emitted by | Meaning | User remedy | Defined in |
 |---|---|---|---|---|---|
@@ -338,6 +338,7 @@ Columns: **Emitted by** is the package that raises the code ([02 §6](02-archite
 | `PLAN_UNVERIFIED_CLASSIFICATION` | info | `planner` | `classification: 'fast'` used priors without probes | Use the default classification for the final sync | [04](04-variant-model.md) |
 | `PLAN_SPARSE_SET` | warning | `planner` | the set has missing combinations; switching to one snaps to the nearest | Raise `budget.max`, or accept the sparse set | [04](04-variant-model.md) |
 | `PLAN_AXIS_DROPPED_BUDGET` | warning | `planner` | an axis was pinned to its default to stay within budget | Use "include" in the report, or raise `budget.max` | [04](04-variant-model.md) |
+| `PLAN_MATRIX_NONE` | info | `planner` | `matrix: 'none'`: the component was built as one component from its default variant; its variant args and states were pinned (`data.pinned`) | Nothing to do. To get variants, set `matrix` back to `auto` (or drop `--variants none`) | [04](04-variant-model.md) |
 | `PLAN_BUDGET_EXCEEDED` | error | `planner` | the matrix is over `budget.hardLimit`; the component was refused | Reduce axes or values, or pass `--force` | [04](04-variant-model.md) |
 | `PLAN_PROBE_BUDGET` | warning | `planner` | the probe budget ran out; the remaining args were classified by priors | Raise `budget.maxProbes`, or classify those args in config | [04](04-variant-model.md) |
 | `PLAN_CONDITIONAL_DUPLICATE` | info | `planner` | an argType `if` collapses combinations; the duplicates are built as clones | Nothing to do, or set `conditional: 'sparse'` to omit them | [04](04-variant-model.md) |
@@ -463,10 +464,10 @@ Auto-layout relaxations and read-back fallbacks in the plugin are `APPLY_LAYOUT_
 | `PAINT_TABLE_BORDER_APPROX` | info | `mapper` | `border-collapse` was drawn by giving shared borders to one side | Nothing to do | [07](07-mapping.md) |
 | `PAINT_DASH_APPROX` | info | `mapper` | dashed borders use a Figma dash pattern; corners phase differently | Nothing to do | [07](07-mapping.md) |
 | `PAINT_BORDER_DECOMPOSED` | info | `mapper` | per-side border colors or styles became four vector layers | Nothing to do | [07](07-mapping.md) |
-| `PAINT_BORDER_DOMINANT` | warning | `mapper` | per-side borders on a rounded box use the dominant color | Set `mapper.exactBorders: true` for exact paths | [07](07-mapping.md) |
+| `PAINT_BORDER_DOMINANT` | warning | `mapper` | per-side borders on a rounded box, or with a dashed or dotted side, use one stroke in the dominant side's color and style | Use one border color and style, or (rounded boxes) set `mapper.exactBorders: true` for exact paths | [07](07-mapping.md) |
 | `PAINT_BORDER_STYLE_APPROX` | info | `mapper` | a `double`/`groove`/`ridge`/`inset`/`outset` border was approximated | Nothing to do | [07](07-mapping.md) |
 | `PAINT_ELLIPTICAL_RADIUS_APPROX` | warning | `mapper` | elliptical corner radii used the smaller radius | Set `mapper.exactRadii: true` for an exact path | [07](07-mapping.md) |
-| `PAINT_SPREAD_BACKING_RECT` | info | `mapper` | a shadow spread was moved to a backing rectangle | Nothing to do | [07](07-mapping.md) |
+| `PAINT_SPREAD_BACKING_RECT` | info | `mapper` | a shadow (with spread, or on a box without a visible fill) was moved to a backing rectangle | Nothing to do | [07](07-mapping.md) |
 | `PAINT_RING_PROMOTED` | info | `mapper` | a ring shadow (e.g. Tailwind `ring-*`) became an outside stroke | Nothing to do | [07](07-mapping.md) |
 | `PAINT_FILTER_RASTERIZED` | warning | `mapper` | a CSS filter other than blur/drop-shadow was rasterized | Nothing to do, or apply the effect to an image asset instead | [07](07-mapping.md) |
 | `PAINT_BLEND_UNSUPPORTED` | warning | `mapper` | a blend mode (e.g. `plus-lighter`) has no exact Figma match | Check the layer in Figma; use a standard blend mode | [07](07-mapping.md) |
@@ -609,9 +610,9 @@ Reused from other domains: `SYNC_DUPLICATE_SID`, `SYNC_LOCKED_SKIPPED`, `SYNC_MA
 | `DCR_VALUE_UNTOKENIZED` | warning | `dcr` | a raw value is used; matching tokens are listed | Bind the variable in Figma, or pick a token in the question | [15](15-change-requests.md#diagnostics) |
 | `DCR_VALUE_NO_TOKEN` | warning | `dcr` | a raw value matches no token | Answer the question: new token or literal | [15](15-change-requests.md#diagnostics) |
 | `DCR_NEAREST_COMPONENT` | info | `dcr` | a new component looks like an existing one (similarity ≥ 0.6) | Answer the question: extend the existing one or create a new one | [15](15-change-requests.md#diagnostics) |
-| `DCR_PROVENANCE_MISSING` | warning | `dcr` | no code location (no CDP or source map, or plugin-only extraction) | Capture from the dev server through the CLI | [15](15-change-requests.md#diagnostics) |
+| `DCR_PROVENANCE_MISSING` | warning | `dcr` | no code location (no CDP or source map, or plugin-only extraction); not raised for a browser default or initial value (`FieldOrigin.default`) | Capture from the dev server through the CLI | [15](15-change-requests.md#diagnostics) |
 | `DCR_PROVENANCE_MINIFIED` | info | `dcr` | code locations point at built CSS (static build) | Use the dev server for branch mode | [15](15-change-requests.md#diagnostics) |
-| `DCR_PROVENANCE_NO_SOURCEMAP` | warning | `capture` | a dev-server stylesheet has no `sourceMapURL` / `data-vite-dev-id` | Enable `css.devSourcemap` (Holotype does this automatically in branch mode); check a custom Vite config | [05](05-capture.md) |
+| `DCR_PROVENANCE_NO_SOURCEMAP` | warning | `capture` | a dev-server stylesheet has no source map (`sourceMapURL`). With a `data-vite-dev-id` the file is known and its served line numbers are kept (`data.approximate: true`: the line may be off); without one only the selector is known (`data.approximate: false`) | Enable `css.devSourcemap` (Holotype does this automatically in branch mode); check a custom Vite config | [05](05-capture.md) |
 | `DCR_PROVENANCE_STALE` | warning | `cli` | a code location could not be remapped from `baseCommit` to HEAD | Code moved since this file was built. Run `holotype branch refresh` | [15](15-change-requests.md#diagnostics) |
 | `DCR_UNKNOWN_CHANGE` | warning | `dcr` | a change could not be classified; listed raw | Add an annotation that says what you meant | [15](15-change-requests.md#diagnostics) |
 | `DCR_TOO_LARGE` | warning | `dcr` | more than 200 items | Split by component with `--split` | [15](15-change-requests.md#diagnostics) |
@@ -651,7 +652,7 @@ interface RunReport {
   reportVersion: '1';
   run: { id: string; startedAt: string; durationMs: number; surface: 'cli'|'action'|'plugin'|'mcp';
          generator: { name: string; version: string; chromium: string; playwright: string };
-         storybook: { version: string; renderer: string; source: string /* redacted to origin */; indexHash: string } };
+         storybook: { version: string; renderer: string; source: string /* redacted to origin + path, or static:<folder name> */; indexHash: string } };
   totals: { components: number; ok: number; failed: number; variants: number; nodes: number;
             autoLayoutCoverage: number; fidelity?: { median: number; p10: number } };
   components: Array<{ sid: string; name: string; status: 'ok'|'partial'|'failed'|'skipped';

@@ -138,7 +138,7 @@ In [14](14-roadmap.md) the first real use of the whole loop arrives at Phase 4.5
 | Area | In the slice | Deferred to hardening |
 |---|---|---|
 | Storybook | SB 10.x, react-vite, static build and dev server; channel render loop; `args`/`argTypes`/`parameters.holotype` | SB 8/9 smoke, SB 11 docgen server, other renderers, composition refs |
-| Variants | stories-as-variants plus **declared** args (`parameters.holotype.args.as`, enum `argTypes`); VARIANT, BOOLEAN, TEXT; one budget check | render-and-diff classification (D-13), pairwise, dedupe, states axis and pseudo-states (D-14, D-30), huge sets, INSTANCE_SWAP, SLOT |
+| Variants | stories-as-variants plus **declared** args (`parameters.holotype.args.as`, enum `argTypes`); VARIANT, BOOLEAN, TEXT; one budget check; `matrix: 'none'` (D-59) | render-and-diff classification (D-13), pairwise, dedupe, states axis and pseudo-states (D-14, D-30), huge sets, INSTANCE_SWAP, SLOT |
 | Capture | light DOM + open shadow, CDP geometry, solid paints, per-side borders, radius, simple shadows, opacity, clip, Latin text with platform fonts, inline SVG, PNG/JPEG images, CDP matched styles for `var()` chains and rule locations | closed shadow, gradients, masks, blend, filters, transforms, pseudo-elements, form controls, rasters, image transcode, CJK/RTL, icon fonts, probing |
 | Mapper | absolute baseline; flex row/column → auto layout with `layout-sim` verification and per-container fallback (D-15); cross-variant alignment (D-27); property bindings; exact token bindings (D-18, `confidence:'chain'`); provenance side file (D-36) | wrap, grid, simplification depth, full naming chain, text wrap modes, value matching |
 | Tokens | CSS custom properties → one local collection, default mode, alias chains; bindings on fills, strokes, padding, gap, radius, text fills | modes from themes, styles, library matching, `TOKEN_MODE_LIMIT` |
@@ -284,8 +284,8 @@ Build:
 
 Acceptance:
 - `pnpm -F @holotype/fixture-ds-react build-storybook` writes `storybook-static/` (gitignored). A snapshot checks the sorted story ids in `index.json`.
-- `pnpm -F @holotype/fixture-ds-react test:smoke` (Playwright): every story renders, no console error, no request outside `127.0.0.1`, `document.fonts.check('600 14px Inter')` is true.
-- `pnpm -F @holotype/fixture-ds-react dev` serves on port 6006 with CSS source maps (branch mode, S-19): the fixture's Storybook `viteFinal` sets `css.devSourcemap: true`; inline sheets resolve through `ownerNode` → `data-vite-dev-id`, ranges offset by `startLine`/`startColumn`; `DCR_PROVENANCE_NO_SOURCEMAP` otherwise.
+- `pnpm -F @holotype/fixture-ds-react test:smoke` (Playwright): every story renders, no console error (Chromium's own `/favicon.ico` request excluded, [03 §5.3](03-storybook.md#render-loop-driver)), no request outside `127.0.0.1`, `document.fonts.check('600 14px Inter')` is true.
+- `pnpm -F @holotype/fixture-ds-react dev` serves on port 6006 with CSS source maps (branch mode, S-19): the fixture's Storybook `viteFinal` sets `css.devSourcemap: true`; dev sheets resolve through their `data:` `sourceMapURL` and the owner's `data-vite-dev-id`, with sheet-relative ranges (no offset, [05 §6.2](05-capture.md#authored)); `DCR_PROVENANCE_NO_SOURCEMAP` otherwise.
 
 Parallel: owns `fixtures/ds-react/**`. B-04 and B-05 add files only.
 
@@ -446,7 +446,7 @@ Each ends with `internal/spikes/S-xx.md` and a proposed README §5 update. The c
 | **B-16** | S-07 render loop | slice (SB 10 part), hardening (8.6/9.1/11) | `tools/sandboxes`, `spikes/S-07` | B-10 | M | Sandbox generator (react-vite on 10.6.x first; 11-beta, 8.6, 9.1 later); 200-variant channel loop with failure injection ([14 S-07](14-roadmap.md#phase-0)) | report: SB 10 quirks and throughput (slice); other versions (hardening) |
 | **B-17** | S-08 pseudo-states | hardening | `spikes/S-08` | B-05, B-11 | M | CDP force vs real hover vs addon global on ds-react, the styling variants, small MUI and shadcn sandboxes | per-strategy success table; D-14 ordering proposal |
 | **B-18** | S-13 detection (capture half) | hardening | `spikes/S-13` | B-11 | S | React fiber `type` ↔ Storybook `component` refs, dev and static; structural hash; a Card→Button→Icon story | precision/recall per build mode |
-| **B-19** | S-19 provenance | slice (CSS modules), hardening (rest) | `spikes/S-19`, `packages/vite-plugin` (prototype) | B-11 (B-05 for the hardening half) | M | CDP `styleSheetId` + `style.range` + `CSS.styleSheetAdded` source maps on the dev server for CSS modules first, then plain CSS, Tailwind v4, emotion. The fixture's Storybook `viteFinal` sets `css.devSourcemap: true`; inline sheets resolve through `ownerNode` → `data-vite-dev-id`, ranges offset by `startLine`/`startColumn`. `data-holotype-loc` prototype for React 19 | coverage table; resolver module reused by B-45; `DCR_PROVENANCE_*` thresholds; `DCR_PROVENANCE_NO_SOURCEMAP` when a sheet has no source map |
+| **B-19** | S-19 provenance | slice (CSS modules), hardening (rest) | `spikes/S-19`, `packages/vite-plugin` (prototype) | B-11 (B-05 for the hardening half) | M | CDP `styleSheetId` + `style.range` + `CSS.styleSheetAdded` source maps on the dev server for CSS modules first, then plain CSS, Tailwind v4, emotion. The fixture's Storybook `viteFinal` sets `css.devSourcemap: true`; dev sheets resolve through their `data:` `sourceMapURL` and the owner's `data-vite-dev-id`, with sheet-relative ranges (no offset). `data-holotype-loc` prototype for React 19 | coverage table; resolver module reused by B-45; `DCR_PROVENANCE_*` thresholds; `DCR_PROVENANCE_NO_SOURCEMAP` when a sheet has no source map. CSS-modules half done: [S-19](../spikes/S-19.md) |
 
 The container halves of S-03, S-04, S-05, S-09, S-10 and S-16 (Chromium reference renders) are part of their kits in [§9](#spike-kit).
 
@@ -515,17 +515,19 @@ Hardening: B-103, B-104.
 
 #### B-45 · `capture`: matched styles, `var()` chains and rule locations
 
-**Path** `packages/capture/src/cdp/{matched,sourcemap}.ts` · **Depends** B-41, B-19 · **Runs** container · **Size** L
+**Path** `packages/capture/src/cdp/{matched,sourcemap}.ts` · **Depends** B-41, B-19, the `ir:` schema change below (merged first) · **Runs** container · **Size** L
 
 One CDP pass that feeds both tokens (D-18) and provenance (D-36).
+
+**Required `ir:` schema change, before B-45** (S-19 §7): `CaptureDoc.styleSheets` entries become `CStyleSheet` with a `kind` and a repo-relative `devId`, and never store a `data:` `sourceMapURL` ([06 §2](06-ir.md)); `FieldOrigin` gains `default: 'user-agent' | 'initial'` and `suggested` ([15 §5.2](15-change-requests.md#provenance)). One `ir` PR (hot file, §2).
 
 Build ([05 §6.2](05-capture.md#authored), [08 §3–5](08-tokens.md#provenance), [15 §5.1](15-change-requests.md#provenance)):
 - `CSS.getMatchedStylesForNode` for elements that carry mapped properties; the winning declaration per property (paint, border, radius, padding, gap, font size, color); its `var()` chain (`CVarChain`); `rule.styleSheetId` + `style.range`.
 - The custom-property table (`CCustomPropertyTable`) for `:root` and `[data-theme]` scopes.
-- `CSS.styleSheetAdded` headers into `CaptureDoc.styleSheets`; the S-19 resolver maps ranges through Vite dev source maps to `SourceLoc` (repo-relative, validated inside the repo). The CLI forces `css.devSourcemap: true` through `viteFinal`; inline sheets resolve through `ownerNode` → `data-vite-dev-id`, ranges offset by `startLine`/`startColumn`; a sheet without a source map gives `DCR_PROVENANCE_NO_SOURCEMAP`. Static builds give selectors only (`DCR_PROVENANCE_MINIFIED`).
-- Cost control per [08 §4.5](08-tokens.md#prov-cost).
+- `CSS.styleSheetAdded` / `CSS.styleSheetRemoved` headers into `CaptureDoc.styleSheets`; the S-19 resolver (`spikes/S-19/resolver`, reused) maps ranges through Vite dev source maps to `SourceLoc` (repo-relative, validated inside the repo) right after the capture, cached per (dev id or `sourceURL`, sheet text hash). The CLI forces `css.devSourcemap: true` through `viteFinal`; dev sheets resolve through their `data:` `sourceMapURL` and the owner's `data-vite-dev-id`; ranges are sheet-relative, nothing is subtracted ([05 §6.2](05-capture.md#authored)); a sheet without a source map gives `DCR_PROVENANCE_NO_SOURCEMAP` (`data.approximate` per [12 §6.2](12-quality.md#diagnostics)). Static builds give selectors only (`DCR_PROVENANCE_MINIFIED`).
+- Cost control per [08 §4.5](08-tokens.md#prov-cost): 10 ms per `getMatchedStylesForNode` call (S-19 measured 7–9 ms), memoized by match signature, each element fetched once.
 
-Acceptance: `test:e2e` on the **dev server**: for `components-button--primary`, `padding-left` resolves to `--space-3` and to `Button.module.css:<line>`; `background-color` resolves through `--button-bg` → `--color-primary`; a `calc()` value has no chain; snapshot of the custom-property table.
+Acceptance: `test:e2e` on the **dev server**: for `components-button--primary` (`Size=md`), `padding-left` resolves to `--space-4` and to `Button.module.css:67:3` (`.md`; `components-button--small` gives `--space-3`); `background-color` resolves through `--button-bg` → `--color-primary` → `--color-blue-600`; a `calc()` value has no chain; snapshot of the custom-property table.
 
 #### B-46 · `planner` (slice): declared variants and properties
 
@@ -535,9 +537,10 @@ Build ([04 §1–2](04-variant-model.md), §8):
 - `planComponent(model, sid, config)` for the slice: variant sources per D-12 without classification renders: curated `variants` > stories-as-variants > the product of args declared `as: 'variant'` (values from `argTypes.options` or `values`).
 - Arg kinds: declared `variant` / `boolean` / `text` / `fixed` / `ignore`; otherwise boolean args → BOOLEAN and string args → TEXT with `evidence: 'type-only'`; everything else FIXED. `valueMap` per [06 §3.1](06-ir.md).
 - `vk` per variant, set grid (`grid.columns/rows`), the budget check (`budget.max` 256 → `PLAN_*` error naming the budget).
+- `matrix: 'none'` ([04 §5.1.1](04-variant-model.md#matrix-none), D-59): the default variant only, no axes, VARIANT args pinned, one `PLAN_MATRIX_NONE`; the mapper then emits `kind: 'component'`. Other `matrix` values are read, validated and planned as `auto` until B-119.
 - Unhandled parameters (`states`, `modes`, `viewports`, `slots`) are read, validated and reported as downgraded.
 
-Acceptance: unit tests per rule; snapshot plans for Button (3 × 3 variants, Label TEXT, Show icon BOOLEAN), Badge (5 tones, Dot, Label), Input, Card.
+Acceptance: unit tests per rule; snapshot plans for Button (3 × 3 variants, Label TEXT, Show icon BOOLEAN), Badge (5 tones, Dot, Label), Input, Card; Button with `matrix: 'none'` (1 variant whose `vk` equals the default variant's, Label TEXT, Show icon BOOLEAN).
 
 Hardening: B-117 (render-and-diff), B-118 (states axis), B-119 (pairwise, dedupe, large sets).
 
@@ -553,9 +556,9 @@ Hardening: B-111 (wrap), B-112 (grid, S-10).
 
 #### B-48 · `mapper` core (slice)
 
-**Path** `packages/mapper/src/stages/{normalize,order,visuals,text,replaced,naming,emit}` · **Depends** B-12 · **Runs** container · **Size** L
+**Path** `packages/mapper/src/stages/{normalize,order,visuals,text,replaced,simplify,naming,emit}` · **Depends** B-12 · **Runs** container · **Size** L
 
-Build ([07 §2, §7–10, §12](07-mapping.md)): tree normalization; paint order; solid fills, image fills, borders per D-16 as provisionally specified (decided by S-05, B-24; per-side colors decomposed), radius, shadows, opacity, clip; text ranges with px line height and `reflow` wrap, `SceneFontRequest`; `svg` and `image` nodes; basic naming; `expect` on every node. Unhandled paints fall back with their codes.
+Build ([07 §2, §7–12](07-mapping.md)): tree normalization; paint order; solid fills, image fills, borders per D-16 as provisionally specified (decided by S-05, B-24; per-side colors decomposed per [07 §10.3](07-mapping.md#radius)), radius, shadows, opacity, clip; text ranges with px line height and `reflow` wrap, `SceneFontRequest`; `svg` and `image` nodes; stage 8 simplify with [07 §11](07-mapping.md#11-tree-simplification) rule 3 only (text-only element collapse, under the stricter conditions listed there); basic naming; `expect` on every node. Unhandled paints fall back with their codes.
 
 Acceptance: L3 snapshots `CaptureDoc → Scene IR` for every slice micro-fixture and ds-react story (inputs: the B-41…B-44 snapshots); property test "normalization keeps every node's absolute rect".
 
@@ -587,7 +590,7 @@ Build:
 - **Tokens** ([08 §2–6, §8, §14](08-tokens.md#pipeline)): a `TokensDoc` with one collection "Tokens" and one mode (light/default); variables for every custom property that some bound field uses, with alias chains kept ([08 §5](08-tokens.md#aliases)); names `--a-b` → `a/b`; types; scopes; `codeSyntax.WEB`. `VarRef` with `confidence: 'chain'` only, on fills, strokes, padding, itemSpacing, radius and text fills. `calc()`/`color-mix()` values stay literal with their `TOKEN_*` code. No value matching (D-18).
 - **Provenance** ([07 §16.1](07-mapping.md), [15 §5.2](15-change-requests.md#provenance)): `provenance/<sid>.json` with a `FieldOrigin` per emitted field (`css`, `authored`, `selector`, `rule`, `varChain`, `transform`). Excluded from `irh`.
 
-Acceptance: L3 snapshots of `tokens.json` and `provenance/components-button.json`; tests: Button `paddingLeft` binds `space/3` with `transform: 'border-included'` when a border exists; no binding on a non-`var()` value; changing a token value changes no node `irh` ([10 §10.1](10-sync.md#merkle)).
+Acceptance: L3 snapshots of `tokens.json` and `provenance/components-button.json`; tests: Button `paddingLeft` (`components-button--primary`, `Size=md`) binds `space/4` with `transform: 'border-included'` when a border exists (`Size=sm` binds `space/3`); a `<button>`'s user-agent `padding-block` gets `default: 'user-agent'`; no binding on a non-`var()` value; changing a token value changes no node `irh` ([10 §10.1](10-sync.md#merkle)).
 
 Hardening: B-139 (modes, styles, library matching).
 
@@ -596,7 +599,7 @@ Hardening: B-139 (modes, styles, library matching).
 **Path** `packages/cli` · **Depends** B-13, B-46, B-51 · **Runs** container · **Size** M
 
 Build ([11 §3](11-ux.md), [02 §5.4](02-architecture.md)):
-- `capture` with `--only`, `--story`, `--out`, `--storybook <dir|url>`, `--debug-capture`, `--fail-on`, `--concurrency`, `--json`, `--ndjson`; whole-component runs through the planner; per-component isolation (`status: failed` never fails the run).
+- `capture` with `--only`, `--story`, `--out`, `--storybook <dir|url>`, `--variants <strategy>` (overrides `matrix`, [11 §3.3](11-ux.md#commands)), `--debug-capture`, `--fail-on`, `--concurrency`, `--json`, `--ndjson`; whole-component runs through the planner; per-component isolation (`status: failed` never fails the run).
 - The content-addressed capture cache `.holotype/cache/` with the keys of 02 §5.4 (dev-server mode keyed by `baseCommit` + dirty-tree hash, as branch mode requires). Verify and provenance recovery use it.
 - `export` from the cache; `report.json`; the human summary table; c12 config loading (`PLAN_CONFIG_*`, `SEC_SECRET_IN_CONFIG`).
 
@@ -642,7 +645,7 @@ Acceptance: fake tests: an injected 2 px layout error triggers relax then fallba
 
 **Path** `packages/plugin/src/apply/{sets,props}` · **Depends** B-56, B-50 · **Runs** container · **Size** L
 
-Build ([09 §7–8](09-plugin.md#sets)): one `ComponentNode` per variant built in place; `combineAsVariants` on first build; variant names `Prop=Value`; the default variant at row 0, col 0; the variant grid with labels as plain text nodes ([09 §7.4](09-plugin.md#grid)); VARIANT/BOOLEAN/TEXT properties defined on the set and bound in every variant; set plugin data `sid`, `axes`, `props`, `src` ([10 §2.1](10-sync.md#keys)); description and Storybook link. All sets go on page "Components" in one Section named after the title root (D-22 layout is hardening).
+Build ([09 §7–8](09-plugin.md#sets)): one `ComponentNode` per variant built in place; `combineAsVariants` on first build; variant names `Prop=Value`; the default variant at row 0, col 0; the variant grid with labels as plain text nodes ([09 §7.4](09-plugin.md#grid)); VARIANT/BOOLEAN/TEXT properties defined on the set and bound in every variant; a `kind: 'component'` scene (one variant, `matrix: 'none'`) as one `ComponentNode` with no set, its properties and set-level keys on the component ([09 §7.2](09-plugin.md#sets)); set plugin data `sid`, `axes`, `props`, `src` ([10 §2.1](10-sync.md#keys)); description and Storybook link. All sets go on page "Components" in one Section named after the title root (D-22 layout is hardening).
 
 Acceptance: fake L3 snapshots for the Button, Badge, Input and Card sets; property ids persisted in `props`; a test that `Show icon` toggles the icon in every variant.
 
@@ -670,6 +673,7 @@ Build ([10 §1–5, §10](10-sync.md#keys)), slice scope:
 - Keyed in-place reconciliation: reuse managed nodes by `(sid, vk, nk)`, create missing ones, reorder with `insertChild`, update changed properties only; never delete and recreate (D-19, I-1); unmanaged nodes untouched (I-3).
 - Merkle skip on `irh` + `ah` + `v`; a no-op re-import makes 0 writes (I-2).
 - New variants appended to the existing set (`set.appendChild`, if S-02 confirms; else `APPLY_VARIANT_ADD_FAILED`). Variants gone from code stay in place with a report entry.
+- A shape change (set ↔ single component, `matrix: 'none'`) is not applied: the component is left as it is, with `SYNC_BREAKING_CHANGE` in the report ([10 §7.6](10-sync.md#set-shape); B-126 applies it).
 - Library mode, designer-edited node that code also changed: keep the designer value and emit `SYNC_CONFLICT` in the report (D-29 default). There is no conflict UI.
 - Minimal root data: image map and font map (the chunked registry is hardening).
 
@@ -874,7 +878,7 @@ Each row becomes a full item (same fields as above) when dispatched. All are **h
 | B-111 | `layout-sim`, `mapper`, `plugin` | B-47, B-49 | wrap | M |
 | B-112 | `layout-sim`, `mapper`, `plugin`, `figma-fake` | B-111, B-27 | grid ([07 §5](07-mapping.md), S-10) | L |
 | B-113 | `capture`, `mapper` | B-45 | Typed OM keywords; layout probing at several widths ([05 §11](05-capture.md#probing)) | L |
-| B-114 | `mapper` | B-48 | simplification ([07 §11](07-mapping.md)) and the full naming chain | M |
+| B-114 | `mapper` | B-48 | simplification ([07 §11](07-mapping.md); rule 3 ships in B-48) and the full naming chain | M |
 | B-115 | `mapper` | B-105 | text sizing, truncation, wrap modes ([07 §8.3–8.5](07-mapping.md)) | M |
 | B-116 | `fixtures/real` | B-112 | dogfooding on pinned MUI and shadcn sandboxes; **F** M2 run | M |
 
@@ -896,7 +900,7 @@ Each row becomes a full item (same fields as above) when dispatched. All are **h
 | ID | Package / path | Depends | What | Size |
 |---|---|---|---|---|
 | B-125 | `plugin` | B-59 | apply plan, Diff preview and Conflicts screens, policies `overwrite`/`keep`/`fork` ([10 §8–9](10-sync.md#apply-plan)) | L |
-| B-126 | `plugin` | B-59 | locks, renames, deprecation (D-20), chunked root registry, leases | L |
+| B-126 | `plugin` | B-59 | locks, renames, deprecation (D-20), set ↔ single component shape changes ([10 §7.6](10-sync.md#set-shape)), chunked root registry, leases | L |
 | B-127 | `plugin` | B-59, B-21 | type change snapshot/restore ([10 §5.3](10-sync.md#reconcile)), `nkMigrations`, epochs | M |
 | B-128 | `figma-fake`, tests | B-125 | override model per S-02, fault injection, the full L6 suite T-01…T-25; **F** F-layer run | L |
 | B-129 | `cli` | B-123 | `serve --watch` | S |

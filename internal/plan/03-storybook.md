@@ -354,7 +354,7 @@ Notes and edge cases:
   - After two consecutive timeouts on a page, call `reload()`.
   - After three reloads, mark the story failed (`SB_STORY_UNRENDERABLE`).
 - **Errors.** Any error event rejects with `SbError{code: 'SB_STORY_ERROR' | 'SB_PLAY_ERROR' | 'SB_STORY_MISSING', message, stack}`. Storybook's error overlay (`body.sb-show-errordisplay`) is checked as a backstop.
-- **Console capture.** Page `console.error` and `pageerror` events within a render window become `SB_CONSOLE_ERROR` (info). This helps explain blank renders.
+- **Console capture.** Page `console.error` and `pageerror` events within a render window become `SB_CONSOLE_ERROR` (info). This helps explain blank renders. Noise the browser makes on its own is excluded: headless Chromium requests `/favicon.ico` at the Storybook origin once per context, and its failure is not reported unless the page itself requested that URL (a page `request` event), so a story that fetches `/favicon.ico` still reports.
 
 ### 5.4 URL-args fallback path
 
@@ -653,7 +653,7 @@ Also run each cell against the **dev server** once per night (CSP and host valid
 | `SB_RENDER_TIMEOUT` | error | no done event within `T.render` |
 | `SB_STORY_UNRENDERABLE` | error | repeated failure after reloads |
 | `SB_STORY_ERROR` / `SB_PLAY_ERROR` / `SB_STORY_MISSING` | error | Storybook error events |
-| `SB_CONSOLE_ERROR` | info | console errors during render |
+| `SB_CONSOLE_ERROR` | info | console errors during render (not the browser's own `/favicon.ico` request, §5.3) |
 | `SB_URL_ARG_UNENCODABLE` | warn | variant skipped in URL-fallback mode |
 | `SB_DECORATOR_PAINTS` | info | decorator paints a background, excluded from component |
 | `SB_COMPONENT_MULTI_TITLE` | info | same component under several titles |

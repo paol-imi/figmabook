@@ -486,6 +486,7 @@ The variant name is the canonical axis string `Prop=Value, Prop2=Value2`, built 
 | Situation | API sequence |
 |---|---|
 | **First build** | Create all variant components as children of the target section, then `const set = port.combineAsVariants(components, section)`. Name it with `set.name = component.name`. **Empty sets are impossible**: never call this with 0 nodes |
+| **Single component** (`SceneComponentMeta.kind: 'component'`: one variant, or `matrix: 'none'`, [04 §5.1.1](04-variant-model.md#matrix-none)) | One `port.createComponent()` in the section, named `component.name`, with no set. It carries the set-level keys itself ([10 §2.1](10-sync.md#keys)) and its non-VARIANT properties are defined on it (§8.1, the component stands in for the set). Switching to or from a set: [10 §7.6](10-sync.md#set-shape) |
 | **Add a variant later** | `const c = port.createComponent(); set.appendChild(c); c.name = 'Size=lg, State=Hover'`, then write its tree. Appending a ComponentNode into a ComponentSetNode is expected to work (verify, S-02). Fallback: create on the page, then `combineAsVariants([...set.children, c], parent)`. That creates a *new* set, which breaks instance links, so it must **not** be used if S-02 refutes the expectation; instead report `APPLY_VARIANT_ADD_FAILED` |
 | **Remove a variant** | It is a [10 §7](10-sync.md#deprecation) decision. Default: keep it, rename it to `…, Deprecated=true`, and move it to the end. Hard remove is **never** allowed for a component that was ever published (`key` exists): consumer files are invisible to the plugin, so it is deprecated instead (D-20). `await c.getInstancesAsync()` sees only this file. Hard `c.remove()` is allowed only for a never-published variant, when the policy allows it and no local instances exist |
 | **Add an axis** | `set.addComponentProperty('Theme', 'VARIANT', 'Light')` gives every existing variant `Theme=Light`. Then rename the new variants |
@@ -524,6 +525,8 @@ set.resizeWithoutConstraints(totalW + P, totalH + P)
 Arg classification happens in the planner ([04](04-variant-model.md#classification)). The Scene IR carries the result as `SceneComponent.properties: ScenePropertyDef[]` and, on nodes, `SceneNode.propRefs` (bindings) and `SceneNode.slot` ([06 §3.1](06-ir.md)). VARIANT entries are the set's axes (§7); this section covers the others.
 
 ### 8.1 Define on the set, bind in every variant
+
+For a single component (§7.2) `set` below is the `ComponentNode` itself, and `scene.variants` has one entry.
 
 ```ts
 const ids = readJSON(set, 'holotype', 'props') as Record<string /*ScenePropertyDef.key*/, string /*Figma property name incl. #id*/>;

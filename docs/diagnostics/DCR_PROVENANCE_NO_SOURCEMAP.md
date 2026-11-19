@@ -10,7 +10,7 @@
 
 ## What happened
 
-A dev-server stylesheet has no `sourceMapURL` / `data-vite-dev-id`.
+A dev-server stylesheet has no source map (`sourceMapURL`). With a `data-vite-dev-id` the file is known and its served line numbers are kept (`data.approximate: true`: the line may be off); without one only the selector is known (`data.approximate: false`).
 
 ## What to do
 

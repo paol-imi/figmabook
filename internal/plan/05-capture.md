@@ -431,16 +431,22 @@ interface AuthoredDecl { value: string /* raw, e.g. "var(--btn-bg, var(--color-p
 type AuthoredStyles = Record<string /* property */, AuthoredDecl>;
 ```
 
-**Rule locations (branch mode, D-36).** For DCR provenance ([15 §5](15-change-requests.md#provenance)) the orchestrator also keeps, for each winning `rule` declaration, `rule.styleSheetId` and the declaration's `style.range` (0-based line/column in the *served* stylesheet). It listens to `CSS.styleSheetAdded` from `CSS.enable` onward and records each header's `sourceURL` and `sourceMapURL` in a per-document table (`CaptureDoc.styleSheets`, [06 §2](06-ir.md)).
+**Rule locations (branch mode, D-36).** For DCR provenance ([15 §5](15-change-requests.md#provenance)) the orchestrator also keeps, for each winning `rule` declaration, `rule.styleSheetId` and the declaration's `style.range` (0-based line/column in the *served* stylesheet). It listens to `CSS.styleSheetAdded` and `CSS.styleSheetRemoved` from `CSS.enable` onward (enabled before the first navigation) and records each header in a per-document table (`CaptureDoc.styleSheets`, [06 §2](06-ir.md)).
 
-Vite's `css.devSourcemap` defaults to false, and dev CSS is injected as `<style>` elements. The header's `sourceURL` is then the document URL (`isInline: true`). So:
+What Chromium 153 and Vite 8 report (measured in [S-19 §3](../spikes/S-19.md)):
 
-- **Source maps on.** In branch mode the CLI forces `css: { devSourcemap: true }` through Storybook `viteFinal` (a `main.ts` snippet or `@holotype/vite-plugin`); `capture.devSourcemap: 'keep'` opts out ([16](16-config.md#capture)).
-- **Inline sheets.** They are resolved through `CSSStyleSheetHeader.ownerNode` → `data-vite-dev-id` (the file) and the inline source map.
-- **Ranges.** For inline sheets `style.range` is document-relative, so subtract `header.startLine/startColumn`.
-- **No map.** A sheet with neither a source map nor `data-vite-dev-id` raises `DCR_PROVENANCE_NO_SOURCEMAP` (warn).
+| Sheet | `isInline` | `sourceURL` | `sourceMapURL` | File from |
+|---|---|---|---|---|
+| Vite dev CSS (`*.module.css`, plain CSS, injected by JavaScript) | `false` | `""` | the inline map as a `data:` URL (with `css.devSourcemap: true`) | `ownerNode` → `data-vite-dev-id` (absolute path, stored repo-relative) |
+| Storybook `iframe.html` inline `<style>` | `true` | the document URL | sometimes, with the virtual source `\0/iframe.html` (never a location) | none |
+| Static build CSS (`<link>`) | `false` | `…/assets/*.css` | none | none (selectors only, `DCR_PROVENANCE_MINIFIED`) |
 
-Resolution to the original file:line happens later, in the CLI right before mapping (the mapper itself stays pure, [07 §16.1](07-mapping.md)), and is cached per `styleSheetId` revision (verify coverage per styling approach, S-19). The ranges cost nothing extra: they are already in the `getMatchedStylesForNode` response. Outside branch mode `sheet` is omitted, so library captures and their cache keys are unchanged.
+- **Source maps on.** Vite's `css.devSourcemap` defaults to false. In branch mode the CLI forces `css: { devSourcemap: true }` through Storybook `viteFinal` (a `main.ts` snippet or `@holotype/vite-plugin`); `capture.devSourcemap: 'keep'` opts out ([16](16-config.md#capture)).
+- **Dev sheets.** They are identified by `CSSStyleSheetHeader.ownerNode` → `data-vite-dev-id` (`DOM.describeNode`, read lazily and cached per `styleSheetId`) and resolved through the header's `sourceMapURL`, decoded from its `data:` URL. Linked maps are fetched from `127.0.0.1` only.
+- **Ranges.** `style.range` is relative to its own sheet for **every** sheet, inline `<style>` included, so nothing is subtracted. `header.startLine/startColumn` is added only to place a range in its document (DevTools' view).
+- **No map.** A sheet with a dev id but no map keeps the file and the served lines (`approximate`: exact for Vite CSS modules and plain CSS, wrong once a PostCSS step moves lines). A sheet with neither gives the served selector only. Both raise `DCR_PROVENANCE_NO_SOURCEMAP` (warn), told apart by `data.approximate` ([12 §6.2](12-quality.md#diagnostics)).
+
+Resolution to the original file:line runs in the orchestrator right after the capture, while the headers and maps are at hand: the S-19 resolver lives in `capture` (CLI side, pure) and is cached per (dev id or `sourceURL`, sheet text hash). Source maps are never stored in the Capture IR; the resolved `SourceLoc`s reach the pure mapper as `MapperInput.sourceLocs` ([07 §16.1](07-mapping.md)). The ranges cost nothing extra: they are already in the `getMatchedStylesForNode` response. Outside branch mode `sheet` is omitted, so library captures and their cache keys are unchanged.
 
 **JSX locations.** When the optional `@holotype/vite-plugin` is installed, host elements carry `data-holotype-loc="src/components/Button/Button.tsx:42:7"`. The serializer reads it into `CSource.loc` (`{file, line, col}`), validates that the path is repo-relative with no `..` segments ([15 §10.3](15-change-requests.md#security)), and strips the attribute from `attrs` so it never affects alignment or naming. Without the plugin `loc` is absent and provenance falls back to the CSS rule (`DCR_PROVENANCE_MISSING` only if both are missing).
 
@@ -452,8 +458,8 @@ Resolution to the original file:line happens later, in the CLI right before mapp
 
 **Cost control.**
 
-- Matched styles are the most expensive CDP call, at about 1–3ms each. They are fetched only for nodes that will become Scene nodes, meaning not culled and not inside rasterized subtrees, and only in `mode:'full'`.
-- Results are memoized per `(stylesheet revision, selector-match signature)`. The signature is `tag + sorted classes + attribute set + pseudo state`, so 50 identical list items cost one call (verify the hit-rate, S-07).
+- Matched styles are the most expensive CDP call: 7–9 ms per element on ds-react ([S-19 §4.5](../spikes/S-19.md)), because each response repeats the ancestors' rules, the `:root` token rule included; budget 10 ms per call. They are fetched only for nodes that will become Scene nodes, meaning not culled and not inside rasterized subtrees, and only in `mode:'full'`.
+- Results are memoized per `(stylesheet revision, selector-match signature)`. The signature is `tag + sorted classes + attribute set + pseudo state`, so 50 identical list items cost one call (verify the hit-rate, S-07). Each element is fetched once; a text node reuses its container's response.
 
 **Media and container queries** found on winning declarations are recorded. Their presence makes the layout probe (§11) narrower, and raises `LAYOUT_BREAKPOINT_IN_PROBE` in [07](07-mapping.md).
 
@@ -558,6 +564,7 @@ async function forceState(cdp: CDPSession, target: ElementHandle, rootId: string
 - Animations frozen ([03 §5.5](03-storybook.md#settle-protocol)).
 - Fonts and images awaited.
 - Serialization is canonical: sorted keys, numbers rounded to 1/64 px for geometry and 1e-4 for colors, stable node `id`s from walk order.
+- **No serving port in any hash.** A static build is served on an ephemeral loopback port ([03 §9.1](03-storybook.md#access)), so `target.storybookUrl` records it as `static:<folder name>` + path ([06 §2](06-ir.md)); a URL source records its origin and path. The port never enters `captureHash`, `captureKey` ([02 §5.4](02-architecture.md#capture-key)) or any other hash.
 - CI gate ([03 §12](03-storybook.md#version-and-framework-test-matrix)): three consecutive captures of each fixture must produce an identical `captureHash`. One fixture story renders `new Date().toISOString()`; it must hash identically across the 3 runs.
 
 ### 10.2 Capture cache key
@@ -634,7 +641,7 @@ Probe-mode documents fill only `captureVersion`, `engine`, `target`, `root` (wit
 |---|---|
 | render + settle | ≤200ms (args update; no navigation) |
 | in-page serialize | ≤40ms |
-| CDP enrichment (boxes for transformed nodes, fonts, matched styles) | ≤60ms |
+| CDP enrichment (boxes for transformed nodes, fonts, matched styles) | ≤60ms with matched styles memoized (§6.2); each uncached `getMatchedStylesForNode` adds ≤10ms (S-19: 7–9ms) |
 | assets (cached) | ≈0ms; first fetch is network-bound |
 | screenshot | ≤40ms |
 | **total** | **≤400ms median** (README §4) |
@@ -667,6 +674,8 @@ Capture-side throughput is measured in S-07; S-06 covers the plugin side.
 
 ## 16. Diagnostics coined here
 
+A diagnostic about a node names its capture node id; the mapper moves it onto the resulting Scene layer, and the CLI reports it from there only ([06 §1](06-ir.md#1-shared-primitives)).
+
 | Code | Severity | Meaning |
 |---|---|---|
 | `CAP_PAGE_CRASHED` | warn | page crashed; retried |
@@ -690,7 +699,7 @@ Capture-side throughput is measured in S-07; S-06 covers the plugin side.
 | `CAP_PSEUDO_MATERIALIZED` | info | pseudo-element measured through the materialization fallback (§5.5) |
 | `CAP_CLOSED_SHADOW_LATE` | warn | closed shadow root created before the hook; read through CDP (§2.2) |
 | `CAP_CSS_UNSUPPORTED` | warn | CSS property with no Figma equivalent ignored (§6.2) |
-| `DCR_PROVENANCE_NO_SOURCEMAP` | warn | dev-server stylesheet without source map or `data-vite-dev-id` (§6.2) |
+| `DCR_PROVENANCE_NO_SOURCEMAP` | warn | dev-server stylesheet without a source map: file from `data-vite-dev-id` with served lines (`data.approximate: true`), or selector only (`approximate: false`) (§6.2) |
 | `FONT_ICON_VECTORIZED` | info | icon-font glyphs converted to vector paths (§4.4) |
 | `SVG_USE_UNRESOLVED` | warn | SVG `<use>` target not found (§5.4) |
 | `FONT_FALLBACK_USED` | info | run split by script due to fallback |

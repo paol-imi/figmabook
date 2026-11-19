@@ -10,7 +10,7 @@
 
 ## What happened
 
-A shadow spread was moved to a backing rectangle.
+A shadow (with spread, or on a box without a visible fill) was moved to a backing rectangle.
 
 ## What to do
 
