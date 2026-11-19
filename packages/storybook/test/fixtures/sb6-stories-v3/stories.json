@@ -1,0 +1,23 @@
+{
+  "v": 3,
+  "stories": {
+    "example-button--primary": {
+      "id": "example-button--primary",
+      "kind": "Example/Button",
+      "story": "Primary",
+      "parameters": { "__id": "example-button--primary", "fileName": "./src/Button.stories.js" }
+    },
+    "example-button--docs": {
+      "id": "example-button--docs",
+      "kind": "Example/Button",
+      "story": "Docs",
+      "parameters": { "__id": "example-button--docs", "docsOnly": true, "fileName": "./src/Button.stories.mdx" }
+    },
+    "example-header--logged-in": {
+      "id": "example-header--logged-in",
+      "kind": "Example/Header",
+      "story": "Logged In",
+      "parameters": { "__id": "example-header--logged-in", "fileName": "./src/Header.stories.js" }
+    }
+  }
+}

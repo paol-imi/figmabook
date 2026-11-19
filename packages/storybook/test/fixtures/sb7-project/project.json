@@ -1,0 +1,1 @@
+{ "storybookVersion": "7.6.24", "framework": { "name": "@storybook/react-vite" }, "renderer": "@storybook/react" }

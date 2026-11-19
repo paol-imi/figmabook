@@ -1,0 +1,25 @@
+{
+  "v": 5,
+  "entries": {
+    "components-button--primary": {
+      "type": "story",
+      "subtype": "story",
+      "id": "components-button--primary",
+      "name": "Primary",
+      "title": "Components/Button",
+      "importPath": "./src/Button.stories.tsx",
+      "tags": ["dev", "test"]
+    },
+    "components-button--clicks": {
+      "type": "story",
+      "subtype": "test",
+      "id": "components-button--clicks",
+      "name": "Clicks",
+      "title": "Components/Button",
+      "importPath": "./src/Button.stories.tsx",
+      "tags": ["dev", "test"],
+      "parent": "components-button--primary",
+      "parentName": "Primary"
+    }
+  }
+}

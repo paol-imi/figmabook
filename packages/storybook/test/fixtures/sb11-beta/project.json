@@ -1,0 +1,6 @@
+{
+  "storybookVersion": "11.0.0-beta.3",
+  "framework": { "name": "@storybook/react-vite", "options": {} },
+  "renderer": "@storybook/react",
+  "builder": "@storybook/builder-vite"
+}

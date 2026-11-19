@@ -1,0 +1,12 @@
+{
+  "v": 4,
+  "entries": {
+    "forms-input--default": {
+      "type": "story",
+      "id": "forms-input--default",
+      "name": "Default",
+      "title": "Forms/Input",
+      "importPath": "./src/Input.stories.tsx"
+    }
+  }
+}
