@@ -40,6 +40,7 @@
               "height": 20,
               "sharedPluginData": {
                 "holotype": {
+                  "ah": "43d8913d5084e164bb52d295c86163208c8cb1a29941c08e08f44b07b5901a258407313ad995bbc708f44b07b5901a2508f44b07b5901a25",
                   "args": "{\"args\":{},\"globals\":{},\"state\":null,\"viewport\":{\"h\":800,\"w\":1280}}",
                   "irh": "f43ec562268b927b",
                   "nk": "root",
@@ -67,6 +68,7 @@
                   "layoutSizingVertical": "HUG",
                   "sharedPluginData": {
                     "holotype": {
+                      "ah": "b08075f31963e66d6c7bc1599ffeeedb08f44b07b5901a25c012a24469f0105e8407313ad995bbc708f44b07b5901a2508f44b07b5901a25",
                       "irh": "6259cdcac1fef935",
                       "nk": "root/text"
                     }
@@ -131,6 +133,7 @@
               "height": 48,
               "sharedPluginData": {
                 "holotype": {
+                  "ah": "9ecd1afc7ed5e98bbb52d295c8616320eba4121cd755cea408f44b07b5901a25095c2d31460a868508f44b07b5901a2508f44b07b5901a25",
                   "args": "{\"args\":{},\"globals\":{},\"state\":null,\"viewport\":{\"h\":800,\"w\":1280}}",
                   "irh": "fcb2dc30f667e315",
                   "nk": "root",
@@ -166,6 +169,7 @@
                   "height": 32,
                   "sharedPluginData": {
                     "holotype": {
+                      "ah": "a20217ad8a8648b8bb52d295c8616320aabc92dbd34e894108f44b07b5901a25c40c40cd3893ced408f44b07b5901a2508f44b07b5901a25",
                       "irh": "239336402981309c",
                       "nk": "root/div._item_1ypxr_9"
                     }
@@ -196,6 +200,7 @@
                   "height": 32,
                   "sharedPluginData": {
                     "holotype": {
+                      "ah": "21c412b22e6e2f5dbb52d295c8616320aabc92dbd34e894108f44b07b5901a25d6d0a21583e6556e08f44b07b5901a2508f44b07b5901a25",
                       "irh": "715ac0f15f2abaea",
                       "nk": "root/div._item_1ypxr_9#2"
                     }
@@ -226,6 +231,7 @@
                   "height": 32,
                   "sharedPluginData": {
                     "holotype": {
+                      "ah": "f1b09931190925f9bb52d295c8616320aabc92dbd34e894108f44b07b5901a25d3037c62c82fe09308f44b07b5901a2508f44b07b5901a25",
                       "irh": "e1b514cede50fa4b",
                       "nk": "root/div._item_1ypxr_9#3"
                     }
@@ -604,6 +610,18 @@
       "nodeId": "1:4",
       "property": "holotype/irh",
       "value": "6259cdcac1fef935"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:3",
+      "property": "holotype/ah",
+      "value": "43d8913d5084e164bb52d295c86163208c8cb1a29941c08e08f44b07b5901a258407313ad995bbc708f44b07b5901a2508f44b07b5901a25"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:4",
+      "property": "holotype/ah",
+      "value": "b08075f31963e66d6c7bc1599ffeeedb08f44b07b5901a25c012a24469f0105e8407313ad995bbc708f44b07b5901a2508f44b07b5901a25"
     },
     {
       "method": "createFrame",
@@ -1214,6 +1232,30 @@
       "nodeId": "1:8",
       "property": "holotype/irh",
       "value": "e1b514cede50fa4b"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:5",
+      "property": "holotype/ah",
+      "value": "9ecd1afc7ed5e98bbb52d295c8616320eba4121cd755cea408f44b07b5901a25095c2d31460a868508f44b07b5901a2508f44b07b5901a25"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:6",
+      "property": "holotype/ah",
+      "value": "a20217ad8a8648b8bb52d295c8616320aabc92dbd34e894108f44b07b5901a25c40c40cd3893ced408f44b07b5901a2508f44b07b5901a25"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:7",
+      "property": "holotype/ah",
+      "value": "21c412b22e6e2f5dbb52d295c8616320aabc92dbd34e894108f44b07b5901a25d6d0a21583e6556e08f44b07b5901a2508f44b07b5901a25"
+    },
+    {
+      "method": "setSharedPluginData",
+      "nodeId": "1:8",
+      "property": "holotype/ah",
+      "value": "f1b09931190925f9bb52d295c8616320aabc92dbd34e894108f44b07b5901a25d3037c62c82fe09308f44b07b5901a2508f44b07b5901a25"
     }
   ],
   "notifications": [
