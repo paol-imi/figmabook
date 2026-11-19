@@ -12,6 +12,7 @@ export {
   IDENTITY_NAMESPACE,
   identityVersion,
   variantArgs,
+  writeAppliedHash,
   writeIdentity,
   writeProvisionalKey,
 } from './identity';
@@ -19,7 +20,7 @@ export { COMPONENTS_PAGE, ensureComponentsPage } from './page';
 export { toEffect, toEffects, toPaint, toPaints } from './paints';
 export { COMPONENT_SPACING, contentBottom, nextComponentTop, variantGrid } from './placement';
 export { createPuller, type Puller } from './pull';
-export { readbackDelta } from './readback';
+export { appliedHashOf, type ReadGroups, readbackDelta, readGroups } from './readback';
 export { type AssetBytes, type LoadAsset, ResourceCache, type Resources } from './resources';
 export {
   createApplyId,

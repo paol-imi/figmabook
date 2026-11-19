@@ -40,6 +40,7 @@
               "height": 20,
               "sharedPluginData": {
                 "holotype": {
+                  "ah": "1328ea6f3042da80bb52d295c8616320622703f3404b0d9408f44b07b5901a258407313ad995bbc708f44b07b5901a2508f44b07b5901a25",
                   "args": "{\"args\":{},\"globals\":{},\"state\":null,\"viewport\":{\"h\":800,\"w\":1280}}",
                   "irh": "9046119ad0c1e0d7",
                   "nk": "root",
@@ -79,6 +80,7 @@
                   "height": 16,
                   "sharedPluginData": {
                     "holotype": {
+                      "ah": "6c2516ce20c15cefa4d93e5cd0770fcb08f44b07b5901a25e926599dd01cfaf47de71a893a7f078408f44b07b5901a2508f44b07b5901a25",
                       "irh": "17aacd889d3813d2",
                       "nk": "root/label"
                     }
@@ -182,6 +184,8 @@
     "set 1:4 blendMode \"NORMAL\"",
     "set 1:4 visible true",
     "set 1:4 name \"Label\"",
-    "setSharedPluginData 1:4 holotype/irh \"17aacd889d3813d2\""
+    "setSharedPluginData 1:4 holotype/irh \"17aacd889d3813d2\"",
+    "setSharedPluginData 1:3 holotype/ah \"1328ea6f3042da80bb52d295c8616320622703f3404b0d9408f44b07b5901a258407313ad995bbc708f44b07b5901a2508f44b07b5901a25\"",
+    "setSharedPluginData 1:4 holotype/ah \"6c2516ce20c15cefa4d93e5cd0770fcb08f44b07b5901a25e926599dd01cfaf47de71a893a7f078408f44b07b5901a2508f44b07b5901a25\""
   ]
 }

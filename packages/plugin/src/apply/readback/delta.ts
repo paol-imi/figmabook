@@ -5,7 +5,7 @@
  * B-55 instead, so they are left out here. Verification with relax and fallback is B-56.
  */
 import { normalizeNumber } from '@holotype/ir/core';
-import type { WrittenNode } from './write/node';
+import type { WrittenNode } from '../write/node';
 
 export function readbackDelta(root: SceneNode, written: Iterable<WrittenNode>): number {
   const origin = root.absoluteBoundingBox;

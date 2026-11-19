@@ -1,7 +1,8 @@
 /*
  * Identity in shared plugin data, namespace `holotype` (10 §2, D-19). A fresh node gets its
  * provisional `nk` right after creation (crash-safe resume, 09 §13); the full record is
- * written last, once the node is complete (09 §6 step 10). `ah` is B-58.
+ * written last, once the node is complete (09 §6 step 10). `ah` follows once the whole variant
+ * is written and read back (10 §9.1).
  */
 import type { SceneNode as IrNode, SceneVariant } from '@holotype/ir';
 import { canonicalJSON } from '@holotype/ir/core';
@@ -61,4 +62,9 @@ export function writeIdentity(node: PluginDataNode, scene: IrNode, variant?: Var
     put(node, 'story', variant.variant.provenance.storyId);
     put(node, 'args', variantArgs(variant.variant));
   }
+}
+
+/** `ah` (10 §9.1): the applied hash of the node's read-back groups, `appliedHashOf(node)`. */
+export function writeAppliedHash(node: PluginDataNode, ah: string): void {
+  put(node, 'ah', ah);
 }
