@@ -71,16 +71,24 @@ export function expectCaptured(outcome: CaptureOutcome): CaptureSuccess {
   return outcome;
 }
 
+/** The screenshot's stand-in key in goldens. */
+const GOLDEN_SHOT = '0'.repeat(64);
+
 /**
  * The golden form of a capture: volatile timing zeroed, the static build's folder name (it
- * differs under `HOLOTYPE_STORYBOOK_STATIC`) and the screenshot bytes hash replaced (the hash
- * is checked across runs instead), pretty-printed canonical JSON.
+ * differs under `HOLOTYPE_STORYBOOK_STATIC`), and the screenshot's hash and encoded size
+ * replaced, pretty-printed canonical JSON. PNG bytes differ between Chromium builds and
+ * machines even when the layout is identical, so the screenshot is compared across runs on
+ * the same machine instead (the capture hash), never against the committed golden.
  */
 export function goldenCapture(doc: CaptureDoc): string {
   const stable = stableCapture(doc);
   const storybookUrl = stable.target.storybookUrl.replace(/^static:[^/]*/, 'static:storybook-static');
   const shot = stable.screenshot?.sha;
   let json = canonicalCapture({ ...stable, target: { ...stable.target, storybookUrl } });
-  if (shot !== undefined) json = json.replaceAll(shot, '0'.repeat(64));
-  return `${JSON.stringify(JSON.parse(json), null, 2)}\n`;
+  if (shot !== undefined) json = json.replaceAll(shot, GOLDEN_SHOT);
+  const golden = JSON.parse(json) as { assets?: Record<string, { bytes?: number }> };
+  const asset = golden.assets?.[GOLDEN_SHOT];
+  if (shot !== undefined && asset?.bytes !== undefined) asset.bytes = 0;
+  return `${JSON.stringify(golden, null, 2)}\n`;
 }
