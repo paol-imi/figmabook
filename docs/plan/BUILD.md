@@ -194,7 +194,7 @@ Goal: the skeleton, the fixtures, the spike kits, and one story flowing CLI → 
 **Path** repo root, `packages/*` · **Depends** — · **Track** slice · **Runs** container · **Size** L
 
 Build:
-- pnpm workspaces + Turborepo + Biome + Vitest + tsup + changesets (D-04). Node `>=22.12`, CI on 22 and 24 (D-53).
+- pnpm workspaces + Turborepo + Biome + Vitest + tsdown + changesets (D-04). Node `>=22.12` at runtime, `>=22.18` to build; CI on 22 and 24 (D-53).
 - Every `@holotype/*` package from [README §6](README.md) as a building, tested stub: `ir`, `shared`, `layout-sim`, `storybook`, `capture`, `planner`, `mapper`, `plugin`, `figma-fake`, `cli`, `storybook-addon`, `action`, `dcr`, `vite-plugin`, plus `tools/fidelity`.
 - `shared`: `Diagnostic`, `defineDiagnostic()`, registry, `Result<T,E>`, `Logger` interface.
 - `ir`: `canonicalJSON()` per [06 §5](06-ir.md), `h16()` (sha256 → 16 hex, `@noble/hashes`), `sha256hex()`, `fnv1a64()` for `ah` (D-31). Property tests with fast-check.

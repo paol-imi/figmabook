@@ -524,7 +524,7 @@ These are enforced with `dependency-cruiser` in CI.
 | Image diff | `pixelmatch`, `ssim.js`, `pngjs` | — | Fidelity ([12](12-quality.md)) |
 | Tests | Vitest (unit, snapshot), Playwright test (capture e2e) | — | D-04 |
 | Lint/format | Biome + `dependency-cruiser` | — | D-04 + boundary rules |
-| Node bundling | tsup | — | D-04 |
+| Node bundling | tsdown | — | D-04 |
 | Action bundling | `@vercel/ncc` | — | Single-file action |
 | Logging | own `Logger` interface; CLI impl writes NDJSON + pretty TTY (`consola`) | — | §8 |
 
