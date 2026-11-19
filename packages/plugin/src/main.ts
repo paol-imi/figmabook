@@ -1,21 +1,22 @@
 import { showUI } from '@create-figma-plugin/utilities';
 import { SUPPORTED_SCENE_MAJORS } from '@holotype/ir';
 import { version } from '../package.json';
-import { isProtocolMessage, type MainToUi, PROTOCOL_VERSION, type UiToMain } from './protocol';
+import { createMainChannel, figmaUiTransport } from './channel';
+import { startHost } from './host';
 
-// The only module that touches the `figma` global: the applier receives a `FigmaPort`.
+/** Default window size (11 §5); the window is resizable later through `figma.ui.resize`. */
+export const UI_SIZE = { width: 420, height: 640 } as const;
+
+// The only module that touches the `figma` global (09 §4): everything else receives ports.
 export default function main(): void {
-  figma.ui.onmessage = (message: unknown) => {
-    if (!isProtocolMessage<UiToMain>(message, 'hello')) return;
-    const ready: MainToUi = {
-      v: PROTOCOL_VERSION,
-      sessionId: message.sessionId,
-      t: 'ready',
-      pluginVersion: version,
-      irMajors: SUPPORTED_SCENE_MAJORS,
-      fileKey: figma.fileKey ?? null,
-    };
-    figma.ui.postMessage(ready);
-  };
-  showUI({ width: 420, height: 640 });
+  const channel = createMainChannel(figmaUiTransport(figma.ui));
+  startHost({
+    channel,
+    pluginVersion: version,
+    irMajors: SUPPORTED_SCENE_MAJORS,
+    // Needs `enablePrivatePluginApi` in the manifest (D-39); `undefined` elsewhere.
+    fileKey: () => figma.fileKey ?? null,
+  });
+  // `themeColors: true` is create-figma-plugin's default: the UI gets `--figma-color-*` vars.
+  showUI({ ...UI_SIZE, themeColors: true, title: 'Holotype' });
 }

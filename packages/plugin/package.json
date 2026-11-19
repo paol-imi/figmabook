@@ -14,10 +14,13 @@
     "node": ">=22.12"
   },
   "scripts": {
-    "build": "build-figma-plugin --minify && node scripts/check-bundle-size.mjs",
+    "build": "build-figma-plugin --minify && node scripts/size.mjs",
     "watch": "build-figma-plugin --watch",
-    "typecheck": "tsc",
-    "test": "vitest run"
+    "size": "node scripts/size.mjs",
+    "pack": "node scripts/pack.mjs",
+    "typecheck": "tsc && tsc -p test",
+    "test": "vitest run",
+    "test:ui": "vitest run test/ui"
   },
   "dependencies": {
     "@create-figma-plugin/ui": "4.0.3",
@@ -29,7 +32,12 @@
   },
   "devDependencies": {
     "@create-figma-plugin/build": "4.0.3",
-    "@figma/plugin-typings": "1.142.0"
+    "@figma/plugin-typings": "1.142.0",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/preact": "3.2.4",
+    "@testing-library/user-event": "14.6.1",
+    "fflate": "0.8.2",
+    "happy-dom": "21.0.4"
   },
   "figma-plugin": {
     "id": "holotype",
@@ -39,7 +47,7 @@
       "figma"
     ],
     "main": "src/main.ts",
-    "ui": "src/ui.tsx",
+    "ui": "src/ui/index.tsx",
     "documentAccess": "dynamic-page",
     "enablePrivatePluginApi": true,
     "networkAccess": {
