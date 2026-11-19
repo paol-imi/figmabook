@@ -478,23 +478,96 @@ Auto-layout relaxations and read-back fallbacks in the plugin are `APPLY_LAYOUT_
 | `APPLY_LAYOUT_RELAXED` | info | `plugin` | HUG/FILL sizing was relaxed to FIXED to pass read-back | Nothing to do | [09](09-plugin.md) |
 | `APPLY_LAYOUT_FALLBACK` | warning | `plugin` | auto layout failed read-back in Figma; the container became absolute | Nothing to do; pixels match. Report the component if it repeats | [09](09-plugin.md) |
 | `APPLY_MIXED_VALUE` | info | `plugin` | Figma returned `figma.mixed`; it was normalized | Nothing to do | [09](09-plugin.md) |
-| **Sync (SYNC_)** | | |
-| `SYNC_CONFLICT_KEPT` | warn | designer edit kept |
-| `SYNC_CONFLICT_OVERWRITTEN` | warn | designer edit overwritten by choice |
-| `SYNC_OVERRIDE_NOT_RESTORED` | warn | instance override lost (structural change) |
-| `SYNC_RENAME_DETECTED` | info | story renamed; mapping migrated |
-| `SYNC_DEPRECATED` | info | component deprecated (D-20) |
-| `SYNC_REGISTRY_CORRUPT` | error | root registry unreadable; rebuilt from node data |
-| **Network (NET_)** | | |
-| `NET_LNA_BLOCKED` | error | local network access denied |
-| `NET_SERVER_UNREACHABLE` | error | no server on manifest ports |
-| `NET_PAIRING_INVALID` | error | bad/expired token |
-| `NET_VERSION_MISMATCH` | error | IR major mismatch |
-| `NET_PORT_IN_USE` | error | CLI cannot bind any manifest port |
-| **Security (SEC_)** | | |
-| `SEC_HOST_REJECTED` | error | server rejected Host header (DNS rebinding guard) |
-| `SEC_SECRET_REDACTED` | info | input/password values redacted |
-| `SEC_EGRESS_BLOCKED` | warn | (hosted) request to private range blocked |
+#### Sync (SYNC_) — 20
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `SYNC_CONFLICT` | warning | `plugin` | a designer edited a managed layer that code also changed; kept ("Keep mine") | Resolve it in the diff: Keep mine, Take code, Fork or Unmanage | [10](10-sync.md) |
+| `SYNC_CONFLICT_OVERWRITTEN` | warning | `plugin` | you chose "Take code"; the designer's change was replaced (old values are in the report) | Nothing to do, or use Fork next time to keep a copy | [11](11-ux.md) |
+| `SYNC_KEEP_STALE` | warning | `plugin` | a layer you kept changed in code again | Decide again in the diff | [10](10-sync.md) |
+| `SYNC_LOCKED_SKIPPED` | info | `plugin` | a locked subtree was skipped | Nothing to do; unlock it to receive code changes | [10](10-sync.md) |
+| `SYNC_MANAGED_NODE_DELETED` | info | `plugin` | a designer deleted a managed layer; it was re-created (or kept deleted under `keep`) | Nothing to do; lock or unmanage the layer to keep it gone | [10](10-sync.md) |
+| `SYNC_NODE_REMOVED` | info | `plugin` | a managed layer no longer exists in code and was removed (impact: instance count) | Nothing to do, or set `sync.orphans: 'hide'` | [10](10-sync.md) |
+| `SYNC_TYPE_CHANGE_RECREATE` | warning | `plugin` | a layer changed type and was re-created; overrides restored/dropped are counted | Check instances that overrode that layer | [10](10-sync.md) |
+| `SYNC_OVERRIDE_NOT_RESTORED` | warning | `plugin` | an instance override could not be restored after a structural change | Re-apply the override on the instance listed in the report | [10](10-sync.md) |
+| `SYNC_OVERRIDES_AT_RISK` | warning | `plugin` | a change may drop overrides in files that use this library | Review before publishing the library; tell consumers | [10](10-sync.md) |
+| `SYNC_BREAKING_CHANGE` | warning | `plugin` | the plan contains a breaking change; it needs acknowledgement | Review it in the diff, then acknowledge | [10](10-sync.md) |
+| `SYNC_RENAME_DETECTED` | info | `plugin` | a component or variant was renamed in place; instances keep working | Nothing to do | [10](10-sync.md) |
+| `SYNC_RENAME_AMBIGUOUS` | info | `plugin` | a possible rename scored below the automatic threshold | Confirm or reject the rename in the diff | [10](10-sync.md) |
+| `SYNC_DEPRECATED` | info | `plugin` | a component removed from code was moved to "Deprecated" (D-20) | Swap its instances, then delete it when unused | [10](10-sync.md) |
+| `SYNC_UNDEPRECATED` | info | `plugin` | a deprecated component is back in code and was restored | Nothing to do | [10](10-sync.md) |
+| `SYNC_DUPLICATE_SID` | warning | `plugin` | more than one set claims the same component id (e.g. a copy-paste) | Unmanage the copy when the plugin offers it | [10](10-sync.md) |
+| `SYNC_REGISTRY_REPAIRED` | info | `plugin` | the registry was missing or corrupt and was rebuilt from layer data | Nothing to do | [10](10-sync.md) |
+| `SYNC_LEASE_HELD` | warning | `plugin` | another session is syncing this file | Wait for it to finish, then retry | [10](10-sync.md) |
+| `SYNC_STALE_PLAN` | info | `plugin` | the file changed since planning; re-planned automatically | Nothing to do | [10](10-sync.md) |
+| `SYNC_UNMANAGED_AFFECTS_LAYOUT` | info | `plugin` | a layer a designer added caused a layout fallback | Move the added layer outside the auto-layout frame, or nothing to do | [10](10-sync.md) |
+| `SYNC_LEGACY_NAMESPACE` | info | `plugin` | reserved for a future plugin-data namespace migration; not emitted today | Nothing to do | [13](13-security-legal.md) |
+#### Network (NET_) — 7
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `NET_SERVER_UNREACHABLE` | warning | `plugin` | no Holotype server answered on the local ports | Run `holotype serve`, or import a bundle file instead | [09](09-plugin.md) |
+| `NET_LNA_BLOCKED` | error | `plugin` | the browser blocked local network access from Figma | Use the Figma desktop app, allow "Apps on device" for figma.com, or import a file | [11](11-ux.md) |
+| `NET_DOMAIN_NOT_ALLOWED` | error | `plugin` | the plugin manifest does not allow this address (a Holotype bug) | Report it; import a file meanwhile | [02](02-architecture.md) |
+| `NET_PAIRING_FAILED` | error | `plugin` | the pairing code was wrong or expired | Copy a fresh code from the `holotype serve` output | [09](09-plugin.md) |
+| `NET_PROTOCOL_MISMATCH` | error | `plugin` | the plugin and CLI share no protocol version | Update whichever side the message names (CLI or plugin) | [02](02-architecture.md) |
+| `NET_PORT_IN_USE` | error | `cli` | the CLI could not bind any of ports 47321–47323 | Stop the other `holotype serve` (or the app using the port) and retry | [11](11-ux.md) |
+| `NET_HOST_REJECTED` | error | `cli` | the local server refused a request with a foreign Host header (DNS-rebinding guard); answers 421 | Nothing to do if you didn't expect it: a web page tried to reach your local server. Use `127.0.0.1` or `localhost` | [13](13-security-legal.md) |
+
+#### Security (SEC_) — 6
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `SEC_SECRET_IN_CONFIG` | error | `cli` | the config file contains a token- or password-like literal; the run stops | Move the secret to an env variable (`HOLOTYPE_SB_TOKEN`) or `holotype login`, and rotate it if the file was shared | [02](02-architecture.md) |
+| `SEC_SECRET_ON_ARGV` | warning | `cli` | a secret was passed with `--header`/`--basic-auth`, where process lists and shell history can show it | Use an env variable or `holotype login` instead | [13](13-security-legal.md#secrets) |
+| `SEC_SECRET_REDACTED` | info | `capture` | input and password values were blanked by the redaction setting | Nothing to do; see `redaction.inputs` | [13](13-security-legal.md) |
+| `SEC_PUBLIC_REGISTRY` | warning | `cli` | `holotype publish` targets a public registry while the Storybook is private | Publish to a private registry, unless the UI is meant to be public | [13](13-security-legal.md) |
+| `SEC_EGRESS_BLOCKED` | warning | `cli` (hosted) | the hosted worker blocked a request to a private address | Host the assets on a public URL, or run Holotype locally | [13](13-security-legal.md) |
+| `SEC_LICENSE_DENIED` | error | CI (`license-checker`) | a dependency's license is not on the allow-list; the build fails | Replace the dependency, or get the license reviewed | [13](13-security-legal.md) |
+
+#### Design change requests (DCR_) — 37
+
+Reused from other domains: `SYNC_DUPLICATE_SID`, `SYNC_LOCKED_SKIPPED`, `SYNC_MANAGED_NODE_DELETED`, `SYNC_LEASE_HELD`, `NET_SERVER_UNREACHABLE`, `SEC_SECRET_IN_CONFIG`, `SEC_SECRET_ON_ARGV`, `APPLY_IR_VERSION_UNSUPPORTED`.
+
+| Code | Severity | Emitted by | Meaning | User remedy | Defined in |
+|---|---|---|---|---|---|
+| `DCR_NOT_BRANCH_FILE` | error | `dcr` | this Figma file has no branch metadata (it is a library file) | Run `holotype branch link` on the branch file | [15](15-change-requests.md#diagnostics) |
+| `DCR_BASELINE_MISSING` | error | `dcr` | no embedded snapshot and no CLI-cache baseline for a variant | Run `holotype branch refresh` | [15](15-change-requests.md#diagnostics) |
+| `DCR_BASELINE_EXTERNAL` | warning | `dcr` | the snapshot was over budget and is only in the CLI cache; REST-only extraction is incomplete | Run `dcr` on the machine that generated the branch, or raise the snapshot budget | [15](15-change-requests.md#diagnostics) |
+| `DCR_BASELINE_SHIFTED` | warning | `dcr` | code changed a layer the designer also edited (after refresh) | Review both values in the item before handing it to the agent | [15](15-change-requests.md#diagnostics) |
+| `DCR_BASELINE_DIRTY` | info | `dcr` | the baseline was generated from uncommitted code | Commit before `holotype branch start` next time | [15](15-change-requests.md#diagnostics) |
+| `DCR_SNAPSHOT_PARITY` | warning | `dcr` | plugin and REST snapshots differ for the same version | Extract from the plugin (preferred), and report the difference | [15](15-change-requests.md#diagnostics) |
+| `DCR_SCOPE_EMPTY` | info | `dcr` | nothing is in scope (e.g. no frame marked Ready for dev) | Mark frames Ready for dev, or change the scope | [15](15-change-requests.md#diagnostics) |
+| `DCR_NODE_AMBIGUOUS` | info | `dcr` | duplicated layer ids were resolved by canonical order | Nothing to do | [15](15-change-requests.md#diagnostics) |
+| `DCR_REMOTE_COMPONENT_UNRESOLVED` | warning | `dcr` | a library instance's key is not in the registry `keys.json` | Export keys from the library file, then extract again | [15](15-change-requests.md#diagnostics) |
+| `DCR_PROPERTY_UNMAPPED` | warning | `dcr` | an instance property value has no arg mapping; kept as an open question | Answer the question in the DCR | [15](15-change-requests.md#diagnostics) |
+| `DCR_FIELD_UNMAPPABLE` | warning | `dcr` | a Figma field has no CSS equivalent (e.g. corner smoothing) | Answer the open question, or describe the intent in an annotation | [15](15-change-requests.md#diagnostics) |
+| `DCR_VALUE_UNTOKENIZED` | warning | `dcr` | a raw value is used; matching tokens are listed | Bind the variable in Figma, or pick a token in the question | [15](15-change-requests.md#diagnostics) |
+| `DCR_VALUE_NO_TOKEN` | warning | `dcr` | a raw value matches no token | Answer the question: new token or literal | [15](15-change-requests.md#diagnostics) |
+| `DCR_NEAREST_COMPONENT` | info | `dcr` | a new component looks like an existing one (similarity ≥ 0.6) | Answer the question: extend the existing one or create a new one | [15](15-change-requests.md#diagnostics) |
+| `DCR_PROVENANCE_MISSING` | warning | `dcr` | no code location (no CDP or source map, or plugin-only extraction) | Capture from the dev server through the CLI | [15](15-change-requests.md#diagnostics) |
+| `DCR_PROVENANCE_MINIFIED` | info | `dcr` | code locations point at built CSS (static build) | Use the dev server for branch mode | [15](15-change-requests.md#diagnostics) |
+| `DCR_UNKNOWN_CHANGE` | warning | `dcr` | a change could not be classified; listed raw | Add an annotation that says what you meant | [15](15-change-requests.md#diagnostics) |
+| `DCR_TOO_LARGE` | warning | `dcr` | more than 200 items | Split by component with `--split` | [15](15-change-requests.md#diagnostics) |
+| `DCR_NOTE_SUSPICIOUS` | info | `dcr` | designer text looks like instructions to the AI (still fenced as data) | Nothing to do; reword the note if it wasn't meant that way | [15](15-change-requests.md#diagnostics) |
+| `DCR_VERIFY_PARTIAL` | warning | `cli` | some items are only partly implemented; a follow-up DCR was written | Hand the follow-up DCR to the agent and verify again | [15](15-change-requests.md#verify) |
+| `DCR_VERIFY_PENDING` | error | `cli` | items have no implementation | Implement them (or have the agent do it), then run `holotype verify` again | [15](15-change-requests.md#verify) |
+| `DCR_VERIFY_NO_STORY` | error | `cli` | a new item has no story that `implements` it | Add the story | [15](15-change-requests.md#verify) |
+| `DCR_VERIFY_NOT_VERIFIABLE` | info | `cli` | the item can't be verified automatically (e.g. a screen without a story) | Check it by hand in review | [15](15-change-requests.md#verify) |
+| `DCR_SCREEN_NAME_UNPARSED` | info | `dcr` | a screen appears at several widths, but its frame names have no breakpoint or state | Rename frames to `Screen / Breakpoint / State`, or group them in a Section | [15](15-change-requests.md#screens) |
+| `DCR_SCREEN_VARIANT_DUPLICATE` | warning | `dcr` | two frames map to the same screen, breakpoint and state; the later one became `#2` | Rename one of the frames | [15](15-change-requests.md#screens) |
+| `DCR_SCREEN_STATE_MISSING` | info | `dcr` | a state listed in `dcr.screens.expectStates` isn't designed | Design it, or answer the question to let the agent decide | [15](15-change-requests.md#screens) |
+| `DCR_INTERACTION_UNSUPPORTED` | info | `dcr` | a prototype action has no v1 mapping (set variable, conditional…); kept raw | Describe the behaviour in an annotation | [15](15-change-requests.md#interactions) |
+| `DCR_INTERACTION_TARGET_OUT_OF_SCOPE` | info | `dcr` | an interaction's destination is not in the DCR scope | Add the destination to the scope, or accept a placeholder route | [15](15-change-requests.md#interactions) |
+| `DCR_CONTENT_PLACEHOLDER` | info | `dcr` | a screen still holds placeholder text (lorem, `{{…}}`, component default) | Replace it with final copy, or mark it as dynamic data | [15](15-change-requests.md#content) |
+| `DCR_A11Y_UNKNOWN_ROLE` | info | `dcr` | an annotated role is not a WAI-ARIA 1.2 role | Fix the role in the annotation | [15](15-change-requests.md#content) |
+| `DCR_A11Y_FOCUS_ORDER_GAP` | info | `dcr` | the focus order has duplicates or gaps in a screen variant | Fix the focus-order annotations | [15](15-change-requests.md#content) |
+| `DCR_INSTANCE_OUTDATED` | info | `dcr` | instances of an older component version; the current one is used | Optionally update the instances in Figma | [15](15-change-requests.md#instance-versions) |
+| `DCR_INSTANCE_DEPRECATED` | warning | `dcr` | instances of a deprecated component; its replacement is used | Optionally swap the instances in Figma | [15](15-change-requests.md#instance-versions) |
+| `DCR_DEPRECATED_NO_REPLACEMENT` | warning | `dcr` | a deprecated component has no replacement on record | Add `parameters.holotype.replacedBy` (or a `dcr.deprecations` entry), or answer the question | [15](15-change-requests.md#instance-versions) |
+| `DCR_IMPORT_UNRESOLVED` | warning | `dcr` | no import path for a component used in a screen | Set `dcr.targets.components.package`, or export the component | [15](15-change-requests.md#targets) |
+| `DCR_NOT_APPROVED` | error | `dcr` | `dcr.requireApproval` is on and this DCR is not approved | Ask a reviewer to approve it in the plugin preview | [15](15-change-requests.md#diagnostics) |
+| `DCR_APPROVAL_STALE` | warning | `dcr` | the approval was for an earlier version; the DCR changed since | Ask the reviewer to approve again | [15](15-change-requests.md#diagnostics) |
 
 ---
 
