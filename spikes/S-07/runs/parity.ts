@@ -26,11 +26,13 @@ export const PARITY_STEP = 5;
 async function captureAll(
   storybook: Pick<ConnectedStorybook, 'openDriver' | 'origin'>,
   variants: readonly Variant[],
+  renderMode: 'channel' | 'url',
 ): Promise<{ outcomes: CaptureOutcome[]; wallMs: number }> {
   const executablePath = process.env.HOLOTYPE_CHROMIUM_PATH;
   const capturer = createCapturer({
     storybook,
     workers: 1,
+    renderMode,
     ...(executablePath === undefined || executablePath === '' ? {} : { chromiumPath: executablePath }),
   });
   const outcomes: CaptureOutcome[] = [];
@@ -47,8 +49,8 @@ async function captureAll(
 
 export async function runParity(storybook: ConnectedStorybook, plan: readonly Variant[]): Promise<ParityRun> {
   const variants = sample(plan, PARITY_STEP);
-  const channel = await captureAll(channelStorybook(storybook), variants);
-  const url = await captureAll(storybook, variants);
+  const channel = await captureAll(channelStorybook(storybook), variants, 'channel');
+  const url = await captureAll(storybook, variants, 'url');
   const records: ParityRecord[] = variants.map((variant, position) => {
     const a = channel.outcomes[position];
     const b = url.outcomes[position];

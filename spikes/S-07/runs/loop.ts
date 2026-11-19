@@ -67,7 +67,7 @@ async function runLane(
           stability: 'never',
         })
       : undefined;
-  const driver = channel ?? (await storybook.openDriver(page, timeout));
+  const driver = channel ?? (await storybook.openDriver(page, { ...timeout, mode: 'url' }));
   const records: VariantRecord[] = [];
   for (const variant of plan) {
     const started = performance.now();

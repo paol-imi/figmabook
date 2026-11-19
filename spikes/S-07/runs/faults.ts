@@ -90,7 +90,7 @@ export async function runFaults(
       driverKind === 'channel'
         ? await openChannelDriver(storybook, page, { ...options, stability: 'never' })
         : undefined;
-    const driver = channel ?? (await storybook.openDriver(page, options));
+    const driver = channel ?? (await storybook.openDriver(page, { ...options, mode: 'url' }));
     const rendered: Rendered[] = [];
     const wallStart = performance.now();
     for (const variant of plan) rendered.push(await renderVariant(page, driver, variant, channel));
@@ -106,7 +106,7 @@ export async function runFaults(
         driverKind === 'channel'
           ? await openChannelDriver(storybook, freshPage, { ...options, stability: 'never' })
           : undefined;
-      const freshDriver = freshChannel ?? (await storybook.openDriver(freshPage, options));
+      const freshDriver = freshChannel ?? (await storybook.openDriver(freshPage, { ...options, mode: 'url' }));
       const reference = await renderVariant(freshPage, freshDriver, variant, freshChannel);
       references.set(variant.index, reference.signature);
       await fresh.close();
