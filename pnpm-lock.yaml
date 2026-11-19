@@ -320,9 +320,21 @@ importers:
       '@figma/plugin-typings':
         specifier: 1.142.0
         version: 1.142.0
+      '@holotype/capture':
+        specifier: workspace:*
+        version: link:../packages/capture
       '@holotype/figma-fake':
         specifier: workspace:*
         version: link:../packages/figma-fake
+      '@holotype/sandboxes':
+        specifier: workspace:*
+        version: link:../tools/sandboxes
+      '@holotype/shared':
+        specifier: workspace:*
+        version: link:../packages/shared
+      '@holotype/storybook':
+        specifier: workspace:*
+        version: link:../packages/storybook
       '@testing-library/preact':
         specifier: 3.2.6
         version: 3.2.6(preact@10.29.8)
@@ -346,6 +358,8 @@ importers:
       '@holotype/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+
+  tools/sandboxes: {}
 
 packages:
 

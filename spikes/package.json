@@ -11,9 +11,10 @@
   "scripts": {
     "build": "node --experimental-strip-types --disable-warning=ExperimentalWarning runner/scripts/build.ts",
     "refs": "node --experimental-strip-types --disable-warning=ExperimentalWarning runner/scripts/refs.ts",
-    "typecheck": "tsc",
+    "typecheck": "tsc && tsc -p S-07",
     "test": "vitest run",
-    "test:e2e": "vitest run --config vitest.e2e.config.ts"
+    "test:e2e": "vitest run --config vitest.e2e.config.ts",
+    "s07": "node --experimental-strip-types --disable-warning=ExperimentalWarning S-07/cli.ts"
   },
   "dependencies": {
     "@sinclair/typebox": "0.34.52",
@@ -22,7 +23,11 @@
   },
   "devDependencies": {
     "@figma/plugin-typings": "1.142.0",
+    "@holotype/capture": "workspace:*",
     "@holotype/figma-fake": "workspace:*",
+    "@holotype/sandboxes": "workspace:*",
+    "@holotype/shared": "workspace:*",
+    "@holotype/storybook": "workspace:*",
     "@testing-library/preact": "3.2.6",
     "esbuild": "0.27.7",
     "happy-dom": "21.0.4",

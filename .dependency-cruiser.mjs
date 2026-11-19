@@ -148,7 +148,13 @@ export default {
     },
   ],
   options: {
-    exclude: { path: '^(packages|tools)/[^/]+/(dist|build)/' },
+    exclude: {
+      path: [
+        '^(packages|tools)/[^/]+/(dist|build)/',
+        // Sandbox sources and generated sandboxes: files for other projects, not workspace code.
+        '^tools/sandboxes/(templates|overlays|\\.out)/',
+      ],
+    },
     doNotFollow: { path: 'node_modules' },
     tsPreCompilationDeps: true,
     combinedDependencies: false,
