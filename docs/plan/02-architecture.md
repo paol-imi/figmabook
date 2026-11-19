@@ -348,7 +348,7 @@ interface BundleManifest {
 - **Zip form:** `<runId>.holotype.zip` holds the same tree.
   - Stored with `STORE` for assets that are already compressed, and `DEFLATE` for JSON.
   - `manifest.json` is written **first**, so streaming readers can plan early.
-- **Size guardrail:** a warning at 200 MB (`PLAN_BUNDLE_LARGE`). Above that, the plugin streams entries from the zip without materialising the whole archive (fflate streaming unzip).
+- **Size guardrail:** a warning at 100 MB (`PLAN_BUNDLE_LARGE`); bundles over 200 MB are rejected (`APPLY_BUNDLE_REJECTED`, [13](13-security-legal.md)). Between the two, the plugin streams entries from the zip without materialising the whole archive (fflate streaming unzip).
 - **Integrity:** the plugin verifies sha256 of each file against `integrity` before applying. A mismatch gives `APPLY_BUNDLE_CORRUPT` and the file is rejected.
 
 ### 5.2 Determinism

@@ -269,6 +269,7 @@ Columns: **Emitted by** is the package that raises the code ([02 §6](02-archite
 | `SB_ROOT_NOT_FOUND` | error | `storybook` | the capture root selector matched nothing | Fix `parameters.holotype.rootSelector` (or remove it to use `#storybook-root`) | [03](03-storybook.md) |
 | `SB_PORTAL_AMBIGUOUS` | warning | `storybook` | several candidate portal roots; their union was used | Set `parameters.holotype.portal.selector` to the right overlay | [03](03-storybook.md#portals-and-overlays) |
 | `SB_NOT_A_STORYBOOK` | error | `cli` (hosted) | the target has no `index.json` plus `iframe.html` with a Storybook preview | Point Holotype at the root URL of a Storybook | [13](13-security-legal.md) |
+
 #### Planner, config and mapper structure (PLAN_) — 43
 
 | Code | Severity | Emitted by | Meaning | User remedy | Defined in |
@@ -307,7 +308,7 @@ Columns: **Emitted by** is the package that raises the code ([02 §6](02-archite
 | `PLAN_ICON_SPLIT` | info | `planner` | an icon enum was split into one component per value | Nothing to do | [04](04-variant-model.md) |
 | `PLAN_FEATURE_DOWNGRADED` | warning | `cli` | the plugin lacks an IR feature, so the output was downgraded (e.g. slots → frames) | Update the Figma plugin | [06](06-ir.md) |
 | `PLAN_COMPONENT_TOO_LARGE` | warning (error over 8 MB) | `planner` | a `SceneComponent` file is over 2 MB; variants were reduced | Lower the variant budget or split the component | [06](06-ir.md) |
-| `PLAN_BUNDLE_LARGE` | warning | `cli` | the bundle is over 200 MB | Sync fewer components per run, or split by `include` | [02](02-architecture.md) |
+| `PLAN_BUNDLE_LARGE` | warning | `cli` | the bundle is over 100 MB (rejected above 200 MB with `APPLY_BUNDLE_REJECTED`) | Sync fewer components per run, or split by `include` | [02](02-architecture.md) |
 | `PLAN_INVARIANT_VIOLATION` | error | `mapper` | the mapper produced invalid output (a Holotype bug); the component was skipped | Report it with `report.json`; the other components are unaffected | [06](06-ir.md) |
 | `PLAN_MAPPER_FAILED` | error | `mapper` | the mapper threw (a Holotype bug); the component failed | Report it with the stack in `report.json`; the other components are unaffected | [02](02-architecture.md) |
 | `PLAN_ALIGNMENT_ANCHOR_CONFLICT` | warning | `mapper` | two layers share an anchor (e.g. a `data-testid`) across variants | Make test ids unique within the component | [07](07-mapping.md#alignment) |
@@ -316,6 +317,7 @@ Columns: **Emitted by** is the package that raises the code ([02 §6](02-archite
 | `PLAN_PROPERTY_UNBOUND` | warning | `mapper` | a planned property bound to no layer; it was dropped | Check the arg renders something; see the report for the property | [07](07-mapping.md) |
 | `PLAN_INSTANCE_PROPS_UNMAPPED` | info | `mapper` | a nested component's props don't map to its properties; kept as a frame | Expose those props as args on the nested component | [07](07-mapping.md) |
 | `PLAN_INSTANCE_MISMATCH` | info | `mapper` | a nested component's capture differs from its own story; kept as a frame | Nothing to do; it is retried once the nested component is imported | [07](07-mapping.md) |
+
 #### Capture (CAP_) — 30
 
 | Code | Severity | Emitted by | Meaning | User remedy | Defined in |
@@ -350,6 +352,7 @@ Columns: **Emitted by** is the package that raises the code ([02 §6](02-archite
 | `CAP_CSS_UNSUPPORTED` | warning | `capture` | a CSS property has no Figma equivalent (`data.property`); it was ignored | Check the affected layer; avoid the property for design-relevant styling | [05](05-capture.md) |
 | `CAP_TRANSFORM_SKEW` | info | `capture` | a skew is expressed through `relativeTransform` | Nothing to do | [07](07-mapping.md) |
 | `CAP_NATIVE_CONTROL_SYNTHESIZED` | info | `capture` | a native control (input, checkbox, select) was rebuilt from frames and vectors | Nothing to do | [07](07-mapping.md) |
+
 #### Layout (LAYOUT_) — 16
 
 Auto-layout relaxations and read-back fallbacks in the plugin are `APPLY_LAYOUT_RELAXED` / `APPLY_LAYOUT_FALLBACK` (APPLY_ table).
@@ -387,6 +390,7 @@ Auto-layout relaxations and read-back fallbacks in the plugin are `APPLY_LAYOUT_
 | `TEXT_SHADOW_RANGE_APPROX` | warning | `mapper` | text shadows differ across ranges; the dominant one was used | Use one text shadow per text element | [07](07-mapping.md) |
 | `TEXT_WORD_SPACING_DROPPED` | warning | `mapper` | `word-spacing` has no Figma equivalent and was dropped | Use `letter-spacing`, or accept the difference | [07](07-mapping.md) |
 | `TEXT_BASELINE_SHIFT_DROPPED` | warning | `mapper` | `vertical-align: super/sub` was dropped (Figma has no baseline shift) | Render super/subscript in its own element | [07](07-mapping.md) |
+
 #### Fonts (FONT_) — 7
 
 | Code | Severity | Emitted by | Meaning | User remedy | Defined in |
@@ -429,6 +433,7 @@ Auto-layout relaxations and read-back fallbacks in the plugin are `APPLY_LAYOUT_
 | `SVG_ICON_FONT_RASTERIZED` | warning | `cli` | an icon-font glyph could not be shaped and was captured as an image | Make sure the icon font file is reachable, or use SVG icons | [05](05-capture.md) |
 | `SVG_ICON_EXTRACTED` | info | `mapper` | a repeated SVG was promoted to an icon component | Nothing to do | [07](07-mapping.md) |
 | `SVG_IMPORT_FAILED` | warning | `plugin` | Figma could not import the SVG; a raster fallback was used | Simplify the SVG (it is in the report), or report it | [09](09-plugin.md) |
+
 #### Tokens (TOKEN_) — 21
 
 | Code | Severity | Emitted by | Meaning | User remedy | Defined in |
@@ -454,6 +459,7 @@ Auto-layout relaxations and read-back fallbacks in the plugin are `APPLY_LAYOUT_
 | `TOKEN_SOURCE_CSS_MISMATCH` | warning | `mapper` | the tokens file and the CSS computed value differ | Rebuild your tokens, or fix the CSS that overrides them | [08](08-tokens.md) |
 | `TOKEN_BIND_FAILED` | warning | `plugin` | Figma refused a binding (field unsupported or variable scope mismatch); the literal was kept | Widen the variable's scopes in Figma, or nothing to do | [08](08-tokens.md) |
 | `TOKEN_ORPHANED` | info | `plugin` | a linked variable no longer exists in code | Delete or deprecate the variable in Figma | [08](08-tokens.md) |
+
 #### Apply (APPLY_) — 20
 
 | Code | Severity | Emitted by | Meaning | User remedy | Defined in |
@@ -478,6 +484,7 @@ Auto-layout relaxations and read-back fallbacks in the plugin are `APPLY_LAYOUT_
 | `APPLY_LAYOUT_RELAXED` | info | `plugin` | HUG/FILL sizing was relaxed to FIXED to pass read-back | Nothing to do | [09](09-plugin.md) |
 | `APPLY_LAYOUT_FALLBACK` | warning | `plugin` | auto layout failed read-back in Figma; the container became absolute | Nothing to do; pixels match. Report the component if it repeats | [09](09-plugin.md) |
 | `APPLY_MIXED_VALUE` | info | `plugin` | Figma returned `figma.mixed`; it was normalized | Nothing to do | [09](09-plugin.md) |
+
 #### Sync (SYNC_) — 20
 
 | Code | Severity | Emitted by | Meaning | User remedy | Defined in |
@@ -502,6 +509,7 @@ Auto-layout relaxations and read-back fallbacks in the plugin are `APPLY_LAYOUT_
 | `SYNC_STALE_PLAN` | info | `plugin` | the file changed since planning; re-planned automatically | Nothing to do | [10](10-sync.md) |
 | `SYNC_UNMANAGED_AFFECTS_LAYOUT` | info | `plugin` | a layer a designer added caused a layout fallback | Move the added layer outside the auto-layout frame, or nothing to do | [10](10-sync.md) |
 | `SYNC_LEGACY_NAMESPACE` | info | `plugin` | reserved for a future plugin-data namespace migration; not emitted today | Nothing to do | [13](13-security-legal.md) |
+
 #### Network (NET_) — 7
 
 | Code | Severity | Emitted by | Meaning | User remedy | Defined in |

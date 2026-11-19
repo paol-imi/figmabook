@@ -819,7 +819,7 @@ The token resolver ([08](08-tokens.md)) gives, per capture node and CSS property
 **Rules:**
 
 - **Pure chains only.** A value from `calc()` or `color-mix()` is not bound (`TOKEN_EXPRESSION_UNBOUND`, info), nor is a used var fallback (`TOKEN_FALLBACK_USED`, info).
-- **Value-equality fallback** (D-18, opt-in `config.tokens.matchByValue`) emits `confidence: 'value'`. It binds only when exactly one variable of the right type has that value in the current mode; ambiguity gives `TOKEN_VALUE_AMBIGUOUS`.
+- **Value-equality fallback** (D-18, opt-in `config.tokens.bindByValue`) emits `confidence: 'value'`. It binds only when exactly one variable of the right type has that value in the current mode; ambiguity gives `TOKEN_VALUE_AMBIGUOUS`.
 - **Themes as modes.** When themes are modes ([04](04-variant-model.md), [08](08-tokens.md)), the mapper emits one variant set (not one per theme), with bindings from the default-mode capture. It then verifies that every other mode's capture resolves to the same bindings with that mode's values; a mismatch gives `TOKEN_MODE_UNTOKENIZED_DIFF` (warn, [08](08-tokens.md)), and the planner falls back to a theme VARIANT axis.
 
 ### 16.1 Provenance side file (branch mode, D-36)
