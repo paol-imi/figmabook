@@ -6,7 +6,7 @@
  * `pong` (UI → main) and `ready`, `need`, `progress`, `diagnostics`, `done`, `error`,
  * `ping` (main → UI). Later items add their members here (B-63, B-69).
  */
-import type { BundleManifest } from '@holotype/ir';
+import type { ApplyReport, BundleManifest } from '@holotype/ir';
 import type { Diagnostic } from '@holotype/shared';
 
 /** Protocol major. A message with any other `v` is ignored by both sides. */
@@ -103,7 +103,12 @@ export type MainToUiBody =
       readonly etaMs?: number;
     }
   | { readonly t: 'diagnostics'; readonly items: readonly Diagnostic[] }
-  | { readonly t: 'done'; readonly summary: ApplySummary }
+  | {
+      readonly t: 'done';
+      readonly summary: ApplySummary;
+      /** What was built, for the report download (06 §4.5); absent when nothing was applied. */
+      readonly report?: ApplyReport;
+    }
   | { readonly t: 'error'; readonly code: string; readonly message: string; readonly recoverable: boolean }
   | { readonly t: 'ping'; readonly id: number };
 
@@ -195,6 +200,15 @@ function isApplySummary(value: unknown): value is ApplySummary {
   );
 }
 
+function isApplyReport(value: unknown): value is ApplyReport {
+  return (
+    isRecord(value) &&
+    value.kind === 'holotype/apply-report' &&
+    Array.isArray(value.components) &&
+    Array.isArray(value.diagnostics)
+  );
+}
+
 function isDiagnostic(value: unknown): value is Diagnostic {
   return (
     isRecord(value) &&
@@ -233,7 +247,7 @@ const mainToUiChecks: Readonly<Record<MainToUiType, Check>> = {
     isOptional(m.etaMs, isCount),
   diagnostics: (m) =>
     Array.isArray(m.items) && m.items.length <= MAX_DIAGNOSTICS_PER_MESSAGE && m.items.every(isDiagnostic),
-  done: (m) => isApplySummary(m.summary),
+  done: (m) => isApplySummary(m.summary) && isOptional(m.report, isApplyReport),
   error: (m) => isString(m.code) && isString(m.message) && isBoolean(m.recoverable),
   ping: (m) => isCount(m.id),
 };

@@ -80,6 +80,24 @@ export const mainToUiBodies: Readonly<Record<MainToUi['t'], readonly MainToUiBod
   ],
   done: [
     { t: 'done', summary: { componentsOk: 3, componentsFailed: 1, variants: 24, durationMs: 4200, cancelled: false } },
+    {
+      t: 'done',
+      summary: { componentsOk: 1, componentsFailed: 0, variants: 1, durationMs: 10, cancelled: false },
+      report: {
+        kind: 'holotype/apply-report',
+        applyId: 'a-1',
+        fileKey: null,
+        components: [
+          {
+            sid: 'button',
+            setId: '1:2',
+            status: 'synced',
+            variants: [{ vk: '0123456789abcdef', nodeId: '1:2', readback: { maxDelta: 0 } }],
+          },
+        ],
+        diagnostics: [],
+      },
+    },
   ],
   error: [{ t: 'error', code: 'APPLY_IR_VERSION_UNSUPPORTED', message: 'Nope.', recoverable: false }],
   ping: [{ t: 'ping', id: 7 }],

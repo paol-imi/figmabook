@@ -25,6 +25,7 @@ The manifest is the `figma-plugin` field of `package.json` (09 §2). Its `id` is
 | `src/channel.ts`  | typed, session-scoped channels over `figma.ui` and the iframe `window`                                 |
 | `src/host.ts`     | main side of a session: handshake, IR version gate, cancel flag, ping/pong yield                       |
 | `src/port.ts`     | `FigmaPort`, the applier's view of the Plugin API (owned by B-06)                                      |
+| `src/apply/`      | the applier (09 §5–§6): session, pull loop, resources, per-node writers; `FigmaPort` only, no `figma`  |
 | `src/ui/`         | Preact UI: `App`, `components/` (Tabs, Button, state views), `screens/`, `import/`, `messages/en.json` |
 
 ## Public API
@@ -51,6 +52,49 @@ The manifest is the `figma-plugin` field of `package.json` (09 §2). Its `id` is
 - `startHost({ channel, pluginVersion, irMajors, fileKey, registry?, openSession? })` → `Host`
   with `cancelRequested`, `uiRoundTrip(signal?)` and `dispose()`. A bundle whose Scene IR major is
   not supported is answered with `error` `APPLY_IR_VERSION_UNSUPPORTED`.
+
+`src/apply/` (slice applier, B-14: absolute layout, one frame per variant on page "Components")
+
+- `runImportSession({ message, host, channel, port, now, yieldToEditor, createId })`: one session on
+  main: pulls each component and asset from the UI, applies them, streams `progress` (≤ every
+  100 ms), `diagnostics` and `done` (with the `ApplyReport`). `parseComponent`, `createApplyId`.
+- `applyBundle(options)` → `{ summary, report }`: the protocol-free core (page, placement, undo per
+  component or `single`, cancel between variants, per-component failure, selection, `notify`).
+  `applyComponent`, `variantFrameName`, `notifyMessage`.
+- `createPuller(channel)` → `{ component(sid), asset(sha256) }` (09 §3.3 reassembly).
+- `ResourceCache` (fonts, images and SVGs prepared once per session), `FontResolver`,
+  `styleWeight`, `rankStyles`, `nearestStyle`, `fontRequestKey`.
+- `writeNode`, `WRITERS` and `orderedWriters()` (`write/index.ts`: one line per writer, append only;
+  writers run in 09 §6 step order), `NodeWriter`, `WriteContext`, `WriteTarget`.
+- `writeIdentity`, `writeProvisionalKey`, `identityVersion`, `variantArgs`, `IDENTITY_NAMESPACE`,
+  `APPLIER_EPOCH`; `ensureComponentsPage`, `COMPONENTS_PAGE`; `variantGrid`, `nextComponentTop`,
+  `contentBottom`; `readbackDelta`; `toPaint(s)`, `toEffect(s)`; `createSlicer`, `NO_SLICING`;
+  `utf8Decode`; `SUPPORTED_FEATURES`, `unsupportedFeatures` (`features.ts`).
+
+What the slice applier writes, and what it falls back on:
+
+| Scene IR                                     | Written as                                                                          |
+| -------------------------------------------- | ----------------------------------------------------------------------------------- |
+| variant root (`component`), `frame`, `group` | frame (component sets are B-57)                                                     |
+| `rectangle`, `image`, `ellipse`, `vector`    | rectangle, ellipse, vector with `vectorPaths`                                       |
+| `text`                                       | text: base font, characters, range styles, paragraph settings, sizing last          |
+| `svg`                                        | `createNodeFromSvg`, unwrapped when asked; else an empty frame, `SVG_IMPORT_FAILED` |
+| `instance`                                   | its fallback subtree as frames, `APPLY_INSTANCE_TARGET_MISSING` (B-142)             |
+| `layout` (auto layout)                       | absolute, from `fallback` boxes, `APPLY_LAYOUT_FALLBACK` (B-56)                     |
+| missing font                                 | the request's fallback family (else Inter) at the nearest weight, `FONT_MISSING`    |
+| image Figma refuses                          | fill left out, `APPLY_IMAGE_REJECTED`                                               |
+| `bind`, `propRefs`, `slot`                   | not written: bundles that need them declare a feature, which the import refuses     |
+
+`src/ui/import/`
+
+- `readBundle(fileName, zip, { limits?, unzip? })` → `Result<LoadedBundle, Diagnostic>`: unzip
+  within 06 §8 limits (`APPLY_BUNDLE_REJECTED`), manifest kind, versions
+  (`APPLY_IR_VERSION_UNSUPPORTED`), schema, features (`APPLY_UNSUPPORTED_FEATURE`), integrity and
+  Scene IR validation (`APPLY_BUNDLE_CORRUPT`).
+- `unzipBundle`, `fflateUnzip` (Web Workers, synchronous fallback), `BUNDLE_LIMITS`.
+- `serveBundle(channel, bundle, maxPartBytes?)`, `splitUtf8(text, maxBytes)`.
+- `useImport(channel)` → `{ state, importFile, reset }`; `ImportScreen` (empty, loading, error,
+  success).
 
 `src/ui/`
 
