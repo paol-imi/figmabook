@@ -1,0 +1,263 @@
+{
+  "assets": {
+    "0000000000000000000000000000000000000000000000000000000000000000": {
+      "bytes": 12729,
+      "mime": "image/png",
+      "natural": {
+        "h": 48,
+        "w": 2560
+      }
+    }
+  },
+  "captureVersion": "0.1.0",
+  "customProperties": {
+    "declarations": []
+  },
+  "diagnostics": [],
+  "engine": {
+    "chromium": "153.0.8010.12",
+    "name": "@holotype/capture",
+    "playwright": "1.63.0",
+    "version": "0.0.0"
+  },
+  "fonts": [],
+  "kind": "holotype/capture",
+  "portals": [],
+  "root": {
+    "borderBox": {
+      "h": 24,
+      "w": 1280,
+      "x": 0,
+      "y": 0
+    },
+    "children": [
+      {
+        "borderBox": {
+          "h": 24,
+          "w": 339.828,
+          "x": 0,
+          "y": 0
+        },
+        "children": [],
+        "id": "c2",
+        "paint": {
+          "domIndex": 1,
+          "layer": "inline",
+          "stackingContext": false,
+          "zIndex": "auto"
+        },
+        "source": {
+          "path": "p:0>#text:0",
+          "tag": "#text"
+        },
+        "text": {
+          "characters": "The quick brown fox jumps over the lazy dog",
+          "indent": 0,
+          "lineClamp": null,
+          "lines": [
+            {
+              "endChar": 43,
+              "height": 24,
+              "left": 0,
+              "startChar": 0,
+              "top": 0,
+              "width": 339.828
+            }
+          ],
+          "runs": [
+            {
+              "end": 43,
+              "start": 0,
+              "styleId": "84eecee62537b29d"
+            }
+          ],
+          "textAlign": "left",
+          "textOverflow": "clip",
+          "whiteSpace": "nowrap",
+          "wrap": "nowrap"
+        },
+        "type": "text"
+      }
+    ],
+    "computed": {
+      "background": {
+        "clip": [
+          "border-box"
+        ],
+        "color": {
+          "a": 0,
+          "b": 0,
+          "g": 0,
+          "r": 0,
+          "space": "srgb"
+        },
+        "layers": []
+      },
+      "border": {
+        "color": [
+          {
+            "a": 1,
+            "b": 0.164706,
+            "g": 0.090196,
+            "r": 0.058824,
+            "space": "srgb"
+          },
+          {
+            "a": 1,
+            "b": 0.164706,
+            "g": 0.090196,
+            "r": 0.058824,
+            "space": "srgb"
+          },
+          {
+            "a": 1,
+            "b": 0.164706,
+            "g": 0.090196,
+            "r": 0.058824,
+            "space": "srgb"
+          },
+          {
+            "a": 1,
+            "b": 0.164706,
+            "g": 0.090196,
+            "r": 0.058824,
+            "space": "srgb"
+          }
+        ],
+        "style": [
+          "none",
+          "none",
+          "none",
+          "none"
+        ],
+        "width": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "boxShadow": [],
+      "boxSizing": "border-box",
+      "color": {
+        "a": 1,
+        "b": 0.164706,
+        "g": 0.090196,
+        "r": 0.058824,
+        "space": "srgb"
+      },
+      "display": "block",
+      "isolation": "auto",
+      "margin": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "mixBlendMode": "normal",
+      "opacity": 1,
+      "overflowX": "visible",
+      "overflowY": "visible",
+      "padding": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "position": "static",
+      "radius": {
+        "h": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "v": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "size": {
+        "height": 24,
+        "maxH": "none",
+        "maxW": "none",
+        "minH": "0px",
+        "minW": "0px",
+        "width": 1280
+      },
+      "visibility": "visible",
+      "zIndex": "auto"
+    },
+    "id": "c1",
+    "paint": {
+      "domIndex": 0,
+      "layer": "block",
+      "stackingContext": false,
+      "zIndex": "auto"
+    },
+    "source": {
+      "classes": [
+        "_text_12n1q_3",
+        "_singleLine_12n1q_12"
+      ],
+      "path": "p:0",
+      "tag": "p"
+    },
+    "type": "element"
+  },
+  "rootRect": {
+    "h": 24,
+    "w": 1280,
+    "x": 0,
+    "y": 0
+  },
+  "screenshot": {
+    "sha": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "target": {
+    "args": {},
+    "colorScheme": "light",
+    "dpr": 2,
+    "globals": {},
+    "rootSelector": "#storybook-root > :nth-child(1)",
+    "sid": "micro-text",
+    "state": null,
+    "storyId": "micro-text--single-line",
+    "storybookUrl": "http://127.0.0.1:6006/iframe.html",
+    "viewport": {
+      "h": 800,
+      "w": 1280
+    },
+    "vk": "b4866704690acdf9"
+  },
+  "textStyles": {
+    "84eecee62537b29d": {
+      "color": {
+        "a": 1,
+        "b": 0.164706,
+        "g": 0.090196,
+        "r": 0.058824,
+        "space": "srgb"
+      },
+      "cssFamily": "Inter, sans-serif",
+      "italic": false,
+      "letterSpacingPx": 0,
+      "lineHeightPx": 24,
+      "lineHeightSource": "explicit",
+      "size": 16,
+      "smallCaps": false,
+      "stretch": "100%",
+      "transform": "none",
+      "used": [],
+      "weight": 400,
+      "wordSpacingPx": 0
+    }
+  },
+  "timing": {
+    "renderMs": 0,
+    "serializeMs": 0,
+    "settleMs": 0
+  }
+}

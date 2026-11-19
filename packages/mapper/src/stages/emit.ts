@@ -10,16 +10,19 @@ import {
   type SceneVariant,
 } from '@holotype/ir';
 import type { Diagnostic } from '@holotype/shared';
+import { captureDiagnostics, sortDiagnostics } from '../capture-diagnostics';
 import { px, relativeRect } from '../geometry';
 import { placeVariants } from '../set-grid';
-import type { ComponentState, VariantState, WorkNode } from '../state';
+import { type ComponentState, sourceElement, type VariantState, type WorkNode } from '../state';
 import type { ComponentStage } from './types';
 
 /*
  * Stage 14, emission (07 §6.3): the work trees become Scene nodes. Layout is absolute, so
  * every child is placed by `xy` relative to its parent's border box, and every node gets
- * `expect`, its browser rect relative to the variant root. There is no auto layout yet, so
- * there is no `fallback`. The component document is assembled here; hashes come next.
+ * `expect`, its browser rect relative to the variant root. Auto layout and its `fallback`
+ * arrive with B-49. Capture facts about nodes are carried over with their final keys, and
+ * variant diagnostics are sorted by `(code, nodeKey, message)` (06 §5). The component
+ * document is assembled here; hashes come next.
  */
 
 /** Stands in for an `irh` until the hashing stage computes it. */
@@ -37,9 +40,7 @@ function nodeDiagnostics(root: WorkNode, vk: string, sid: string): Diagnostic[] 
 }
 
 function emitNode(node: WorkNode, rootBox: Rect, parentExpect: Rect | undefined): SceneNode {
-  const box = node.capture.borderBox;
-  const expect = relativeRect(box, rootBox);
-  const { source } = node.capture;
+  const expect = relativeRect(node.box, rootBox);
   const scene: SceneNode = {
     nk: node.nk,
     kind: node.kind,
@@ -49,8 +50,16 @@ function emitNode(node: WorkNode, rootBox: Rect, parentExpect: Rect | undefined)
     expect,
     visible: node.visible,
     ...node.fields,
-    source: { path: source.path, tag: source.tag, ...(source.component ? { component: source.component.name } : {}) },
   };
+  // A synthetic layer has no element of its own; its key names its owner.
+  if (node.synthetic === undefined) {
+    const { source } = sourceElement(node);
+    scene.source = {
+      path: source.path,
+      tag: source.tag,
+      ...(source.component ? { component: source.component.name } : {}),
+    };
+  }
   // Positions derive from the rounded `expect` rects, so a child's `xy` chain sums exactly to its `expect`.
   if (parentExpect) scene.xy = { x: px(expect.x - parentExpect.x), y: px(expect.y - parentExpect.y) };
   if (node.children.length > 0) scene.children = node.children.map((child) => emitNode(child, rootBox, expect));
@@ -86,10 +95,11 @@ function emitVariant(variant: VariantState, component: ComponentState, cell: Sce
     },
     grid: cell,
     root: emitNode(root, capture.root.borderBox, undefined),
-    diagnostics: [
+    diagnostics: sortDiagnostics([
       ...variant.diagnostics.map((item) => ({ ...item, variantKey: planned.vk, sid })),
       ...nodeDiagnostics(root, planned.vk, sid),
-    ],
+      ...captureDiagnostics(capture, root, planned.vk, sid),
+    ]),
   };
 }
 

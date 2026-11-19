@@ -1,5 +1,5 @@
 import type { CNode, SceneNodeKind } from '@holotype/ir';
-import type { WorkNode } from '../state';
+import { type SyntheticRole, sourceElement, type WorkNode } from '../state';
 import { semanticClass } from './classes';
 
 /*
@@ -46,6 +46,18 @@ const KIND_NAMES: Readonly<Record<SceneNodeKind, string>> = {
   svg: 'Icon',
   image: 'Image',
   instance: 'Instance',
+};
+
+/** Names of the layers the mapper adds (07 §12 rule 9). */
+const SYNTHETIC_NAMES: Readonly<Record<SyntheticRole, string>> = {
+  bg: 'Background',
+  'border-t': 'Border top',
+  'border-r': 'Border right',
+  'border-b': 'Border bottom',
+  'border-l': 'Border left',
+  outline: 'Outline',
+  shadow: 'Shadow',
+  clip: 'Clip',
 };
 
 const MAX_TEXT_NAME = 40;
@@ -99,13 +111,16 @@ function fromLayer(layer: string, node: CNode, context: NameContext): string | u
 
 /** The name of one node, before sibling disambiguation. */
 export function layerName(node: WorkNode, context: NameContext): string {
+  if (node.synthetic !== undefined) return SYNTHETIC_NAMES[node.synthetic];
+  // A text layer that replaced its element is named like the element (07 §11 rule 3).
+  const element = sourceElement(node);
   for (const layer of context.layers) {
-    const name = fromLayer(layer, node.capture, context)?.trim();
+    const name = fromLayer(layer, element, context)?.trim();
     if (name) return name;
   }
   const text = node.capture.text === undefined ? '' : textLabel(node.capture.text.characters);
   if (text !== '') return text;
-  if (node.capture.source.pseudo) return humanize(node.capture.source.pseudo);
+  if (element.source.pseudo) return humanize(element.source.pseudo);
   return KIND_NAMES[node.kind];
 }
 

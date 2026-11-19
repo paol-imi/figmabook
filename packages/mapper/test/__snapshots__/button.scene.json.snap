@@ -1,7 +1,7 @@
 {
   "dependencies": [],
   "diagnostics": [],
-  "irh": "7994b369fa96365d",
+  "irh": "d1fb255c355f6795",
   "kind": "holotype/scene-component",
   "meta": {
     "description": "Button fixture.",
@@ -59,19 +59,6 @@
         {
           "code": "CAP_CSS_UNSUPPORTED",
           "data": {
-            "property": "box-shadow"
-          },
-          "fallback": "left out of the Figma layer",
-          "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
-          "nodeKey": "root",
-          "property": "box-shadow",
-          "severity": "warn",
-          "sid": "components-button",
-          "variantKey": "02e9e83f83176070"
-        },
-        {
-          "code": "CAP_CSS_UNSUPPORTED",
-          "data": {
             "property": "appearance"
           },
           "fallback": "drawn as its box, without the native control",
@@ -88,7 +75,7 @@
         "col": 0,
         "row": 0
       },
-      "irh": "ce3f4ba2724983f5",
+      "irh": "8509c6d07077c18f",
       "provenance": {
         "args": {
           "label": "Button",
@@ -297,6 +284,23 @@
           }
         ],
         "clipsContent": false,
+        "effects": [
+          {
+            "color": {
+              "a": 0.05,
+              "b": 0,
+              "g": 0,
+              "r": 0
+            },
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "radius": 2,
+            "spread": 0,
+            "type": "DROP_SHADOW"
+          }
+        ],
         "expect": {
           "h": 40,
           "w": 96,
@@ -314,7 +318,7 @@
             "type": "SOLID"
           }
         ],
-        "irh": "8b9571c5154e0174",
+        "irh": "46f0b449dd3808b6",
         "kind": "component",
         "name": "Button",
         "nk": "root",

@@ -12,16 +12,18 @@ import type { Diagnostic } from '@holotype/shared';
 import { solidPaint } from '../color';
 import { sameColor } from '../css';
 import { addOnce, mapperFailure, plainDiagnostic } from '../diagnostics';
-import { NEAR_PX } from '../geometry';
 import { type WorkNode, walkWork } from '../state';
+import { fitText } from '../text/fit';
 import { fontRequest } from '../text/font';
 import { lockLines } from '../text/locked-lines';
+import { textShadowEffects } from '../text/shadow';
 import { reportUnsupported } from '../visuals/unsupported';
 import type { VariantStage } from './types';
 
 /*
  * Stage 6, text (07 §8): each captured text block becomes one TEXT node. Its runs become
- * ranges, and adjacent ranges whose Scene form is identical are merged.
+ * ranges, and adjacent ranges whose Scene form is identical are merged. `text-shadow`
+ * becomes node effects.
  */
 
 type ColorProfile = MapperSettings['mapper']['colorProfile'];
@@ -79,7 +81,6 @@ function rangeStyle(style: CTextStyle, href: string | undefined, profile: ColorP
       plainDiagnostic('TEXT_WORD_SPACING_DROPPED', { property: 'word-spacing', value: `${style.wordSpacingPx}px` }),
     );
   }
-  if (style.shadow && style.shadow.length > 0) reportUnsupported(notes, 'text-shadow');
   let range: Range = {
     font: fontRequest(style),
     fontSize: style.size,
@@ -145,53 +146,12 @@ function sameRange(a: SceneTextRange, b: Range): boolean {
   return canonicalJSON(rest, { numKind: sceneNumKind }) === canonicalJSON(b, { numKind: sceneNumKind });
 }
 
-/** The line block of a text: its top, bottom and widest line. */
-function lineBlock(text: CText): { top: number; bottom: number; width: number } | undefined {
-  if (text.lines.length === 0) return undefined;
-  return {
-    top: Math.min(...text.lines.map((line) => line.top)),
-    bottom: Math.max(...text.lines.map((line) => line.top + line.height)),
-    width: Math.max(...text.lines.map((line) => line.width)),
-  };
-}
-
-/**
- * Auto-resize and truncation (07 §8.3). Truncated text and a box taller than its lines keep a
- * fixed size; one line whose box hugs it grows with its content; anything else has a fixed
- * width and a height that follows the lines.
- */
-function sizing(node: WorkNode, text: CText): Pick<SceneText, 'autoResize' | 'truncation'> {
-  if (text.textOverflow === 'ellipsis' && /nowrap|pre(?!-)/.test(text.whiteSpace)) {
-    return { autoResize: 'NONE', truncation: { maxLines: 1 } };
-  }
-  if (text.lineClamp !== null) return { autoResize: 'NONE', truncation: { maxLines: text.lineClamp } };
-  const block = lineBlock(text);
-  const box = node.capture.borderBox;
-  if (block === undefined) return { autoResize: 'NONE' };
-  if (box.h - (block.bottom - block.top) > NEAR_PX) return { autoResize: 'NONE' };
-  const tops = new Set(text.lines.map((line) => Math.round(line.top / NEAR_PX)));
-  const hugs = Math.abs(box.w - block.width) <= NEAR_PX;
-  return { autoResize: tops.size === 1 && hugs ? 'WIDTH_AND_HEIGHT' : 'HEIGHT' };
-}
-
 const ALIGN_H: Readonly<Record<CText['textAlign'], SceneText['alignH']>> = {
   left: 'LEFT',
   center: 'CENTER',
   right: 'RIGHT',
   justify: 'JUSTIFIED',
 };
-
-/** TOP unless the box is taller than its lines; then where the line block sits (07 §8.3). */
-function alignV(node: WorkNode, text: CText): SceneText['alignV'] {
-  const block = lineBlock(text);
-  if (block === undefined) return 'TOP';
-  const box = node.capture.borderBox;
-  const above = block.top - box.y;
-  const below = box.y + box.h - block.bottom;
-  if (above <= NEAR_PX) return 'TOP';
-  if (below <= NEAR_PX) return 'BOTTOM';
-  return Math.abs(above - below) <= NEAR_PX ? 'CENTER' : 'TOP';
-}
 
 function mapText(node: WorkNode, capture: CaptureDoc, settings: MapperSettings, notes: Diagnostic[]): SceneText {
   const text = node.capture.text;
@@ -206,9 +166,8 @@ function mapText(node: WorkNode, capture: CaptureDoc, settings: MapperSettings, 
       : { characters: text.characters, ranges, lines };
   const scene: SceneText = {
     characters: locked.characters,
-    ...sizing(node, text),
+    ...fitText(text, node.box),
     alignH: ALIGN_H[text.textAlign],
-    alignV: alignV(node, text),
     ranges: locked.ranges,
     lines: locked.lines,
     wrapMode,
@@ -229,7 +188,11 @@ export const textStage: VariantStage = {
     for (const node of walkWork(variant.root)) {
       if (node.kind !== 'text') continue;
       const notes: Diagnostic[] = [];
-      node.fields.text = mapText(node, variant.capture, component.input.config, notes);
+      const { config } = component.input;
+      node.fields.text = mapText(node, variant.capture, config, notes);
+      const effects =
+        node.capture.text && textShadowEffects(node.capture.text, variant.capture, config.mapper.colorProfile, notes);
+      if (effects) node.fields.effects = effects;
       for (const note of notes) addOnce(node.diagnostics, note);
     }
   },

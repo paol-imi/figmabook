@@ -1,5 +1,5 @@
 import type { CNode } from '@holotype/ir';
-import type { WorkNode } from '../state';
+import { sourceElement, type WorkNode, walkWork } from '../state';
 import { semanticClass } from './classes';
 
 /*
@@ -7,8 +7,9 @@ import { semanticClass } from './classes';
  * the explicit key (`data-holotype-key`), the test id, the framework component boundary,
  * the ARIA role or label, or else the path signature `<tag>.<first semantic class>`.
  * Rect values never enter a key, so the same DOM structure always gets the same keys.
- * Repeated segments among siblings get `#2`, `#3` in child order; `#` cannot occur in a
- * segment, so a suffixed key never collides with another layer's key.
+ * Repeated segments among siblings get `#2`, `#3` in DOM order; `#` cannot occur in a
+ * segment, so a suffixed key never collides with another layer's key, and any key that is
+ * still taken in the variant gets the next free suffix.
  */
 
 export interface KeyContext {
@@ -51,18 +52,53 @@ export function keySegment(node: CNode, context: KeyContext): string {
   return pathSignature(node, context.keepClass);
 }
 
-/** Sets `nk` on every node of a variant tree. */
+/** The children a node has for keys: the layers it had before hoisting, in DOM order (10 §4). */
+function logicalChildren(node: WorkNode, hoisted: ReadonlyMap<WorkNode, WorkNode[]>): WorkNode[] {
+  const own = node.children.filter((child) => child.synthetic === undefined && child.hoistedFrom === undefined);
+  return [...own, ...(hoisted.get(node) ?? [])].sort(
+    (a, b) => sourceElement(a).paint.domIndex - sourceElement(b).paint.domIndex,
+  );
+}
+
+/** `key`, or `key#2`, `key#3`… when another layer of the variant already has it. */
+function unique(key: string, taken: Set<string>): string {
+  let candidate = key;
+  for (let n = 2; taken.has(candidate); n++) candidate = `${key}#${n}`;
+  taken.add(candidate);
+  return candidate;
+}
+
+/**
+ * Sets `nk` on every node of a variant tree. Keys follow the DOM structure, so a hoisted
+ * layer keeps the key of its original path (07 §7.3), and a text layer that replaced its
+ * element (07 §11 rule 3) takes the element's segment. A synthetic layer is its owner's key
+ * plus its role (`root/card/bg`).
+ */
 export function assignKeys(root: WorkNode, context: KeyContext): void {
+  const all = [...walkWork(root)];
+  const hoisted = new Map<WorkNode, WorkNode[]>();
+  for (const node of all) {
+    if (node.hoistedFrom === undefined) continue;
+    hoisted.set(node.hoistedFrom.parent, [...(hoisted.get(node.hoistedFrom.parent) ?? []), node]);
+  }
+  const taken = new Set<string>([ROOT_KEY]);
   root.nk = ROOT_KEY;
   const visit = (node: WorkNode): void => {
     const seen = new Map<string, number>();
-    for (const child of node.children) {
-      const segment = keySegment(child.capture, context);
+    for (const child of logicalChildren(node, hoisted)) {
+      const segment = keySegment(sourceElement(child), context);
       const count = (seen.get(segment) ?? 0) + 1;
       seen.set(segment, count);
-      child.nk = `${node.nk}/${count === 1 ? segment : `${segment}#${count}`}`;
+      child.nk = unique(`${node.nk}/${count === 1 ? segment : `${segment}#${count}`}`, taken);
       visit(child);
     }
   };
   visit(root);
+  const owners = new Map<CNode, WorkNode>();
+  for (const node of all) if (node.synthetic === undefined) owners.set(node.capture, node);
+  for (const node of all) {
+    if (node.synthetic === undefined) continue;
+    const owner = owners.get(node.capture);
+    node.nk = unique(`${owner?.nk ?? ROOT_KEY}/${node.synthetic}`, taken);
+  }
 }
