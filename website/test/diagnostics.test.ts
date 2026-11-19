@@ -38,31 +38,39 @@ describe('toSiteMarkdown', () => {
     '- All codes: [diagnostics index](README.md#CAP_PAGE_CRASHED).',
     '| Area | [Capture (`CAP_`)](README.md#domain-cap) |',
     'See [`CAP_PAGE_CRASHED`](CAP_PAGE_CRASHED.md) and [the README](README.md).',
+    'Background: [study](../research/storybook.md#index), [all research](../research/), [plan](../plan/).',
   ].join('\n');
 
-  it('points plan links at the repository and index links at the site index', () => {
-    expect(toSiteMarkdown(page, REPO)).toBe(
+  it('renders design-doc links as plain text by default, and index links at the site index', () => {
+    expect(toSiteMarkdown(page, undefined)).toBe(
       [
-        '- Behaviour: plan chapter [05](https://github.com/acme/ui/blob/main/docs/plan/05-capture.md) (`05-capture.md`).',
-        '- Catalog entry: [12 §6.2](https://github.com/acme/ui/blob/main/docs/plan/12-quality.md#diagnostics).',
+        '- Behaviour: plan chapter 05 (`05-capture.md`).',
+        '- Catalog entry: 12 §6.2.',
         '- All codes: [diagnostics index](./index.md#CAP_PAGE_CRASHED).',
         '| Area | [Capture (`CAP_`)](./index.md#domain-cap) |',
         'See [`CAP_PAGE_CRASHED`](CAP_PAGE_CRASHED.md) and [the README](./index.md).',
+        'Background: study, all research, plan.',
       ].join('\n'),
     );
   });
 
-  it('keeps plan link text as plain text without a repository', () => {
-    expect(toSiteMarkdown(page, undefined).split('\n').slice(0, 2)).toEqual([
-      '- Behaviour: plan chapter 05 (`05-capture.md`).',
-      '- Catalog entry: 12 §6.2.',
+  it('points design-doc links at the repository when opted in', () => {
+    expect(toSiteMarkdown(page, REPO).split('\n')).toEqual([
+      '- Behaviour: plan chapter [05](https://github.com/acme/ui/blob/main/docs/plan/05-capture.md) (`05-capture.md`).',
+      '- Catalog entry: [12 §6.2](https://github.com/acme/ui/blob/main/docs/plan/12-quality.md#diagnostics).',
+      '- All codes: [diagnostics index](./index.md#CAP_PAGE_CRASHED).',
+      '| Area | [Capture (`CAP_`)](./index.md#domain-cap) |',
+      'See [`CAP_PAGE_CRASHED`](CAP_PAGE_CRASHED.md) and [the README](./index.md).',
+      'Background: [study](https://github.com/acme/ui/blob/main/docs/research/storybook.md#index), [all research](https://github.com/acme/ui/blob/main/docs/research/), [plan](https://github.com/acme/ui/blob/main/docs/plan/).',
     ]);
   });
 
   it('leaves other relative links alone, so the dead-link check still sees them', () => {
-    expect(toSiteMarkdown('[x](../research/a.md) [y](../../README.md)', REPO)).toBe(
-      '[x](../research/a.md) [y](../../README.md)',
-    );
+    for (const repo of [undefined, REPO]) {
+      expect(toSiteMarkdown('[x](../planning/a.md) [y](../../README.md) [z](plan/a.md)', repo)).toBe(
+        '[x](../planning/a.md) [y](../../README.md) [z](plan/a.md)',
+      );
+    }
   });
 });
 
@@ -136,7 +144,7 @@ describe('searchSections', () => {
   });
 
   it('gives every generated page searchable text', () => {
-    for (const page of loadDiagnosticPages(GENERATED, REPO)) {
+    for (const page of loadDiagnosticPages(GENERATED, undefined)) {
       const sections = searchSections(page);
       expect(sections.length, page.slug).toBeGreaterThan(0);
       expect(
@@ -166,15 +174,25 @@ describe('loadDiagnosticPages', () => {
     ]);
   });
 
-  it('serves every generated page, with no link left into unpublished docs', () => {
-    const pages = loadDiagnosticPages(GENERATED, REPO);
+  it('serves every generated page, with no link or path into unpublished docs', () => {
+    const pages = loadDiagnosticPages(GENERATED, undefined);
     const areas = diagnosticAreas(readFileSync(join(GENERATED, DIAGNOSTICS_INDEX), 'utf8'));
     const codes = areas.flatMap((area) => area.codes);
 
     expect(areas.length).toBeGreaterThan(0);
     expect(new Set(pages.map((page) => page.slug))).toEqual(new Set(['index', ...codes]));
     for (const page of pages) {
-      expect(page.content, page.slug).not.toMatch(/\]\((?:\.\.\/plan\/|README\.md)/);
+      expect(page.content, page.slug).not.toMatch(/\]\((?:\.\.\/(?:plan|research)\/|README\.md)/);
+      // The generator's banner comment names its source; Vue drops HTML comments from the page.
+      expect(page.content.replace(/<!--[\s\S]*?-->/g, ''), page.slug).not.toMatch(/docs\/(?:plan|research)\//);
+    }
+  });
+
+  it('links every design-doc reference into the repository when opted in', () => {
+    const pages = loadDiagnosticPages(GENERATED, REPO);
+    expect(pages.some((page) => page.content.includes(`](${REPO}/blob/main/docs/plan/`))).toBe(true);
+    for (const page of pages) {
+      expect(page.content, page.slug).not.toMatch(/\]\((?:\.\.\/(?:plan|research)\/|README\.md)/);
     }
   });
 });

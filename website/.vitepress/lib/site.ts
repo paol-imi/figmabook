@@ -1,13 +1,14 @@
 /**
- * Build-time settings of the site: the base path it is served under and the repository
- * it links to. Both come from the environment, so a repository rename or a custom domain
- * is a change of one variable, not of the content.
+ * Build-time settings of the site: the base path it is served under, the repository it
+ * links to, and whether it links to the internal design docs. All come from the environment,
+ * so a repository rename, a custom domain or a public repository is a change of one
+ * variable, not of the content.
  */
 
 /** GitHub project pages serve the site under `/<repository name>/`. */
 export const DEFAULT_SITE_BASE = '/figmabook/';
 
-/** Branch that "Design docs" and diagnostics source links point at. */
+/** Branch that repository links ("Design docs", plan links when opted in) point at. */
 export const DEFAULT_BRANCH = 'main';
 
 /**
@@ -77,4 +78,37 @@ export function resolveRepoUrl(sources: RepoSources): string | undefined {
 /** Link to a file or folder in the repository at {@link DEFAULT_BRANCH}. */
 export function repoLink(repoUrl: string, path: string, kind: 'blob' | 'tree' = 'blob'): string {
   return `${repoUrl}/${kind}/${DEFAULT_BRANCH}/${path.replace(/^\/+/, '')}`;
+}
+
+/**
+ * How the site treats links into the internal design docs (`docs/plan/`, `docs/research/`),
+ * which it never publishes:
+ * - `text` (default): the link becomes its plain text. The repository is private, so a link
+ *   would be dead for readers and would expose internal file names.
+ * - `repo`: the link points at the file in the repository, and the nav shows "Design docs".
+ *   Only for a public repository.
+ */
+export type PlanLinks = 'text' | 'repo';
+
+const PLAN_LINK_MODES: readonly PlanLinks[] = ['text', 'repo'];
+
+/** `HOLOTYPE_SITE_PLAN_LINKS`, validated; unset or blank means `text`. */
+export function planLinks(value: string | undefined): PlanLinks {
+  const raw = value?.trim();
+  if (!raw) return 'text';
+  const mode = PLAN_LINK_MODES.find((candidate) => candidate === raw);
+  if (!mode) {
+    throw new Error(
+      `HOLOTYPE_SITE_PLAN_LINKS must be "repo" (link the design docs in the repository) or "text" (the default), not ${JSON.stringify(value)}.`,
+    );
+  }
+  return mode;
+}
+
+/**
+ * The repository that links into the design docs point at: the repository URL when the site
+ * opted in with `repo`, otherwise `undefined` (the links become plain text).
+ */
+export function designDocsRepo(mode: PlanLinks, repoUrl: string | undefined): string | undefined {
+  return mode === 'repo' ? repoUrl : undefined;
 }

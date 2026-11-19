@@ -29,7 +29,13 @@
     "@holotype/website#build": {
       "inputs": ["$TURBO_DEFAULT$", "!test/**", "!README.md", "$TURBO_ROOT$/docs/diagnostics/**"],
       "outputs": [".vitepress/dist/**"],
-      "env": ["HOLOTYPE_SITE_BASE", "HOLOTYPE_REPO_URL", "GITHUB_SERVER_URL", "GITHUB_REPOSITORY"]
+      "env": [
+        "HOLOTYPE_SITE_BASE",
+        "HOLOTYPE_REPO_URL",
+        "HOLOTYPE_SITE_PLAN_LINKS",
+        "GITHUB_SERVER_URL",
+        "GITHUB_REPOSITORY"
+      ]
     },
     "build-storybook": {
       "inputs": ["$TURBO_DEFAULT$", "!test/**"],

@@ -5,11 +5,11 @@
  */
 import { join } from 'node:path';
 import { DIAGNOSTICS_SOURCE, loadDiagnosticPages } from '../../.vitepress/lib/diagnostics.ts';
-import { REPO_ROOT, REPO_URL } from '../../.vitepress/lib/env.ts';
+import { DESIGN_DOCS_REPO_URL, REPO_ROOT } from '../../.vitepress/lib/env.ts';
 
 export default {
   paths() {
-    return loadDiagnosticPages(join(REPO_ROOT, DIAGNOSTICS_SOURCE), REPO_URL).map((page) => ({
+    return loadDiagnosticPages(join(REPO_ROOT, DIAGNOSTICS_SOURCE), DESIGN_DOCS_REPO_URL).map((page) => ({
       params: { code: page.slug },
       content: page.content,
     }));

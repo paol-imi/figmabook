@@ -11,14 +11,14 @@ import {
   type SearchSection,
   searchSections,
 } from './lib/diagnostics.ts';
-import { REPO_ROOT, REPO_URL, SITE_BASE } from './lib/env.ts';
+import { DESIGN_DOCS_REPO_URL, REPO_ROOT, REPO_URL, SITE_BASE } from './lib/env.ts';
 import { repoLink } from './lib/site.ts';
 
 const areas = diagnosticAreas(readFileSync(join(REPO_ROOT, DIAGNOSTICS_SOURCE, DIAGNOSTICS_INDEX), 'utf8'));
 
 /** Search sections of the dynamic diagnostics pages, keyed by the route file VitePress indexes. */
 const diagnosticsSearch = new Map(
-  loadDiagnosticPages(join(REPO_ROOT, DIAGNOSTICS_SOURCE), REPO_URL).map((page) => [
+  loadDiagnosticPages(join(REPO_ROOT, DIAGNOSTICS_SOURCE), DESIGN_DOCS_REPO_URL).map((page) => [
     resolve(REPO_ROOT, 'website', `.${DIAGNOSTICS_ROUTE}${page.slug}.md`),
     searchSections(page),
   ]),
@@ -41,8 +41,9 @@ function areaItem(area: DiagnosticArea): DefaultTheme.SidebarItem {
   };
 }
 
-const designDocs: DefaultTheme.NavItemWithLink[] = REPO_URL
-  ? [{ text: 'Design docs', link: repoLink(REPO_URL, 'docs/plan', 'tree') }]
+/** Only with `HOLOTYPE_SITE_PLAN_LINKS=repo`: the design docs are internal by default. */
+const designDocs: DefaultTheme.NavItemWithLink[] = DESIGN_DOCS_REPO_URL
+  ? [{ text: 'Design docs', link: repoLink(DESIGN_DOCS_REPO_URL, 'docs/plan', 'tree') }]
   : [];
 
 export default defineConfig({

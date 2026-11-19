@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_SITE_BASE, repoLink, repoWebUrl, resolveRepoUrl, siteBase } from '../.vitepress/lib/site.ts';
+import {
+  DEFAULT_SITE_BASE,
+  designDocsRepo,
+  planLinks,
+  repoLink,
+  repoWebUrl,
+  resolveRepoUrl,
+  siteBase,
+} from '../.vitepress/lib/site.ts';
 
 describe('siteBase', () => {
   it('defaults to the GitHub project pages path', () => {
@@ -93,5 +101,31 @@ describe('repoLink', () => {
     expect(repoLink('https://github.com/acme/ui', '/docs/plan', 'tree')).toBe(
       'https://github.com/acme/ui/tree/main/docs/plan',
     );
+  });
+});
+
+describe('planLinks', () => {
+  it('keeps the design docs private by default', () => {
+    expect(planLinks(undefined)).toBe('text');
+    expect(planLinks('')).toBe('text');
+    expect(planLinks('  ')).toBe('text');
+    expect(planLinks('text')).toBe('text');
+  });
+
+  it('opts in to repository links with "repo"', () => {
+    expect(planLinks('repo')).toBe('repo');
+    expect(planLinks(' repo\n')).toBe('repo');
+  });
+
+  it.each(['Repo', 'true', '1', 'github', 'https://github.com/acme/ui'])('rejects %j', (value) => {
+    expect(() => planLinks(value)).toThrow(/HOLOTYPE_SITE_PLAN_LINKS must be "repo"/);
+  });
+});
+
+describe('designDocsRepo', () => {
+  it('gives the repository only when opted in', () => {
+    expect(designDocsRepo('repo', 'https://github.com/acme/ui')).toBe('https://github.com/acme/ui');
+    expect(designDocsRepo('text', 'https://github.com/acme/ui')).toBeUndefined();
+    expect(designDocsRepo('repo', undefined)).toBeUndefined();
   });
 });
