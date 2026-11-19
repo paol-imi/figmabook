@@ -4,7 +4,7 @@
 >
 > **Phasing (D-46):**
 > - **Phase 4a (Loop slice):** D-19 keys, `irh`/`ah`, the S-02 safe-mutation rules, idempotent keyed in-place apply with Merkle skip, proposal-mode preservation, conflict policy `keep` without UI.
-> - **Phase 4b (hardening H-D):** Diff preview and Conflicts screens, the take (`overwrite`) and `fork` policies, renames, deprecation, consumer-file override retention.
+> - **Phase 4b (hardening H-D):** Diff preview and Conflicts screens, the take (`overwrite`) and `fork` policies, renames, deprecation, set ↔ single component shape changes (§7.6), consumer-file override retention.
 >
 > **Binding decisions:**
 > - **D-19:** shared plugin data namespace `holotype`; keys `sid`, `vk`, `nk`, `irh`, `ah`, `v`; no delete-and-recreate of managed nodes.
@@ -77,6 +77,7 @@ All keys live in **shared** plugin data, under the namespace `holotype`: `node.s
 | | `args` | canonical JSON of `{ args, globals, state, viewport }`. Truncated to 8 kB with `…` (identity uses `vk`; this is for humans and debugging) |
 | | `dep` | if the variant is deprecated |
 | | `base:0..n`, `base:h` | **proposal mode only**: the baseline snapshot, deflated + base64 in ≤90 kB chunks, plus its hash (the set holds its property/axes snapshot the same way). Never written in library files ([15 §3.3](15-change-requests.md#proposal-mode), D-34) |
+| **ComponentNode (single component)**: `SceneComponentMeta.kind: 'component'`, one variant or `matrix: 'none'` ([04 §5.1.1](04-variant-model.md#matrix-none)) | the variant keys above, plus the set-level `src`, `props`, `fp`, `status`, `syncedAt`, `keep`, `dep` | as above; `irh` is the component hash, and `ah` also covers name, description and property definitions. Shape changes: §7.6 |
 | **Managed descendant** (frame, text, vector, instance…) | `nk` | node key, unique within its variant (§4) |
 | | `irh` | subtree Merkle hash |
 | | `ah` | applied hash of this node's managed properties (§9.1) |
@@ -152,7 +153,7 @@ The index is built at the start of each session ([09 §5.2](09-plugin.md#index-s
 
 ```ts
 interface IdentityIndex {
-  sets: Map<string /*sid*/, ComponentSetNode[]>;               // array: duplicates are detectable (§14)
+  sets: Map<string /*sid*/, (ComponentSetNode | ComponentNode)[]>;   // array: duplicates are detectable (§14); a single component (§2.1) is also in `variants`
   variants: Map<string /*sid*/, Map<string /*vk*/, ComponentNode>>;
   nodes: Map<string /*vk*/, Map<string /*nk*/, SceneNode>>;
   icons: Map<string /*sid*/, ComponentNode>;
@@ -216,6 +217,7 @@ If a mapper change alters `nk` derivation (a new `irMajor` or `applierEpoch`), t
 for each component C in plan (topological order, 09 §5.5):
   set = index.sets[C.sid]?.[0]
   if !set: CREATE (09 §7.2 first build) ; continue
+  if shapeOf(set) != C.meta.kind: SHAPE CHANGE (§7.6) ; continue  // set ↔ single component
   if C.irh == set.irh && set.v == current: SKIP (Merkle)               // §10
   for each variant V in C.variants:
     comp = index.variants[C.sid][V.vk]
@@ -361,6 +363,19 @@ A mapped pair is reconciled **in place**: the old ComponentNode gets the new `vk
 - It requires typing the component name for sets that have instances.
 - Deletion is reported in the report and in the library release notes (§13).
 
+### 7.6 Set ↔ single component (`matrix: 'none'`) <a id="set-shape"></a>
+
+A component's shape is `SceneComponentMeta.kind` ([06 §3](06-ir.md)): `component-set`, or `component` for one variant, which is what `matrix: 'none'` produces ([04 §5.1.1](04-variant-model.md#matrix-none), D-59). Switching `matrix` to or from `none` on an applied component is a **shape change**: breaking (§8.3), shown in the apply plan with `SYNC_BREAKING_CHANGE`, and applied only once acknowledged. The single variant's `vk` equals the set's default-variant `vk`, so that node's identity is reused:
+
+| Change | Plugin action |
+|---|---|
+| set → single component | The variant whose `vk` matches (the default variant) leaves the set: `insertChild` into the set's parent keeps its node id, `nk` and `vk`; it takes the set-level keys (§2.1) and is reconciled in place (§5). Its BOOLEAN, TEXT, INSTANCE_SWAP and SLOT properties are defined again on the component, so their `#id`s change and `props` is rewritten (§6). The rest of the set is deprecated as a component (§7.4) and keeps its `sid` with `dep` set; a deprecated set never counts as a duplicate of the live node (`SYNC_DUPLICATE_SID`, §14) |
+| single component → set | The component becomes the default variant. A deprecated set left by an earlier switch (same `sid`, `dep` set) is un-deprecated (§7.4) and the component is appended to it (`set.appendChild`); otherwise `combineAsVariants([component, …new variants], parent)` builds the set around it. Missing variants are added (§7.1); properties are defined on the set again (new `#id`s, `props` rewritten) |
+
+- **Instances.** Instances of the default variant keep their main component (same node id, verify S-02). Their BOOLEAN, TEXT, INSTANCE_SWAP and SLOT values reset, because the property ids change; the plan reports `SYNC_OVERRIDES_AT_RISK` for library consumers. Instances of the other variants keep pointing at the deprecated set, which renders unchanged.
+- **If S-02 refutes the in-place move** (moving a variant out of a set, or combining around an existing component, breaks instance links), the shape change becomes deprecate + create: the old node or set is deprecated (§7.4) and a new one is built. Nothing is deleted and recreated in place (I-1).
+- **Slice.** The Loop slice does not apply shape changes: the component is left as it is, with `SYNC_BREAKING_CHANGE` in the report (B-59). This section ships with Phase 4b (B-126).
+
 ---
 
 <a id="apply-plan"></a>
@@ -419,7 +434,7 @@ This classification is used for the plan and for the release notes.
 
 | Class | Examples |
 |---|---|
-| **Breaking** | variant deprecated; axis removed or renamed without a mapping; property type change; property deprecated; node **type change** in a node with local overrides; set deprecated |
+| **Breaking** | variant deprecated; axis removed or renamed without a mapping; property type change; property deprecated; node **type change** in a node with local overrides; set deprecated; component **shape change** (set ↔ single component, §7.6) |
 | **Additive** | new component, variant, axis value or property |
 | **Visual** | property values or geometry changed with structure intact |
 
@@ -555,6 +570,7 @@ Mutations (rows):
 17. move the set to another page or section
 18. change a bound variable value
 19. `swapComponent` of a nested instance inside the main component
+20. move a variant out of its set (`insertChild` into the section), and `combineAsVariants` around an existing component (§7.6)
 
 Override kinds (columns):
 
@@ -611,6 +627,7 @@ The test-suite runs in two layers:
 | T-23 | Plugin `applierEpoch` bump | every node re-written once; then a no-op | L |
 | T-24 | `nkMigrations` in the bundle | keys renamed; no recreation | L |
 | T-25 | Property display-name change | id kept (`editComponentProperty`); instance values kept | L + F |
+| T-26 | `matrix` switched to `none`, then back to `auto` (§7.6) | the default variant's node id kept both ways; the other variants deprecated with their set, then un-deprecated; `SYNC_BREAKING_CHANGE` before each apply | L + F |
 
 **Metric:** override retention (README §4) = kept / total over T-02, T-04, T-07, T-09, T-10, T-16 and T-22 in layer F. The target is 100%.
 
@@ -635,7 +652,7 @@ Figma is multiplayer, and two people may sync the same file.
    - Otherwise main writes `{session, expiresAt: now + 120s}` and renews it every 30s during apply. It is cleared in finalize.
    - Lease writes propagate through multiplayer within seconds (verify, S-06). The lease is advisory, not a lock.
 2. **Optimistic check.** The plan records `registryRev`. At apply start, a changed `rev` gives `SYNC_STALE_PLAN` and an automatic re-plan. Finalize writes `rev + 1`.
-3. **Duplicate detection.** After apply, or at the next index, more than one set with the same `sid` gives `SYNC_DUPLICATE_SID` (warn).
+3. **Duplicate detection.** After apply, or at the next index, more than one set or single component with the same `sid` gives `SYNC_DUPLICATE_SID` (warn). A deprecated set left by a shape change (§7.6) does not count.
    - The set referenced by the registry (`setId`) wins.
    - For the others, the plugin offers **Detach from Holotype** (strip `holotype` keys, append " (copy)", §9.4), never to delete them.
    - This also catches designers copy-pasting managed sets.

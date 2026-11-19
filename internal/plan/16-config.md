@@ -76,6 +76,7 @@ This is the single list of keys. Chapters reference it; the per-namespace sectio
 | `defaults` | `HolotypeParams` | built-in defaults (rows below) | [04 §9](04-variant-model.md#schema) |
 | `components` | `Record<sid \| glob, HolotypeParams & { conflicts? }>` | `{}` | [04 §9](04-variant-model.md#schema) |
 | `defaults.strategy` | `'auto' \| 'stories' \| 'args' \| 'curated'` | `'auto'` | [04](04-variant-model.md) (D-12) |
+| `defaults.matrix` | `'auto' \| 'full' \| 'pairwise' \| 'one-at-a-time' \| 'curated' \| 'none'` | `'auto'` | [04 §5.1](04-variant-model.md#51-strategies); `'none'` = one component per `sid`, no variants ([04 §5.1.1](04-variant-model.md#matrix-none), D-59). Also `components[sid].matrix`, `parameters.holotype.matrix`, and `holotype capture --variants <strategy>` ([11 §3.3](11-ux.md#commands)) |
 | `defaults.args.<name>.as / name / values / labels / order / target` | see 04 | classification by render-and-diff (D-13) | [04 §4](04-variant-model.md#classification) |
 | `defaults.fixed` | `Record<arg, value>` | `{}` | [04](04-variant-model.md) |
 | `defaults.variants` | curated combos | none | [04](04-variant-model.md) |
@@ -548,6 +549,7 @@ export default defineConfig({
 
   defaults: {                                    // HolotypeParams (04 §9)
     strategy: 'auto',                            // D-12
+    matrix: 'auto',                              // 'none': no variants, one component per sid (D-59)
     budget: { max: 256, warn: 128, hardLimit: 1024, maxProbes: 120 }, // D-28
     states: { include: ['default', 'hover', 'focus-visible', 'active'], mode: 'force' }, // D-14
     viewport: { width: 1280, height: 800 },      // D-24

@@ -1,7 +1,7 @@
 # 04: Component & variant model
 
 > **Package:** `@holotype/planner` (Node). **Inputs:** `StoryMeta`/`ProjectMeta` from [03](03-storybook.md), and config. **Outputs:** a `ComponentPlan` per component, consumed by `capture` ([05](05-capture.md)) and `mapper` ([07](07-mapping.md)).
-> **Governing decisions:** D-12 (variant source priority), D-13 (property classification by render-and-diff), D-14 (pseudo-states), D-24 (capture defaults).
+> **Governing decisions:** D-12 (variant source priority), D-13 (property classification by render-and-diff), D-14 (pseudo-states), D-24 (capture defaults), D-59 (no-variants export).
 
 This chapter decides **which renders to make** and **what each arg becomes in Figma**. The principle is that a Figma component set must look like one a strong designer would build:
 
@@ -81,7 +81,7 @@ type ProvenanceTag = 'config' | 'parameters' | 'stories' | 'argTypes' | 'verifie
 
 ## 2. Variant sources and priority (D-12)
 
-> **Loop slice:** stories-as-variants plus declared args (`args.<name>.as`, enum argTypes), VARIANT/BOOLEAN/TEXT, one budget check. Render-and-diff classification (D-13), pairwise, the states axis and pseudo-states are hardening (H-C, [14](14-roadmap.md#hardening)).
+> **Loop slice:** stories-as-variants plus declared args (`args.<name>.as`, enum argTypes), VARIANT/BOOLEAN/TEXT, one budget check, `matrix: 'none'` (§5.1.1). Render-and-diff classification (D-13), pairwise, the states axis and pseudo-states are hardening (H-C, [14](14-roadmap.md#hardening)).
 
 They are resolved per component, highest priority first. A higher source *replaces* a lower one for the axes it defines. Sources do not merge their value lists.
 
@@ -279,6 +279,20 @@ probe renders. The base render and any probe that coincides with a variant are r
 | `one-at-a-time` | the base plus, for each axis, each value with the other axes at their default | a quick preview |
 | `curated` | exactly `parameters.holotype.variants: Array<Record<axisName, label>>` | full control |
 | **`auto` (default)** | `full` if the product is ≤ `budget.max`. Otherwise, keep the full product over the top-K axes by priority, then pin the remaining axes to their default (they become FIXED, with `PLAN_AXIS_DROPPED_BUDGET`). Each dropped axis's values are listed in the report with a one-click "include" | always |
+| `none` | one render, the default variant (§8), as a plain COMPONENT with no ComponentSet (§5.1.1) | a library without variants; drafts; components whose variants are not wanted in Figma (D-59) |
+
+`matrix` is a `HolotypeParams` key ([§9](#schema)): `defaults.matrix` and `components[<sid>].matrix` in config ([16 §3](16-config.md#reference)), `parameters.holotype.matrix` at project, meta or story level, and `holotype capture --variants <strategy>` for one run ([11 §3.3](11-ux.md#commands)), with the precedence of README §7. The default is `auto`.
+
+#### 5.1.1 `matrix: 'none'` (no variants) <a id="matrix-none"></a>
+
+Each component becomes one Figma component: its default variant only (D-59).
+
+- **Output.** `ComponentPlan.axes` is empty and `variants` holds the single default variant (`isDefault: true`), so the mapper emits `SceneComponentMeta.kind: 'component'` ([06 §3](06-ir.md)) and the plugin builds a plain `ComponentNode`, never a set ([09 §7](09-plugin.md)). Its `vk` is the `vk` the same component's default variant has under any other strategy (same base args, no pseudo-state, default viewport), which is what lets sync switch in place ([10 §7.6](10-sync.md#set-shape)).
+- **Properties.** BOOLEAN, TEXT, INSTANCE_SWAP and SLOT properties are planned exactly as in §4: they do not multiply renders.
+- **Pinned.** Every VARIANT-classified arg is FIXED at its base value, and the story, global and viewport axes take the default variant's value. The `state` axis is dropped: no pseudo-states and no folded booleans (§6.2), which keep their base value. `variants`, `excludeCombos`, `stories.fillMatrix` and `budget` are ignored. Themes planned as variable modes (§7.1) stay modes; a theme that falls back to an axis (`PLAN_THEME_AS_AXIS`) is pinned to the default mode's value.
+- **Splits are unchanged.** `split`, icon splits (`PLAN_ICON_SPLIT`), `viewports.as: 'components'` and story splits (§2.1 step 5) still make separate components, each with one variant.
+- **Diagnostics.** No `PLAN_AXIS_DROPPED_BUDGET`, `PLAN_SPARSE_SET`, `PLAN_BOOLEAN_PROMOTED_TO_VARIANT` or `PLAN_STATE_NO_EFFECT`. One `PLAN_MATRIX_NONE` (info) per component, and only when something was pinned, with `data.pinned` (the arg names) and `data.statesDropped`.
+- **Probes skipped.** Probes that only decide between VARIANT and a non-property outcome are not rendered, because the arg ends FIXED either way. Skipped: enum args (options, `inline-check`, `type.name==='enum'`) with no `mapping` and no `{$node}` option (R5 is their only property-free outcome); booleans in `states.foldBooleans`; `number`, `range`, `color`, `date`, `object` and `file` args and args that are axes only through `args.<name>.values`; args forced `as: 'variant'`, `as: 'fixed'` or `as: 'ignore'`; R0 probes for any of these; pseudo-state captures (§6.4); the §4.3 re-checks on non-default variants. Still probed: other booleans (R1, BOOLEAN or pinned), strings (R2), INSTANCE_SWAP candidates (R3) and SLOT candidates (R4).
 
 **Axis priority, for `auto`:**
 
@@ -436,7 +450,7 @@ export const HolotypeParams = T.Object({
   component: T.Optional(T.String()),                              // regroup into another component id
   strategy: T.Optional(T.Union([T.Literal('auto'), T.Literal('stories'), T.Literal('args'), T.Literal('curated')])),
   baseStory: T.Optional(T.String()),                              // story export name or id
-  matrix: T.Optional(T.Union(['auto','full','pairwise','one-at-a-time','curated'].map(s => T.Literal(s)))),
+  matrix: T.Optional(T.Union(['auto','full','pairwise','one-at-a-time','curated','none'].map(s => T.Literal(s)))), // §5.1; 'none' = no variants (D-59)
   classification: T.Optional(T.Union([T.Literal('verify'), T.Literal('fast')])),
   args: T.Optional(T.Record(T.String(), T.Object({
     as: T.Optional(T.Union(['variant','boolean','text','instance-swap','slot','fixed','ignore'].map(s => T.Literal(s)))),
@@ -645,6 +659,7 @@ The planner produces:
 | `PLAN_UNVERIFIED_CLASSIFICATION` | info | `classification:'fast'` |
 | `PLAN_SPARSE_SET` | warn | set has missing combinations |
 | `PLAN_AXIS_DROPPED_BUDGET` | warn | axis pinned to default due to budget |
+| `PLAN_MATRIX_NONE` | info | `matrix: 'none'`: VARIANT args and the state axis pinned to their defaults; one component, no set (§5.1.1) |
 | `PLAN_BUDGET_EXCEEDED` | error | over `budget.hardLimit` |
 | `PLAN_PROBE_BUDGET` | warn | probe budget hit; priors used |
 | `PLAN_CONDITIONAL_DUPLICATE` | info | conditional args collapse combinations |

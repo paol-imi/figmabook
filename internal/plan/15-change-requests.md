@@ -532,7 +532,7 @@ Provenance needs source maps, so **branch workflows capture from the Vite dev se
 | Fact | How | Status |
 |---|---|---|
 | CSS rule location | `CSS.getMatchedStylesForNode` → `rule.styleSheetId` + `style.range` (start line and column within the served stylesheet) | CDP, in use ([05 §6.2](05-capture.md)); range capture is new |
-| Original file | Vite injects dev CSS as `<style>`; the CLI forces `css.devSourcemap: true` in branch mode ([`capture.devSourcemap`](16-config.md#capture)). Inline sheets resolve via `ownerNode` → `data-vite-dev-id` and the inline source map, with `style.range` offset by `header.startLine/startColumn`; linked sheets use the `CSS.styleSheetAdded` header (`sourceURL`, `sourceMapURL`). Otherwise `DCR_PROVENANCE_NO_SOURCEMAP` (warn) | S-19 |
+| Original file | Vite injects dev CSS with JavaScript: the `CSS.styleSheetAdded` header has `isInline: false`, an empty `sourceURL` and the map as a `data:` URL in `sourceMapURL`; the file is the owner element's `data-vite-dev-id`. The CLI forces `css.devSourcemap: true` in branch mode ([`capture.devSourcemap`](16-config.md#capture)). `style.range` is sheet-relative for every sheet, so it is used as is with the sheet's own map; linked sheets use `sourceURL` and `sourceMapURL`. Without a map: `DCR_PROVENANCE_NO_SOURCEMAP` (warn; `data.approximate: true` when the dev id still gives the file with served lines) ([05 §6.2](05-capture.md#authored)) | S-19: CSS modules 1,123/1,123 author-declared fields located, 0 wrong files ([report](../spikes/S-19.md)) |
 | CSS modules | hashed class `_btn_x7a3` → the original `.btn` selector, via the source map | S-19 |
 | Tailwind v4 | utility classes on the element; theme values are CSS variables (`--spacing`, `--color-*`), so `var()` chains work. Provenance = the **class list + JSX location**; a value change becomes a utility suggestion `p-3 → p-4`, derived deterministically from the theme scale | adapter, automation (M7) |
 | CSS-in-JS (emotion, styled-components) | injected sheets; source maps only if the babel/SWC plugin emits them | best-effort |
@@ -555,6 +555,10 @@ interface FieldOrigin {
   rule?: SourceLoc;                      // Button.module.css:14:3
   varChain?: string[];                   // ["--btn-pad-x", "--space-3"]
   transform?: 'border-included' | 'margin-to-gap' | 'percent-resolved' | 'none';   // how the value was derived (07)
+  default?: 'user-agent' | 'initial';    // the winner is a browser default (button padding-block: 1px) or the initial value:
+                                         // no rule declares it, so `rule` is absent and DCR_PROVENANCE_MISSING is not raised
+  suggested?: { selector: string; rule: SourceLoc };   // with `default`: the node's own nearest author rule, where a change
+                                         // would go ("add padding-block to .button")
 }
 interface SourceLoc { file: string /* repo-relative, validated inside repo */; line: number; col: number }
 ```
@@ -1195,7 +1199,7 @@ Designer-authored strings are untrusted: layer, frame, section and component nam
 | `DCR_VALUE_UNTOKENIZED` | warn | raw value; token candidates listed | bind in Figma or answer the question |
 | `DCR_VALUE_NO_TOKEN` | warn | raw value with no matching token | open question: new token or literal |
 | `DCR_NEAREST_COMPONENT` | info | new component similar to an existing one (≥0.6) | open question: extend or new |
-| `DCR_PROVENANCE_MISSING` | warn | no rule/file location (CDP or source map unavailable, or plugin-only extraction) | capture from the dev server via the CLI |
+| `DCR_PROVENANCE_MISSING` | warn | no rule/file location (CDP or source map unavailable, or plugin-only extraction); not for a browser default or initial value (`FieldOrigin.default`, §5.2) | capture from the dev server via the CLI |
 | `DCR_PROVENANCE_MINIFIED` | info | locations only in built CSS (static build) | use the dev server for branch mode |
 | `DCR_UNKNOWN_CHANGE` | warn | change not classifiable | listed raw |
 | `DCR_TOO_LARGE` | warn | more than 200 items | split by component (`--split`, §7.1) |
@@ -1222,7 +1226,7 @@ Designer-authored strings are untrusted: layer, frame, section and component nam
 | `DCR_BRANCH_FILE_COPIED` | warn | `figma.fileKey`/`fileId` differs from `branch:meta` (a copy of a branch file) | "This is a copy of branch file <branch>. [Link this copy] [Treat as library]" |
 | `DCR_CONFIG_DRIFT` | warn | local `dcr` config hash differs from `branch:meta.dcrConfig` | "This branch file uses older request settings. Run `holotype branch refresh`." |
 | `DCR_PROVENANCE_STALE` | warn | a location could not be remapped from `baseCommit` to HEAD (§5.6) | "Code moved since this file was built. Run `holotype branch refresh`." |
-| `DCR_PROVENANCE_NO_SOURCEMAP` | warn | dev-server stylesheet without `sourceMapURL` / `data-vite-dev-id` (§5.1) | "Enable `css.devSourcemap` (Holotype does this automatically in branch mode); check custom Vite config." |
+| `DCR_PROVENANCE_NO_SOURCEMAP` | warn | dev-server stylesheet without a source map: `data.approximate: true` when `data-vite-dev-id` still gives the file (served lines, which may be off), `false` when only the selector is known (§5.1) | "Enable `css.devSourcemap` (Holotype does this automatically in branch mode); check custom Vite config." |
 | `DCR_NO_SUBMITTED_REQUEST` | error | `dcr --pull` found no `branch:meta.lastDcr` | "Nothing was submitted from this file yet. Ask the designer to press Submit." |
 | `DCR_VERIFY_REGRESSED` | warn | a non-target variant of a touched component no longer matches its baseline (§9.1) | "Scope the change to the listed variants." |
 

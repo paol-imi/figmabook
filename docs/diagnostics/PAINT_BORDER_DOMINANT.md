@@ -10,11 +10,11 @@
 
 ## What happened
 
-Per-side borders on a rounded box use the dominant color.
+Per-side borders on a rounded box, or with a dashed or dotted side, use one stroke in the dominant side's color and style.
 
 ## What to do
 
-Set `mapper.exactBorders: true` for exact paths.
+Use one border color and style, or (rounded boxes) set `mapper.exactBorders: true` for exact paths.
 
 ## Where it is defined
 

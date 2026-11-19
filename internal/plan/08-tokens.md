@@ -204,7 +204,7 @@ The token's resolved value is `getComputedStyle(node).getPropertyValue('--x')`, 
 <a id="prov-cost"></a>
 ### 4.5 Cost control
 
-`CSS.getMatchedStylesForNode` costs roughly 0.3–2ms per node (verify, S-12). To bound it:
+`CSS.getMatchedStylesForNode` costs 7–9 ms per element on ds-react ([S-19 §4.5](../spikes/S-19.md); budget 10 ms), because every response repeats the ancestors' rules. To bound it:
 
 1. Call it only for nodes that have at least one bindable, non-default property (a visible fill, stroke, padding, gap, radius, text, effect).
 2. Cache by `(stylesheetFingerprint, element signature = tag + sorted classList + inline style hash + ancestor theme)`. Across the variants of one component, most nodes repeat.

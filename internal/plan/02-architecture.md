@@ -408,6 +408,7 @@ mapKey        = H( mapperVersion ∥ sceneIR major ∥ sorted(captureKeys) ∥ p
 ```
 
 - `H` is sha256 truncated to 32 hex characters. `args` and `globals` are canonical JSON ([06](06-ir.md#hashing)).
+- **No serving port.** The port a static build is served on (ephemeral loopback, [03 §9.1](03-storybook.md#access)) never enters `captureKey`, `sbFingerprint` or any other hash; documents record the build as `static:<folder name>` ([06 §2](06-ir.md), [05 §10.1](05-capture.md#determinism)).
 - **Branch keys.** Registry pointers, bundles and branch links are keyed by `{repo, branch, baseCommit}` ([15 §2.2](15-change-requests.md#branch-model)); `repo` is the normalized remote without credentials. In branch mode the dev-server capture cache is **on** (`sbFingerprint` above), so `holotype dcr` can recover provenance for the baseline without re-capturing.
 - **Eviction:** LRU, capped at 2 GB (configurable). Clear with `holotype cache prune|clear`.
 - **Remote cache:** the same keys over HTTP (`--remote-cache <url>`, Turbo-style PUT/GET) for CI.
