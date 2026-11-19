@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Triggers are the mapped v1 set (15 §4.11).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/3/screen/variants/0/interactions/0/trigger",
+      "value": "ON_CLICK"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/3/screen/variants/0/interactions/0/trigger",
+      "kind": "invalid"
+    }
+  ]
+}

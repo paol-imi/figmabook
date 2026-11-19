@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Suggestions score at least 0.35 (15 §4.8).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/2/nearest/0/score",
+      "value": 0.2
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/2/nearest/0/score",
+      "kind": "invalid"
+    }
+  ]
+}

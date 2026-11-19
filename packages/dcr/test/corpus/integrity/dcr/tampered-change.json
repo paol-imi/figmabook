@@ -1,0 +1,12 @@
+{
+  "base": "worked-example.json",
+  "why": "A core edit after sealing changes the hash and the item id is still right.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/0/changes/0/after",
+      "value": 18
+    }
+  ],
+  "expect": ["/dcrHash"]
+}

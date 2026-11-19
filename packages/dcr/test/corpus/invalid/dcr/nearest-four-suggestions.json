@@ -1,0 +1,34 @@
+{
+  "base": "worked-example.json",
+  "why": "At most 3 suggestions (15 §4.8).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/2/nearest",
+      "value": [
+        {
+          "sid": "a",
+          "score": 0.9
+        },
+        {
+          "sid": "b",
+          "score": 0.8
+        },
+        {
+          "sid": "c",
+          "score": 0.7
+        },
+        {
+          "sid": "d",
+          "score": 0.6
+        }
+      ]
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/2/nearest",
+      "kind": "invalid"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "At least one field change per component.modified item.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/0/changes",
+      "value": []
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/0/changes",
+      "kind": "invalid"
+    }
+  ]
+}

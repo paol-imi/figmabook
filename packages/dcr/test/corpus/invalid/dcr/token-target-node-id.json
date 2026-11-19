@@ -1,0 +1,17 @@
+{
+  "base": "all-kinds.json",
+  "why": "Token items point at a variable id, not a node.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/9/target/figmaNodeId",
+      "value": "12:40"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/9/target/figmaNodeId",
+      "kind": "invalid"
+    }
+  ]
+}

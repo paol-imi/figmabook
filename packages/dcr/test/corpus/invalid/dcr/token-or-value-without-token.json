@@ -1,0 +1,19 @@
+{
+  "base": "worked-example.json",
+  "why": "A value is either tokenized or marked untokenized (15 §4.7).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/2/structure/0/radius",
+      "value": {
+        "value": 6
+      }
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/2/structure/0/radius",
+      "kind": "invalid"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Holotype DCR agent decisions (DcrDecisions)",
+  "type": "object",
+  "required": [
+    "kind",
+    "v",
+    "dcrId",
+    "decisions"
+  ],
+  "properties": {
+    "kind": {
+      "const": "holotype/dcr-decisions",
+      "type": "string"
+    },
+    "v": {
+      "const": 1,
+      "type": "number"
+    },
+    "dcrId": {
+      "pattern": "^[0-9a-f]{16}$",
+      "type": "string"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "itemId",
+          "outcome",
+          "reason"
+        ],
+        "properties": {
+          "itemId": {
+            "pattern": "^[0-9a-f]{16}$",
+            "type": "string"
+          },
+          "questionId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "const": "chosen",
+                "type": "string"
+              },
+              {
+                "const": "not-implemented",
+                "type": "string"
+              }
+            ]
+          },
+          "choice": {
+            "type": "string"
+          },
+          "reason": {
+            "minLength": 1,
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

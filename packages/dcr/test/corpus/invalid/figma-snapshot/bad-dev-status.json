@@ -1,0 +1,17 @@
+{
+  "base": "price-tag-branch.json",
+  "why": "devStatus is READY_FOR_DEV or COMPLETED.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/nodes/60:2/devStatus",
+      "value": "DONE"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/nodes/60:2/devStatus",
+      "kind": "invalid"
+    }
+  ]
+}

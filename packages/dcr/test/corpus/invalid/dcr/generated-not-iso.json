@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "header.generated.at is an ISO timestamp.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/header/generated/at",
+      "value": "yesterday"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/header/generated/at",
+      "kind": "invalid"
+    }
+  ]
+}

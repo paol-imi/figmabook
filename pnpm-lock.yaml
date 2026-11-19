@@ -121,6 +121,13 @@ importers:
       '@holotype/shared':
         specifier: workspace:*
         version: link:../shared
+      '@sinclair/typebox':
+        specifier: ~0.34.52
+        version: 0.34.52
+    devDependencies:
+      ajv:
+        specifier: 8.17.1
+        version: 8.17.1
 
   packages/figma-fake:
     dependencies:

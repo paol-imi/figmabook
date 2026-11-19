@@ -1,0 +1,12 @@
+{
+  "base": "worked-example.json",
+  "why": "Questions point at an item of the request.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/questions/0/itemId",
+      "value": "0000000000000000"
+    }
+  ],
+  "expect": ["/questions/0/itemId", "/dcrHash"]
+}

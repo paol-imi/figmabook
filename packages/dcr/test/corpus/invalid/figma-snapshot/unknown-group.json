@@ -1,0 +1,17 @@
+{
+  "base": "price-tag-branch.json",
+  "why": "Groups are the seven ah groups (06 §6).",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/nodes/12:40/groups/style",
+      "value": {}
+    }
+  ],
+  "expect": [
+    {
+      "path": "/nodes/12:40/groups/style",
+      "kind": "unknown-key"
+    }
+  ]
+}

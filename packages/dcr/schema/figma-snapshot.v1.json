@@ -1,0 +1,481 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Holotype Figma snapshot (FigmaSnapshot)",
+  "type": "object",
+  "required": [
+    "kind",
+    "v",
+    "source",
+    "fileKey",
+    "scope",
+    "pages",
+    "nodes",
+    "variables",
+    "rootData"
+  ],
+  "properties": {
+    "kind": {
+      "const": "holotype/figma-snapshot",
+      "type": "string"
+    },
+    "v": {
+      "const": 1,
+      "type": "number"
+    },
+    "source": {
+      "anyOf": [
+        {
+          "const": "plugin",
+          "type": "string"
+        },
+        {
+          "const": "rest",
+          "type": "string"
+        }
+      ]
+    },
+    "fileKey": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "fileVersion": {
+      "type": "string"
+    },
+    "scope": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "changed",
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "ready",
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "name"
+          ],
+          "properties": {
+            "kind": {
+              "const": "page",
+              "type": "string"
+            },
+            "name": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "ids"
+          ],
+          "properties": {
+            "kind": {
+              "const": "selection",
+              "type": "string"
+            },
+            "ids": {
+              "minItems": 1,
+              "type": "array",
+              "items": {
+                "pattern": "^I?\\d+:\\d+(?:;\\d+:\\d+)*$",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "all",
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "topLevel"
+        ],
+        "properties": {
+          "id": {
+            "pattern": "^I?\\d+:\\d+(?:;\\d+:\\d+)*$",
+            "type": "string"
+          },
+          "name": {
+            "description": "Untrusted designer text (D-38)",
+            "type": "string"
+          },
+          "topLevel": {
+            "type": "array",
+            "items": {
+              "pattern": "^I?\\d+:\\d+(?:;\\d+:\\d+)*$",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "nodes": {
+      "additionalProperties": false,
+      "type": "object",
+      "patternProperties": {
+        "^I?\\d+:\\d+(?:;\\d+:\\d+)*$": {
+          "type": "object",
+          "required": [
+            "id",
+            "type",
+            "name",
+            "data",
+            "groups"
+          ],
+          "properties": {
+            "id": {
+              "pattern": "^I?\\d+:\\d+(?:;\\d+:\\d+)*$",
+              "type": "string"
+            },
+            "type": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "name": {
+              "description": "Untrusted designer text (D-38)",
+              "type": "string"
+            },
+            "parent": {
+              "pattern": "^I?\\d+:\\d+(?:;\\d+:\\d+)*$",
+              "type": "string"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "pattern": "^I?\\d+:\\d+(?:;\\d+:\\d+)*$",
+                "type": "string"
+              }
+            },
+            "data": {
+              "type": "object",
+              "patternProperties": {
+                "^(.*)$": {
+                  "type": "string"
+                }
+              }
+            },
+            "groups": {
+              "additionalProperties": false,
+              "type": "object",
+              "properties": {
+                "geom": {
+                  "description": "Any JSON value"
+                },
+                "layout": {
+                  "description": "Any JSON value"
+                },
+                "paint": {
+                  "description": "Any JSON value"
+                },
+                "text": {
+                  "description": "Any JSON value"
+                },
+                "vis": {
+                  "description": "Any JSON value"
+                },
+                "bind": {
+                  "description": "Any JSON value"
+                },
+                "inst": {
+                  "description": "Any JSON value"
+                }
+              }
+            },
+            "component": {
+              "type": "object",
+              "properties": {
+                "setId": {
+                  "pattern": "^I?\\d+:\\d+(?:;\\d+:\\d+)*$",
+                  "type": "string"
+                },
+                "variantValues": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^(.*)$": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "propertyDefs": {
+                  "description": "Any JSON value"
+                }
+              }
+            },
+            "instance": {
+              "type": "object",
+              "required": [
+                "properties",
+                "overrides"
+              ],
+              "properties": {
+                "mainKey": {
+                  "type": "string"
+                },
+                "mainId": {
+                  "pattern": "^I?\\d+:\\d+(?:;\\d+:\\d+)*$",
+                  "type": "string"
+                },
+                "properties": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^(.*)$": {
+                      "type": "object",
+                      "required": [
+                        "type",
+                        "value"
+                      ],
+                      "properties": {
+                        "type": {
+                          "anyOf": [
+                            {
+                              "const": "VARIANT",
+                              "type": "string"
+                            },
+                            {
+                              "const": "BOOLEAN",
+                              "type": "string"
+                            },
+                            {
+                              "const": "TEXT",
+                              "type": "string"
+                            },
+                            {
+                              "const": "INSTANCE_SWAP",
+                              "type": "string"
+                            },
+                            {
+                              "const": "SLOT",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "value": {
+                          "description": "Any JSON value"
+                        }
+                      }
+                    }
+                  }
+                },
+                "overrides": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "fields"
+                    ],
+                    "properties": {
+                      "id": {
+                        "pattern": "^I?\\d+:\\d+(?:;\\d+:\\d+)*$",
+                        "type": "string"
+                      },
+                      "fields": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "detachedInfo": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "componentId"
+                  ],
+                  "properties": {
+                    "type": {
+                      "const": "local",
+                      "type": "string"
+                    },
+                    "componentId": {
+                      "pattern": "^I?\\d+:\\d+(?:;\\d+:\\d+)*$",
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "componentKey"
+                  ],
+                  "properties": {
+                    "type": {
+                      "const": "library",
+                      "type": "string"
+                    },
+                    "componentKey": {
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            },
+            "devStatus": {
+              "anyOf": [
+                {
+                  "const": "READY_FOR_DEV",
+                  "type": "string"
+                },
+                {
+                  "const": "COMPLETED",
+                  "type": "string"
+                }
+              ]
+            },
+            "annotations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "label"
+                ],
+                "properties": {
+                  "label": {
+                    "description": "Untrusted designer text (D-38)",
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "variables": {
+      "type": "object",
+      "patternProperties": {
+        "^(.*)$": {
+          "type": "object",
+          "required": [
+            "id",
+            "name",
+            "collection",
+            "resolvedType",
+            "valuesByMode",
+            "data"
+          ],
+          "properties": {
+            "id": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "name": {
+              "description": "Untrusted designer text (D-38)",
+              "type": "string"
+            },
+            "collection": {
+              "type": "string"
+            },
+            "resolvedType": {
+              "anyOf": [
+                {
+                  "const": "COLOR",
+                  "type": "string"
+                },
+                {
+                  "const": "FLOAT",
+                  "type": "string"
+                },
+                {
+                  "const": "STRING",
+                  "type": "string"
+                },
+                {
+                  "const": "BOOLEAN",
+                  "type": "string"
+                }
+              ]
+            },
+            "valuesByMode": {
+              "type": "object",
+              "patternProperties": {
+                "^(.*)$": {
+                  "description": "Any JSON value"
+                }
+              }
+            },
+            "codeSyntax": {
+              "type": "object",
+              "properties": {
+                "WEB": {
+                  "type": "string"
+                }
+              }
+            },
+            "key": {
+              "type": "string"
+            },
+            "remote": {
+              "type": "boolean"
+            },
+            "data": {
+              "type": "object",
+              "patternProperties": {
+                "^(.*)$": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "rootData": {
+      "type": "object",
+      "patternProperties": {
+        "^(.*)$": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

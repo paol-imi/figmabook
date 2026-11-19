@@ -1,0 +1,60 @@
+{
+  "kind": "holotype/dcr",
+  "dcrVersion": "1.0.0",
+  "header": {
+    "repo": "github.com/acme/ui",
+    "branch": "main-redesign",
+    "baseCommit": "abcdef0",
+    "dirty": false,
+    "targets": {
+      "components": {
+        "repo": "github.com/acme/ui"
+      }
+    },
+    "figma": {
+      "fileKey": "Min001",
+      "kind": "duplicate",
+      "snapshotHash": "1111222233334444"
+    },
+    "baseline": {
+      "fp": "5555666677778888",
+      "storybookVersion": "10.6.7",
+      "framework": "react-vite"
+    },
+    "scope": {
+      "kind": "page",
+      "name": "Checkout"
+    },
+    "extractor": {
+      "version": "1.0.0",
+      "configHash": "9999aaaabbbbcccc"
+    }
+  },
+  "items": [],
+  "questions": [],
+  "summary": {
+    "counts": {},
+    "components": [],
+    "newComponents": [],
+    "screens": [],
+    "tokens": {
+      "changed": 0,
+      "added": 0,
+      "untokenized": 0
+    },
+    "content": {
+      "placeholders": 0
+    },
+    "questions": 0,
+    "headline": []
+  },
+  "diagnostics": [
+    {
+      "code": "DCR_SCOPE_EMPTY",
+      "severity": "info",
+      "message": "Nothing is in scope."
+    }
+  ],
+  "dcrHash": "819bf334d249b269",
+  "id": "ee3486fc315bbb14"
+}

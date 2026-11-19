@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Kinds with 0 items are omitted from counts (15 §6).",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/summary/counts/token.added",
+      "value": 0
+    }
+  ],
+  "expect": [
+    {
+      "path": "/summary/counts/token.added",
+      "kind": "invalid"
+    }
+  ]
+}

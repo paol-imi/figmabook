@@ -35,7 +35,7 @@ const isomorphic = {
   ir: ['@sinclair/typebox', '@noble/hashes'],
   'layout-sim': [],
   mapper: [],
-  dcr: [],
+  dcr: ['@sinclair/typebox'],
   plugin: ['preact', '@create-figma-plugin/ui', '@create-figma-plugin/utilities'],
 };
 

@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "Groups are the seven ah groups (06 §6).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/0/changes/0/group",
+      "value": "style"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/0/changes/0/group",
+      "kind": "invalid"
+    }
+  ]
+}

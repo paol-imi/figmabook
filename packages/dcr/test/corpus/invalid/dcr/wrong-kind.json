@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "The document kind names the format.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/kind",
+      "value": "holotype/request"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/kind",
+      "kind": "invalid"
+    }
+  ]
+}

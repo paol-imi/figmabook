@@ -1,0 +1,23 @@
+{
+  "base": "worked-example.json",
+  "why": "Designer identities are never stored (15 §10.2).",
+  "patch": [
+    {
+      "op": "add",
+      "path": "/items/0/notes",
+      "value": [
+        {
+          "source": "comment",
+          "text": "Looks off",
+          "author": "designer"
+        }
+      ]
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/0/notes/0/author",
+      "kind": "invalid"
+    }
+  ]
+}

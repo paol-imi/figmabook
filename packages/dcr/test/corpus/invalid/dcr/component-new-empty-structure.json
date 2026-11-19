@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "A new component has a structure.",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/2/structure",
+      "value": []
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/2/structure",
+      "kind": "invalid"
+    }
+  ]
+}

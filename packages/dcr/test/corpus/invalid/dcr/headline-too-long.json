@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "At most 8 headline lines (15 §6).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/summary/headline",
+      "value": ["line", "line", "line", "line", "line", "line", "line", "line", "line"]
+    }
+  ],
+  "expect": [
+    {
+      "path": "/summary/headline",
+      "kind": "invalid"
+    }
+  ]
+}

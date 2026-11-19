@@ -1,0 +1,17 @@
+{
+  "base": "worked-example.json",
+  "why": "New variants need a story tagged implements (D-37).",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/items/1/acceptance/story",
+      "value": "optional"
+    }
+  ],
+  "expect": [
+    {
+      "path": "/items/1/acceptance/story",
+      "kind": "invalid"
+    }
+  ]
+}

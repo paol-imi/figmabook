@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Holotype DCR answers (DcrAnswers)",
+  "type": "object",
+  "required": [
+    "dcrHash",
+    "byQuestion"
+  ],
+  "properties": {
+    "dcrHash": {
+      "pattern": "^[0-9a-f]{16}$",
+      "type": "string"
+    },
+    "byQuestion": {
+      "type": "object",
+      "patternProperties": {
+        "^(.*)$": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
