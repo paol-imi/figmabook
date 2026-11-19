@@ -15,7 +15,8 @@ Legal goal: ship under a name and license that cannot be taken down, using only 
 | Local-server session tokens | `~/.holotype/sessions.json`, plugin `clientStorage` | Secret |
 | Registry tokens | CI secrets, plugin `clientStorage` | Secret |
 | Figma document | Figma | Confidential (the user's) |
-| Figma personal access token (DCR extraction, [15](15-change-requests.md)) | OS keychain via `holotype login --figma`, or `FIGMA_TOKEN` env / CI secret | Secret (read access to every file the user can see) |
+| Figma token for REST reads (DCR extraction, [15](15-change-requests.md); `holotype status`): a PAT locally, a plan access token in CI (§3) | OS keychain via `holotype login --figma`, or `FIGMA_TOKEN` env / CI secret | Secret (a PAT reads every file the user can see; a plan access token only its allow-listed files) |
+| Submitted design requests in the Figma file (`request:*` shared plugin data, named version; D-48, D-49) | the branch file | Confidential; readable by anyone with file access (§2.5) |
 | Design change requests (`dcr.json`, `prompt.md`, before/after PNGs) | `.holotype/requests/<id>/`, **committed** with the PR (D-37) | Confidential (unreleased UI, designer copy) |
 | Our release artifacts (npm packages, plugin bundle) | npm, plugin zip (dev plugin), private org plugin; Figma Community only after M8 (D-39) | Integrity-critical |
 
@@ -37,7 +38,7 @@ Each arrow that crosses a boundary has an authentication or authorization contro
 
 | STRIDE | Threat | Control |
 |---|---|---|
-| **S**poofing | A malicious website the user is visiting calls `http://127.0.0.1:47321`. `ACAO: *` is mandatory because the plugin origin is `null`, so CORS alone does not stop reads | **Pairing token.** Every route except `/v1/health` and `/v1/pair/*` needs `Authorization: Bearer <256-bit token>`. The token comes only from the pairing flow, which needs a code shown in the user's terminal ([02 §4.2](02-architecture.md#protocol)). Session tokens never travel in URLs (except the one-time `pair/auto` token, valid 120 s) |
+| **S**poofing | A malicious website the user is visiting calls `http://127.0.0.1:47321`. `ACAO: *` is mandatory because the plugin origin is `null`, so CORS alone does not stop reads | **Pairing token.** Every route except `/v1/health` and `/v1/pair/*` needs `Authorization: Bearer <256-bit token>`. The token comes only from the pairing flow, which needs a code shown in the user's terminal ([02 §4.2](02-architecture.md#protocol)). Session tokens never travel in URLs (except the one-time `pair/auto` token, valid 120 s). WS auth is the first message on `/v1/ws` ([02 §4](02-architecture.md#ws)) |
 | S | DNS rebinding (`evil.com` re-resolved to 127.0.0.1) | **Host header allow-list:** `127.0.0.1:<port>`, `localhost:<port>`, `[::1]:<port>` only. Anything else gets 421 and `NET_HOST_REJECTED` |
 | S | Another local process or user on a multi-user machine | Bind to loopback only. Session file mode 0600. Pairing codes are shown only in the owning TTY. Documented: loopback offers no isolation between users of the same machine, so use topology B on shared hosts |
 | **T**ampering | Attacker submits runs with crafted config (e.g. `storybook.url` pointing at internal services, which is SSRF via our Playwright) | `RunRequest.configOverrides` takes a **whitelist** of keys only (variants, states, themes, viewport). URLs, auth, paths and scripts can only come from the local config file or CLI flags. The run target is fixed when the server starts |
@@ -56,10 +57,10 @@ Legacy PNA preflights get `Access-Control-Allow-Private-Network: true`. That onl
 | Threat | Control |
 |---|---|
 | Plugin fetches from unexpected hosts | Minimal `networkAccess.allowedDomains`: the loopback ports (D-25), the registry domain(s), and later the hosted API and telemetry endpoint. **Never `"*"`.** `reasoning` text explains each entry. `devAllowedDomains` is used only for development |
-| Malicious bundle (crafted file or registry compromise) | The bundle is **data only**. The plugin never `eval`s bundle content. Schema validation (TypeBox) runs before applying. Integrity hashes are checked ([02 §5.1](02-architecture.md#protocol)). Size limits apply: ≤200 MB per bundle, ≤50k nodes per component, ≤5 MB per string (`APPLY_BUNDLE_REJECTED`). Text is inserted as `characters` and is never interpreted. SVG text is passed to `createNodeFromSvg`, which runs in Figma's own sandboxed parser; capture strips `<script>`, `<foreignObject>` and event attributes first |
+| Malicious bundle (crafted file or registry compromise) | The bundle is **data only**. The plugin never `eval`s bundle content. Schema validation (TypeBox) runs before applying. Integrity hashes are checked ([02 §5.1](02-architecture.md#protocol)). Size limits apply: ≤200 MB per bundle, ≤50k nodes per component, ≤5 MB per string, and a zip guard of 2 GB uncompressed with a compression ratio ≤100 (`APPLY_BUNDLE_REJECTED`). Text is inserted as `characters` and is never interpreted. SVG text is passed to `createNodeFromSvg`, which runs in Figma's own sandboxed parser; capture strips `<script>`, `<foreignObject>` and event attributes first |
 | Plugin damages unrelated parts of the file | The reconciler touches only nodes carrying `holotype/nk` and their managed descendants (D-19). Unmanaged nodes are never modified ([10](10-sync.md)). Every apply is preceded by a plan preview ([09](09-plugin.md)) |
 | Token theft from `clientStorage` | `clientStorage` is local to the user's machine and keyed to the plugin ID ([clientStorage](https://developers.figma.com/docs/plugins/api/figma-clientStorage/)). We store only the session or registry token and no Storybook credentials. A "Forget connections" button wipes it |
-| Shared plugin data readable by any plugin | `setSharedPluginData('holotype', …)` is readable by every plugin and through REST `plugin_data=shared`. It must never contain secrets or Storybook URLs with credentials. Only ids, hashes, versions and story ids are stored. Users who need an opaque registry use `setPluginData` (private) mode (`sync.identityStorage: "private"`, [10](10-sync.md)) |
+| Shared plugin data readable by any plugin | `setSharedPluginData('holotype', …)` is readable by every plugin and through REST `plugin_data=shared`. It must never contain secrets or Storybook URLs with credentials. Only ids, hashes, versions and story ids are stored. Identity stays in shared plugin data (a private-storage option was rejected: it breaks REST DCR reads and `holotype status`). Submitted design requests are also shared plugin data (§2.5) |
 
 ### 2.3 CI / GitHub Action
 
@@ -86,6 +87,7 @@ A headless browser fetching user-supplied URLs is an SSRF tool by construction (
    - Blocked ranges: RFC1918, 100.64/10, 127/8, 169.254/16, ::1, fc00::/7, fe80::/10, and multicast.
    - Blocked schemes and features: `file:`, `chrome:`, `data:` navigation, and downloads. WebRTC is disabled with `--force-webrtc-ip-handling-policy=disable_non_proxied_udp`.
    - Only ports 80 and 443.
+   - A blocked request emits `SEC_EGRESS_BLOCKED` (warn) in the run report.
 4. **Secrets for private Storybooks:**
    - Per-job headers or cookies are submitted over TLS and encrypted with KMS (envelope encryption).
    - They are decrypted only inside the job VM, kept only in memory, never logged, and destroyed with the VM.
@@ -103,17 +105,18 @@ The DCR turns a Figma file into instructions for an AI coding agent ([15](15-cha
 | Threat | Control |
 |---|---|
 | **Prompt injection** through designer text: layer, frame or section names, text content, TEXT props, annotations (accessibility labels and alt text too), comments, variable names, prototype URLs | **D-38.** Designer strings appear only in fenced blocks, escaped table cells or escaped `jsx-sketch` snippets. They never appear in the Rules or Verify sections or in any instruction sentence. Titles are template-built from ids. The Rules section says designer text is data. Instruction-like text is flagged `DCR_NOTE_SUSPICIOUS` but never dropped, so nothing is hidden from reviewers. A golden `injection` fixture proves it ([12 §2.4](12-quality.md#dcr-fixtures), [15 §10.3](15-change-requests.md#security)) |
-| Crafted DCR via `POST /v1/dcr` (a compromised plugin or another local client) | Session token required. TypeBox validation. Size caps (5 MB JSON, 20 MB assets). The CLI recomputes `dcrHash` and item ids, rejects mismatches, and adds provenance itself, never taking file paths from the request. The branch must match the linked branch |
+| Crafted DCR via `POST /v1/dcr`, `dcr import` or `dcr --pull` (a compromised plugin, another local client, or an edited file) | Session token required on `POST /v1/dcr`. TypeBox validation. Size caps (5 MB JSON, 20 MB assets). The CLI recomputes the **core** `dcrHash` ([15](15-change-requests.md#dcr-hash), D-50: without provenance and CLI-enriched fields) and the item ids on import, pull and `POST /v1/dcr`, and rejects a mismatch. It adds provenance itself, never taking file paths from the request. The request's branch must equal the CLI's current git branch, else `DCR_GIT_BRANCH_MISMATCH` |
 | Path traversal through provenance (`SourceLoc.file`, `data-holotype-loc`) | Paths must be repo-relative, with no `..`, no absolute paths and no symlinks out of the repo. They are checked at capture and again before writing |
 | Agent acting on links | `open-url` interaction targets are listed as text and never fetched by holotype. The contract tells the agent they are data |
-| Approval spoofing | `branch:meta.approval` is a workflow gate, not a security control: anyone with edit access to the branch file can approve. It is bound to one `dcrHash`, so it can't approve later edits. The PR review stays the real control (D-37) |
+| Approval spoofing | `branch:meta.approval` is a workflow gate, not a security control: anyone with edit access to the branch file can approve, and the submitter can approve their own request. It is bound to one `dcrHash`, so it can't approve later edits. The UI shows the approval time only; no identity is stored or shown. The PR review stays the real control (D-37) |
+| Requests readable in the file | Submitted requests are stored in the file (`request:*` shared plugin data) and in a named version (D-48, D-49). Anyone with file access, any plugin, and REST `plugin_data=shared` can read them. They contain only what the DCR contains: no provenance, no repo paths beyond `repo`/`branch`, no identities. Archiving the branch keeps them; deleting the file removes them |
 
 ## 3. Secrets handling <a id="secrets"></a>
 
 **Sources**, in precedence order:
 1. CLI flags `--header` / `--basic-auth`. These are discouraged and emit `SEC_SECRET_ON_ARGV`, because process lists and shell history can expose them.
-2. Environment variables `HOLOTYPE_SB_HEADERS` (JSON), `HOLOTYPE_SB_BASIC` (`user:pass`), `HOLOTYPE_REGISTRY_TOKEN`.
-3. `.holotype/auth/headers.json` and `.holotype/auth/storageState.json`. These are created by `holotype auth login <url>`, which opens a headed Chromium so the user can complete SSO; the storage state is saved afterwards. File mode is 0600, and `holotype init` adds `.holotype/` to `.gitignore`.
+2. Environment variables `HOLOTYPE_SB_TOKEN` (bearer token), `HOLOTYPE_SB_HEADERS` (JSON), `HOLOTYPE_SB_BASIC` (`user:pass`), `HOLOTYPE_REGISTRY_TOKEN`.
+3. `.holotype/auth/headers.json` and `.holotype/auth/storageState.json`. These are created by `holotype login --storybook <url>`, which opens a headed Chromium so the user can complete SSO; the storage state is saved afterwards. File mode is 0600, and `holotype init` adds `.holotype/` to `.gitignore`.
 
 **Scoping:**
 - Credentials are bound to an **origin**.
@@ -122,7 +125,7 @@ The DCR turns a Figma file into instructions for an AI coding agent ([15](15-cha
 
 **Never in outputs:**
 - The Capture IR serializer strips `input[type=password]` values entirely.
-- `redaction.inputs: "all"` (default `"password"`) blanks every form value.
+- `redaction.inputs: "all"` (default `"password"`) blanks every form value ([16](16-config.md#redaction)). Each blanking emits `SEC_SECRET_REDACTED` (info).
 - URLs written into IR or Scene IR (story links, asset source URLs) go through `stripCredentials()`, which removes userinfo, `token|key|sig|signature|auth*` query params, and fragments.
 - A CI test greps fixture bundles for known canary secrets.
 
@@ -131,7 +134,9 @@ The DCR turns a Figma file into instructions for an AI coding agent ([15](15-cha
 **Config literal guard:** `SEC_SECRET_IN_CONFIG` ([02 §8](02-architecture.md)).
 
 **Figma token (DCR, [15 §10.1](15-change-requests.md#security)):**
-- A **personal access token** with read-only file scopes (`file_content:read`, plus `file_comments:read` only for `--with-comments`; verify the scope names, S-18). OAuth comes later, if a hosted service ever needs it.
+- **CI:** a **plan access token** (REST category; not user-bound; up to 1 year; resource allow-list restricted to the library and branch files; admin-managed).
+- **Local:** a **personal access token** with `file_content:read` (+ `file_comments:read` only with `--with-comments`), max 90 days. `holotype doctor` warns 14 days before expiry (`NET_FIGMA_TOKEN_EXPIRING`). A missing token is `NET_FIGMA_TOKEN_MISSING`.
+- The Enterprise REST duplicate fallback ([15 §2.1](15-change-requests.md)) needs a private OAuth app with `file_duplicate:write`. Otherwise OAuth comes later, if a hosted service ever needs it.
 - Sources, in precedence order: `FIGMA_TOKEN` (CI secrets), then the OS keychain entry written by `holotype login --figma` (macOS Keychain, Windows Credential Manager, libsecret; a 0600 file under `~/.holotype/` only where no keychain exists). It is never accepted on argv (`SEC_SECRET_ON_ARGV`) and never read from the config (`SEC_SECRET_IN_CONFIG`).
 - It is sent only to `api.figma.com` over HTTPS. It is redacted from logs and never written to DCR files, bundles, `branch:meta` or reports. `holotype login --figma --logout` deletes it, and `doctor` reports its age.
 - The plugin needs no token: it reads the open file through the Plugin API.
@@ -140,8 +145,8 @@ The DCR turns a Figma file into instructions for an AI coding agent ([15](15-cha
 
 | Data | Goes to | When |
 |---|---|---|
-| Figma file JSON, comments | read **from** `api.figma.com` with the user's PAT | `holotype dcr` (REST path) |
-| DCR from the plugin | the local CLI on loopback (`POST /v1/dcr`) | Submit → *Send to CLI* |
+| Figma file JSON, comments | read **from** `api.figma.com` with the user's PAT (or a plan access token in CI) | `holotype dcr --pull` (REST path) |
+| DCR from the plugin | written into the Figma file (`request:*`, named version; D-48, D-49); also the local CLI on loopback (`POST /v1/dcr`) when paired | Submit (always); *Send to Holotype on this computer* (paired only) |
 | `dcr.json`, `prompt.md`, PNGs | the user's repo, committed with the PR | always (D-37) |
 | The prompt, the referenced code, images | **the AI provider the user chose**, under the user's agreement with it | only when the user's agent reads it. holotype calls no model (D-35) |
 | Anything | holotype maintainers | never |
@@ -178,7 +183,8 @@ The Submit screen and the docs say this plainly ([11 §6.15](11-ux.md#submit)). 
   - a CLI prompt on first interactive run (default No);
   - `holotype telemetry enable|disable|status`;
   - a plugin settings toggle.
-- **Always disabled when** `DO_NOT_TRACK=1` is set or CI is detected (`ci-info`), unless `HOLOTYPE_TELEMETRY=1`.
+- **Not built before the public track** (§7.1). The rules below are the design for then.
+- **Always disabled when** `DO_NOT_TRACK=1` is set or CI is detected (`ci-info`). There is no override.
 - **Payload** (anonymous; random install id rotated yearly):
   - tool, Node, Chromium, Storybook and framework versions;
   - counts (components, variants, nodes), durations;
@@ -252,11 +258,11 @@ Distribution is private (D-39), in three stages:
 
 1. **Now: development plugin.** A release zip whose `manifest.json` the user and their boss import in the Figma desktop app (Plugins ▸ Development ▸ Import plugin from manifest). Any plan, no review, no listing. Install steps: [11 §2.0](11-ux.md#install).
 2. **Once stable: private organization plugin** (below). The account has Organization/Enterprise features.
-3. **After M8 only: Community listing**, after the D-01 trademark search. The requirements below apply only then.
+3. **After M8 only: Community listing**, after the D-01 trademark search (public track, §7.1). The requirements below apply only then.
 
 **Stage 3: Community plugin requirements and review** ([publishing](https://developers.figma.com/docs/plugins/publishing), [review guidelines](https://help.figma.com/hc/en-us/articles/360039958914)):
 - **Review:** the help center states up to about 2 weeks or 5–10 business days. Forum reports in 2026 mention longer waits. Plan 3 weeks of slack before launch dates.
-- **Network:** every domain declared with `reasoning`. The listing shows them. HTTPS is expected; loopback HTTP is accepted in practice (precedent: [cursor-talk-to-figma-mcp](https://github.com/grab/cursor-talk-to-figma-mcp)).
+- **Network:** every domain declared with `reasoning`. The listing shows them. HTTPS is expected. Figma's manifest docs say local-only needs belong in `devAllowedDomains`; loopback in `allowedDomains` is justified by `reasoning` (precedent: Cursor Talk to Figma MCP, [cursor-talk-to-figma-mcp](https://github.com/grab/cursor-talk-to-figma-mcp); S-01 confirms). The reasoning text is the one in [09 §2](09-plugin.md).
 - **Disclosure:** the listing must disclose that a CLI (a separate, free, open-source tool) is needed for topologies A/B/D. The required wording states that it only *serves data* and does not manipulate Figma. The rule against requiring "packages that manipulate Figma" doesn't apply, but it is stated explicitly to pre-empt review questions.
 - **Performance:** plugins that degrade editor performance can be rejected. Time-slicing ([09](09-plugin.md)) is a review requirement as well as a UX one.
 - **Not a workaround to Figma's paid features:** variables modes are plan-limited, so we respect the limits and degrade gracefully (S-12) and never emulate paid features.
@@ -264,12 +270,28 @@ Distribution is private (D-39), in three stages:
   - privacy policy URL (§5);
   - security disclosure form (encouraged);
   - support contact;
-  - a stable plugin `id`, never changed.
+  - a stable plugin `id`, never changed. A Community listing gets its own `id`; identity data is readable across ids because it is shared plugin data.
 
 **Stage 2: private organization plugin** (Organization/Enterprise plans; the planned path, D-39):
 - Not reviewed ([publishing](https://developers.figma.com/docs/plugins/publishing)). Published to the organization only; members run it without importing anything.
-- It uses the same build and manifest `id` as the development plugin, so settings carry over (verify). A later Community listing may need its own `id` (verify).
+- It uses the same build and manifest `id` as the development plugin, so settings carry over (verify). The manifest `id` is fixed forever ([02](02-architecture.md)); only a Community listing gets a new one (above).
 - Telemetry is off, and the registry domain may be customer-specific (enterprise registries).
+
+<a id="public-track"></a>
+### 7.1 Public track (post-M8)
+
+Work that matters only for a public release. None of it is scheduled before M8 ([14](14-roadmap.md)).
+
+| Item | Notes |
+|---|---|
+| Trademark search | formal USPTO/EUIPO search for Holotype (D-01, §6.1) |
+| Repo rename | public GitHub org and repo |
+| Community listing | its own plugin `id` (above); review requirements (stage 3) |
+| Docs site | public docs and the CLI disclosure wording |
+| Privacy policy | §5 |
+| Migration guide | from the private org plugin to the Community plugin |
+| Telemetry | not built before the public track (§5.1) |
+| Business model | option 2 decision (§8) |
 
 **Payments:** see §8. If used, set `permissions:["payments"]` and `figma.payments` with `status.type` `PAID|UNPAID|NOT_SUPPORTED` ([payments](https://developers.figma.com/docs/plugins/api/figma-payments/)). Purchases are verified server-side via the Payments REST API ([REST payments](https://developers.figma.com/docs/rest-api/payments)).
 
@@ -278,12 +300,12 @@ Distribution is private (D-39), in three stages:
 | Option | Revenue source | Fit | Notes |
 |---|---|---|---|
 | **1. Pure OSS** | none, or sponsorship | Adoption-first | Default for v1 |
-| **2. Open core + hosted** (recommended later) | Hosted renderer (topology C) and a managed registry with history, PR previews, SSO and retention controls. Priced per project/Storybook or per render-minute | Strong. It targets the "no CI setup" segment that story.to.design serves today | Core stays Apache-2.0; hosted is closed or FSL (D-02) |
+| **2. Open core + hosted** (recommended later) | Hosted renderer (topology C) and a managed registry with history, PR previews, SSO and retention controls. Priced per project/Storybook or per render-minute | Strong. It targets the "no CI setup" segment that story.to.design serves today | Core stays MIT; hosted is closed or FSL-1.1-MIT (D-02) |
 | **3. Enterprise support** | Annual support, private plugin builds, on-prem registry, SLAs | Medium | Low engineering cost |
 | **4. Figma native payments** | `figma.payments`: 15% fee, $2 minimum, Stripe-supported countries ([selling](https://help.figma.com/hc/en-us/articles/12067637274519-About-selling-Community-resources)) | Weak for an OSS plugin. It also gates features in a way that is visible in source | Use only for in-Figma upsell into option 2, if at all |
 
 **Recommendation:**
 - Ship options 1 and 3 for v1.
-- Decide on option 2 at M3 (D-02), based on design-partner demand.
+- Decide on option 2 at M8 or later ([14](14-roadmap.md)), after README §9 Q6 is answered, based on design-partner demand; not before the public track (§7.1).
 - Never gate local or CI features behind payment, because that contradicts G7 and invites forks.
 - Sources disagree on whether plugin sellers need approval; recent staff forum replies say no (verify before any use of payments).

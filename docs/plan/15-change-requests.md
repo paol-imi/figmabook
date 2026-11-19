@@ -9,7 +9,9 @@
 >
 > We never write code. The user's AI does. We produce the spec, then **verify** the AI's result by regenerating Figma from the new code.
 >
-> Related decisions: D-19 (identity keys), D-27 (superset trees), D-29 (conflict policy), D-31 (hashing split). New decisions proposed here: **D-32…D-38** (§13).
+> Related decisions: D-19 (identity keys), D-27 (superset trees), D-29 (conflict policy), D-31 (hashing split). Decisions: **D-32…D-58** ([README §5](README.md#decisions)).
+>
+> **Scope limit.** DCRs work on Holotype branch files only (§2.1).
 
 ---
 
@@ -31,7 +33,7 @@
                      ⑤ verify: regenerate → compare per item → implemented / partial / pending   (§9)
                                   │      partial → follow-up DCR (only the remaining deltas) → back to ④
                                   ▼
-                     ⑥ PR merged → main library re-syncs, new components promoted, branch file archived
+                     ⑥ PR merged → branch file archived (never merged, D-47); a maintainer re-syncs the main library from `main` and publishes it
 ```
 
 **Why this works.** We generated the baseline ourselves. Every managed node already carries its identity (`sid`/`vk`/`nk`) and an applied hash (`ah`, [10 §9.1](10-sync.md)). The capture IR also knows which DOM element, CSS rule and `var()` chain produced each value ([05 §6](05-capture.md)). The diff is therefore exact, and every changed value points back to the line of code that produces it. No generic Figma-to-code tool has this baseline.
@@ -42,7 +44,7 @@
 
 | Persona | Does | Needs from this chapter |
 |---|---|---|
-| **Feature developer** | opens the branch, generates the file, may edit it ("dev-as-designer"), runs the AI | a one-command loop: `holotype branch start` → edit → `holotype dcr` → agent → `holotype verify` |
+| **Feature developer** | opens the branch, generates the file, may edit it ("dev-as-designer"), runs the AI | a one-command loop: `holotype branch start` → edit → `holotype dcr --pull` (or `dcr import`) → agent → `holotype verify` |
 | **Designer** | edits the branch file, presses **Submit** | a plain-language preview of what will be asked ("Button: padding 12 → 16, now uses Space/4"), with no JSON |
 | **AI coding agent** | implements the DCR | a deterministic, self-contained prompt with file paths, tokens, acceptance criteria and a verification command |
 | **Reviewer** (lead, product owner) | approves the request before the AI starts, then reviews the PR | a one-page review summary with no code (§7.4), optional **Approve**; then the DCR committed next to the code, plus the verify report showing each item implemented |
@@ -55,11 +57,12 @@
 
 | Option | Plan requirement | How it is created | Pros | Cons |
 |---|---|---|---|---|
-| **A. Figma-native branch** of the main library file (**default**, D-32) | Organization / Enterprise (the user's account has it) | in the Figma UI ("Create branch"). There is no REST or Plugin API for creation (verify, S-17) | merges back into the main file natively; library context preserved; REST lists branches via `GET /v1/files/:key?branch_data=true` | plan-gated; branch merge semantics for plugin data need checking (verify, S-02 / S-17) |
-| **B. Duplicated file per branch** (fallback) | any plan | the developer duplicates a template file (an empty file with the plugin's relaunch data) or creates a blank file, then pastes its URL into `holotype branch link` | works everywhere; fully isolated | manual creation step; not merged back: the code PR is the merge, and the main library re-syncs from code |
-| **C. Automated creation** | any | via Figma MCP, if a create-file tool exists and is permitted (verify, S-17) | zero manual steps | depends on S-17 |
+| **A. Figma-native branch** of the main library file (**default**, D-32) | Organization / Enterprise (the user's account has it) | in the Figma UI ("Create branch"); branches have no creation API | lives next to the library; archived after the PR (never merged, D-47); library context preserved; REST lists branches via `GET /v1/files/:key?branch_data=true` | plan-gated; creation is manual |
+| **B. Duplicated file per branch** (fallback) | any plan | duplicate a template file (an empty file with the plugin's relaunch data), or automate with REST `POST /v1/files/:key/duplicate` (Enterprise, private OAuth app, `file_duplicate:write`) or the Figma MCP `create_new_file` (blank file) (S-17); then `holotype branch link` | works everywhere; fully isolated | not merged back: the code PR is the merge, and the main library re-syncs from code |
 
-**Default: A (D-32); B is the fallback for accounts without branching.** If `figma.fileKey` belongs to a branch (REST `branch_data` shows `mainFileKey`), the plugin records `kind: 'figma-branch'`. Neither the Plugin API nor REST can create files (research brief), so a CLI-only "create the file for me" exists only if S-17 finds a sanctioned path.
+**Default: A (D-32); B is the fallback for accounts without branching.** If `figma.fileKey` belongs to a branch (REST `branch_data` shows `mainFileKey`), the plugin records `kind: 'figma-branch'`. Figma branches can't be created by API; files can (above). `figma.fileKey` needs `enablePrivatePluginApi` (D-53); without it the plugin uses `branch:meta.fileId`.
+
+**Scope limit.** DCRs work on Holotype branch files only. Screens drawn in product files that consume the published library are out of scope until the usage-only DCR mode (hardening: screens + `instance.*` resolved through registry `keys.json`, no baseline).
 
 ### 2.2 Linking and keys
 
@@ -68,22 +71,29 @@ The branch ↔ file link is written in two places. Both carry the same data:
 1. **Inside the Figma file.** Root shared plugin data, namespace `holotype`, key `branch:meta`:
    ```ts
    interface BranchMeta {
-     v: 1;
-     repo: string;              // normalized remote, "github.com/acme/ui" (no credentials, 13 §redaction)
-     branch: string;            // "feat/price-tag"
-     baseCommit: string;        // git sha the baseline was generated from
-     baselineFp: string;        // bundle fingerprint applied as baseline
-     baselineRunId?: string;    // registry run id (topology D), if published
+     v: 2;
+     repo: string;                  // normalized remote, "github.com/acme/ui" (no credentials, 13 §secrets)
+     branch: string;                // "feat/price-tag"
+     baseCommit: string;            // git sha the baseline was generated from
+     baselineFp: string;            // bundle fingerprint applied as baseline
+     baselineRunId?: string;        // registry run id (topology D), if published
      kind: 'duplicate' | 'figma-branch';
-     fileKey: string;           // this branch file's own key; a mismatch with figma.fileKey (merged branch, copied file) disables proposal mode (10 §9.5)
-     mode: 'proposal';          // D-33
-     status: 'editing' | 'submitted' | 'approved' | 'verifying' | 'merged' | 'archived';   // 'approved' only with dcr.requireApproval (§7.4)
-     lastDcr?: { id: string; hash: string };
-     excluded?: string[];       // item ids excluded on the Changes screen (§7.2)
-     approval?: { state: 'approved' | 'changes-requested'; dcrHash: string; at: string };  // bound to one dcrHash; no approver identity (§10.2)
+     fileKey: string | null;        // figma.fileKey at link time (null without enablePrivatePluginApi)
+     fileId: string;                // random id also stored at root `fileId`; copy detection (D-53)
+     mode: 'proposal';              // D-33
+     status: 'editing' | 'submitted' | 'changes-requested' | 'approved' | 'verifying' | 'merged' | 'archived';
+     baseFrames: string[];          // top-level frame/section ids at link time (scope `changed`, D-57)
+     dcrConfig: ResolvedDcrConfig; configHash: string;   // from BundleManifest.branch (D-50)
+     lastDcr?: { id: string; hash: string; versionId?: string; scope: DcrScope; excluded: string[]; chunks: number; parent?: string };
+     approval?: { state: 'approved' | 'changes-requested'; dcrHash: string; at: string; note?: string /* untrusted */ };
+     answers?: { dcrHash: string; byQuestion: Record<string, string> };   // D-56, outside the hash
    }
    ```
-2. **In the repo.** `.holotype/branches/<branch-slug>.json`, which is git-ignored local state, holds `{ figmaFileKey, ...BranchMeta }`. The registry, if used, adds `channels/<branch>.json` ([02 §5.3](02-architecture.md)).
+   - `status` values are shown with the copy in [11](11-ux.md#status-vocabulary). `approved` and `changes-requested` occur only with `dcr.requireApproval` (§7.4).
+   - `approval` has no approver identity (§10.2). `excluded` lives in `lastDcr` (§7.2).
+   - A `fileKey`/`fileId` that differs from the open file means a copy of a branch file: `DCR_BRANCH_FILE_COPIED` (warn), and proposal mode stays off until the user links the copy or treats it as a library (10 §9.5).
+   - `dcrConfig` is the resolved `dcr` config from the bundle's `branch` block ([06](06-ir.md#branch-block)). A local config that hashes differently raises `DCR_CONFIG_DRIFT` (warn).
+2. **In the repo.** `.holotype/branches/<branch-slug>.json` holds `{ figmaFileKey, ...BranchMeta }`. It is **committed** (it holds no secrets), so other machines and CI find the link. The registry, if used, adds `channels/<branch>.json` ([02 §5.3](02-architecture.md)).
 
 **Registry and bundle keys** extend to `{repo, branch, baseCommit}`. A bundle generated for a branch file records `git: {sha, ref, dirty}` in `BundleManifest` (amendment to 06 §4.2). A dirty working tree is allowed but stamped `dirty: true`, and the DCR header repeats it.
 
@@ -91,20 +101,21 @@ The branch ↔ file link is written in two places. Both carry the same data:
 
 | Step | Command / action | Effect |
 |---|---|---|
-| **start** | `holotype branch start [--figma <url>]` | Checks the git branch, captures from the dev server (§5.1) and prints the steps for creating or linking the file. Once linked, it applies in **proposal mode**, which embeds the baseline (§3) and writes `branch:meta` (`status: editing`) |
+| **start** | `holotype branch start [--figma <url>]` | Checks the git branch, captures from the dev server (§5.1) and writes `branch.holotype.zip` (with the `branch` block, [06](06-ir.md#branch-block)). It prints: "1. In Figma, open the main library ▸ Create branch **feat/price-tag**. 2. Open that branch ▸ Plugins ▸ Development ▸ Holotype ▸ Import file ▸ `branch.holotype.zip` ▸ Import as branch file. 3. (optional) Paste the branch URL here so `dcr --pull` knows it: _". The import applies in **proposal mode**, which embeds the baseline (§3) and writes `branch:meta` (`status: editing`). The slice uses this file hand-off. With topology A (hardening), a paired plugin opened in an unlinked file offers: "Link this file to git branch **feat/price-tag** (acme/ui)? [Link and build] [Not this file]" |
 | **edit** | designers/devs in Figma | Edits to managed nodes are kept as proposals (§3.2). New components and screens are free-form |
-| **refresh** | `holotype branch refresh` (the code moved) | Re-syncs the branch file from branch HEAD. Untouched nodes update and their baseline moves forward. Edited nodes keep the designer's value; their baseline moves to the new code value, and they are flagged `DCR_BASELINE_SHIFTED` when code changed underneath an edit |
-| **submit** | plugin **Submit** button, or `holotype dcr <url>` | Extracts the DCR (§4), writes `.holotype/requests/<id>/`, sets `status: submitted`, and marks submitted frames *Ready for dev* (verify API, §2.4) |
+| **refresh** | `holotype branch refresh` (the code moved) | Re-syncs the branch file from branch HEAD. Untouched nodes update and their baseline moves forward. Edited nodes keep the designer's value; their baseline moves to the new code value, and they are flagged `DCR_BASELINE_SHIFTED` when code changed underneath an edit. Also detects Figma "Update from main" drift ([10 §9.5](10-sync.md#update-from-main)) |
+| **submit** | plugin **Submit** | Extracts the core DCR, writes it into the file (`request:*`), saves a named version, sets `status: submitted` and `lastDcr`, and marks submitted top-level frames *Ready for dev* (§7.2). Developer: `holotype dcr --pull <url>` or `holotype dcr import <zip>` writes `.holotype/requests/<id>/` ([§7.1](#handoff)) |
 | **implement** | AI agent | Code and stories on the branch (§8) |
-| **verify** | `holotype verify --dcr <id>` | Regenerates and compares (§9). Writes `verify.json` and `status: verifying` |
-| **merge** | PR merged | CI re-syncs the main library from main ([10](10-sync.md)). New components appear there. `holotype branch close` sets `status: merged` and prints archive instructions. Option A: the designer merges the Figma branch, or discards it once the code is the source of truth |
+| **verify** | `holotype verify` | Regenerates and compares (§9). Writes `verify.json` and `status: verifying` |
+| **close** <a id="close"></a> | `holotype branch close` | Sets `status: merged` and prints: "Code is now the source of truth. In Figma, open the branch ▸ ⋯ ▸ Archive branch. Don't merge it. Library maintainer: open the main file ▸ Holotype ▸ N Outdated ▸ Re-sync ▸ Publish." It also offers **Copy release notes** |
+| **merge** | PR merged | Run **close** (above). CI only publishes the bundle; there is no CI write to Figma (D-47) |
 
 ### 2.4 Figma features used for intent (verify, S-18)
 
 | Feature | API | Use |
 |---|---|---|
-| **Annotations** | Plugin API `node.annotations` (`label` / `labelMarkdown`, `properties`, `categoryId`). REST exposure unknown (verify, S-18) | designer notes, attached to the nearest DCR item as `notes[]` (untrusted text, §10.3) |
-| **Ready for dev** | `node.devStatus` on frames and sections; REST node field `devStatus` (verify) | the default **scope**: only screens marked ready are included as `screen` items (§4.6) |
+| **Annotations** | Plugin API `node.annotations` (`label` / `labelMarkdown`, `properties`, `categoryId`). REST exposes at most one annotation per node (verify the rest, S-18) | designer notes, attached to the nearest DCR item as `notes[]` (untrusted text, §10.3) |
+| **Ready for dev** | `node.devStatus`: writable by plugins only on nodes directly under a page or section; REST exposes `devStatus` | Submit marks submitted top-level screens ready. The `ready` scope includes only screens marked ready (§4.6). It is no longer the default scope (D-57) |
 | **Comments** | REST `GET /v1/files/:key/comments` | optional (`--with-comments`); pinned comments become notes on the item under the pin |
 | **Prototype reactions** | Plugin API `node.reactions` (`trigger`, `actions[]`); REST `interactions` (verify, S-18) | per-screen **Interactions** list (§4.11) |
 | **Sections** | `SectionNode`; REST `SECTION` nodes | screen grouping by section name (§4.10) |
@@ -163,7 +174,7 @@ type NodeGroups = Partial<Record<'geom'|'layout'|'paint'|'text'|'vis'|'bind'|'in
 
 - **Storage.** Variant shared plugin data `base:0..n` holds canonical JSON, compressed with fflate deflate (pure JS, runs in main) and base64-encoded, in chunks of ≤90 kB.
   - Budget: ≤16 kB per variant compressed. Typical size is 2–4 kB for a 20-node variant.
-  - Over budget, the snapshot is stored only in the CLI cache (`.holotype/branches/<slug>/baseline/<vk>.json.gz`, received via `POST /v1/apply-report`). The DCR then needs the CLI cache, and REST-only extraction warns `DCR_BASELINE_EXTERNAL`.
+  - Over budget, the snapshot is stored only in the CLI cache (`.holotype/branches/<slug>/baseline/<vk>.json.gz`), received via `POST /v1/apply-report` when paired, or, in file mode, inside the `ApplyReport` that travels in `request.zip` ([§7.1](#handoff)). The DCR then needs the CLI cache, and REST-only extraction warns `DCR_BASELINE_EXTERNAL`.
 - **Self-contained file.** The file plus the repo is enough to extract. REST `GET /v1/files/:key?plugin_data=shared` returns the snapshot (verify, S-18), so the extractor never needs the original bundle.
 - **No false positives.** The current state is read with the *same* normalizer and compared with the snapshot. Figma's own float normalization therefore never shows up as a change.
 - **Library mode never writes `base:*`**, so main files stay small.
@@ -197,7 +208,7 @@ The snapshot uses the vocabulary of Scene IR ([06 §3](06-ir.md)) and the **same
 interface FigmaSnapshot {
   kind: 'holotype/figma-snapshot'; v: 1;
   source: 'plugin' | 'rest';
-  fileKey: string; fileVersion?: string;          // REST `version`; the plugin path has none (its hash identifies it)
+  fileKey: string; fileVersion?: string;          // the named version saved at Submit (D-48); REST reads use ?version=
   scope: DcrScope;
   pages: Array<{ id: string; name: string; topLevel: string[] /* node ids */ }>;
   nodes: Record<string /* figma node id */, SnapNode>;
@@ -242,10 +253,12 @@ For each managed node: if `ah`'s per-group sub-hash still matches, the node is u
 ```ts
 interface FieldChange {
   group: 'geom'|'layout'|'paint'|'text'|'vis'|'bind'|'inst';
-  field: string;                 // Scene IR path, e.g. "layout.padding.left", "fills[0].color", "text.fontSize", "bind.paddingLeft"
+  field: string;                 // Figma read-back property path inside its group, e.g. "layout.paddingLeft", "paint.fills[0].color", "text.fontSize", "bind.paddingLeft"
   before: JsonValue; after: JsonValue;
 }
 ```
+
+`field` is the Figma read-back property path inside its group ([06 §6 `ah` groups](06-ir.md#ah)), e.g. `layout.paddingLeft`, `paint.fills[0].color`, `text.fontSize`. The mapping to CSS is via `FieldOrigin` (§5.2).
 
 - **Noise filter.** Geometry changes fully explained by a layout change in the same item (for example, width grew because padding grew) are dropped, as are derived values (HUG sizes). They are recomputed by re-running the plugin's layout simulation ([07](07-mapping.md)) on the baseline with the edited fields applied. This step is deterministic and has no Figma dependency.
 - **Ordering.** A change to the child order of a node becomes `layout.children.order` with before/after `nk` lists.
@@ -306,13 +319,15 @@ type TokenOrValue = { token: string /* "--space-4" */; value: JsonValue } | { va
 ```
 
 - `key` is a deterministic path key (`name:index` chain), because screen nodes have no `nk`.
+<a id="scope"></a>
 - **Scope** (`DcrScope`) is one of:
-  - `ready`: frames and sections with `devStatus = READY_FOR_DEV` (the default);
+  - `changed` (the default, D-57): every managed component whose `ah` differs from its baseline, plus every top-level frame or section created after link (absent from `branch:meta.baseFrames`);
+  - `ready`: frames and sections with `devStatus = READY_FOR_DEV`;
   - `page:<name>`;
   - `selection:<ids>` (plugin only);
   - `all`.
 
-  The scope is recorded in the header.
+  The CLI/config string form `changed | ready | page:<name> | selection:<ids> | all` parses to `DcrScope` ([16](16-config.md#dcr)). `selection` is plugin-only and recorded in `lastDcr.scope` as node ids, so `--pull` reproduces it. The scope is recorded in the header.
 
 ### 4.7 Tokens
 
@@ -344,12 +359,14 @@ name        = 1 − normalizedLevenshtein( tokens(name_new), tokens(name_existin
 | Canonical JSON | `ir/canonical.ts` ([06 §5](06-ir.md)) |
 | Stable item ids | `id = h16(kind ∥ target ∥ sorted field paths)`, so the same change gives the same id across re-extractions. This lets verify and follow-ups track items |
 | Stable order | items sorted by `(kindOrder, sid, vk, nk/key, id)`; fields by path; candidates by name |
-| Hash | `dcrHash = h16(canonical(DCR without header.generated))`. `header.generated` (tool version, time) is the only volatile block and is excluded |
+| Hash <a id="dcr-hash"></a> | `dcrHash = h16(canonical(core))`. **Core** = the DCR without `header.generated`, `header.figma.fileVersion`, the asset map, and CLI-enriched provenance (`items[].changes[].origin`, `items[].target.code`, `items[].nearest[].code`). Plugin and CLI compute the same core from the same snapshot and the same `branch:meta.dcrConfig`. The CLI attaches provenance afterwards (stored in the same `dcr.json`), recomputes the core hash on import and pull, and rejects a mismatch. Approval and answers bind to this hash (D-44, D-56) |
 | Assets outside the hash | PNG bytes from Figma exports aren't guaranteed byte-stable, so items reference assets by **role id** (`<itemId>:before`), and `assets.json` maps role → sha256 outside `dcrHash` |
-| Golden tests | `fixtures/dcr/*`: saved REST JSON + baseline + capture provenance → expected `dcr.json` and `prompt.md`. Run three times, as is and with two seeded shuffles of the input order (object keys, node arrays): the output must be byte-identical. A plugin-vs-REST parity fixture is added after S-18. Case list: [12 §2.4](12-quality.md#dcr-fixtures) |
-| Config is part of the input | screen naming, placeholder patterns, a11y categories, targets and deprecation maps (§4.10–§4.13, §5.5) are hashed into `extractor.configHash`; the same file + baseline + config give the same DCR |
+| Golden tests | `fixtures/dcr/*`: saved REST JSON + baseline + capture provenance → expected `dcr.json` and `prompt.md`. Run three times, as is and with two seeded shuffles of the input order (object keys, node arrays): the output must be byte-identical. A plugin-vs-CLI core-hash parity fixture ships in the slice; plugin-vs-REST parity follows in hardening (after S-18). Case list: [12 §2.4](12-quality.md#dcr-fixtures) |
+| Config is part of the input | screen naming, placeholder patterns, a11y categories, targets and deprecation maps (§4.10–§4.13, §5.5) are hashed into `extractor.configHash`; the same file + baseline + config give the same DCR. The resolved config comes from `branch:meta.dcrConfig` on both sides; a local difference is `DCR_CONFIG_DRIFT` (warn) |
 
 ### 4.10 Screens: breakpoints, states and grouping <a id="screens"></a>
+
+> **Phase:** hardening H-E ([14](14-roadmap.md#hardening)). The Loop slice emits one variant per screen (each top-level frame is its own `screen` item, usage only).
 
 Designers draw one screen several times: at several widths, and in several states. The extractor groups those frames into **one `screen` item** with `variants`, so the agent builds one responsive, stateful screen instead of five near-duplicates.
 
@@ -401,6 +418,8 @@ Variants are sorted by breakpoint `minWidth` descending, then by the configured 
 
 ### 4.11 Interactions (prototype reactions) <a id="interactions"></a>
 
+> **Phase:** hardening H-E. The slice does not read reactions.
+
 Prototype wiring is real product intent: "Pay opens the confirmation overlay", "Back returns to the cart". The extractor reads it and lists it per screen variant.
 
 | Source | Plugin API | REST | Read as |
@@ -434,6 +453,8 @@ interface ScreenRef { itemId?: string; variant?: { breakpoint: string; state: st
 - Order: by `from` key, then trigger, then action kind.
 
 ### 4.12 Content and accessibility <a id="content"></a>
+
+> **Phase:** hardening H-E. The slice lists text as written, with no copy/placeholder classification and no accessibility annotations.
 
 **Copy vs placeholder.** Every text node and TEXT prop value in a usage tree is classified:
 
@@ -477,6 +498,8 @@ Sorted by `focusOrder` (unset last), then key. **All of it is untrusted designer
 
 ### 4.13 Outdated and deprecated instances <a id="instance-versions"></a>
 
+> **Phase:** hardening H-E. The slice emits no `instance.*` items.
+
 Screens are often built from instances that are not current: placed before the library was updated, or of a component that has since been deprecated. Neither is a request to rebuild the old look. Both items point the agent at the **current** component.
 
 | Kind | Detected when | Points to |
@@ -509,11 +532,11 @@ Provenance needs source maps, so **branch workflows capture from the Vite dev se
 | Fact | How | Status |
 |---|---|---|
 | CSS rule location | `CSS.getMatchedStylesForNode` → `rule.styleSheetId` + `style.range` (start line and column within the served stylesheet) | CDP, in use ([05 §6.2](05-capture.md)); range capture is new |
-| Original file | `CSS.styleSheetAdded` header → `sourceURL`, `sourceMapURL`. Vite serves CSS (including CSS modules) with inline source maps in dev → map to the original file:line (verify, S-19) | S-19 |
+| Original file | Vite injects dev CSS as `<style>`; the CLI forces `css.devSourcemap: true` in branch mode. Inline sheets resolve via `ownerNode` → `data-vite-dev-id` and the inline source map, with `style.range` offset by `header.startLine/startColumn`; linked sheets use the `CSS.styleSheetAdded` header (`sourceURL`, `sourceMapURL`). Otherwise `DCR_PROVENANCE_NO_SOURCEMAP` (warn) | S-19 |
 | CSS modules | hashed class `_btn_x7a3` → the original `.btn` selector, via the source map | S-19 |
 | Tailwind v4 | utility classes on the element; theme values are CSS variables (`--spacing`, `--color-*`), so `var()` chains work. Provenance = the **class list + JSX location**; a value change becomes a utility suggestion `p-3 → p-4`, derived deterministically from the theme scale | adapter, Phase 7 |
 | CSS-in-JS (emotion, styled-components) | injected sheets; source maps only if the babel/SWC plugin emits them | best-effort |
-| JSX location | React 19 removed `_debugSource`. The optional dev-only Vite plugin **`@holotype/vite-plugin`** injects `data-holotype-loc="src/components/Button/Button.tsx:42:7"` on host JSX elements, the same technique as locator-style inspectors. Capture reads it into `CSource.loc` | S-19 |
+| JSX location | React 19 removed `_debugSource`. The optional dev-only Vite plugin **`@holotype/vite-plugin`** injects `data-holotype-loc="src/components/Button/Button.tsx:42:7"` on host JSX elements, the same technique as locator-style inspectors. Capture reads it into `CSource.loc` | hardening (the slice uses CSS-rule provenance only) |
 | `var()` chain | already captured (`CVarChain`, [06 §2.1](06-ir.md)) | in use |
 
 ### 5.2 Field → CSS property map (`origin`)
@@ -566,6 +589,8 @@ These come from the Storybook model ([03](03-storybook.md)). The CSF `importPath
 | `instance.outdated` / `instance.deprecated` | `CodeRef` of the current or replacement component; `argMap` |
 | `token.*` | the token's definition site (`CCustomPropertyTable` selector + file:line when mapped) |
 
+**Blast radius.** Each `component.modified` change carries `reach: { sameOriginVariants: string[] /* vk */; designerChangedIn: string[] }`: the variants styled by the same rule or variable, and those the designer actually changed. For a `var()` origin it also carries `varDefinition: SourceLoc`, the line that defines the variable. When `sameOriginVariants` is not a subset of `designerChangedIn`, the prompt says: "This rule also styles size=sm and size=lg, which the designer did not change. Keep them as they are (scope the change to size=md)." Verify checks the same variants for regressions (§9.1).
+
 ### 5.5 Where screens live: `targets` <a id="targets"></a>
 
 The UI repo is often **only the component library**; screens are built in a separate app repo that consumes the published package. The DCR supports both layouts:
@@ -590,6 +615,15 @@ interface RepoRef {
   - **New components** (`component.new`) never get an import line: they don't exist yet. When the repos differ, the new component is built in the components repo first, exported, and then imported from the package.
 - **Prompt split.** When `targets.screens` differs, `prompt.md` contains everything, and the CLI also renders `prompt.components.md` and `prompt.screens.md`, each holding only the items for that repo plus the shared summary. Same DCR, same id and hash; `holotype dcr --part screens --out <app-repo>/.holotype/requests` copies the request into the app repo.
 - **Verify** of screen items runs in the screens repo only if it has a Storybook; otherwise they are `not-verifiable` (§9.2).
+
+### 5.6 Locations at HEAD
+
+The baseline was captured at `baseCommit`, but the agent edits HEAD.
+
+- At import or pull the CLI records `headCommit` (in the header, outside the core).
+- If HEAD ≠ `baseCommit`, every location is remapped through `git diff baseCommit..HEAD`. This is deterministic for the two shas.
+- A location that cannot be mapped (its lines changed) is flagged `DCR_PROVENANCE_STALE` (warn).
+- When the capture cache for `baseCommit` is missing (another machine), the CLI re-captures in a temporary `git worktree` at `baseCommit`, with progress.
 
 ---
 
@@ -624,11 +658,14 @@ export interface DcrSummary {
 export interface DcrHeader {
   repo: string; branch: string; baseCommit: string; dirty: boolean;
   targets: DcrTargets;                         // §5.5; screens absent = same repo
-  figma: { fileKey: string; fileVersion?: string; kind: 'duplicate' | 'figma-branch'; snapshotHash: string };
+  figma: { fileKey: string; fileVersion?: string /* outside the core, D-48 */; kind: 'duplicate' | 'figma-branch'; snapshotHash: string };
   baseline: { fp: string; runId?: string; storybookVersion: string; framework: string };
   scope: DcrScope;
   extractor: { version: string; configHash: string };
-  generated?: { at: string; by: 'cli' | 'plugin' | 'mcp' };   // excluded from dcrHash
+  parent?: string;                             // id of the previous request on this branch (D-56)
+  group?: string;                              // shared by the requests of one split (§7.1)
+  headCommit?: string;                         // CLI-added at import/pull (§5.6); outside the core
+  generated?: { at: string; by: 'cli' | 'plugin' | 'mcp' };   // outside the core
 }
 
 export type DcrItemKind =
@@ -639,13 +676,23 @@ export type DcrItemKind =
 
 export interface DcrItem {
   id: string; kind: DcrItemKind;
-  title: string;                               // deterministic, template-built: "Button · size=md · label: padding-left 12 → 16"
-  target: { sid?: string; vk?: string; nk?: string; key?: string; figmaNodeId: string; code?: CodeRef };
+  title: string;                               // deterministic, template-built: "Button · size=md · padding-left/right 12 → 16"
+  designerTitle: string;                       // Figma property names and values as displayed, tokens by Figma name
+  target: { sid?: string; vk?: string; nk?: string; key?: string; figmaNodeId: string; code?: CodeRef /* CLI-added */ };
   derivedFrom?: { vk: string; values: Record<string, string> };
-  changes?: Array<FieldChange & { origin?: FieldOrigin; cssTarget?: { property: string; value: string };
-                                  token?: { before?: string; after?: string; candidates?: string[] } }>;
-  variant?: { values: Record<string, string>; args?: Record<string, JsonValue> };       // variant.added
+  changes?: Array<FieldChange & {
+    origin?: FieldOrigin;                                              // CLI-added
+    css?: { property: string; before: string; after: string };         // write css.after, never the Figma before/after
+    token?: { before?: string; after?: string; candidates?: string[] };
+    reach?: { sameOriginVariants: string[]; designerChangedIn: string[] };   // blast radius (§5.4)
+    varDefinition?: SourceLoc;                                          // var() origin only
+  }>;
+  variant?: { values: Record<string, string>; args?: Record<string, JsonValue>; inferred?: true };   // variant.added
   property?: { type: string; name: string; values?: string[]; default?: JsonValue };   // property.*
+  api?: { axes: Array<{ name: string; values: string[]; default: string }>;            // component.new
+          properties: Array<{ name: string; type: string; default?: JsonValue }> };
+  variantStructure?: Record<string /* variant values key */, UsageDelta[]>;            // component.new: per-variant deltas vs `structure`
+  suggested?: { exportName: string /* normalized, "Price tag" → PriceTag */; dir: string; files: string[] };   // component.new, mirrors the nearest component's layout
   structure?: UsageNode[];                     // component.new / node.added (screens: per variant, below)
   screen?: { name: string /* untrusted */; target: 'components' | 'screens'; variants: ScreenVariant[] };   // §4.10
   snippet?: UsageSnippet;                      // component.new (screens: per variant), §7.3

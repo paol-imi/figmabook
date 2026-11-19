@@ -6,6 +6,8 @@
 > **Governing decisions:** D-05 (Chromium + CDP, pinned), D-08, D-14, D-17, D-18, D-24.
 > **Research:** [dom-to-figma brief](../research/dom-to-figma-brief.md) §§1–5. It studied BuilderIO/html-to-figma `7fece25`, figitdesign/web-to-figma `859efea`, Lynavo/web2ui `6753aaf`, html2canvas, modern-screenshot and satori.
 
+> **Loop slice subset:** light DOM + open shadow, CDP geometry, solid paints, per-side borders, radius, simple shadows, opacity, clip, Latin text with platform fonts, inline SVG, PNG/JPEG, matched styles for `var()` chains and rule locations. The rest is hardening H-A ([14](14-roadmap.md#hardening)).
+
 Capture records **facts**, not Figma decisions. It records:
 
 - measured geometry;
@@ -29,7 +31,7 @@ CaptureRunner (Node)
  │   └─ N workers = N BrowserContexts (isolated cookies/storage), each with 1 long-lived Page
  │        on iframe.html (RenderDriver) + 1 CDPSession
  ├─ Job queue: components ordered by dependency (icons/atoms first, [09]), variants FIFO within component
- └─ Writer: Capture IR → cache (.holotype/cache/capture/<key>.json.zst) + assets (cas/<sha256>)
+ └─ Writer: Capture IR → cache (.holotype/cache/capture/<key>.json.gz, fflate) + assets (assets/<sha256>, 02)
 ```
 
 - **Concurrency:** `N = min(8, max(1, os.availableParallelism() - 1))` locally and `min(4, cpus)` in CI. This is configurable (`--concurrency`). All variants of a component go to **one worker**, so the warm page stays on the same story and cheap arg updates are possible ([03 §5.3](03-storybook.md#render-loop-driver)). Components are distributed across workers.
@@ -43,11 +45,13 @@ const ctxOpts: BrowserContextOptions = {
   serviceWorkers: 'block', bypassCSP: false, javaScriptEnabled: true,
   ...auth /* httpCredentials | storageState | extraHTTPHeaders via route, [03 §9.4] */,
 };
-await page.clock.install({ time: new Date('2026-01-01T00:00:00Z') }); // pinned clock; paused timers would break SB → install only, do not pause
-await page.addInitScript({ content: `Math.random = ${seededRandomSrc}(0xF16B00C);` }); // opt-out: determinism.random=false
+await page.clock.setFixedTime(new Date('2026-01-01T00:00:00Z')); // Date frozen; timers and rAF stay real
+await page.addInitScript({ content: `Math.random = ${seededRandomSrc}(0xF16B00C);` }); // opt-out: capture.determinism.random: false
 ```
 
-  `colorScheme` changes only for `:appearance`-style modes ([04 §10.1](04-variant-model.md#compatibility-readers)).
+  `clock.install()` is opt-in per story (`capture.clock` / a story parameter) for stories that need controllable timers ([16](16-config.md#capture)).
+- **Animations.** Storybook pauses CSS animations for this UA instead of waiting ([03 §5.5](03-storybook.md#settle-protocol)). After render: finish finite Web Animations, then wait for two rAF-stable frames.
+- `colorScheme` changes only for `:appearance`-style modes ([04 §10.1](04-variant-model.md#compatibility-readers)).
 - **Crash recovery:**
   - `page.on('crash')` or a closed target recreates the page, and the whole context if it happens twice. The current variant is retried once (`CAP_PAGE_CRASHED`).
   - A browser disconnect restarts the pool and resumes from the queue.
@@ -86,7 +90,7 @@ GPU stays default, because rasterization does not affect DOM geometry. Headless 
 
 ### 2.1 Serializer bundle
 
-- `packages/capture/src/page/*` is built by esbuild into **one IIFE string** (`dist/page.js`, target es2022, no imports). It exposes `window.__fb` with these entry points:
+- `packages/capture/src/page/*` is built by esbuild into **one IIFE string** (`dist/page.js`, target es2022, no imports). It exposes `window.__holotype` with these entry points:
   - `safe`
   - `rehydrate`
   - `sb.*` (render-loop helpers, [03](03-storybook.md))
@@ -111,7 +115,7 @@ Element.prototype.attachShadow = function (init) { const r = origAttach.call(thi
 // 3. Element id assignment is lazy (at serialize time), not here.
 ```
 
-If a closed root was created before the init script ran (very rare: `addInitScript` precedes everything), the CDP `DOM.getDocument({pierce:true})` fallback finds it (§2.3).
+If a closed root was created before the init script ran (very rare: `addInitScript` precedes everything), the CDP `DOM.getDocument({pierce:true})` fallback finds it (§2.3) and the walk reads it through CDP, with `CAP_CLOSED_SHADOW_LATE` (warn).
 
 ### 2.3 CDP session
 
@@ -129,9 +133,9 @@ There is one `CDPSession` per page. Domains enabled: `DOM`, `CSS`, `Page`, `Netw
 | `Network.getResponseBody` | asset bytes |
 | `Page.captureScreenshot({clip})` | rasters |
 
-**Mapping our elements to CDP nodes.** The serializer stamps each captured element with `data-fx-id="<n>"`. The orchestrator then runs one `DOM.querySelectorAll(documentNodeId, '[data-fx-id]')` per shadow root (root ids come from the pierced document) and builds `Map<fxId, nodeId>`. This avoids one `requestNode` per element.
+**Mapping our elements to CDP nodes.** The serializer stamps each captured element with `data-holotype-id="<n>"`. The orchestrator then runs one `DOM.querySelectorAll(documentNodeId, '[data-holotype-id]')` per shadow root (root ids come from the pierced document) and builds `Map<id, nodeId>`. This avoids one `requestNode` per element.
 
-**Batching.** CDP calls are pipelined. We send up to 64 concurrent requests per session and await them all, without serializing round-trips. Expected cost for a 60-node Button variant: about 20ms of CDP enrichment (verify, S-06 capture side).
+**Batching.** CDP calls are pipelined. We send up to 64 concurrent requests per session and await them all, without serializing round-trips. Expected cost for a 60-node Button variant: about 20ms of CDP enrichment (verify, S-07).
 
 ---
 
@@ -163,35 +167,33 @@ Per element, in walk order:
 5. **Fully clipped.** If the element's rect lies fully outside every ancestor clip, it is culled (`CAP_CLIPPED_CULLED`, info), unless it is a planner-bound node such as a BOOLEAN target, which must exist in all variants.
 6. **Iframes:**
    - same-origin: recurse into `contentDocument`, with geometry offset by the iframe content box;
-   - cross-origin (OOPIF): use `page.frames()`, then `frame.evaluate(__fb.serialize)` per frame, and compose offsets;
+   - cross-origin (OOPIF): use `page.frames()`, then `frame.evaluate(__holotype.serialize)` per frame, and compose offsets;
    - failure: rasterize via `Page.captureScreenshot({clip})`, with `CAP_IFRAME_RASTERIZED`.
 7. **Text nodes** are collected per inline formatting context (§4).
-8. **Element ids.** Each emitted element gets `fxId` (a sequence number) and a **structural path** `source.path`: `tag[:nth-of-signature]` segments, crossing shadow roots with `::shadow`, e.g. `div>my-button::shadow>button>span.label`. Paths are the basis for `nk` alignment in [07](07-mapping.md), and they are stable across arg changes when the structure is stable.
+8. **Element ids.** Each emitted element gets an `id` (`"c<n>"`, a sequence number, stamped as `data-holotype-id`) and a **structural path** `source.path`: `tag[:nth-of-signature]` segments, crossing shadow roots with `::shadow`, e.g. `div>my-button::shadow>button>span.label`. Paths are the basis for `nk` alignment in [07](07-mapping.md), and they are stable across arg changes when the structure is stable.
 
-**Per-element facts collected** (fields of `CaptureNode`, [06](06-ir.md)):
+**Per-element facts collected** (fields of `CNode`, [06 §2.1](06-ir.md); 06 owns the shape):
 
 ```ts
 {
-  fxId, path, tag, classes, attrs: { id?, role?, ariaLabel?, testId?, figmaName?, href?, alt?, type?, name? },
-  component?: { sid?, name?, confidence: 'ref'|'name', props?: SafeJson },   // enhancers (03 §10)
-  shadowHost?: boolean, slotName?: string,
-  rect, quad?, localTransform?,                    // §3.1
-  computed: ComputedSubset,                        // §3.2
-  authored?: AuthoredStyles,                       // §6 (CDP, filled by orchestrator)
-  typed?: TypedKeywords,                           // §6.1
-  fragments?: Rect[],                              // inline boxes, §3.1
-  scroll?: { left, top, width, height },
-  paintOrder: { stackingContext: boolean, z: number|'auto', layer: PaintLayer, order: number }, // §8
-  pseudo?: { before?: CaptureNode, after?: CaptureNode, marker?: CaptureNode, placeholder?: TextFacts },
-  replaced?: ReplacedFacts,                        // §5
-  text?: TextFacts,                                // §4 (for text-bearing blocks)
-  children: CaptureNode[]
+  id, type,                                        // 'element' | 'text' | 'pseudo' | 'replaced'
+  source: { tag, path, classes, id?, role?, ariaLabel?, testId?, figmaName?, figmaKey?,
+            component?, shadowHost?, slotName?, pseudo?, nativeControl?, srOnly?, loc? },   // enhancers (03 §10)
+  borderBox, quads?, untransformed?, transform?, nonAffine?,   // §3.1
+  computed,                                        // §3.2
+  authored?,                                       // §6: Typed-OM keywords (§6.1) + matched declarations (§6.2, CDP)
+  fragments?,                                      // inline boxes, §3.1
+  scroll?,
+  text?, replaced?,                                // §4, §5
+  paint,                                           // stacking facts, §8
+  children                                         // composed order; pseudo-elements are children (§5.5)
 }
 ```
 
 ### 3.1 Geometry
 
-- **Fast path.** If no ancestor (up to the capture root) has a non-identity `transform`, `rotate`, `scale`, `translate`, `perspective` or `offset-path`, use `rect = el.getBoundingClientRect()` relative to the capture root's border box, rounded to 1/64 px. The serializer tracks transforms while walking, so the check is free.
+- **Fast path.** If no ancestor (up to the capture root) has a non-identity `transform`, `rotate`, `scale`, `translate`, `perspective` or `offset-path`, use `borderBox = el.getBoundingClientRect()` in page space, rounded to 1/64 px. The serializer tracks transforms while walking, so the check is free.
+- **Fields.** `borderBox` is the axis-aligned border box; `quads`, `untransformed` and `transform` are present only for transformed nodes (06 §2.1).
 - **Transformed nodes.** Use CDP `DOM.getBoxModel(nodeId).model.border`, which gives the post-transform quad in page space. Then derive the page-space affine from the quad and the **untransformed** border-box size (`offsetWidth/Height`, or the computed width plus padding plus border for SVG/inline):
 
 ```ts
@@ -199,11 +201,11 @@ function affineFromQuad(q: number[], w: number, h: number): Mat2x3 {   // q = TL
   const a = (q[2]-q[0])/w, b = (q[3]-q[1])/w, c = (q[6]-q[0])/h, d = (q[7]-q[1])/h;
   return [[a, c, q[0]], [b, d, q[1]]];
 }
-// localTransform = inverse(parentPageMatrix) · nodePageMatrix   (mapper turns it into relativeTransform)
+// transform = nodePageMatrix; the mapper derives relativeTransform = inverse(parentPageMatrix) · nodePageMatrix
 ```
 
-  `rect` then holds the *untransformed* box in the parent's local space. This handles transform-origin, nesting and scroll in one go.
-- **Non-affine transforms.** `matrix3d`, perspective or rotateX/Y, detected by `DOMMatrix.is2D === false`, mark the subtree `rasterize:'non-affine'` (`CAP_NON_AFFINE_RASTERIZED`).
+  `untransformed` then holds the box size before transforms. This handles transform-origin, nesting and scroll in one go.
+- **Non-affine transforms.** `matrix3d`, perspective or rotateX/Y, detected by `DOMMatrix.is2D === false`, set `nonAffine: true`, and the subtree is rasterized (`CAP_NON_AFFINE_RASTERIZED`).
 - **Inline elements** with paint (background, border, outline or shadow): `fragments = [...el.getClientRects()]`, one per line fragment. The mapper emits one rect per fragment behind the text.
 - **Scroll containers.** Record `scrollLeft/Top` and `scrollWidth/Height`. Children rects are as rendered, already offset by the scroll.
 - **Sub-pixel rule.** All geometry is kept in CSS px with 1/64 precision. No rounding happens until the plugin.
@@ -245,8 +247,8 @@ Inline elements that carry paint (`<mark>`, `<code>` with background, links with
 - **Per-word Range measurement.** Ranges are measured per word: split on whitespace boundaries, then measure each word with one `Range`. A range is split down to per character only when a word straddles a line break, detected by its rect height exceeding 1.5× the line height or by multiple client rects. This avoids O(n) ranges.
 - **Whitespace collapse.** Collapsing follows the rendered result, not a reimplementation: a whitespace character is kept iff its Range rect has width >0.01, or it is `\n` under `pre*`/`preserve-breaks`.
 - **`<br>`.** A `<br>` inside a block becomes U+2028 (LINE SEPARATOR). Separate blocks are never merged by capture; the mapper may merge them.
-- **Run style keys.** Each run carries a **style key**. It is the hash of the text-relevant computed subset (§3.2 text group, plus `color` and the effective `text-decoration` propagated from ancestors), plus `href` for the closest `<a>`.
-- **Gradient text.** If an ancestor (up to the block) has `background-clip:text`, the run records `gradientFrom: fxId` of that ancestor. The mapper sizes the gradient to that element's box.
+- **Run styles.** Each run carries a `styleId`, a key into `CaptureDoc.textStyles`. It is the hash of the text-relevant computed subset (§3.2 text group, plus `color` and the effective `text-decoration` propagated from ancestors), plus `href` for the closest `<a>`.
+- **Gradient text.** If an ancestor (up to the block) has `background-clip:text`, the run records `gradientFrom`, the `CNode` id of that ancestor. The mapper sizes the gradient to that element's box.
 
 ### 4.2 Lines
 
@@ -271,7 +273,7 @@ interface LineFact { top: number; height: number; baseline?: number; left: numbe
 
 ### 4.3 Fonts actually used (D-17) <a id="fonts"></a>
 
-For each text-bearing block, and for each distinct run style key, take the run's parent element. The CDP method reports for an element's child text nodes, so a run whose parent is shared with other runs is attributed by majority.
+For each text-bearing block, and for each distinct run `styleId`, take the run's parent element. The CDP method reports for an element's child text nodes, so a run whose parent is shared with other runs is attributed by majority.
 
 Then call `CSS.getPlatformFontsForNode(nodeId)`. It returns `fonts: [{familyName, postScriptName, isCustomFont, glyphCount}]`, sorted by glyph count.
 
@@ -297,6 +299,7 @@ The run is then marked `iconFont: { family, text, codepoints }`.
 
 - The **CLI** converts it to SVG. It fetches the font file, and `harfbuzzjs` shapes the text (honouring GSUB ligatures). fontkit then gives the glyph outlines, from which the CLI builds an SVG path scaled to the font size, using the color of the run.
 - The result is stored as an SVG asset, and the node becomes `kind:'svg'` in the mapper.
+- On success the CLI emits `FONT_ICON_VECTORIZED` (info).
 - If shaping fails, the fallback is a clip screenshot at DPR 2 (`SVG_ICON_FONT_RASTERIZED`, warn).
 
 ---
@@ -318,7 +321,7 @@ The run is then marked `iconFont: { family, text, codepoints }`.
 | SVG referenced by `<img>`/CSS | **kept as SVG** (vector, [09](09-plugin.md)) when it has no `<script>`/`<foreignObject>` and is ≤256 kB. Otherwise rasterized at DPR 2 |
 | any >4096 px on an axis | downscaled to fit 4096, preserving aspect ratio (`CAP_IMAGE_DOWNSCALED`) |
 
-- **Assets** are content-addressed: `sha256` of the normalized bytes goes into `CaptureDoc.assets[sha]`, holding `{mime, w, h, bytesRef}`. The bytes live in the CAS. Dedup happens across the whole run.
+- **Assets** are content-addressed: `sha256` of the normalized bytes goes into `CaptureDoc.assets[sha]`, holding a `CAsset` ([06 §2.3](06-ir.md)). The bytes live in `assets/<sha256>`. Dedup happens across the whole run.
 
 ### 5.2 Canvas, video, embeds
 
@@ -348,7 +351,7 @@ type ReplacedFacts =
      fallbackAssetId: string /* element screenshot DPR2, always taken */ };
 ```
 
-  The screenshot fallback is always captured, because native rendering differs per OS. The mapper chooses between synthesis and the raster according to `config.nativeControls: 'synthesize' | 'raster'`, default `synthesize`.
+  The screenshot fallback is always captured, because native rendering differs per OS. The mapper chooses between synthesis and the raster according to `mapper.nativeControls: 'synthesize' | 'raster'`, default `synthesize` ([16](16-config.md#mapper)).
 
 ### 5.4 Inline SVG serialization
 
@@ -357,10 +360,10 @@ Serialize a **clone** with resolved presentation:
 1. **Inline styles.** For every element in the SVG subtree, inline the computed `fill`, `fill-opacity`, `fill-rule`, `stroke`, `stroke-width`, `stroke-opacity`, `stroke-dasharray`, `stroke-dashoffset`, `stroke-linecap`, `stroke-linejoin`, `stroke-miterlimit`, `opacity`, `visibility`, `display`, `transform` (computed matrix), `font-*` (for `<text>`), `paint-order` and `vector-effect` as **attributes**.
 2. **`currentColor`.** Replace it with each element's resolved `color`, recording `currentColorUsed: true`. The mapper then marks those fills as "tintable" for instance overrides ([04 §11.4](04-variant-model.md#worked-examples)).
 3. **`var()` in attributes.** These are already resolved by step 1.
-4. **`<use href>`.** Resolve the target by id in the SVG's own root, then the document, then **every shadow root** in the composed tree. This is the modern-screenshot `embed-svg-use.ts` technique. For external sprites (`sprite.svg#id`), fetch them in Node (§5.1) and extract `#id`. Inline the target as a `<g>` with the `<use>`'s x, y and transform applied. A `<symbol>` becomes a nested `<svg>` with its `viewBox`.
-5. **`<defs>`.** Copy every referenced `<defs>` entry: `linearGradient`, `radialGradient`, `clipPath`, `mask`, `pattern`, `filter`, `marker`. Rename ids with a `fx<n>-` prefix to avoid collisions, and rewrite the `url(#…)` references.
+4. **`<use href>`.** Resolve the target by id in the SVG's own root, then the document, then **every shadow root** in the composed tree. This is the modern-screenshot `embed-svg-use.ts` technique. For external sprites (`sprite.svg#id`), fetch them in Node (§5.1) and extract `#id`. Inline the target as a `<g>` with the `<use>`'s x, y and transform applied. A `<symbol>` becomes a nested `<svg>` with its `viewBox`. A target found nowhere is dropped, with `SVG_USE_UNRESOLVED` (warn).
+5. **`<defs>`.** Copy every referenced `<defs>` entry: `linearGradient`, `radialGradient`, `clipPath`, `mask`, `pattern`, `filter`, `marker`. Rename ids with a `h<n>-` prefix to avoid collisions, and rewrite the `url(#…)` references.
 6. **Root size.** Set explicit `width`, `height` and `viewBox` from the rendered box. Strip `class`, `style`, `data-*`, event handlers and `<script>`.
-7. **Risk classification:** `svgRisk: 'safe'|'filter'|'mask'|'foreignObject'|'text'`. SVGs with filter, mask or foreignObject are rasterized by default (§5.1 rules, `SVG_RASTERIZED`), because `createNodeFromSvg` handles them poorly (verify, S-09). `config.svg.rasterizeFilters=false` keeps them as vectors.
+7. **Risk classification:** `svgRisk: 'safe'|'filter'|'mask'|'foreignObject'|'text'`. SVGs with filter, mask or foreignObject are rasterized by default (§5.1 rules, `SVG_RASTERIZED`), because `createNodeFromSvg` handles them poorly (verify, S-09). `capture.svg.rasterizeFilters: false` keeps them as vectors ([16](16-config.md#capture)).
 8. **Normalization hash** for icon dedup ([07](07-mapping.md), [09](09-plugin.md)): `sha256` of the canonical SVG, meaning attributes sorted, numbers rounded to 1e-3, ids renamed, and **fill/stroke colors replaced by a placeholder** when `currentColorUsed`. This makes the same icon in different colors dedupe to one icon component.
 
 The result is an asset `{mime:'image/svg+xml', svgText}`.
@@ -377,13 +380,13 @@ Read `getComputedStyle(el, '::before' | '::after' | '::marker' | '::placeholder'
   - `url()`, which becomes an image asset
   - `content: ""` with a box means a pure decoration (common for icons and dividers)
 - **Fallback materialization.** When CDP returns no pseudo node, for example in closed shadow roots in some versions:
-  - Cloning the document into a hidden iframe is too expensive. Instead, insert `<fx-pseudo>` with the computed styles inlined, and hide the original via an injected `[data-fx-hide-before]::before{content:none!important}`. Measure, then remove.
+  - Cloning the document into a hidden iframe is too expensive. Instead, insert `<holotype-pseudo>` with the computed styles inlined, and hide the original via an injected `[data-holotype-hide-before]::before{content:none!important}`. Measure, then remove. The pseudo-element becomes a node, with `CAP_PSEUDO_MATERIALIZED` (info).
   - Verify that the parent rect is unchanged before and after. If it changed, discard the measurement and emit `CAP_PSEUDO_UNMEASURED` (warn).
   - Selectors like `:nth-child`/`:empty` may change during insertion. This is why the verification exists.
 - **`::marker`.** Use the CDP marker node. Its text is `list-style-type` formatted through `Intl` plus our counter-style table (ported from satori `counter-styles.ts`). An image marker comes from `list-style-image`.
 - **`::placeholder`.** Captured when `value===''` and a placeholder exists, with the `::placeholder` color and font.
 
-Pseudo-elements become child `CaptureNode`s with `source.pseudo` set. `::before` is the first child and `::after` the last, which matches paint and flow order.
+Pseudo-elements become child `CNode`s (`type: 'pseudo'`) with `source.pseudo` set. `::before` is the first child and `::after` the last, which matches paint and flow order.
 
 ---
 
@@ -428,24 +431,35 @@ interface AuthoredDecl { value: string /* raw, e.g. "var(--btn-bg, var(--color-p
 type AuthoredStyles = Record<string /* property */, AuthoredDecl>;
 ```
 
-**Rule locations (branch mode, D-36).** For DCR provenance ([15 §5](15-change-requests.md#provenance)) the orchestrator also keeps, for each winning `rule` declaration, `rule.styleSheetId` and the declaration's `style.range` (0-based line/column in the *served* stylesheet). It listens to `CSS.styleSheetAdded` from `CSS.enable` onward and records each header's `sourceURL` and `sourceMapURL` in a per-document table (`CaptureDoc.styleSheets`, [06 §2](06-ir.md)). Resolution to the original file:line through the source map (Vite dev serves inline maps, including CSS modules) happens later, in the CLI right before mapping (the mapper itself stays pure, [07 §16.1](07-mapping.md)), and is cached per `styleSheetId` revision (verify coverage per styling approach, S-19). The ranges cost nothing extra: they are already in the `getMatchedStylesForNode` response. Outside branch mode `sheet` is omitted, so library captures and their cache keys are unchanged.
+**Rule locations (branch mode, D-36).** For DCR provenance ([15 §5](15-change-requests.md#provenance)) the orchestrator also keeps, for each winning `rule` declaration, `rule.styleSheetId` and the declaration's `style.range` (0-based line/column in the *served* stylesheet). It listens to `CSS.styleSheetAdded` from `CSS.enable` onward and records each header's `sourceURL` and `sourceMapURL` in a per-document table (`CaptureDoc.styleSheets`, [06 §2](06-ir.md)).
+
+Vite's `css.devSourcemap` defaults to false, and dev CSS is injected as `<style>` elements. The header's `sourceURL` is then the document URL (`isInline: true`). So:
+
+- **Source maps on.** In branch mode the CLI forces `css: { devSourcemap: true }` through Storybook `viteFinal` (a `main.ts` snippet or `@holotype/vite-plugin`).
+- **Inline sheets.** They are resolved through `CSSStyleSheetHeader.ownerNode` → `data-vite-dev-id` (the file) and the inline source map.
+- **Ranges.** For inline sheets `style.range` is document-relative, so subtract `header.startLine/startColumn`.
+- **No map.** A sheet with neither a source map nor `data-vite-dev-id` raises `DCR_PROVENANCE_NO_SOURCEMAP` (warn).
+
+Resolution to the original file:line happens later, in the CLI right before mapping (the mapper itself stays pure, [07 §16.1](07-mapping.md)), and is cached per `styleSheetId` revision (verify coverage per styling approach, S-19). The ranges cost nothing extra: they are already in the `getMatchedStylesForNode` response. Outside branch mode `sheet` is omitted, so library captures and their cache keys are unchanged.
 
 **JSX locations.** When the optional `@holotype/vite-plugin` is installed, host elements carry `data-holotype-loc="src/components/Button/Button.tsx:42:7"`. The serializer reads it into `CSource.loc` (`{file, line, col}`), validates that the path is repo-relative with no `..` segments ([15 §10.3](15-change-requests.md#security)), and strips the attribute from `attrs` so it never affects alignment or naming. Without the plugin `loc` is absent and provenance falls back to the CSS rule (`DCR_PROVENANCE_MISSING` only if both are missing).
 
 **Custom properties.**
 
-- For every `var(--x)` referenced by a stored declaration, also capture the **definition chain**: the winning declaration of `--x` *at this element*, which comes from matched or inherited rules (inherited custom properties are in `inherited[]`). Recurse into the `var()`s inside that value, up to depth 16. Record each step as `{name, value, definedOn: fxId|'root'|'host', selector}`.
+- For every `var(--x)` referenced by a stored declaration, also capture the **definition chain**: the winning declaration of `--x` *at this element*, which comes from matched or inherited rules (inherited custom properties are in `inherited[]`). Recurse into the `var()`s inside that value, up to depth 16. Record each step as `{name, value, definedOn: <CNode id>|'root'|'host', selector}`; the declarations land in `CaptureDoc.customProperties` ([06 §2.3](06-ir.md)).
 - Also record the **computed value** of each custom property at the element: `getComputedStyle(el).getPropertyValue('--x')`.
 - [08](08-tokens.md) uses the chain to bind variables and build aliases, under D-18 (provable `var()` chains only).
 
 **Cost control.**
 
 - Matched styles are the most expensive CDP call, at about 1–3ms each. They are fetched only for nodes that will become Scene nodes, meaning not culled and not inside rasterized subtrees, and only in `mode:'full'`.
-- Results are memoized per `(stylesheet revision, selector-match signature)`. The signature is `tag + sorted classes + attribute set + pseudo state`, so 50 identical list items cost one call (verify the hit-rate, S-06).
+- Results are memoized per `(stylesheet revision, selector-match signature)`. The signature is `tag + sorted classes + attribute set + pseudo state`, so 50 identical list items cost one call (verify the hit-rate, S-07).
 
 **Media and container queries** found on winning declarations are recorded. Their presence makes the layout probe (§11) narrower, and raises `LAYOUT_BREAKPOINT_IN_PROBE` in [07](07-mapping.md).
 
-**Adopted stylesheets.** CDP covers constructable stylesheets and shadow DOM styles (verify, S-07). If `getMatchedStylesForNode` fails for a node inside a shadow root, authored styles are omitted for it. Token binding then degrades for that node (`TOKEN_AUTHORED_UNAVAILABLE`, info).
+**Unsupported properties.** A winning declaration of a property with no Figma equivalent is ignored, with `CAP_CSS_UNSUPPORTED` (warn, `data.property`).
+
+**Adopted stylesheets.** CDP covers constructable stylesheets and shadow DOM styles (verify, S-19). If `getMatchedStylesForNode` fails for a node inside a shadow root, authored styles are omitted for it. Token binding then degrades for that node (`TOKEN_AUTHORED_UNAVAILABLE`, info).
 
 ---
 
@@ -457,7 +471,7 @@ type AuthoredStyles = Record<string /* property */, AuthoredDecl>;
 - **Conversion targets.** Values are stored as `{ r, g, b, a, space: 'srgb' | 'display-p3', original }`, where `original` is the raw computed string:
   - **sRGB**: always converted, with CSS gamut mapping (`toGamut({space:'srgb', method:'css'})`).
   - **Display P3**: also converted when the source is wider than sRGB.
-- **Profile choice.** The plugin picks the P3 or sRGB value based on `figma.root.documentColorProfile` ([09](09-plugin.md)). Plugin typings also accept `sourceColor` (OKLCH/P3) on paints, which we can fill with `original` (verify, S-03).
+- **Profile choice.** The plugin picks the P3 or sRGB value based on `figma.root.documentColorProfile` ([09](09-plugin.md)). `documentColorProfile` is `'LEGACY' | 'SRGB' | 'DISPLAY_P3'`; LEGACY is treated as sRGB. Capture keeps the original CSS color string, so the applier can prefer `figma.util.solidPaint(original)` ([07 §9](07-mapping.md#color); verify, S-03).
 - **Fallback.** For unparseable values (exotic `color-mix` with `currentColor` in old engines), read back through a 1×1 canvas, using the web2ui technique. The result is clipped to sRGB (`PAINT_COLOR_READBACK`, info).
 
 ### 7.2 Backgrounds, gradients, shadows
@@ -501,7 +515,7 @@ The serializer computes, per node:
 - `layer`, one of the CSS 2.1 Appendix E buckets within its stacking context: `negZ | blockFlow | float | inline | positioned0 | posZ`.
 - `order`, the sequence number within the bucket: order-modified document order, where `order` is applied for flex and grid items.
 
-`children` in the Capture IR stay in **DOM (composed) order**. Paint order is reconstructed by the mapper, which also detects **z-index escapes**: a descendant painting above a sibling of its ancestor. Those are hoisted, with `LAYOUT_ZINDEX_HOIST` ([07](07-mapping.md)). Capture also stores `stackingRoot: fxId` per node, so the mapper doesn't need to recompute the ancestry.
+`children` in the Capture IR stay in **DOM (composed) order**. Paint order is reconstructed by the mapper, which also detects **z-index escapes**: a descendant painting above a sibling of its ancestor. Those are hoisted, with `LAYOUT_ZINDEX_HOIST` ([07](07-mapping.md)). The facts go into `CNode.paint` (`CPaintOrder`: `stackingContext`, `zIndex`, `layer`, `domIndex`, [06 §2.1](06-ir.md)).
 
 ---
 
@@ -510,8 +524,8 @@ The serializer computes, per node:
 Policy is in [04 §6](04-variant-model.md#states-d-14). Mechanics:
 
 ```ts
-async function forceState(cdp: CDPSession, target: ElementHandle, rootFxId: string, state: PseudoState) {
-  const chain = await target.evaluate((el, rootId) => __fb.ancestorChain(el, rootId), rootFxId);  // composed-tree ancestors, crossing shadow hosts, up to capture root
+async function forceState(cdp: CDPSession, target: ElementHandle, rootId: string, state: PseudoState) {
+  const chain = await target.evaluate((el, rootId) => __holotype.ancestorChain(el, rootId), rootId);  // composed-tree ancestors, crossing shadow hosts, up to capture root
   for (const [i, h] of chain.entries()) {
     const { objectId } = (await cdp.send('DOM.resolveNode', { backendNodeId: await backendIdOf(h) })).object;
     const { nodeId } = await cdp.send('DOM.requestNode', { objectId: objectId! });   // works inside open & closed shadow roots
@@ -540,30 +554,29 @@ async function forceState(cdp: CDPSession, target: ElementHandle, rootFxId: stri
 ### 10.1 Determinism measures
 
 - D-24 context settings and pinned Chromium (D-05).
-- Pinned clock and seeded `Math.random`.
+- `Date` frozen with `setFixedTime`, and seeded `Math.random`.
 - Animations frozen ([03 §5.5](03-storybook.md#settle-protocol)).
 - Fonts and images awaited.
-- Serialization is canonical: sorted keys, numbers rounded to 1/64 px for geometry and 1e-4 for colors, stable `fxId` from walk order.
-- CI gate ([03 §12](03-storybook.md#version-and-framework-test-matrix)): three consecutive captures of each fixture must produce an identical `captureHash`.
+- Serialization is canonical: sorted keys, numbers rounded to 1/64 px for geometry and 1e-4 for colors, stable node `id`s from walk order.
+- CI gate ([03 §12](03-storybook.md#version-and-framework-test-matrix)): three consecutive captures of each fixture must produce an identical `captureHash`. One fixture story renders `new Date().toISOString()`; it must hash identically across the 3 runs.
 
 ### 10.2 Capture cache key
 
-```ts
-captureKey = sha256(canonicalJSON({
-  engine: CAPTURE_ENGINE_VERSION,         // bump on serializer changes
-  irMajor: CAPTURE_IR_MAJOR,
-  chromium: browser.version(), playwright: pwVersion,
-  sb: { buildHash: storybookBuildHash ?? null, indexHash, storyId },   // [03 §9]
-  render: { args, globals, state, viewport, width, remount },          // from PlannedVariant
-  ctx: { dpr, locale, timezone, colorScheme, reducedMotion, ua: 'StorybookTestRunner' },
-  opts: { mode, nativeControls, svg, exclude, rootSelector, unwrap, portal },
-  fontsInstalled: hostFontsFingerprint,   // system fonts can change fallback rendering
-}))
-```
+Single definition: [02 §5.4](02-architecture.md#capture-key). Why each input matters:
 
-Dev servers have no `buildHash`. For them, the key gets a per-run nonce (they always re-render, [03 §9.2](03-storybook.md#dev-server)) unless `--trust-dev-cache` is set.
+| Input | Why |
+|---|---|
+| capture engine version, Capture IR major | serializer or schema changes invalidate old captures |
+| Chromium and Playwright versions | layout and text rendering differ between builds (D-05) |
+| Storybook build hash, index hash, story id ([03 §9](03-storybook.md)) | the rendered code and story |
+| args, globals, state, viewport, width, remount (from `PlannedVariant`) | what is rendered |
+| DPR, locale, timezone, color scheme, reduced motion, UA (D-24) | the rendering context |
+| capture options (mode, native controls, SVG, exclude, root selector, unwrap, portal) | what is serialized |
+| host fonts fingerprint | installed system fonts can change fallback rendering |
 
-The cache stores the Capture IR (zstd JSON), the assets (CAS) and the screenshot. A local LRU cap of 2 GB is configurable, and a remote cache in CI uses the same keys ([12](12-quality.md)).
+Dev server: branch mode keys on `H(baseCommit ∥ dirtyTreeHash)`; otherwise a per-run nonce ([03 §9.2](03-storybook.md#dev-server)) unless `--trust-dev-cache`.
+
+The cache stores the Capture IR (`.json.gz`, fflate), the assets (`assets/<sha256>`, 02) and the screenshot. A local LRU cap of 2 GB is configurable, and a remote cache in CI uses the same keys ([12](12-quality.md)).
 
 ---
 
@@ -571,11 +584,11 @@ The cache stores the Capture IR (zstd JSON), the assets (CAS) and the screenshot
 
 This is enabled by `width: { probe: [...] }` ([04 §7.3](04-variant-model.md#themes)). It is also enabled automatically for components that the mapper flags as having ambiguous sizing after the first pass. The mapper requests re-probes through `planner`, at most once.
 
-1. After the main serialize, keep the `data-fx-id` stamps in the DOM.
-2. For each probe width `W`, constrain the root wrapper: inject `#storybook-root > [data-fx-id="<root>"] { width: Wpx !important }` for root width probes. For container probes, set `#storybook-root{width:Wpx}`. Then `await settle(short)`.
-3. Measure `rect` for every `[data-fx-id]` with `__fb.measure(ids)`. This is a batched `getBoundingClientRect`. Re-query text `lines` only for text blocks.
+1. After the main serialize, keep the `data-holotype-id` stamps in the DOM.
+2. For each probe width `W`, constrain the root wrapper: inject `#storybook-root > [data-holotype-id="<root>"] { width: Wpx !important }` for root width probes. For container probes, set `#storybook-root{width:Wpx}`. Then `await settle(short)`.
+3. Measure the border box of every `[data-holotype-id]` with `__holotype.measure(ids)`. This is a batched `getBoundingClientRect`. Re-query text `lines` only for text blocks.
 4. **Re-mount detection.** If more than 10% of ids are missing (the framework re-mounted on resize), match nodes by `source.path` plus tag/class signature instead, and emit `CAP_PROBE_REMOUNTED` (info).
-5. Record `probes: [{ width: W, rects: Record<fxId, Rect>, lines?: Record<fxId, LineFact[]> }]`. Interpretation (FILL/HUG/FIXED via `k = Δchild/ΔparentInner`) is done in the mapper ([07](07-mapping.md)).
+5. Record `probes: CProbe[]` ([06 §2.3](06-ir.md)): per width, the rect of each node by `CNode` id, plus a structure hash. Interpretation (FILL/HUG/FIXED via `k = Δchild/ΔparentInner`) is done in the mapper ([07](07-mapping.md)).
 6. If any winning declaration has `@media`/`@container` (§6.2), probe widths are restricted to the range that doesn't cross a breakpoint boundary. The breakpoint values are parsed from the media text. Crossing widths are skipped, with `LAYOUT_BREAKPOINT_IN_PROBE` (info).
 
 Default probe widths are `[0.75W, W, 1.25W, 320]`, where W is the natural width. Each probe costs about one short settle plus one measure, roughly 30–60ms.
@@ -584,31 +597,34 @@ Default probe widths are `[0.75W, W, 1.25W, 320]`, where W is the natural width.
 
 ## 12. Portals and multi-root
 
-- Roots and portals from [03 §6.3](03-storybook.md#portals-and-overlays) are serialized as children of a **virtual capture root**: `{kind:'virtual-root', rect: union or viewport, mode: 'single'|'multi'|'portal'}`. Each child keeps its page-space geometry relative to the virtual root's origin.
-- Fixed-position backdrops are kept as the first child (bottom).
+- The story root is `CaptureDoc.root`. Portals from [03 §6.3](03-storybook.md#portals-and-overlays) go into `CaptureDoc.portals[]`, in paint order. There is no virtual root. `CaptureDoc.rootRect` is the union rect of root and portals in page space; all geometry stays page-space.
+- Fixed-position backdrops are kept as the first portal (bottom).
 - `position: fixed` elements inside the normal root are captured relative to the viewport. They are marked `fixedToViewport:true`, and the mapper places them absolutely.
 
 ---
 
 ## 13. Capture IR fill contract
 
-Schema in [06](06-ir.md). Capture **must** fill:
+Schema in [06 §2](06-ir.md) (06 owns every name). Capture **must** fill:
 
 | Field | Must contain |
 |---|---|
-| `CaptureDoc.meta` | `irVersion`, `engine`, `chromium`, `playwright`, `storyId`, `vk`, `render`, `ctx`, `captureKey`, `captureHash`, timings |
-| `CaptureDoc.root` | the virtual root plus the tree of `CaptureNode` (§3), in DOM composed order |
-| per node | `fxId`, `path`, `tag`, `rect`, `computed` (diffed against defaults), `paintOrder`, `children`; plus, where applicable, `quad`/`localTransform`, `typed`, `authored` (full mode), `fragments`, `pseudo`, `replaced`, `text`, `component`, `scroll`, `stackingRoot` |
-| text blocks | `characters`, `runs[{start,end,styleKey,href?,gradientFrom?,iconFont?,fontsUsed}]`, `lines`, `lineHeightPx` per style, `truncation?`, `direction` |
-| `CaptureDoc.styles` | `styleKey` → text style facts (font family list, used face, weight, italic, stretch, size, letter spacing px, transform, decoration, color, features, variation) |
-| `CaptureDoc.fonts` | `FontUse` inventory, web-font faces with `src` and `status`, parsed metrics, and an `isVariable` flag with axes |
-| `CaptureDoc.assets` | `sha` → `{mime, w, h, svgText?, bytesRef}` |
-| `CaptureDoc.customProps` | per node that references vars: the chains (§6.2) |
-| `CaptureDoc.probes` | optional layout probes (§11) |
-| `CaptureDoc.screenshot` | assetId of the root clip screenshot @2x, used by the fidelity harness ([12](12-quality.md)) |
-| `CaptureDoc.diagnostics` | `CAP_*`, `FONT_*`, `SVG_*`, `PAINT_*` entries with `fxId` |
+| `captureVersion`, `engine` | schema semver; capture engine name and version, Chromium and Playwright versions |
+| `target` | story url (credentials stripped), `storyId`, `sid`, `vk`, applied args and globals, `state`, viewport, DPR, color scheme, resolved root selector |
+| `timing` | render, settle and serialize ms |
+| `rootRect`, `root`, `portals` | union rect; the `CNode` tree of the story root (§3), in DOM composed order; body-level portals (§12). No virtual root |
+| per `CNode` | `id`, `type`, `source`, `borderBox`, `computed` (diffed against defaults), `paint`, `children`; plus, where applicable, `quads`/`transform`/`untransformed`/`nonAffine`, `authored` (full mode), `fragments`, `replaced`, `text`, `scroll` |
+| `CNode.text` | `characters`, `runs[{start, end, styleId, href?, gradientFrom?}]`, `lines`, wrap and truncation facts, `textAlign` (resolved) |
+| `textStyles` | `styleId` → `CTextStyle` (family list, used faces, weight, italic, stretch, size, `lineHeightPx`, letter spacing px, transform, decoration, color, features, variation, synthetic) |
+| `fonts` | `CFontUsage` inventory: used faces, web-font `srcUrl` and `status`, icon-font flag |
+| `assets` | `sha` → `CAsset` (bytes stored out of line in `assets/<sha>`) |
+| `customProperties` | the declarations table (§6.2): name, value, resolved value, selector, origin |
+| `probes?` | `CProbe[]` (§11) |
+| `styleSheets?` | stylesheet headers, branch mode only (§6.2) |
+| `screenshot?` | `AssetRef` of the root clip screenshot @2x, used by the fidelity harness ([12](12-quality.md)) |
+| `diagnostics` | `CAP_*`, `FONT_*`, `SVG_*`, `PAINT_*` entries with the `CNode` id |
 
-Probe-mode documents fill only `meta`, `root` (with `rect`, `path`, `tag`, text `characters`, and a `paintHash` per node) and `diagnostics`.
+Probe-mode documents fill only `captureVersion`, `engine`, `target`, `root` (with `borderBox`, `source.path`, `source.tag` and text `characters`), `probes` and `diagnostics`.
 
 ---
 
@@ -631,7 +647,7 @@ Probe capture is ≤120ms. Main levers:
 - one worker per component (warm story);
 - CDP pipelining (§2.3).
 
-All of these are verified in S-06 (capture side) and S-07.
+Capture-side throughput is measured in S-07; S-06 covers the plugin side.
 
 ---
 
@@ -671,6 +687,12 @@ All of these are verified in S-06 (capture side) and S-07.
 | `CAP_ASSET_FETCH_FAILED` | warn | asset missing |
 | `CAP_DOC_TOO_LARGE` | warn | partial rasterization |
 | `CAP_NONDETERMINISTIC` | warn | repeated captures differ |
+| `CAP_PSEUDO_MATERIALIZED` | info | pseudo-element measured through the materialization fallback (§5.5) |
+| `CAP_CLOSED_SHADOW_LATE` | warn | closed shadow root created before the hook; read through CDP (§2.2) |
+| `CAP_CSS_UNSUPPORTED` | warn | CSS property with no Figma equivalent ignored (§6.2) |
+| `DCR_PROVENANCE_NO_SOURCEMAP` | warn | dev-server stylesheet without source map or `data-vite-dev-id` (§6.2) |
+| `FONT_ICON_VECTORIZED` | info | icon-font glyphs converted to vector paths (§4.4) |
+| `SVG_USE_UNRESOLVED` | warn | SVG `<use>` target not found (§5.4) |
 | `FONT_FALLBACK_USED` | info | run split by script due to fallback |
 | `FONT_SYNTHETIC` | warn | synthetic bold or italic |
 | `FONT_UNRESOLVED` | warn | platform font unknown |

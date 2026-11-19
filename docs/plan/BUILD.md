@@ -1,6 +1,6 @@
 # BUILD: executable build plan
 
-> **Status:** v0.2 (2026-11-19). Companion to the master plan ([README](README.md)). It keeps every binding decision (D-01…D-45). It **re-sequences** the roadmap of [14](14-roadmap.md) around a *Loop slice*: a thin but real end-to-end loop (branch → design → DCR → AI → verify) on a React + Vite Storybook 10 repo, reached in about 16–20 weeks. Fidelity and scale hardening come after the slice. Where chapters disagree, [§11](#plan-gaps) records the choice made here.
+> **Status:** v0.2 (2026-11-19). Companion to the master plan ([README](README.md)). It keeps every binding decision (D-01…D-58). It **re-sequences** the roadmap of [14](14-roadmap.md) around a *Loop slice*: a thin but real end-to-end loop (branch → design → DCR → AI → verify) on a React + Vite Storybook 10 repo, reached in about 16–20 weeks. Fidelity and scale hardening come after the slice. Where chapters disagree, [§11](#plan-gaps) records the choice made here.
 >
 > **Reader:** a coordinator that dispatches coding subagents, one work item at a time, often in parallel git worktrees.
 
@@ -57,18 +57,19 @@ Sizes are for dispatch planning, not the engineer-week estimates of [14](14-road
 
 ### 2.2 Commands
 
-B-00 provides these root scripts. Every acceptance line below uses them.
+B-00 provides the root scripts in the first rows (names as in the root `package.json`). Later items add the scripts marked with their item id. Every acceptance line below uses them.
 
 | Command | Does |
 |---|---|
 | `pnpm i --frozen-lockfile` | install |
-| `pnpm turbo run lint typecheck test build` | the PR gate (L0–L3 of [12 §1](12-quality.md#pyramid)) |
+| `pnpm lint && pnpm typecheck && pnpm test && pnpm build` | the PR gate (L0–L3 of [12 §1](12-quality.md#pyramid)); `lint` is Biome at the root, the others run through Turborepo |
+| `pnpm check:deps` | package boundary rules (dependency-cruiser, [02 §6.2](02-architecture.md#monorepo)) |
 | `pnpm -F <pkg> test` | one package's Vitest suite |
-| `pnpm -F <pkg> test:e2e` | one package's Playwright suite (Chromium) |
-| `pnpm depcruise` | package boundary rules ([02 §6.2](02-architecture.md#monorepo)) |
-| `pnpm -F @holotype/ir schema && git diff --exit-code packages/ir/schema` | committed JSON Schema check |
-| `pnpm diag:check` | every used diagnostic code is registered and documented (B-02) |
-| `pnpm size` | plugin bundle budgets: main ≤400 KB, UI ≤600 KB (D-04) |
+| `pnpm -F <pkg> test:e2e` | one package's Playwright suite (Chromium); added by the first item with e2e tests in that package |
+| `pnpm -F @holotype/ir build && git diff --exit-code packages/ir/schema` | committed JSON Schema check (the `ir` build emits the schemas) |
+| `pnpm size` | plugin bundle budgets: `build/main.js` ≤400 KB, `build/ui.js` ≤600 KB (D-04); `pnpm -F @holotype/plugin build` runs the same check |
+| `pnpm -F @holotype/plugin run pack` | the plugin zip (`run` is required: bare `pnpm pack` is pnpm's built-in tarball command) |
+| `pnpm diag:check` | every used diagnostic code is registered and documented (added by B-02) |
 
 ### 2.3 Shared files and conflict rules
 
@@ -98,7 +99,7 @@ Every item meets all of these before merge. They implement D-40 (quality bar) an
 
 ### 3.1 All items
 
-1. **Gate green.** `pnpm turbo run lint typecheck test build` and `pnpm depcruise` pass. TypeScript strict, ESM only (D-03).
+1. **Gate green.** `pnpm lint && pnpm typecheck && pnpm test && pnpm build` and `pnpm check:deps` pass. TypeScript strict, ESM only (D-03).
 2. **Tests match the pyramid.** The package has the L1/L2/L3 tests that [12 §1.1](12-quality.md#pyramid) lists, for the code this item adds. Every public function has a test.
 3. **Diagnostics.** Every code emitted is registered, has a docs page with a plain-language message and a remedy, and is triggered by at least one test (`pnpm diag:check`).
 4. **Determinism.** Snapshot tests give the same bytes on two runs. Pure packages (`ir`, `shared`, `layout-sim`, `mapper`, `dcr`) read no clock, no random source and no environment.
@@ -141,7 +142,7 @@ In [14](14-roadmap.md) the first real use of the whole loop arrives at Phase 4.5
 | Tokens | CSS custom properties → one local collection, default mode, alias chains; bindings on fills, strokes, padding, gap, radius, text fills | modes from themes, styles, library matching, `TOKEN_MODE_LIMIT` |
 | Plugin | file import (topology B); fonts preflight (exact or Inter fallback); identity keys + `irh`/`ah`; **idempotent keyed in-place apply** with Merkle skip; component sets and properties | conflict UI and policies beyond "keep mine", locks UI, renames, deprecation, doc frames, Sections/pages layout, Library tab, local server and pairing (topology A) |
 | Branch file | `holotype branch start\|link\|refresh` with a file handoff; proposal mode; `branch:meta`; embedded baseline `base:*` (D-34); Changes list | automated Figma branch creation (S-17), merge handling, approval |
-| DCR | `component.modified`, `variant.added`, `property.added`/`property.changed`, `component.new`, `screen` usage (instances + props, one variant per screen); questions for untokenized and unmappable values; `prompt.md` with the agent contract; plugin extraction + CLI provenance attach | REST source and parity (S-18), breakpoints/states grouping, interactions, content/a11y, `instance.*`, `node.*` beyond basic, `targets` split, MCP tools, follow-up DCRs, `@holotype/vite-plugin` |
+| DCR | `component.modified`, `variant.added`, `property.added`/`property.changed`, `component.new`, `screen` usage (instances + props, one variant per screen); questions for untokenized and unmappable values; `prompt.md` with the agent contract; plugin extraction + CLI provenance attach; Submit writes the request into the file and saves a named version (D-48, D-49); `holotype dcr import` (guaranteed) and `holotype dcr --pull` (stretch, after the S-18 root-plugin-data check) | REST source and parity (S-18), breakpoints/states grouping, interactions, content/a11y, `instance.*`, `node.*` beyond basic, `targets` split, MCP tools, follow-up DCRs, `@holotype/vite-plugin` |
 | Verify | `holotype verify --dcr <id>` v1: re-capture at HEAD, re-map, compare each item against its `acceptance` | follow-up DCRs, CI comments, `verify_dcr` MCP tool |
 
 The handoff between Figma and the CLI uses **files only** in the slice: the plugin imports bundles and exports a `request.zip`. This avoids the local server, Chrome LNA and pairing (S-01) on the critical path. Topology A (D-10) arrives in hardening.
@@ -158,14 +159,14 @@ On a throwaway git repo created from `fixtures/ds-react`:
    - Button: renames the property "Show icon" to "Icon" → `property.changed`.
    - New local component "PriceTag" made of a Badge instance and a text → `component.new`.
    - New frame "Checkout" with Card, Button and PriceTag instances → `screen` usage.
-4. Designer: **Submit** ▸ reviews the summary ▸ **Download request**.
-5. Developer: `holotype dcr import request.zip` → `.holotype/requests/<id>/prompt.md` with file:line provenance.
+4. Designer: **Submit** ▸ reviews the summary ▸ confirms. The plugin writes the request into the file (`request:*` + `branch:meta.lastDcr`) and saves a named version (`saveVersionHistoryAsync`). Then **Notify developer** (copies a message with the branch URL and request id) or **Download request**. Designer and developer are on different computers (D-49).
+5. Developer: `holotype dcr import request.zip` (the guaranteed slice path) or `holotype dcr --pull <figma-url>` (L4/L5 stretch; needs the S-18 root-plugin-data check and a Figma token) → `.holotype/requests/<id>/prompt.md` with file:line provenance.
 6. An AI agent of the user's choice implements `prompt.md`, adding stories tagged `parameters.holotype.implements`.
 7. Developer: `holotype verify --dcr <id>` → every item `implemented`, or `partial` with the remaining deltas. Exit 0 when all are implemented.
 
 ### 4.4 Slice milestones
 
-Calendar assumes about three agents (or engineers) in parallel, as in [14](14-roadmap.md).
+Calendar assumes one owner plus about three agents in parallel ([14](14-roadmap.md#staffing)); Figma-in-the-loop steps (spikes, demos) are owner time.
 
 | Milestone | Weeks | Demo | Items |
 |---|---|---|---|
@@ -193,13 +194,13 @@ Goal: the skeleton, the fixtures, the spike kits, and one story flowing CLI → 
 **Path** repo root, `packages/*` · **Depends** — · **Track** slice · **Runs** container · **Size** L
 
 Build:
-- pnpm workspaces + Turborepo + Biome + Vitest + tsup + changesets (D-04). Node `>=20.19`, CI on 22.
+- pnpm workspaces + Turborepo + Biome + Vitest + tsup + changesets (D-04). Node `>=22.12`, CI on 22 and 24 (D-53).
 - Every `@holotype/*` package from [README §6](README.md) as a building, tested stub: `ir`, `shared`, `layout-sim`, `storybook`, `capture`, `planner`, `mapper`, `plugin`, `figma-fake`, `cli`, `storybook-addon`, `action`, `dcr`, `vite-plugin`, plus `tools/fidelity`.
 - `shared`: `Diagnostic`, `defineDiagnostic()`, registry, `Result<T,E>`, `Logger` interface.
 - `ir`: `canonicalJSON()` per [06 §5](06-ir.md), `h16()` (sha256 → 16 hex, `@noble/hashes`), `sha256hex()`, `fnv1a64()` for `ah` (D-31). Property tests with fast-check.
-- dependency-cruiser rules from [02 §6.2](02-architecture.md#monorepo). CI: install, lint, typecheck, test, build, depcruise.
+- dependency-cruiser rules from [02 §6.2](02-architecture.md#monorepo). CI: install, lint, typecheck, test, build, `check:deps`.
 
-Acceptance: `pnpm i --frozen-lockfile && pnpm turbo run lint typecheck test build && pnpm depcruise`; property tests for canonical JSON (idempotent, key-order independent, `-0` → `0`, NaN throws) and both hashes (known vectors).
+Acceptance: `pnpm i --frozen-lockfile && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm check:deps`; property tests for canonical JSON (idempotent, key-order independent, `-0` → `0`, NaN throws) and both hashes (known vectors).
 
 Checklist when B-00 lands. If a line is missing, open **B-00b** (S):
 - workspace globs include `fixtures/*`, `spikes/*`, `tools/*`;
@@ -216,9 +217,9 @@ Checklist when B-00 lands. If a line is missing, open **B-00b** (S):
 Build (TypeBox is the source of truth, D-07):
 - `primitives.ts`, `capture.ts` (`CaptureDoc`, `CNode`, text, assets, fonts, custom properties, `styleSheets`; [06 §1–2](06-ir.md)).
 - `scene.ts` (`SceneComponent`, `ScenePropertyDef`, `SceneVariant`, `SceneNode`, layout, paints, text, instance, bindings; [06 §3](06-ir.md)).
-- `bundle.ts`: `BundleManifest` ([06 §4.2](06-ir.md)) plus `integrity: {algo:'sha256', files}` ([02 §5.1](02-architecture.md)) and an optional `branch` block (`BranchMeta` minus `fileKey`, [15 §2.2](15-change-requests.md#branch-model)).
+- `bundle.ts`: `BundleManifest` ([06 §4.2](06-ir.md)) plus `integrity: {algo:'sha256', files}` ([02 §5.1](02-architecture.md)) and an optional `branch` block (`BranchMeta` minus `fileKey`, [15 §2.2](15-change-requests.md#branch-model); shape in [06](06-ir.md#branch-block)). The `branch` block carries `dcrConfig` + `configHash`; the plugin copies them to `branch:meta` (D-50).
 - `tokens.ts` (`TokensDoc`, [06 §4.3](06-ir.md#tokens)), `report.ts` (`BundleReport`, 06 §4.4), `provenance.ts` (`ProvenanceDoc`, `NodeProvenance`, `FieldOrigin`, `SourceLoc`, [15 §5.2](15-change-requests.md#provenance)).
-- `config.ts`: `HolotypeParams` from [04 §9](04-variant-model.md#schema), plus `implements?: string[]` (D-37) and `replacedBy?: string`.
+- `config.ts`: `HolotypeParams` from [04 §9](04-variant-model.md#schema) (it now includes `implements`, `replacedBy`, `channelCapture`, `excludeCombos`, `split`, `grid` and `budget.hardLimit`); project-level keys from [16](16-config.md#reference) (D-51).
 - `pipeline.ts`: cross-package inputs the mapper may not import from elsewhere: `VariantPlan`, `ComponentMetaInput`, `ComponentCatalog`, `TokenResolution` ([07 §0](07-mapping.md)), and `CodeRef` ([15 §5.3](15-change-requests.md#provenance)).
 - Compiled validators (`TypeCompiler`) for every top-level document; `checkSceneInvariants()` ([06 §9](06-ir.md)); `migrations/scene/` (empty) and `migrateScene()`.
 - Schema emitter → `packages/ir/schema/{capture,scene,tokens,bundle,report,config,provenance}.v1.json`.
@@ -226,7 +227,7 @@ Build (TypeBox is the source of truth, D-07):
 Acceptance:
 - `pnpm -F @holotype/ir test`: a valid/invalid corpus in `test/corpus/` passes and fails as named, including the Button excerpt of [06 §10](06-ir.md) completed into a valid document.
 - Round trip `validate(parse(canonicalJSON(x)))` for every valid corpus file.
-- `pnpm -F @holotype/ir schema && git diff --exit-code packages/ir/schema`.
+- `pnpm -F @holotype/ir build && git diff --exit-code packages/ir/schema`.
 
 Parallel: owns `packages/ir/**`. Runs alongside B-02, B-03, B-06, B-07, B-08.
 
@@ -272,7 +273,7 @@ Build:
   - `components-icon--default`, `components-icon--gallery` (tagged `!figma`, to test opt-out)
 - Every story has `args` and `argTypes` with controls.
 - **`parameters.holotype` usages** (schema [04 §9](04-variant-model.md#schema)):
-  1. Button meta: `args: { variant: { as: 'variant' }, size: { as: 'variant' }, label: { as: 'text' }, showIcon: { as: 'boolean' } }`, `states: { include: ['default','hover','focus-visible','active'], foldBooleans: ['disabled','loading'] }` (states are hardening; the slice reads and ignores them with `PLAN_FEATURE_DOWNGRADED`), `layout: { columns: ['Size'], rows: ['Variant'] }`.
+  1. Button meta: `args: { variant: { as: 'variant' }, size: { as: 'variant' }, label: { as: 'text' }, showIcon: { as: 'boolean' } }`, `states: { include: ['default','hover','focus-visible','active'], foldBooleans: ['disabled','loading'] }` (states are hardening; the slice reads and ignores them with `PLAN_FEATURE_DOWNGRADED`), `grid: { columns: ['Size'], rows: ['Variant'] }`.
   2. Badge meta: `args: { tone: { as: 'variant', name: 'Tone' }, dot: { as: 'boolean', name: 'Dot' }, label: { as: 'text' } }`.
   3. Stack `--wrap`: `keepLayout: true` and `width: { probe: [240, 480] }`.
   4. Card `--long-text`: `textMode: 'locked-lines'`.
@@ -282,7 +283,7 @@ Build:
 Acceptance:
 - `pnpm -F @holotype/fixture-ds-react build-storybook` writes `storybook-static/` (gitignored). A snapshot checks the sorted story ids in `index.json`.
 - `pnpm -F @holotype/fixture-ds-react test:smoke` (Playwright): every story renders, no console error, no request outside `127.0.0.1`, `document.fonts.check('600 14px Inter')` is true.
-- `pnpm -F @holotype/fixture-ds-react dev` serves on port 6006 with CSS source maps (branch mode, S-19).
+- `pnpm -F @holotype/fixture-ds-react dev` serves on port 6006 with CSS source maps (branch mode, S-19): the fixture's Storybook `viteFinal` sets `css.devSourcemap: true`; inline sheets resolve through `ownerNode` → `data-vite-dev-id`, ranges offset by `startLine`/`startColumn`; `DCR_PROVENANCE_NO_SOURCEMAP` otherwise.
 
 Parallel: owns `fixtures/ds-react/**`. B-04 and B-05 add files only.
 
@@ -334,9 +335,9 @@ Build:
 - create-figma-plugin project (D-06): `src/main.ts`, `src/ui/**` (Preact), `src/protocol.ts` (the message union of [09 §3.2](09-plugin.md#protocol); slice subset `hello`, `session.open`, `unit`, `need`, `progress`, `diagnostics`, `done`, `error`, `cancel`, `ping`/`pong`, then `branch.link`, `changes.request`, `snapshot.request`, `branch.meta.patch` when B-63/B-69 need them).
 - Manifest from the `figma-plugin` field ([09 §2](09-plugin.md#manifest)): `documentAccess: "dynamic-page"`, `editorType: ["figma"]`, candidate `networkAccess`, `reasoning`, and **`enablePrivatePluginApi: true`** so `figma.fileKey` is readable (needed for `branch:meta.fileKey`; see [§11](#plan-gaps)). The real manifest `id` is fixed forever; until Figma issues one, use a placeholder and say so in the PR.
 - UI shell: tabs Library / Import file / Report / Settings ([11 §5](11-ux.md#plugin)); Library and Settings show "coming soon". Message catalog `ui/messages/en.json`.
-- `pnpm -F @holotype/plugin build` → `manifest.json`, `build/main.js`, `build/ui.html`. `pnpm -F @holotype/plugin pack` → `holotype-plugin-<version>.zip` with fixed mtimes ([02 §6.4](02-architecture.md#monorepo)).
+- `pnpm -F @holotype/plugin build` → `manifest.json`, `build/main.js`, `build/ui.js` (shown with create-figma-plugin's `showUI()`; there is no `ui.html`). `pnpm -F @holotype/plugin run pack` (not `pnpm pack`, which is pnpm's built-in tarball command) → `holotype-plugin-<version>.zip` with fixed mtimes ([02 §6.4](02-architecture.md#monorepo)).
 
-Acceptance: build and pack succeed; `pnpm size` within budget; UI tests render each tab's empty state; protocol tests round-trip every message type through a mocked `figma.ui`.
+Acceptance: build and pack succeed, including the bundle budget check; UI tests render each tab's empty state; protocol tests round-trip every message type through a mocked `figma.ui`.
 
 #### B-08 · Spike kit infrastructure (`spikes/runner`)
 
@@ -443,7 +444,7 @@ Each ends with `docs/spikes/S-xx.md` and a proposed README §5 update. The coord
 | **B-16** | S-07 render loop | slice (SB 10 part), hardening (8.6/9.1/11) | `tools/sandboxes`, `spikes/S-07` | B-10 | M | Sandbox generator (react-vite on 10.6.x first; 11-beta, 8.6, 9.1 later); 200-variant channel loop with failure injection ([14 S-07](14-roadmap.md#phase-0)) | report: SB 10 quirks and throughput (slice); other versions (hardening) |
 | **B-17** | S-08 pseudo-states | hardening | `spikes/S-08` | B-05, B-11 | M | CDP force vs real hover vs addon global on ds-react, the styling variants, small MUI and shadcn sandboxes | per-strategy success table; D-14 ordering proposal |
 | **B-18** | S-13 detection (capture half) | hardening | `spikes/S-13` | B-11 | S | React fiber `type` ↔ Storybook `component` refs, dev and static; structural hash; a Card→Button→Icon story | precision/recall per build mode |
-| **B-19** | S-19 provenance | slice (CSS modules), hardening (rest) | `spikes/S-19`, `packages/vite-plugin` (prototype) | B-11 (B-05 for the hardening half) | M | CDP `styleSheetId` + `style.range` + `CSS.styleSheetAdded` source maps on the dev server for CSS modules first, then plain CSS, Tailwind v4, emotion; `data-holotype-loc` prototype for React 19 | coverage table; resolver module reused by B-45; `DCR_PROVENANCE_*` thresholds |
+| **B-19** | S-19 provenance | slice (CSS modules), hardening (rest) | `spikes/S-19`, `packages/vite-plugin` (prototype) | B-11 (B-05 for the hardening half) | M | CDP `styleSheetId` + `style.range` + `CSS.styleSheetAdded` source maps on the dev server for CSS modules first, then plain CSS, Tailwind v4, emotion. The fixture's Storybook `viteFinal` sets `css.devSourcemap: true`; inline sheets resolve through `ownerNode` → `data-vite-dev-id`, ranges offset by `startLine`/`startColumn`. `data-holotype-loc` prototype for React 19 | coverage table; resolver module reused by B-45; `DCR_PROVENANCE_*` thresholds; `DCR_PROVENANCE_NO_SOURCEMAP` when a sheet has no source map |
 
 The container halves of S-03, S-04, S-05, S-09, S-10 and S-16 (Chromium reference renders) are part of their kits in [§9](#spike-kit).
 
@@ -519,7 +520,7 @@ One CDP pass that feeds both tokens (D-18) and provenance (D-36).
 Build ([05 §6.2](05-capture.md#authored), [08 §3–5](08-tokens.md#provenance), [15 §5.1](15-change-requests.md#provenance)):
 - `CSS.getMatchedStylesForNode` for elements that carry mapped properties; the winning declaration per property (paint, border, radius, padding, gap, font size, color); its `var()` chain (`CVarChain`); `rule.styleSheetId` + `style.range`.
 - The custom-property table (`CCustomPropertyTable`) for `:root` and `[data-theme]` scopes.
-- `CSS.styleSheetAdded` headers into `CaptureDoc.styleSheets`; the S-19 resolver maps ranges through Vite dev source maps to `SourceLoc` (repo-relative, validated inside the repo). Static builds give selectors only (`DCR_PROVENANCE_MINIFIED`).
+- `CSS.styleSheetAdded` headers into `CaptureDoc.styleSheets`; the S-19 resolver maps ranges through Vite dev source maps to `SourceLoc` (repo-relative, validated inside the repo). The CLI forces `css.devSourcemap: true` through `viteFinal`; inline sheets resolve through `ownerNode` → `data-vite-dev-id`, ranges offset by `startLine`/`startColumn`; a sheet without a source map gives `DCR_PROVENANCE_NO_SOURCEMAP`. Static builds give selectors only (`DCR_PROVENANCE_MINIFIED`).
 - Cost control per [08 §4.5](08-tokens.md#prov-cost).
 
 Acceptance: `test:e2e` on the **dev server**: for `components-button--primary`, `padding-left` resolves to `--space-3` and to `Button.module.css:<line>`; `background-color` resolves through `--button-bg` → `--color-primary`; a `calc()` value has no chain; snapshot of the custom-property table.
@@ -715,7 +716,7 @@ Acceptance: the second import reports 0 changes; no unexpected diagnostics.
 **Path** `packages/cli/src/commands/branch/**` · **Depends** B-52 · **Runs** container · **Size** M
 
 Build ([15 §2](15-change-requests.md#branch-model), [11 §3.3](11-ux.md)):
-- `holotype branch start [--dev-server <url>] [--only …]`: checks the git branch and working tree (`DCR_BASELINE_DIRTY` if dirty), captures from the dev server, writes `branch.holotype.zip` whose manifest has `source.git` and the `branch` block (`repo`, `branch`, `baseCommit`, `baselineFp`, `kind`). Ensures `.gitignore` has `.holotype/` and `!.holotype/requests/`.
+- `holotype branch start [--dev-server <url>] [--only …]`: checks the git branch and working tree (`DCR_BASELINE_DIRTY` if dirty), captures from the dev server, writes `branch.holotype.zip` whose manifest has `source.git` and the `branch` block ([06 §4.2](06-ir.md#branch-block): `repo`, `branch`, `baseCommit`, `dirty`, `dcrConfig`, `configHash`). Ensures `.gitignore` has `.holotype/` and `!.holotype/requests/`.
 - `holotype branch link <figma-url> [--kind figma-branch|duplicate]`: stores `{ figmaFileKey, ...BranchMeta }` in `.holotype/branches/<slug>.json`.
 - `holotype branch refresh`: re-captures from branch HEAD and writes a new branch bundle.
 - `repo` is the normalized remote without credentials ([13](13-security-legal.md#secrets)).
@@ -727,10 +728,11 @@ Acceptance: `test:e2e` in a temp git repo created from ds-react: start → bundl
 **Path** `packages/plugin/src/{proposal,ui/changes}` · **Depends** B-59, B-60, B-62, B-33 (S-17 report) · **Runs** container (tests), needs Figma desktop (demo D4) · **Size** L
 
 Build ([09 §20.1–20.2](09-plugin.md#proposal), [10 §9.5](10-sync.md#proposal-mode), [15 §3](15-change-requests.md#proposal-mode)):
-- Import of a bundle with a `branch` block offers "Import as branch file". It writes root `branch:meta` (`fileKey` from `figma.fileKey`, `mode: 'proposal'`, `status: 'editing'`). A `fileKey` mismatch disables proposal mode.
+- Import of a bundle with a `branch` block offers "Import as branch file". It writes root `branch:meta` (`fileKey` from `figma.fileKey` when available, else `null`, plus a random `fileId` at root and in `branch:meta`; `mode: 'proposal'`, `status: 'editing'`; D-53). A mismatch shows the `DCR_BRANCH_FILE_COPIED` banner.
 - After read-back and fallback, write `BaselineSnapshot` per variant (and the set's props/axes snapshot): canonical JSON → fflate → base64 → `base:0..n` chunks ≤90 kB, `base:h`; budget 16 kB, over budget → `DCR_BASELINE_EXTERNAL` and the snapshot goes in the downloadable apply report; rewrite only if `base:h` changed.
 - Proposal rules: an edited managed node is a proposal (never `SYNC_CONFLICT`); on refresh untouched nodes update and their baseline moves; edited nodes keep the designer value; `DCR_BASELINE_SHIFTED` when code changed underneath.
-- **Changes** tab: on request, compare per-group sub-hashes with the baseline; list changed components, components without `sid`, and frames on the page in scope; refresh on `nodechange` (debounced 500 ms). States per [11 §6.14](11-ux.md#changes).
+- At import as branch file, record the existing top-level frames and sections in `branch:meta.baseFrames`.
+- **Changes** tab: on request, compare per-group sub-hashes with the baseline; list changed components, components without `sid`, and frames in scope. The default scope is `changed` (D-57): every managed component whose `ah` differs from its baseline, plus every top-level frame or section absent from `branch:meta.baseFrames`; refresh on `nodechange` (debounced 500 ms). States per [11 §6.14](11-ux.md#changes).
 
 Acceptance: fake tests: baseline written once, a second import writes nothing; editing a fill shows one change; library-mode files never get `base:*`; UI tests for the Changes states.
 
@@ -756,7 +758,7 @@ Build ([15 §4.1–4.4, §4.7, §4.9](15-change-requests.md#extraction)):
 - Field diff against the baseline with the noise filter (re-run `layout-sim` on the baseline plus the edited fields; drop derived geometry).
 - Items: `component.modified`, `variant.added`, `property.added`, `property.changed`, `component.new`, and `node.added`/`node.removed` inside managed variants. Everything else → `unknown` with `DCR_UNKNOWN_CHANGE`.
 - Tokens through `codeSyntax.WEB`; questions `DCR_VALUE_UNTOKENIZED`, `DCR_VALUE_NO_TOKEN`, `DCR_FIELD_UNMAPPABLE`, `DCR_PROPERTY_UNMAPPED`.
-- Stable item ids, sorted items, `dcrHash` excluding `header.generated` (D-35).
+- Stable item ids, sorted items, `dcrHash` over the core (excludes `header.generated`, `header.figma.fileVersion`, assets and provenance fields; D-35, D-50). `dcr import` recomputes it after attaching provenance; a plugin↔CLI core-hash parity case is in the goldens.
 
 Acceptance: unit tests per rule; the B-68 golden cases for these kinds; shuffle invariance.
 
@@ -764,7 +766,7 @@ Acceptance: unit tests per rule; the B-68 golden cases for these kinds; shuffle 
 
 **Path** `packages/dcr/src/{screens,reverse,structure}` · **Depends** B-65, B-32 (S-16 report) · **Runs** container · **Size** M
 
-Build ([15 §4.5–4.6, §4.8](15-change-requests.md#extraction)): scope = a page or a selection (`DcrScope`; "Ready for dev" scope needs S-18 and is hardening); each top-level frame in scope → one `screen` item with one variant; usage trees (`UsageNode`) of instances, frames and text; reverse mapping of instance properties to args for VARIANT, BOOLEAN, TEXT through `valueMap`; `component.new` structure, tokens used, and instances of existing components inside it. Nearest-component scoring: basic structural score only.
+Build ([15 §4.5–4.6, §4.8](15-change-requests.md#extraction)): scope = `changed` by default (D-57, from `branch:meta.baseFrames`), or a page or a selection (`DcrScope`; "Ready for dev" scope needs S-18 and is hardening); the chosen scope is recorded in `lastDcr.scope`; each top-level frame in scope → one `screen` item with one variant; usage trees (`UsageNode`) of instances, frames and text; reverse mapping of instance properties to args for VARIANT, BOOLEAN, TEXT through `valueMap`; `component.new` structure, tokens used, and instances of existing components inside it. Nearest-component scoring: basic structural score only.
 
 Acceptance: golden cases `screen-usage-basic` and `component-new`; reverse mapping round-trip test with the S-16 table.
 
@@ -793,8 +795,8 @@ Acceptance: `pnpm -F @holotype/dcr test` runs all cases; a second extraction of 
 Build ([09 §20.3](09-plugin.md#proposal), [11 §6.15–6.16](11-ux.md#submit)):
 - `snapshot.request` → main reads the scope read-only → snapshot chunks → UI runs `dcr.extract` (the `dcr` package in the UI bundle, see [§11](#plan-gaps)).
 - Designer-view preview: summary first, plain-language items, code details behind a toggle; Exclude toggles (`branch:meta.excluded`).
-- **Download request**: `request.zip` = `dcr.json`, `prompt.md`, `assets.json`, "after" PNGs @2x (the fidelity export path, [09 §14](09-plugin.md#fidelity)), and the baselines that were over budget. Also **Copy prompt**.
-- Then one `branch.meta.patch { status: 'submitted', lastDcr }` (one undo step).
+- **Submit** writes the request into the file: root shared plugin data `request:0..n` (gzipped canonical DCR, ≤90 kB chunks) and `branch:meta.lastDcr`, in one `branch.meta.patch { status: 'submitted', lastDcr }` (one undo step). It then saves a named version (`figma.saveVersionHistoryAsync('Holotype request <dcrHash8>')`) and records its id in `lastDcr.versionId` (D-48, D-49).
+- Actions after Submit: **Notify developer** (copies a message with the branch URL, the request id and `holotype dcr --pull <figma-url>`) and **Download request**: `request.zip` = `dcr.json`, `prompt.md`, `assets.json`, "after" PNGs @2x (the fidelity export path, [09 §14](09-plugin.md#fidelity)), and the baselines that were over budget. Also **Copy prompt**.
 - Without CLI provenance the prompt carries `DCR_PROVENANCE_MISSING`; B-70 adds it.
 
 Acceptance: fake e2e: import branch bundle → simulated edits of the §4.3 demo → Submit → `dcr.json` equals the golden output of the matching fixture; UI tests for empty, loading, error and success; snapshot + extraction ≤2 s for 200 items in the fake.
@@ -803,9 +805,11 @@ Acceptance: fake e2e: import branch bundle → simulated edits of the §4.3 demo
 
 **Path** `packages/cli/src/commands/dcr/**` · **Depends** B-52, B-62, B-67 · **Runs** container · **Size** M
 
-Build ([15 §5, §6, §7.1](15-change-requests.md#provenance)): `holotype dcr import <request.zip>` validates the DCR, checks `header.branch` against the linked branch (`DCR_NOT_BRANCH_FILE`), loads `provenance/<sid>.json` from the cache for `baseCommit`, attaches `CodeRef`, `FieldOrigin`, reverse arithmetic → `cssTarget` (for example Figma padding 17 with a 1 px border → CSS `padding-left: 16px`), adds "before" screenshots from the cache, re-renders `prompt.md`, and writes `.holotype/requests/<id>/`. The same input gives the same bytes. Exit codes per [11 §3.2](11-ux.md).
+Build ([15 §5, §6, §7.1](15-change-requests.md#provenance)): `holotype dcr import <request.zip>` validates the DCR, checks `header.branch` against the current git branch (`DCR_GIT_BRANCH_MISMATCH`; `DCR_NOT_BRANCH_FILE` only when the file has no branch metadata), recomputes the core `dcrHash` (D-50), loads `provenance/<sid>.json` from the cache for `baseCommit`, attaches `CodeRef`, `FieldOrigin`, reverse arithmetic → `cssTarget` (for example Figma padding 17 with a 1 px border → CSS `padding-left: 16px`), adds "before" screenshots from the cache, re-renders `prompt.md`, and writes `.holotype/requests/<id>/`. The same input gives the same bytes. Exit codes per [11 §3.2](11-ux.md).
 
-Acceptance: `test:e2e`: the `modified-padding` request gets `Button.module.css:<line>`; a field never points to the wrong file on the fixture set; byte-identical output on two runs.
+Stretch (L4/L5, only after the S-18 root-plugin-data check passes): `holotype dcr --pull <figma-url>` reads root shared plugin data (`request:*`, `branch:meta.lastDcr`) and images through REST at `?version=<lastDcr.versionId>`, checks the core hash, then runs the same attach path. Needs a read-only Figma token (`holotype login --figma`; `NET_FIGMA_TOKEN_MISSING` otherwise) and gives `DCR_NO_SUBMITTED_REQUEST` when `lastDcr` is absent. If it does not fit in the slice, it becomes its own hardening item.
+
+Acceptance: `test:e2e`: the `modified-padding` request gets `Button.module.css:<line>`; a field never points to the wrong file on the fixture set; byte-identical output on two runs; a core `dcrHash` mismatch is rejected; a request from another git branch gives `DCR_GIT_BRANCH_MISMATCH`.
 
 ### 6.5 L5: verify and the loop
 
@@ -815,8 +819,9 @@ Acceptance: `test:e2e`: the `modified-padding` request gets `Button.module.css:<
 
 Build ([15 §9.1–9.2](15-change-requests.md#verify)):
 - Capture from the dev server at HEAD: the components in `summary.components` plus every story tagged `parameters.holotype.implements` with an item id; map with the same mapper.
-- Compare each item to its `acceptance`: `fields` (with `tol`), `token` (binding must be exactly that variable), `visual` for `variant.added` and `component.new` (`S_masked` and box delta from B-53, against the Figma "after" PNG), `structure`; `screen` items are `not-verifiable` unless a story implements them, then `visual`.
-- Statuses `implemented`, `partial`, `pending`, `not-verifiable`; `--decline <itemId> --reason`; `verify.json`; `DCR_VERIFY_*` codes; exit 0 only if every item is implemented, declined or not-verifiable, else 5.
+- Compare each item to its `acceptance` **in Scene space** through the shared normalizer (D-55): `fields` (with `tol`), `token` (binding must be exactly that variable), variant values, `structure` and fields against the designer's snapshot for `variant.added` and `component.new`, argTypes for `property.*`. `visual` (`S_masked` and box delta from B-53, against the Figma "after" PNG) is **advisory** only. `screen` items are `not-verifiable` unless a story implements them.
+- Regression check: non-target variants of each touched component must keep their baseline values, else status `regressed` (`DCR_VERIFY_REGRESSED`).
+- Statuses `implemented`, `partial`, `pending`, `regressed`, `not-verifiable`; `--decline <itemId> --reason`; `verify.json`; `DCR_VERIFY_*` codes; exit 0 only if every item is implemented, declined or not-verifiable, else 5.
 
 Acceptance: `test:e2e` in a temp repo from ds-react: with no code change every item is `pending`; after a scripted CSS change for `modified-padding` the item is `implemented`; after a half change it is `partial` with the remaining field; `verify.json` snapshot.
 
@@ -1063,7 +1068,7 @@ Each card below is a work item. **Build** runs in the container (`spikes/S-xx`, 
   2. File menu ▸ **Create branch…**, name it `spike-s17`. In the branch, run **Step 2**.
   3. Back in the main file, run **Step 3**.
   4. In the branch, accept **Update from main** when offered, then run **Step 4**.
-  5. Merge the branch (**Review and merge**). In the main file, run **Step 5**. Copy results and paste (all steps are in one block).
+  5. Merge the branch (**Review and merge**; test only, to learn what happens if someone merges; Holotype never merges, D-47). In the main file, run **Step 5**. Copy results and paste (all steps are in one block).
 
 ### 9.5 Hardening spike cards
 
@@ -1186,6 +1191,8 @@ side chains that must land in time:  B-47 (layout-sim) → B-49;  B-58 (normaliz
 <a id="plan-gaps"></a>
 
 ## 11. Plan gaps and choices made here
+
+These gaps are resolved in the plan by the 2026-11 review ([REVIEW](REVIEW.md)); the choices below match the plan except where REVIEW notes otherwise (rows 12, 18: kept as chosen here).
 
 Inconsistencies between chapters (or with the brief) that the build hits. The right column applies until the plan is fixed. Line numbers are as of 2026-11-19.
 

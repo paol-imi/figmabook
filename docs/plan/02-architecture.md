@@ -20,7 +20,7 @@ What crosses the wire is defined in [06](06-ir.md). The plugin internals are in 
  │  or dev srv)  │   iframe.html + preview channel    └──────────────┘              │
  └───────────────┘◄──────────────────────────────────────────┐                     ▼
                                                              │             ┌──────────────┐
-                                                             │             │   planner    │ VariantPlan
+                                                             │             │   planner    │ ComponentPlan
                                                              │             │ (matrix, arg │ (per sid)
                                                              │             │ classification│
                                                              │             └──────┬───────┘
@@ -52,9 +52,9 @@ What crosses the wire is defined in [06](06-ir.md). The plugin internals are in 
 | Stage | Input | Output | Pure? | Cached by |
 |---|---|---|---|---|
 | storybook adapter ([03](03-storybook.md)) | Storybook base URL or dir, auth | `StorybookModel` {index, components, argTypes, globals, docgen, version} | no (I/O) | `sbFingerprint` |
-| planner ([04](04-variant-model.md)) | `StorybookModel`, resolved config | `VariantPlan` per `sid` (axes, properties, variant list, classification experiments) | yes, *except* classification, which requests renders | plan hash |
-| capture ([05](05-capture.md)) | `RenderRequest` (storyId, args, globals, state, viewport, probes) | `CaptureDoc` (Capture IR) + assets | no | `captureKey` (§6.2) |
-| mapper ([07](07-mapping.md), [08](08-tokens.md)) | all `CaptureDoc`s of a `sid` + `VariantPlan` + token catalog | `SceneComponent` (Scene IR) + `TokenSet` + diagnostics | **yes** | `mapKey` = H(mapper version, captureKeys, plan hash, config subset) |
+| planner ([04](04-variant-model.md)) | `StorybookModel`, resolved config | `ComponentPlan` per `sid` (axes, properties, variant list, classification experiments) | yes, *except* classification, which requests renders | plan hash |
+| capture ([05](05-capture.md)) | `RenderRequest` (storyId, args, globals, state, viewport, probes) | `CaptureDoc` (Capture IR) + assets | no | `captureKey` ([§5.4](#capture-key)) |
+| mapper ([07](07-mapping.md), [08](08-tokens.md)) | all `CaptureDoc`s of a `sid` + `ComponentPlan` + token catalog (`MapperInput`) | `SceneComponent` (Scene IR) + `TokensDoc` + diagnostics | **yes** | `mapKey` = H(mapper version, captureKeys, plan hash, config subset) |
 | bundle writer | Scene IR set | bundle (dir/zip/stream) | yes | — |
 | plugin ([09](09-plugin.md), [10](10-sync.md)) | bundle stream | Figma document mutations + `ApplyReport` | no | `irh`/`ah` in plugin data |
 
@@ -62,7 +62,7 @@ What crosses the wire is defined in [06](06-ir.md). The plugin internals are in 
 1. **Mapper purity (D-08).** The same inputs and mapper version give byte-identical Scene IR. The mapper reads no clock, environment or random source. All ids derive from hashes.
 2. **Capture never decides Figma structure.** It records facts. Re-running the mapper on cached Capture IR re-infers without a browser. This is how inference upgrades ship cheaply.
 3. **The plugin never infers CSS (D-09).** It reconciles, verifies and falls back using data in the Scene IR.
-4. **Per-component isolation.** A failure in one `sid` (`CAP_*`, `LAYOUT_*` errors) yields a bundle entry with `status:"failed"` plus diagnostics, never a failed run. The CLI exit code reflects the configured `--fail-on` severity ([11](11-ux.md)).
+4. **Per-component isolation.** A failure in one `sid` (`CAP_*`, `LAYOUT_*` errors) yields a bundle entry with `status:"failed"` plus diagnostics, never a failed run. The CLI exit code reflects `--fail-on` (exit 5, [11 §3.2](11-ux.md#exit-codes)).
 
 ### 1.3 Job model (CLI)
 
@@ -89,11 +89,13 @@ interface CaptureJob { id: JobId; sid: string; vk: string; request: RenderReques
 
 | | Topology | Phase | Who renders | How the plugin gets data | Network needs in manifest |
 |---|---|---|---|---|---|
-| **A** | Local CLI server: `holotype serve` | MVP (P3) | user's machine | HTTP + WS on loopback | `http://127.0.0.1:47321`–`47323`, `ws://` same (D-25) |
+| **A** | Local CLI server: `holotype serve` | hardening (D-58) | user's machine | HTTP + WS on loopback | `http://127.0.0.1:47321`–`47323`, `ws://` same (D-25) |
 | **B** | Bundle-file import | MVP (P1) | user's machine or CI | File API in UI (drag and drop / picker) | none |
 | **D** | CI + registry: GitHub Action | P7 | CI runner | HTTPS GET from registry | registry domain(s) |
 | **C** | Hosted renderer | P8+ | our sandboxed workers | HTTPS from our API | `https://api.<brand>.dev` |
 | **E** | Render inside plugin iframe | **rejected** | — | — | — |
+
+**Loop slice:** topology B only. Bundles reach the plugin by Import file. Requests leave it as `request.zip`, or are read from the file by `holotype dcr --pull` (D-49). Topology A (local server, pairing, `POST /v1/dcr`) is hardening (D-58).
 
 ### 2.1 (A) Local CLI server
 - Binds to `127.0.0.1` only (never `0.0.0.0`, never `::`). Port list `47321, 47322, 47323` (D-25). It takes the first free one and prints it.
@@ -105,17 +107,16 @@ interface CaptureJob { id: JobId; sid: string; vk: string; request: RenderReques
   - The user must keep a terminal open.
 
 ### 2.2 (B) Bundle-file import
-- `holotype export` writes `./holotype-out/<runId>/` and `<runId>.holotype.zip` (§5).
+- `holotype capture` writes the bundle to `output.dir` (default `.holotype/out/<runId>/` + `<runId>.holotype.zip`, §5). `holotype export` re-packages a cached run without re-rendering.
 - In the plugin UI, the user drops the zip or a directory (`webkitdirectory`). The UI unzips in a Web Worker with `fflate` and streams components to main (§4.4).
 - Always available. It is the fallback for every topology failure. It needs zero network, so it suits air-gapped and enterprise users.
 
 ### 2.3 (D) CI + registry
-- The Action runs `build-storybook`, then `holotype export --static storybook-static`, then publishes the bundle to a **registry** (§5.3).
+- The Action runs `build-storybook`, then `holotype capture --static storybook-static`, then publishes the bundle to a **registry** (§5.3).
 - In the plugin, "Connect registry" takes a URL and a token. A public registry needs no token. A private one uses a bearer token stored in `clientStorage`. CORS needs `ACAO: *` plus `Access-Control-Allow-Headers: authorization`.
-- **Hosts (decision for P7):**
-  - Our first-party registry domain (e.g. `registry.<brand>.dev`). It acts as a proxy for S3/GCS/GitHub Releases, so we don't need `"*"` in the manifest.
-  - `https://*.github.io` for GitHub Pages registries. Pages sends `ACAO: *` (verify, S-01).
-  - We do not list `raw.githubusercontent.com` unless S-01 confirms its CORS behaviour, and we never list `"*"`. A wildcard shows the "unrestricted" label and causes review friction ([network-access label](https://help.figma.com/hc/en-us/articles/360039958914)).
+- **Hosts:** registry domains are not in the manifest until the registry is built (hardening). Until then CI output reaches Figma as a downloaded, un-nested `.holotype.zip` (UD-09).
+  - When the registry ships, its candidate host is our first-party registry domain (e.g. `registry.<brand>.dev`), acting as a proxy for S3/GCS/GitHub Releases.
+  - We never list `"*"`. A wildcard shows the "unrestricted" label and causes review friction ([network-access label](https://help.figma.com/hc/en-us/articles/360039958914)).
 - The Action posts a PR comment and annotations: diagnostics summary, fidelity deltas, and changed components ([11](11-ux.md)).
 
 ### 2.4 (C) Hosted renderer (later)
@@ -154,11 +155,12 @@ The only workable variant needs our addon *installed in the target Storybook*, p
 **UX consequences** (screens are in [11](11-ux.md)):
 1. The desktop app is the documented primary client for topology A.
 2. Connection probe sequence:
-   1. `fetch GET /v1/health` with a 1.5 s timeout.
-   2. Classify the error:
+   1. Probe `GET /v1/health` (no auth, 1.5 s timeout) on each port, then `GET /v1/session` (401 = unpaired).
+   2. Classify the error. Classification uses the HTTP probe only. WebSocket results are recorded separately, because Chrome gates the two transports at different times.
       - `TypeError` + CSP message → `NET_DOMAIN_NOT_ALLOWED` (a manifest bug, so it's ours);
       - opaque network error in a browser client → `NET_LNA_BLOCKED`;
-      - connection refused or timeout in desktop → `NET_SERVER_UNREACHABLE`.
+      - connection refused or timeout in desktop → `NET_SERVER_UNREACHABLE`;
+      - no distinguishing signal from the browser → `NET_SERVER_UNREACHABLE` with a client-aware hint (desktop app: no LNA text, UD-45).
    3. Show the specific remedy:
       - "start `holotype serve`";
       - "allow Apps on device";
@@ -170,7 +172,9 @@ The only workable variant needs our addon *installed in the target Storybook*, p
 
 ## 4. Protocols <a id="protocol"></a>
 
-### 4.1 CLI local server: HTTP API (`/v1`)
+### 4.1 CLI local server: HTTP API (`/v1`) <a id="routes"></a>
+
+The local server is topology A, which is hardening (D-58). The loop slice uses files only (§2).
 
 Every response carries `Access-Control-Allow-Origin: *` and `Vary: Origin`.
 
@@ -183,12 +187,14 @@ Every response carries `Access-Control-Allow-Origin: *` and `Vary: Origin`.
 
 | Method | Path | Purpose | Body / query | Response |
 |---|---|---|---|---|
-| GET | `/v1/health` | liveness, no auth | — | `{ ok:true, server:"holotype", version, protocol:[1] }` |
+| GET | `/v1/health` | liveness, no auth | — | `{ ok:true, server:"holotype", serverId, version, protocol:[1] }` |
 | POST | `/v1/pair/start` | begin pairing | `{ clientName, clientNonce }` | `{ pairingId, expiresAt }`. The CLI prints a 6-digit code |
 | POST | `/v1/pair/confirm` | finish pairing | `{ pairingId, code, clientNonce }` | `{ sessionToken, expiresAt }` |
 | GET | `/v1/session` | capabilities | — | `Hello` (§4.3) |
 | GET | `/v1/storybook` | Storybook model summary | — | `{ sbVersion, framework, components: ComponentSummary[] }` |
-| GET | `/v1/components/:sid/plan` | variant plan preview | `?config=` overrides | `VariantPlanSummary` |
+| GET | `/v1/manifest` | current component hashes, for the outdated check | — | `{ fingerprint, components: Record<sid, irh> }` |
+| POST | `/v1/keys` | plugin reports the library file's component keys | `{ fileKey, keys: Record<sid, componentKey> }` | 204. Writes `.holotype/keys/<fileKey>.json` |
+| GET | `/v1/components/:sid/plan` | component plan preview | `?config=` overrides | `ComponentPlanSummary` |
 | POST | `/v1/runs` | start capture+map | `RunRequest` | `{ runId }` (202) |
 | GET | `/v1/runs/:runId` | run status | — | `RunStatus` |
 | DELETE | `/v1/runs/:runId` | cancel run | — | 204 |
@@ -197,29 +203,37 @@ Every response carries `Access-Control-Allow-Origin: *` and `Vary: Origin`.
 | GET | `/v1/assets/:sha256` | asset bytes | — | bytes; `Cache-Control: immutable` |
 | POST | `/v1/assets/have` | dedupe | `{ hashes[] }` | `{ missing[] }` (the plugin's known `imageHash` map is consulted first) |
 | GET | `/v1/events` | long-poll fallback | `?after=<seq>&wait=25` | `ServerEvent[]` |
-| WS | `/v1/ws` | event stream | subprotocol `holotype.v1` + token as first message | `ServerEvent` / `ClientMessage` |
+| WS | `/v1/ws` | event stream | subprotocol `holotype.v1` + token as first message. Tokens never appear in URLs ([13 §2.1](13-security-legal.md#local-server)) | `ServerEvent` / `ClientMessage` |
 | POST | `/v1/fidelity` | upload Figma exports for scoring | multipart: `{runId, vk}` + PNG | `FidelityResult` |
-| POST | `/v1/apply-report` | plugin reports results back (node ids, read-back deltas, Figma component keys) | `ApplyReport` | 204. Feeds Code Connect (P7) and the CLI report |
-| POST | `/v1/dcr` | plugin **Submit** hands a DCR extracted in the UI to the CLI, which adds provenance and writes `.holotype/requests/<id>/` ([15 §7.1](15-change-requests.md#prompt)) | `{ dcr: DesignChangeRequest, assets: Record<roleId, base64 PNG> }` (gzip, ≤1 MB chunks like runs) | `{ id, dcrHash, path, questions: number }` (201). Rejected with `DCR_NOT_BRANCH_FILE` unless the session's linked branch matches `header.branch` |
+| POST | `/v1/apply-report` | (hardening, topology A) plugin reports results back (node ids, read-back deltas, Figma component keys) | `ApplyReport` ([06](06-ir.md#apply-report)) | 204. Feeds Code Connect (P7) and the CLI report |
+| POST | `/v1/dcr` | (hardening, topology A) plugin **Submit** hands a DCR extracted in the UI to the CLI, which adds provenance and writes `.holotype/requests/<id>/` ([15 §7.1](15-change-requests.md#prompt)) | `{ dcr: DesignChangeRequest, assets: Record<roleId, base64 PNG> }` (gzip, ≤1 MB chunks like runs) | `{ id, dcrHash, path, questions: number }` (201). Rejected with `DCR_GIT_BRANCH_MISMATCH` unless the CLI's current git branch matches `header.branch` |
 
-### 4.2 Pairing handshake
+### 4.2 Pairing handshake <a id="pairing"></a>
+
+1. `holotype serve` prints "Waiting for Figma… In Figma: Plugins ▸ Development ▸ Holotype ▸ Connect".
+2. On `POST /v1/pair/start` it prints a boxed "Figma wants to connect. Code: **482 913** (expires in 2:00)".
+3. The user types the code in the plugin. `POST /v1/pair/confirm` returns the session token.
+4. `--pair-url` is the alternative to typing the code (below).
 
 ```
 Plugin UI                               CLI server                       Terminal
    │ GET /v1/health ──────────────────────►│                                 │
    │◄───────────── {ok, version, protocol} │                                 │
-   │ POST /v1/pair/start {clientNonce} ───►│── prints "Pairing code 482 913" ►│
+   │ POST /v1/pair/start {clientNonce} ───►│── prints "Code: 482 913" ──────►│
    │  (UI shows code entry field)          │   (valid 120 s, 5 attempts)     │
    │ POST /v1/pair/confirm {code} ────────►│ constant-time compare           │
    │◄────── {sessionToken (256-bit), exp}  │ token bound to clientNonce      │
-   │ clientStorage.set('fb.session.<port>')│                                 │
+   │ clientStorage.set(                    │                                 │
+   │   'holotype.session.<serverId>')      │                                 │
    │ GET /v1/session (Bearer) ────────────►│                                 │
    │◄──────────────────────────── Hello    │                                 │
 ```
 
+- **Session key:** the plugin stores the token under `holotype.session.<serverId>`. The `serverId` is persisted in `~/.holotype/server.json`, so a port change does not force re-pairing.
+
 - **Session lifetime:** 30-day sliding window. `holotype serve --revoke` invalidates all sessions. The token file lives at `~/.holotype/sessions.json` with mode 0600.
 - **Brute force:** 5 failed confirms lock pairing for 60 s ([13](13-security-legal.md#local-server)).
-- **No-code mode:** `holotype serve --pair-url` prints a one-time URL, `http://127.0.0.1:47321/v1/pair/auto?t=<one-time>`. The user pastes it into the plugin to skip typing the code. This is useful for screen readers and remote desktops.
+- **No-code mode:** `holotype serve --pair-url` prints a one-time URL, `http://127.0.0.1:47321/v1/pair/auto?t=<one-time>`. `t` is a single-use pairing secret, never the session token. The user pastes it into the plugin to skip typing the code. This is useful for screen readers and remote desktops.
 
 ### 4.3 Version and capability negotiation
 
@@ -236,20 +250,23 @@ type Capability =
   | "events-ws" | "events-longpoll" | "assets-dedupe" | "plan-preview" | "dcr";   // "dcr": accepts POST /v1/dcr (15)
 ```
 
-- The plugin sends `x-holotype-client: plugin/<version>; protocol=1; scene=^1.0.0`.
+- The plugin sends `x-holotype-client: plugin/<version>; protocol=1; scene=^1.0.0; features=<comma-separated BundleFeature>`, and repeats `features` in `RunRequest.supportedFeatures`.
+- In file mode (B) the exporter writes `features[]` into the manifest, and the plugin rejects unknown required features (`APPLY_UNSUPPORTED_FEATURE`).
 - **Mismatch rules:**
   - No common protocol major gives `NET_PROTOCOL_MISMATCH`, with an "update CLI" or "update plugin" hint depending on which side is older.
   - Scene IR major mismatch: the plugin carries migrations for the previous major ([06](06-ir.md#versioning)). Otherwise `APPLY_IR_VERSION_UNSUPPORTED`.
   - Unknown capabilities are ignored, and a missing capability greys out its feature in the UI.
 
-### 4.4 Event stream and message types
+### 4.4 Event stream and message types <a id="ws"></a>
+
+The WebSocket `/v1/ws` uses subprotocol `holotype.v1`. The first client message must be `{ type: "auth", token }`; the server closes the socket otherwise. Tokens never appear in URLs ([13 §2.1](13-security-legal.md#local-server)). `GET /v1/events` carries the same `ServerEvent`s when WS is blocked (§3).
 
 ```ts
 // server → client
 type ServerEvent = { seq: number; runId?: string } & (
   | { type: "run.started"; plan: { components: { sid: string; variants: number }[] } }
   | { type: "component.progress"; sid: string; phase: "plan"|"classify"|"capture"|"map"; done: number; total: number }
-  | { type: "component.ready"; sid: string; sceneHash: string; bytes: number; chunks: number; assets: string[] }
+  | { type: "component.ready"; sid: string; irh: string; bytes: number; chunks: number; assets: string[] }
   | { type: "component.failed"; sid: string; diagnostics: Diagnostic[] }
   | { type: "run.finished"; summary: RunSummary }
   | { type: "run.cancelled" }
@@ -266,8 +283,9 @@ type ClientMessage =
 interface RunRequest {
   components: string[] | "all";
   configOverrides?: Partial<UserConfig>;          // only whitelisted keys (variants/states/themes/viewport)
-  baseline?: Record<string, string>;              // sid -> sceneHash already applied in this file → server may skip
+  baseline?: Record<string, string>;              // sid -> irh already applied in this file → server may skip
   priority?: string[];                            // sids to do first
+  supportedFeatures?: BundleFeature[];            // same list as the x-holotype-client `features` (§4.3)
 }
 ```
 
@@ -280,32 +298,13 @@ interface RunRequest {
 - On reconnect the client sends `subscribe {fromSeq}`, and the server replays from there. If `fromSeq` was evicted, the server sends a `run.snapshot` with the current state of every component.
 - Runs persist on disk, so a restarted CLI can serve finished runs (`GET /v1/runs/:runId` works after a restart).
 
-**Skip:** if `baseline[sid] === sceneHash`, the server marks the component `unchanged`, and the plugin does no work. This backs the zero-writes no-op target (README §4).
+**Skip:** if `baseline[sid] === irh`, the server marks the component `unchanged`, and the plugin does no work. This backs the zero-writes no-op target (README §4).
 
 ### 4.5 Plugin main ↔ UI protocol (overview)
-The full message set is in [09](09-plugin.md).
-
-```ts
-type UiToMain =
-  | { t: "index.request" }                                        // read identity index of current file
-  | { t: "plan.compute"; component: SceneComponentChunked }      // read-only apply plan
-  | { t: "apply.begin"; applyId: string; policy: ConflictPolicies }
-  | { t: "apply.component"; applyId: string; chunk: SceneChunk }   // streamed, ≤1 MB
-  | { t: "asset.bytes"; sha256: string; bytes: Uint8Array }
-  | { t: "apply.cancel"; applyId: string }
-  | { t: "fidelity.export"; vks: string[]; scale: 2 };
-type MainToUi =
-  | { t: "index.result"; managed: ManagedIndexSummary }
-  | { t: "plan.result"; plan: ApplyPlanSummary }
-  | { t: "asset.need"; sha256: string[] }
-  | { t: "apply.progress"; applyId: string; sid: string; done: number; total: number }
-  | { t: "apply.done"; applyId: string; report: ApplyReport }
-  | { t: "fidelity.png"; vk: string; bytes: Uint8Array }
-  | { t: "error"; diagnostic: Diagnostic };
-```
+Overview only. The message union is defined in [09 §3.2](09-plugin.md#protocol): the UI pushes `unit`s when main sends `need` (pull model), plans with `plan.request` and applies with `apply.start`.
 
 - **All network I/O stays in the UI iframe.** Main-thread `fetch` is limited (it only offers `text()`, `json()` and `arrayBuffer()`) ([global fetch](https://developers.figma.com/docs/plugins/api/properties/global-fetch/)).
-- **Main applies with time-slicing** (12–16 ms slices). It sends `apply.progress` after each variant and checks for cancellation between variants.
+- **Main applies with time-slicing** (12–16 ms slices). It reports progress after each variant and checks for cancellation between variants.
 
 ---
 
@@ -314,36 +313,25 @@ type MainToUi =
 ### 5.1 Bundle (directory form)
 
 ```
-holotype-out/<runId>/
-  manifest.json                 # BundleManifest (06)
+.holotype/out/<runId>/            # default output.dir
+  manifest.json                 # BundleManifest (06 §4.2)
   components/
     components-button.json      # SceneComponent (one sid per file; gzip optional: .json.gz)
     components-card.json
   assets/
-    3f/3fa1…c9.png              # sha256-addressed, 2-char fan-out; PNG/JPEG/GIF only (rasterized at capture)
-    a9/a9e0…11.svg              # normalized SVG text (styles inlined)
-  tokens.json                   # TokenSet (08)
-  report.json                   # RunReport: diagnostics, fidelity (if computed), timings
+    3fa1…c9                     # sha256-addressed, flat; PNG/JPEG/GIF only (rasterized at capture)
+    a9e0…11                     # normalized SVG text (styles inlined); mime is in the manifest
+  tokens.json                   # TokensDoc (08)
+  report.json                   # BundleReport (06 §4.4): diagnostics, fidelity (if computed), timings
   report.html                   # human report (11)
-  capture/                      # OPTIONAL (--include-capture): CaptureDoc per vk, for debugging / re-mapping
+  capture/                      # OPTIONAL (--debug-capture): CaptureDoc per vk, for debugging / re-mapping
   provenance/<sid>.json         # OPTIONAL (branch mode): field → CSS/JSX origin; excluded from irh, not sent to the plugin (15 §5.2)
 ```
 
-```ts
-interface BundleManifest {
-  $schema: "https://<brand>.dev/schema/bundle/v1.json";
-  bundleVersion: "1.0.0";
-  runId: string; createdAt: string;            // createdAt excluded from hashes
-  generator: { name: "holotype"; version: string; chromium: string; playwright: string; mapper: string };
-  storybook: { url?: string; version: string; framework: string; sbFingerprint: string };
-  git?: { sha: string; ref: string; dirty: boolean };   // required in branch mode (15 §2.2); `source.git` in the canonical 06 §4.2 schema
-  irVersions: { scene: string; capture?: string };
-  components: { sid: string; title: string; file: string; sceneHash: string; status: "ok"|"partial"|"failed"; variants: number }[];
-  assets: { sha256: string; mime: string; bytes: number; width?: number; height?: number }[];
-  tokens?: { file: "tokens.json"; hash: string };
-  integrity: { algo: "sha256"; files: Record<string, string> };   // path -> sha256
-}
-```
+**Schema:** [06 §4.2](06-ir.md#bundlemanifest). This section describes only the on-disk layout.
+
+- Each component entry carries its component `irh`. `report.json` is a `BundleReport` ([06 §4.4](06-ir.md#bundle-report)). The CLI `--json` output is a `RunReport` ([12 §7.1](12-quality.md#observability)), which embeds it.
+- Assets in a bundle are flat (`assets/<sha256>`). The 2-character fan-out applies only to the local cache (§5.4).
 
 - **Zip form:** `<runId>.holotype.zip` holds the same tree.
   - Stored with `STORE` for assets that are already compressed, and `DEFLATE` for JSON.
@@ -353,7 +341,7 @@ interface BundleManifest {
 
 ### 5.2 Determinism
 - Canonical JSON throughout ([06](06-ir.md#hashing)): sorted keys, no insignificant whitespace, numbers rounded to 1/1000 px.
-- The same Storybook build, config and tool versions give identical `sceneHash` values. CI uses this to detect "no design change" and skip publishing.
+- The same Storybook build, config and tool versions give identical `irh` values. CI uses this to detect "no design change" and skip publishing.
 
 ### 5.3 Registry layout (topology D)
 
@@ -363,6 +351,7 @@ interface BundleManifest {
   channels/<branch>.json        # same shape; e.g. channels/main.json, channels/feature-x.json; branch channels add baseCommit (15 §2.2)
   runs/<runId>/                 # immutable bundle directory (5.1), or <runId>.holotype.zip
   index.json                    # last 50 runs: [{ runId, createdAt, git, changedSids }]
+  status.json                   # per-sid sync status for the addon panel (hardening)
 ```
 
 - Runs are **immutable**: `Cache-Control: public, max-age=31536000, immutable`. Pointers (`latest.json`, `channels/*`) use `max-age=60`.
@@ -370,39 +359,56 @@ interface BundleManifest {
 - **Publishing:** `holotype publish --to <url|s3://|gh-pages>` is an uploader with pluggable backends. The Action defaults to a `gh-pages` branch or an artifact plus our proxy.
 - **Plugin behaviour:**
   - Polls the channel pointer when opened and on demand.
-  - Shows "Outdated (N components changed)" by comparing `sceneHash` with the file registry.
+  - Shows "Outdated (N components changed)" by comparing `irh` with the file registry.
 
-### 5.4 Local workspace `.holotype/` (gitignored by `holotype init`)
+### 5.4 Local workspace `.holotype/` <a id="workspace"></a>
 
-`holotype init` writes `.holotype/` **and** `!.holotype/requests/` to `.gitignore`: DCRs and verify reports are committed with the PR (D-37); everything else stays local.
+`holotype init` writes exactly these three lines to `.gitignore`, in this order:
+
+```
+.holotype/*
+!.holotype/requests/
+!.holotype/branches/
+```
+
+A pattern on the directory itself (`.holotype/`) cannot be re-included, so `init` ignores the directory's contents instead. DCRs, verify reports and branch links are committed with the PR (D-37); everything else stays local. `init` self-checks with `git check-ignore -q .holotype/requests/x/dcr.json` (the check must fail, i.e. the file is not ignored). `holotype doctor` checks "DCR folder is committed" and repairs it with `--fix`.
 
 ```
 .holotype/
   requests/<dcrId>/             # COMMITTED: dcr.json, prompt.md, assets.json, assets/, verify.json (15 §6)
-  branches/<branch-slug>.json   # { figmaFileKey, ...BranchMeta } link for one git branch (15 §2.2)
+  requests/LATEST-<branch-slug> # COMMITTED: id of the newest request on that branch (D-56)
+  branches/<branch-slug>.json   # COMMITTED: { figmaFileKey, ...BranchMeta } link for one git branch (15 §2.2); no secrets (file key, fileId, base commit)
   branches/<branch-slug>/baseline/<vk>.json.gz   # over-budget baseline snapshots (15 §3.3)
+  out/<runId>/                  # default output.dir for bundles (§5.1) + <runId>.holotype.zip
+  keys/<fileKey>.json           # library component keys, written by POST /v1/keys (§4.1)
   cache/
-    capture/<captureKey[0:2]>/<captureKey>.json.gz    # CaptureDoc
+    capture/<captureKey[0:2]>/<captureKey>.json.gz    # CaptureDoc (fflate gzip)
     assets/<sha[0:2]>/<sha>                           # raw fetched/rasterized assets
     map/<mapKey>.json.gz                              # SceneComponent
     meta/sb-<sbFingerprint>.json                      # StorybookModel snapshot
-  runs/<runId>/events.ndjson | status.json | bundle → ../../holotype-out/<runId>
+  runs/<runId>/events.ndjson | status.json | bundle → ../../out/<runId>
   auth/storageState.json        # 0600; Playwright storage state for private Storybooks (13)
   auth/headers.json             # 0600; extra headers; never copied into bundles
   logs/<date>.ndjson
 ```
 
-#### Cache keys
+- `holotype dcr prune --keep latest` removes older request folders.
+
+#### Cache keys <a id="capture-key"></a>
+
+This is the single definition of `captureKey`; [05 §10.2](05-capture.md) and [06 §6](06-ir.md#hashing) link here.
+
 ```
 sbFingerprint = H( index.json bytes ∥ sorted hashed-asset names in iframe.html ∥ project.json )
-                 // dev server: H(index.json ∥ server start time) — capture cache disabled by default in dev
-captureKey    = H( captureEngineVersion ∥ captureIR major ∥ chromiumVersion ∥ sbFingerprint
-                   ∥ storyId ∥ canonical(args) ∥ canonical(globals) ∥ state ∥ viewport ∥ dpr ∥ probes ∥ captureConfigSubset )
+                 // dev server, branch mode: H( baseCommit ∥ dirtyTreeHash ); cache on
+                 // dev server, otherwise:   a per-run nonce (cache effectively off) unless --trust-dev-cache
+captureKey    = H( captureEngineVersion ∥ captureIR major ∥ chromium ∥ playwright ∥ sbFingerprint
+                   ∥ storyId ∥ args ∥ globals ∥ state ∥ viewport ∥ dpr ∥ probes ∥ fontsInstalledHash ∥ configSubset )
 mapKey        = H( mapperVersion ∥ sceneIR major ∥ sorted(captureKeys) ∥ planHash ∥ mapperConfigSubset ∥ tokenCatalogHash )
 ```
 
-- `H` is sha256 truncated to 32 hex characters.
-- **Branch keys.** Registry pointers, bundles and branch links are keyed by `{repo, branch, baseCommit}` ([15 §2.2](15-change-requests.md#branch-model)); `repo` is the normalized remote without credentials. In branch mode the dev-server capture cache is **on**, keyed by `baseCommit` + dirty-tree hash instead of the server start time, so `holotype dcr` can recover provenance for the baseline without re-capturing.
+- `H` is sha256 truncated to 32 hex characters. `args` and `globals` are canonical JSON ([06](06-ir.md#hashing)).
+- **Branch keys.** Registry pointers, bundles and branch links are keyed by `{repo, branch, baseCommit}` ([15 §2.2](15-change-requests.md#branch-model)); `repo` is the normalized remote without credentials. In branch mode the dev-server capture cache is **on** (`sbFingerprint` above), so `holotype dcr` can recover provenance for the baseline without re-capturing.
 - **Eviction:** LRU, capped at 2 GB (configurable). Clear with `holotype cache prune|clear`.
 - **Remote cache:** the same keys over HTTP (`--remote-cache <url>`, Turbo-style PUT/GET) for CI.
 
@@ -420,16 +426,19 @@ holotype/
     capture/            # browser pool, CDP session helpers, serializer (src/page/* → built IIFE string), stabilizer, probes, states
     planner/            # matrix builder, budgets, pairwise, classification experiments, config resolution per sid
     mapper/             # layout inference, sizing, text, paints, effects, borders, simplification, naming, alignment, token binding
+    dcr/                # pure FigmaSnapshot↔baseline diff, DCR IR, renderPrompt, renderSnippet (isomorphic)
     plugin/             # src/main/* (reconciler, applier, figma-port.ts, identity, verify), src/ui/* (Preact), manifest via package.json
     figma-fake/         # FigmaPort in-memory implementation + snapshot serializer; uses layout-sim for geometry
     cli/                # bin/holotype; commands/*; server/* (Hono + ws); bundle/* (writer, zip, publish backends); config/*
     storybook-addon/    # preset.ts, preview.ts (beforeAll hooks), manager.tsx (panel), types.ts (parameters.holotype typing)
     action/             # action.yml + dist (ncc bundle of cli entry)
+    vite-plugin/        # optional JSX location stamping (hardening)
   tools/
     fidelity/           # scoring: pixelmatch, ssim.js, box-delta; HTML dashboard; ratchet thresholds
-    harness/            # nightly real-Figma runner orchestration (S-11 / macOS desktop)
+    harness/            # real-Figma runner orchestration (S-11 / macOS desktop)
   fixtures/
-    react-sb/           # golden library (12): React + Vite on SB 10 (D-26); vue-sb/, lit-sb/ come post-M5
+    ds-react/           # golden library (12): React + Vite on SB 10 (D-26); micro stories in src/micro/; other renderers come post-M5
+  spikes/               # "Holotype Spikes" dev plugin, with its own manifest id so the product plugin id stays fixed
   docs/                 # plan/, research/, later the docs site source
 ```
 
@@ -437,17 +446,27 @@ holotype/
 
 | Package | Public API (entry exports) | Must not depend on |
 |---|---|---|
-| `ir` | `CaptureDoc`, `SceneComponent`, `BundleManifest`, `TokenSet` types + TypeBox schemas; `validate*()`; `migrateScene()`; `canonicalJSON()`; `hash()` | anything but `@sinclair/typebox` |
+| `ir` | `CaptureDoc`, `SceneComponent`, `BundleManifest`, `TokensDoc` types + TypeBox schemas; `validate*()`; `migrateScene()`; `normalizeGroups()`; `canonicalJSON()`; `hash()`; `ir/pipeline.ts` (`ComponentPlan`, `ComponentMetaInput`, `MapperInput`) | anything but `@sinclair/typebox` |
 | `shared` | `Diagnostic`, `DiagCode` registry, `defineDiagnostic()`, `Result`, `Logger` (interface only) | anything |
 | `layout-sim` | `simulateAutoLayout(spec, children)`, `simulateGrid(spec, children)`, `measureHug()` | Node APIs, DOM, `figma` |
 | `storybook` | `connectStorybook(opts) → StorybookSource`, `StorybookModel`, `RenderDriver` | `mapper`, `plugin` |
 | `capture` | `createCapturer(opts) → Capturer` with `capture(req): Promise<CaptureDoc>`, `close()`; `serializerSource` (string) | `mapper`, `plugin` |
-| `planner` | `planComponent(model, sid, config, classify: ClassifyFn) → VariantPlan` | `capture` (receives `ClassifyFn` by injection), `plugin` |
-| `mapper` | `mapComponent(input: MapInput) → SceneComponent`, `mapTokens()`, `MapperOptions` | **Node built-ins, DOM, `figma`, Playwright** |
-| `plugin` | none (an application); internal `FigmaPort` interface exported for `figma-fake` | Node built-ins; may bundle only `ir`, `shared`, `layout-sim` (+ Preact in UI) |
+| `planner` | `planComponent(model, sid, config, classify: ClassifyFn) → ComponentPlan` | `capture` (receives `ClassifyFn` by injection), `plugin` |
+| `mapper` | `mapComponent(input: MapperInput): MapperOutput` ([07](07-mapping.md)), `mapTokens()`, `MapperOptions` | **Node built-ins, DOM, `figma`, Playwright** |
+| `dcr` | `extract(snapshot, baseline, config) → DcrCore`, `renderPrompt()`, `renderSnippet()` | **Node built-ins, DOM, `figma`**, `capture`, `cli` |
+| `plugin` | none (an application); internal `FigmaPort` interface exported for `figma-fake` | Node built-ins; may bundle only `ir`, `shared`, `layout-sim`, plus `dcr` in the UI bundle (+ Preact in UI) |
 | `figma-fake` | `createFakeFigma() → FigmaPort & { snapshot(): FakeTree }` | `plugin` runtime code (only the `FigmaPort` type) |
 | `cli` | `holotype` binary; programmatic `run(config)`, `serve(opts)`, `exportBundle()` | `plugin` |
 | `storybook-addon` | preset (`previewAnnotations`, `experimental_manifests`), `HolotypeParameters` type | `cli`, `capture` (the serializer is consumed as a built string) |
+
+**Types referenced here but owned elsewhere:**
+
+| Type | Owner |
+|---|---|
+| `StorybookModel` | [03 §4.4](03-storybook.md) |
+| `RunReport` | [12 §7.1](12-quality.md#observability) |
+| `ApplyReport` | [06](06-ir.md#apply-report) |
+| `ChangeSummary`, `FontPreflight` | [09](09-plugin.md) |
 
 ### 6.2 Dependency rules
 These are enforced with `dependency-cruiser` in CI.
@@ -458,22 +477,24 @@ These are enforced with `dependency-cruiser` in CI.
 | `ir` | `shared` |
 | `layout-sim` | `ir`, `shared` |
 | `mapper` | `layout-sim`, `ir`, `shared` |
+| `dcr` | `layout-sim`, `ir`, `shared` |
 | `storybook` | `ir`, `shared` |
 | `capture` | `storybook` (page-side driver), `ir`, `shared` |
 | `planner` | `storybook` (types), `ir`, `shared` |
-| `plugin` | `layout-sim`, `ir`, `shared` (nothing else is bundled) |
+| `plugin` | `layout-sim`, `ir`, `shared`; plus `dcr` in the **UI** bundle only (nothing else is bundled) |
 | `figma-fake` | `layout-sim`, `ir`, `shared`, `plugin` (type-only `FigmaPort`) |
 | `cli` | everything except `plugin` and `figma-fake` |
 | `storybook-addon` | `ir` (types), `shared`, the built serializer string from `capture` |
 
 - **Leaf order:** `shared` → `ir` → `layout-sim`. `shared` has no dependencies. `ir` imports `shared` for diagnostic types.
-- **Browser-safe set:** `mapper`, `layout-sim`, `ir` and `shared` must be **isomorphic**. They pass:
+- **Browser-safe set:** `mapper`, `dcr`, `layout-sim`, `ir` and `shared` must be **isomorphic**. They pass:
   - an ESLint/Biome restricted-imports rule (no `node:*`, `fs`, `path`, `process`, `Buffer`);
   - a CI build that bundles them for the `es2022` browser target.
-- **Hashing must be pure JS.** Figma's main thread has no WebCrypto (verify, S-06), so `ir/hash.ts` ships a pure-JS sha256 (`@noble/hashes`), used on every side.
+- **Hashing must be pure JS.** Figma's main thread has no WebCrypto (to be confirmed by S-06 step 1: `crypto.subtle`), so `ir/hash.ts` ships a pure-JS sha256 (`@noble/hashes`), used on every side.
 - **Plugin bundle budget:**
   - main ≤ 400 KB minified;
-  - UI ≤ 600 KB (Preact, fflate, UI kit).
+  - UI ≤ 600 KB total (Preact, fflate, UI kit);
+  - `dcr` counts inside the UI budget (D-04).
 - **The serializer** (`capture/src/page/**`) runs in the page:
   - It cannot import anything outside its folder, plus `ir` *types*.
   - It is built as one IIFE string by esbuild and injected with `page.addInitScript` / `evaluate`.
@@ -516,21 +537,23 @@ These are enforced with `dependency-cruiser` in CI.
 4. Fixture Storybooks built and captured, with Capture IR and Scene IR snapshot diffs.
 5. Plugin bundle size check.
 
-Nightly: the real-Figma fidelity harness ([12](12-quality.md)).
+Real-Figma fidelity: the harness ([12 §4.4](12-quality.md#harness)) runs manually until a self-hosted runner is decided.
 
 **npm release:**
 - changesets opens a release PR. On merge, publish with `npm publish --provenance` (OIDC trusted publishing) ([13](13-security-legal.md#supply-chain)).
+- **Install:** `npx @holotype/cli@latest init` (or `npm create holotype@latest`). `init` adds `@holotype/cli` as a devDependency and a `holotype` script. The unscoped `holotype` package name is reserved.
+- During D-39, packages come from a private source: GitHub Packages or a tarball attached to the release (one is chosen before the first slice demo).
 
 **Plugin release** (private distribution, D-39):
 1. `pnpm --filter plugin build` produces `manifest.json`, `build/main.js` and `build/ui.js`, then a reproducible zip with fixed mtimes.
-2. Upload the artifact. Until the org plugin exists, users unzip it and re-import `manifest.json` as a development plugin ([11](11-ux.md)).
+2. Upload the artifact. The zip contains one fixed top-level folder, `Holotype Plugin/`. Until the org plugin exists, users import it once as a development plugin. Updating = replace that folder; no re-import ([11 §2.0](11-ux.md#install)).
 3. Once stable: a manual publish to the **organization only** (no Figma review; there is no publish API). The Community listing waits until after M8.
 4. Tag `plugin@x.y.z`.
 
-The manifest `id` is fixed forever, because `clientStorage` and plugin data are keyed by it.
+The manifest `id` is fixed forever, because `clientStorage` and plugin data are keyed by it. A Community listing would get its own id ([13 §7](13-security-legal.md#publishing)). Dev plugins load from local files; the browser rows of S-01 may need a private org publish (BD-24).
 
 **Playwright/Chromium pinning:**
-- `capture` declares an exact `playwright-core` version. `holotype doctor` checks the browser and installs it with `holotype install-browser` (wrapping `playwright install chromium`).
+- `capture` declares an exact `playwright-core` version. `holotype doctor` checks the browser. `holotype install-browser` installs it (wrapping `playwright install chromium`); `init` also runs it.
 - In environments with a preinstalled browser, `--chromium-path` is allowed, with a `CAP_CHROMIUM_MISMATCH` warning when the version differs from the pin, because fidelity is not guaranteed.
 
 **Compatibility promise:**
@@ -556,7 +579,7 @@ Renderers: React + Vite is the primary stack (D-26) and the only one with fixtur
 | React (incl. Next.js; **primary**, ships first) | fiber `__reactFiber$*` → `type` | react-docgen / react-docgen-typescript / react-component-meta (11) |
 | Vue 3 (incl. Nuxt) | `__vueParentComponent` | vue-docgen-api / vue-component-meta |
 | Angular | `ng.getComponent(el)` (dev builds only) | Compodoc |
-| Svelte 5 | best-effort (verify, S-13) | svelte2tsx (11) |
+| Svelte 5 | best-effort (post-M5) | svelte2tsx (11) |
 | Web Components / Lit / Stencil | custom element tag + CEM | custom-elements.json |
 | HTML | none | none |
 
@@ -574,8 +597,8 @@ Renderers: React + Vite is the primary stack (D-26) and the only one with fixtur
 
 | Constraint | Where | Rule |
 |---|---|---|
-| No `setTimeout` guarantee, no DOM in Figma main | `plugin/main`, and any package it bundles | Use promise yields (`await Promise.resolve()` plus the UI round-trip ping for real yields) (verify, S-06) |
-| No WebCrypto in main (verify) | `ir/hash` | pure-JS sha256 |
+| No `setTimeout` guarantee, no DOM in Figma main | `plugin/main`, and any package it bundles | Use promise yields (`await Promise.resolve()` plus the UI round-trip ping for real yields) (to be confirmed by S-06 step 1: `crypto.subtle`, `setTimeout`) |
+| No WebCrypto in main (to be confirmed by S-06 step 1) | `ir/hash` | pure-JS sha256 |
 | No `Buffer` | isomorphic packages | `Uint8Array` + `TextEncoder` |
 | `structuredClone` subset over `postMessage` | plugin main↔UI | Plain objects, arrays and `Uint8Array` only; no class instances, no `Map` in messages |
 | Float determinism | mapper | Round geometry to 1/1000 px *before* hashing; never hash floats coming straight from DOMRect |
@@ -591,13 +614,13 @@ Renderers: React + Vite is the primary stack (D-26) and the only one with fixtur
   - the `holotype` key in `package.json`;
   - env overlays `$env.ci`.
 - TypeScript configs are executed through `jiti`.
-- `defineConfig()` is exported from `holotype/config`, which re-exports the `cli` config types. The full schema lives in [11](11-ux.md#config).
+- `defineConfig()` is exported from `@holotype/cli/config`, which re-exports the `cli` config types. The schema is owned by [16](16-config.md) (D-51).
 - **Validation:** the resolved config is checked against a TypeBox schema. Unknown keys produce `PLAN_CONFIG_UNKNOWN_KEY` (warning), invalid values `PLAN_CONFIG_INVALID` (error, exit 2).
 - **Merge semantics** (precedence in README §7):
   - objects deep-merge, arrays replace;
   - `null` explicitly unsets;
   - per-`sid` overrides go under `components["components-button"]`, and glob keys (`"components-forms-*"`) are allowed.
-- **Secrets** are never read from the config file. Only env (`HOLOTYPE_SB_TOKEN`, `HOLOTYPE_REGISTRY_TOKEN`) or `.holotype/auth/*` are used ([13](13-security-legal.md#secrets)). A config that contains `password`/`token`-like literal values produces `SEC_SECRET_IN_CONFIG` (error).
+- **Secrets** are never read from the config file. Only env (`HOLOTYPE_SB_TOKEN`, `HOLOTYPE_SB_HEADERS`, `HOLOTYPE_SB_BASIC`, `HOLOTYPE_REGISTRY_TOKEN`) or `.holotype/auth/*` are used ([13](13-security-legal.md#secrets)). A config that contains `password`/`token`-like literal values produces `SEC_SECRET_IN_CONFIG` (error).
 
 ---
 
@@ -613,21 +636,16 @@ Renderers: React + Vite is the primary stack (D-26) and the only one with fixtur
    - `info`: an approximation with no visible effect.
    - `warn`: a visible approximation or fallback.
    - `error`: the node, variant or component was not produced as requested.
-   - `fatal`: the run aborted.
+   - There is no `fatal` severity. Run-aborting conditions are `error` diagnostics with `data.fatal: true`.
 4. **Boundaries:**
 
    | Failure | Effect |
    |---|---|
    | page crash, render timeout, story error | the variant fails; the component continues with the remaining variants and is `partial` |
    | mapper exception (a bug) | the component fails with `PLAN_MAPPER_FAILED` (error) and a stack in `report.json` |
-   | Storybook unreachable | `SB_INDEX_UNREACHABLE` is fatal for the run |
+   | Storybook unreachable | `SB_INDEX_UNREACHABLE` (error, `data.fatal: true`) aborts the run |
 
-5. **Exit codes (CLI):**
-   - `0` ok;
-   - `1` diagnostics at or above `--fail-on` (default `error`);
-   - `2` config or usage error;
-   - `3` Storybook unreachable or auth failure;
-   - `4` internal error.
+5. **Exit codes (CLI):** [11 §3.2](11-ux.md#exit-codes).
 6. **Plugin:** errors never leave a half-built component visible. See the transactional rules in [09](09-plugin.md):
    - build a new variant off-canvas, then swap it in;
    - in-place updates are idempotent.

@@ -11,18 +11,22 @@
 >
 > It builds on the [DOM→Figma research brief](../research/dom-to-figma-brief.md). The most rigorous prior art is figit's verify-then-emit design ([figitdesign/web-to-figma](https://github.com/figitdesign/web-to-figma), `converter/layout/infer.ts`). We adopt that design and extend it in three ways: we verify a second time in the plugin, we align nodes across variants, and we emit component properties.
 
+> **Loop slice:** absolute baseline; flex row/column → auto layout with `layout-sim` verification and per-container fallback; cross-variant alignment; property bindings; exact token bindings (`confidence: 'chain'`); provenance side file. Wrap, grid, deep simplification, the full naming chain and text wrap modes are hardening H-B ([14](14-roadmap.md#hardening)).
+
 ## 0. Contract
 
+The input and output types live in `ir/pipeline.ts` ([06](06-ir.md)), so the mapper imports only `ir`.
+
 ```ts
-// packages/mapper/src/index.ts
+// packages/ir/src/pipeline.ts (types); packages/mapper/src/index.ts (function)
 export interface MapperInput {
   sid: string;
   meta: ComponentMetaInput;                 // from storybook adapter (03)
-  plan: VariantPlan;                        // from planner (04): variants, axes, arg classifications, set grid
+  plan: ComponentPlan;                      // from planner (04): variants, axes, arg classifications, set grid
   captures: Map<string /* vk */, CaptureDoc>;
   tokens: TokenResolution;                  // from token resolver (08): cssName -> variable key, per-node var chains
   components: ComponentCatalog;             // sids + variant property maps of components available for instancing (D-21)
-  config: MapperConfig;                     // resolved per-component config (README §7 precedence)
+  config: MapperConfig;                     // resolved per-component config (precedence: 16)
   sourceLocs?: Map<string /* styleSheetId:startLine:startColumn */, SourceLoc>;   // branch mode: source-mapped rule locations (§16.1)
 }
 export interface MapperOutput { scene: SceneComponent; provenance?: ProvenanceDoc /* branch mode, §16.1 */; diagnostics: Diagnostic[] }
@@ -30,6 +34,8 @@ export function mapComponent(input: MapperInput): MapperOutput;   // pure, deter
 ```
 
 The mapper never touches `figma`, the DOM or the filesystem. It runs in Node (CLI), and it can run unchanged in a worker or in the plugin UI if that ever becomes useful. Asset bytes are referenced by `sha` only.
+
+**Set layout.** The mapper emits `SceneSetLayout` ([06 §3.2](06-ir.md)). Columns and rows are decided here. Gap and padding come from `figma.grid` (defaults 24 / 32), and the maximum column count from `figma.grid.maxColumns` (default 8) ([16](16-config.md#figma)).
 
 ## 1. Pipeline (ordered stages)
 
@@ -68,7 +74,7 @@ Rules are applied top-down. Each rule that drops or changes content records an `
 | `display:contents` (incl. `<slot>`) | splice children into the parent; no node (already resolved in the composed walk, [05](05-capture.md#walk)) |
 | `display:none`, `<script>` and friends | already skipped by capture |
 | `visibility:hidden` element | drop its own paint; keep `visibility:visible` descendants, reparented under a transparent frame at the same rect |
-| `opacity:0` | keep with `visible:false` if `config.keepInvisible` (default **true** for alignment: states often toggle opacity), else drop |
+| `opacity:0` | keep with `visible:false` if `mapper.keepInvisible` ([16](16-config.md#mapper); default **true** for alignment: states often toggle opacity), else drop |
 | `srOnly` | already skipped by capture (`CAP_SR_ONLY_SKIPPED`, info, [05](05-capture.md#walk)) |
 | zero-size element with no visible stroke, outline, shadow or overflowing children | drop |
 | fully clipped by an ancestor's overflow | already culled by capture (`CAP_CLIPPED_CULLED`, info, [05](05-capture.md#walk)); planner-bound nodes that capture kept are kept here too |
@@ -135,7 +141,7 @@ function classify(n: CNode): ContainerKind {
 | `flex-shrink`, `flex-basis` | — | baked into the measured size; probing (§4.5) detects responsiveness |
 | `min/max-width/height` (px) | `child.min/max` (direct children of auto-layout frames, and the frames themselves) | percent → resolved px + `LAYOUT_PERCENT_RESOLVED` |
 | `order` | stable sort of children by `order` | CSS paints in order-modified document order too, so paint stays consistent |
-| `padding + border` | `padding = css.padding + css.border.width`, `strokesIncludedInLayout: false`, stroke INSIDE (D-16) | provably exact (figit). The alternative `strokesIncludedInLayout: true` with raw padding is `config.borderModel = 'native'` (verify, S-05) |
+| `padding + border` | `padding = css.padding + css.border.width`, `strokesIncludedInLayout: false`, stroke INSIDE (D-16) | provably exact (figit). The alternative `strokesIncludedInLayout: true` with raw padding is `mapper.borderModel: 'native'` ([16](16-config.md#mapper); verify, S-05) |
 | `margin: auto` on main axis | 2 children → `SPACE_BETWEEN`; otherwise split into two sub-stacks at the auto margin with an outer `SPACE_BETWEEN` | `nk` suffixes `/start`, `/end` |
 | `margin: 0 auto` (block child) | container `counterAxisAlignItems: CENTER` if all children agree; otherwise an align wrapper | |
 | `box-sizing` | ignored | measured border boxes are always used |
@@ -153,7 +159,7 @@ These are tried in order on every stack. The first one that passes simulation wi
 2. **Padding absorption:** the leading and trailing edge margins fold into padding.
 3. **Margin wrapper:** the odd child is wrapped in a transparent HUG frame whose padding equals the excess margin. It is named `‹child name› / margin` and has `nk` suffix `/m`.
 4. **Sub-stack split** at the irregular gap: the container becomes a stack of two stacks with different spacing.
-5. **Spacer frames** — only when `config.allowSpacers` is set (default false; designers dislike them).
+5. **Spacer frames** — only when `mapper.allowSpacers` is set ([16](16-config.md#mapper); default false; designers dislike them).
 6. **Absolute fallback** for this container (`LAYOUT_IRREGULAR_GAPS`).
 
 ### 4.3 Container sizing (`primaryAxisSizingMode` / `counterAxisSizingMode`)
@@ -368,6 +374,7 @@ Each `CText` produces one `text` SceneNode.
 - **Characters:** `characters` is taken verbatim (source characters), with `\n` for paragraph breaks and ` ` for `<br>`.
 - **Ranges:** each `CText.runs[i]` becomes a `SceneTextRange` built from its `CTextStyle`. Adjacent runs whose Scene representation is identical are merged after mapping. They are compared on the canonical JSON of their Scene fields, not on their CSS.
 - **Hyperlinks:** `href` maps to `hyperlink`.
+- **Mid-line splits:** when an inline formatting context cannot merge into one TEXT (§3) and spans several lines, each line becomes its own text layer (`TEXT_SPLIT_MIDLINE`, info).
 - **Gradient text:** `gradientFrom` (from `background-clip:text`) produces a gradient fill on the range. Its `gradientTransform` is computed relative to the **ancestor box**, mapped into the text node's box: compose the ancestor-space matrix with the text node's offset.
 
 ### 8.2 Style mapping
@@ -383,8 +390,8 @@ Each `CText` produces one `text` SceneNode.
 | `text-decoration-line` (propagates from ancestors; figit walks parents) | `decoration` UNDERLINE / STRIKETHROUGH | `overline` → absolute 1-px rect overlay + `TEXT_OVERLINE_OVERLAY` |
 | `text-decoration-style/color/thickness`, `text-underline-offset` | `decorationStyle/Color/Thickness/Offset` | `double`/`dashed` → SOLID + `TEXT_DECORATION_STYLE_APPROX` |
 | `color` | `fills: [SOLID]` | bound to a variable when its var chain is pure (§16) |
-| `font-feature-settings`, `font-variant-numeric` | `openTypeFeatures` | `tnum`, `lnum`, `ss01`… |
-| `font-variation-settings`, `font-optical-sizing` | `font.variation` | |
+| `font-feature-settings`, `font-variant-numeric` | **not writable** through the Plugin API (`openTypeFeatures` is read-only in typings 1.142.0) | emit `TEXT_OPENTYPE_UNSUPPORTED` (warn, feature list). For `tnum`, rely on the S-04 width buffer (§8.5) and, if needed, `locked-lines`. The Scene IR keeps `openTypeFeatures` as information only |
+| `font-variation-settings`, `font-optical-sizing` | `font.variation` | filtered by the family's axes (§8.6); dropped axes give `FONT_AXIS_DROPPED` (info) |
 | `text-shadow` | node `effects: DROP_SHADOW` (spread 0) | only when uniform across ranges; otherwise the dominant shadow + `TEXT_SHADOW_RANGE_APPROX` |
 | `text-align` | `alignH` | `start/end` already resolved via `direction` |
 | `text-indent` | `paragraphIndent` | |
@@ -452,18 +459,19 @@ The mapper does **not** know which fonts the Figma user has. It emits a *request
    - target > 500: ascending first.
 
    The plugin picks the first candidate that exists.
-3. **Variable fonts.** When `variation` is present, or the family is known to be variable, emit `variation: {wght, opsz, …}`. The plugin uses `FontName.variationSettings` with `style` omitted (typings Update 138), and drops axes not reported by `figma.getFontFamilyVariationAxes`.
+3. **Variable fonts.** When `variation` is present, or the family is known to be variable, emit `variation: {wght, opsz, …}`. Filter `font-variation-settings` by `figma.getFontFamilyVariationAxes(family)`, which the plugin requests at preflight (`null` = static font). Axes the family lacks are dropped, with `FONT_AXIS_DROPPED` (info). The plugin loads the font with a `FontNameInput` (`style` omitted, `variationSettings`; typings Update 138).
 4. **Synthetic bold or italic** (`synthetic`). Request the real style (e.g. Bold) and keep the `FONT_SYNTHETIC` (warn) that capture raised ([05](05-capture.md)). The capture drew a faux bold, and Figma will draw the real one.
 5. **`fallbackFamily`.** Choose by generic class (sans/serif/mono) and closest x-height. Default `Inter`, `Roboto Mono` or `Noto Serif`; the table is configurable. Missing fonts are *not* diagnosed here: the plugin emits `FONT_MISSING` / `FONT_SUBSTITUTED` after preflight.
 6. **Icon fonts** (`CFontUsage.iconFont`) are not text. Capture has already provided the outlined SVG asset ([05](05-capture.md#icon-fonts)), and the node becomes `svg` (S-09).
 
 ## 9. Colors <a id="color"></a>
 
-- Convert with **colorjs.io and gamut mapping** (`toGamut({space: 'srgb', method: 'css'})`). Raw `.srgb` conversion can produce out-of-range channels (figit). If the target file profile is `DISPLAY_P3` (`config.colorProfile`, confirmed by the plugin handshake from `figma.root.documentColorProfile`), emit P3 values instead.
+- Convert with **colorjs.io and gamut mapping** (`toGamut({space: 'srgb', method: 'css'})`). Raw `.srgb` conversion can produce out-of-range channels (figit). If the target file profile is `DISPLAY_P3` (`figma.colorProfile`, confirmed by the plugin handshake from `figma.root.documentColorProfile`), emit P3 values instead. A `LEGACY` profile is treated as sRGB. Out-of-sRGB colors that were gamut-mapped report `PAINT_COLOR_GAMUT_MAPPED` (info).
+- **Original string.** Emit the sRGB/P3 numbers and keep `original` (the CSS color string from capture, [05 §7.1](05-capture.md)). The applier prefers `figma.util.solidPaint(original)` when present; S-03 compares both.
 - When the source was `oklch`/`lab`/`p3`, attach `sourceColor` so Figma keeps the original color space (typings Update 141; feature `source-color`).
 - **SOLID alpha:** the color carries `a = 1`, and the CSS alpha goes into `paint.opacity`. Gradient stops and effects carry `color.a` (typings convention).
 - **`transparent` stops:** replace them with the neighbour stop's RGB at alpha 0 to avoid grey fringes, because CSS interpolates in premultiplied space.
-- **`in oklch` and other interpolation spaces:** pre-sample 8 intermediate stops per segment.
+- **`in oklch` and other interpolation spaces:** pre-sample 8 intermediate stops per segment (`PAINT_GRADIENT_APPROX`, info).
 
 ## 10. Visuals
 
@@ -535,12 +543,12 @@ Verify the conic origin and direction in S-03 (`PAINT_CONIC_APPROX` until then).
 | `dashed` | `dashPattern: [2w, w]` (Chrome draws dashes about 2× the width) + `PAINT_DASH_APPROX` (info), because Figma phases dashes around corners continuously |
 | `dotted` | `dashPattern: [0, 2w]`, `cap: ROUND` |
 | per-side **colors or styles** differ, no radius | decompose into four absolute VECTOR siblings (mitered trapezoids, figit `border-decomposition.ts`), `nk` `…/border-{t,r,b,l}`; node `strokes` removed; `PAINT_BORDER_DECOMPOSED` (info) |
-| per-side differ, with radius | rounded-path decomposition (figit `rounded-dash-border.ts`) when `config.exactBorders`; else dominant color + `PAINT_BORDER_DOMINANT` (warn) |
+| per-side differ, with radius | rounded-path decomposition (figit `rounded-dash-border.ts`) when `mapper.exactBorders` ([16](16-config.md#mapper)); else dominant color + `PAINT_BORDER_DOMINANT` (warn) |
 | `double`, `groove`, `ridge`, `inset`, `outset` | decomposition (figit `border-3d.ts`) or solid approximation + `PAINT_BORDER_STYLE_APPROX` |
 | `outline`, no border | stroke `align: OUTSIDE`, weight = outline-width (only if `outline-offset` = 0) |
 | `outline`, with border or offset ≠ 0 | absolute sibling FRAME (no fill) inflated by `offset + width`, radius + offset, INSIDE stroke; `nk` `…/outline` |
 | `border-radius` | corner px with the CSS overlap reduction `f = min(1, w/(tl+tr), w/(bl+br), h/(tl+bl), h/(tr+br))`; `smoothing: 0` |
-| elliptical radii (`h ≠ v`) | `config.exactRadii` → vector path (`kind: 'vector'`, mask for children if needed); else `min(h, v)` + `PAINT_ELLIPTICAL_RADIUS_APPROX` |
+| elliptical radii (`h ≠ v`) | `mapper.exactRadii` ([16](16-config.md#mapper)) → vector path (`kind: 'vector'`, mask for children if needed); else `min(h, v)` + `PAINT_ELLIPTICAL_RADIUS_APPROX` |
 | percent radius | resolved by capture (the computed value is px or %; resolve against w/h) |
 
 ### 10.4 Shadows and effects
@@ -577,7 +585,7 @@ Verify the conic origin and direction in S-03 (`PAINT_CONIC_APPROX` until then).
 | CSS | Scene |
 |---|---|
 | `opacity` | node `opacity` |
-| `mix-blend-mode` | `blendMode` 1:1 (`plus-lighter` → raster) |
+| `mix-blend-mode` | `blendMode` 1:1; a mode with no exact Figma match (e.g. `plus-lighter`) → raster + `PAINT_BLEND_UNSUPPORTED` (warn) |
 | `isolation: isolate` | frame `blendMode: NORMAL` (not PASS_THROUGH) |
 | `overflow` ≠ visible (either axis) | `clipsContent: true` (respects radius). Figma clips both axes, so `overflow-x:hidden; overflow-y:visible` becomes a clip on both axes + `LAYOUT_OVERFLOW_AXIS_APPROX` |
 | scroll containers | children offset by −scroll; clip |
@@ -593,7 +601,7 @@ Use the capture's page-space affine to compute `relativeTransform = inverse(pare
 
 - A pure translation becomes `xy`.
 - A node with rotation, scale or skew inside an auto-layout parent becomes `ABSOLUTE`, unless it is a leaf whose AABB matches its flow slot. In that case it stays AUTO and gets its rotation (Figma lays out rotated children by their bounding box (verify, S-10)).
-- Skew is expressible only via `relativeTransform`.
+- Skew is expressible only via `relativeTransform` (`CAP_TRANSFORM_SKEW`, info).
 - `transform3d` is in beta in typings Update 142 and is not used in v1. `nonAffine` content is rasterized.
 
 ### 10.7 SVG <a id="icons"></a>
@@ -602,7 +610,7 @@ Use the capture's page-space affine to compute `relativeTransform = inverse(pare
 
 SVGs with `hasFilter` or `hasForeignObject` are rasterized (`SVG_RASTERIZED`, warn). Masks and clipPaths are attempted, and verification flags failures (S-09).
 
-Repeated SVGs (same normalized hash) are candidates for icon componentization, which is a planner and plugin concern ([04](04-variant-model.md), [09](09-plugin.md#icons)). The mapper only marks them: `source.component` plus `svgHash` in diagnostics data.
+Repeated SVGs (same normalized hash) are candidates for icon componentization, which is a planner and plugin concern ([04](04-variant-model.md), [09](09-plugin.md#icons)). The mapper only marks them: `source.component` plus `svgHash` in diagnostics data, with `SVG_ICON_EXTRACTED` (info) when one is promoted. An extracted icon gets `sid = icon:<slug>`; on a slug collision, `icon:<slug>-<sha8>` (README glossary). The slug follows `naming.iconSlug` ([16](16-config.md#naming)).
 
 ### 10.8 Native controls
 
@@ -624,7 +632,7 @@ A subtree is replaced by an `image` node holding the capture's clip screenshot (
 - an SVG with filter or foreignObject;
 - `<canvas>` or `<video>`;
 - `background-attachment: fixed`;
-- `config.rasterize` selectors.
+- `capture.rasterize` selectors ([16](16-config.md#capture)).
 
 Rasterized nodes keep their `nk` and name, add the `rasterized-subtrees` feature, and report `PAINT_SUBTREE_RASTERIZED` (warn). Raster requests are **batched per variant**: the mapper returns `needsRaster: nodeId[]`, the CLI recaptures those clips, and the mapper re-runs. The output stays deterministic because raster assets are content-hashed.
 
@@ -634,9 +642,9 @@ These rules run bottom-up after layout and visuals, and before alignment. A node
 
 1. **Pass-through wrapper.** No fills, strokes, effects, clip or opacity, no own layout semantics (or the same layout as its single child), and a single child with an equal rect. The node is replaced by its child, which inherits the wrapper's `child` sizing and keeps the better name (§12).
 2. **Same-direction nesting.** A stack inside a stack with the same `mode`, where the inner stack is FILL on the primary axis, has 0 padding and no visuals → merge, if the merged `itemSpacing` is uniform.
-3. **Text-only element.** A block with a single text child and no visuals → the TEXT node takes the element's place, name and `child` props (figit `isPlainTextElement`).
+3. **Text-only element.** A block with a single text child and no visuals → the TEXT node takes the element's place, name and `child` props (figit `isPlainTextElement`), unless the element carries an `nk` anchor; then it stays a frame wrapping the TEXT.
 4. **Adjacent text siblings** with identical style on the same line, in a non-auto-layout parent → merge.
-5. **Leaf frame.** A leaf frame with only fills, strokes or radius and no children → `rectangle`. It stays a `frame` if it has spread shadows (§10.4) or `config.preferFrames`.
+5. **Leaf frame.** Stays a `frame` for managed element boxes (never `rectangle`; [10 §4](10-sync.md#nk) rule 5). `rectangle` is used only for synthetic nodes (`/bg`, `/shadow`). `mapper.preferFrames` ([16](16-config.md#mapper)) affects synthetic nodes only.
 6. **Groups.** Emitted only for transparent absolute wrappers in absolute parents. Never inside auto layout.
 7. **Zero-size nodes** are dropped unless they carry a visible stroke or effect.
 
@@ -644,7 +652,7 @@ These rules run bottom-up after layout and visuals, and before alignment. A node
 
 Each node is named by the first match in this list:
 
-1. `source.figmaName` (`data-figma-name`)
+1. `source.figmaName` (`data-holotype-name`, alias `data-figma-name`)
 2. `source.testId`, humanized (`btn-label` → "Btn label")
 3. component boundary `displayName` (React fiber / Vue / Angular / custom-element tag, [03 §10](03-storybook.md#framework-enhancers))
 4. root only: `"Variant=…, Size=…"`, the Figma variant name built from property values
@@ -731,7 +739,7 @@ Kinds are compatible as follows:
 
 `nk` is a path of slugs from the root, for example `root/leading/icon` or `root/label`:
 
-- **Slug source:** in the order `figmaKey` → testId → boundary name → role-derived name → tag. Slugs are kebab-cased.
+- **Slug source:** in the order `figmaKey` (`data-holotype-key`, alias `data-figma-key`) → testId → boundary name → role-derived name → tag. Slugs are kebab-cased.
 - **Disambiguation:** duplicate slugs among siblings get `-2`, `-3` in aligned order.
 - **Synthetic nodes:** the slugs `/bg`, `/border-t`, `/outline`, `/shadow`, `/align`, `/m`, `/clip`, `/text-wrap`, `/overlay-<i>`.
 
@@ -749,7 +757,7 @@ Hidden children in auto layout take no space, so geometry is unchanged. Placehol
 
 Limits:
 
-- Placeholder emission is capped by `config.alignment.maxPlaceholdersRatio` (default 0.5 of the variant's real node count).
+- Placeholder emission is capped by `mapper.alignment.maxPlaceholdersRatio` ([16](16-config.md#mapper); default 0.5 of the variant's real node count).
 - If the variants of a component are structurally unrelated, more than 50% of nodes would be unmatched. Alignment then stops at that subtree: the per-variant subtrees are kept under one aligned container node with distinct `nk`s, as `…/alt-<vk8>`. The result is `PLAN_ALIGNMENT_DIVERGENT` (warn), which tells the user that these variants might be better as separate components ([04](04-variant-model.md)).
 
 **Order.** Aligned children are ordered by first appearance in the default variant, then by insertion position (`insertAtAlignedPosition` puts a new node after its aligned left neighbour). This is deterministic.
@@ -819,12 +827,12 @@ The token resolver ([08](08-tokens.md)) gives, per capture node and CSS property
 **Rules:**
 
 - **Pure chains only.** A value from `calc()` or `color-mix()` is not bound (`TOKEN_EXPRESSION_UNBOUND`, info), nor is a used var fallback (`TOKEN_FALLBACK_USED`, info).
-- **Value-equality fallback** (D-18, opt-in `config.tokens.bindByValue`) emits `confidence: 'value'`. It binds only when exactly one variable of the right type has that value in the current mode; ambiguity gives `TOKEN_VALUE_AMBIGUOUS`.
+- **Value-equality fallback** (D-18, opt-in `tokens.bindByValue`, [16](16-config.md#tokens)) emits `confidence: 'value'`. It binds only when exactly one variable of the right type has that value in the current mode; ambiguity gives `TOKEN_VALUE_AMBIGUOUS`.
 - **Themes as modes.** When themes are modes ([04](04-variant-model.md), [08](08-tokens.md)), the mapper emits one variant set (not one per theme), with bindings from the default-mode capture. It then verifies that every other mode's capture resolves to the same bindings with that mode's values; a mismatch gives `TOKEN_MODE_UNTOKENIZED_DIFF` (warn, [08](08-tokens.md)), and the planner falls back to a theme VARIANT axis.
 
 ### 16.1 Provenance side file (branch mode, D-36)
 
-Every stage that writes a Scene field already knows which CSS properties produced it. In branch mode (`config.provenance: true`, set by `holotype branch *`) the mapper records that knowledge as a `FieldOrigin` per field, keyed by `(vk, nk, Scene field path)`, in `ProvenanceDoc` ([06 §4.1](06-ir.md), shapes in [15 §5.2](15-change-requests.md#provenance)).
+Every stage that writes a Scene field already knows which CSS properties produced it. In branch mode (`MapperConfig.provenance: true`, set by `holotype branch *`) the mapper records that knowledge as a `FieldOrigin` per field, keyed by `(vk, nk, Scene field path)`, in `ProvenanceDoc` ([06 §4.1](06-ir.md), shapes in [15 §5.2](15-change-requests.md#provenance)).
 
 | Scene field | `css` | `transform` |
 |---|---|---|
@@ -873,7 +881,7 @@ rect: 96×40 (without icon)
 7. **Alignment.**
    - Default variant children: `[label]`. The `showIcon` variant: `[icon, label]`.
    - Pass 2 matches label↔label (cost 0.0). The icon is new and is inserted before label.
-   - Keys: `root/icon-leading` (boundary name "StarIcon" is overridden by its role-derived slug, since `config.naming.iconSlug` maps svg/icon boundaries to `icon` and position to `-leading`), `root/label`.
+   - Keys: `root/icon-leading` (boundary name "StarIcon" is overridden by its role-derived slug, since `naming.iconSlug` maps svg/icon boundaries to `icon` and position to `-leading`), `root/label`.
    - The default variant gets a hidden `root/icon-leading` placeholder.
 8. **Properties.**
    - `showIcon` → BOOLEAN; its evidence shows that only `root/icon-leading` toggled. Every variant's `root/icon-leading` gets `propRefs.visible = "arg:showIcon"`.
@@ -891,12 +899,12 @@ The result is the `root` subtree shown in [06 §10](06-ir.md#10-example-button-b
 
 ## 19. Diagnostic codes introduced here
 
-- **Capture:** `CAP_NATIVE_CONTROL_SYNTHESIZED`. `CAP_SR_ONLY_SKIPPED` and `CAP_CLIPPED_CULLED` are emitted by capture ([05](05-capture.md)).
+- **Capture:** `CAP_NATIVE_CONTROL_SYNTHESIZED`, `CAP_TRANSFORM_SKEW` (§10.6). `CAP_SR_ONLY_SKIPPED` and `CAP_CLIPPED_CULLED` are emitted by capture ([05](05-capture.md)).
 - **Layout:** `LAYOUT_FLOAT_ABSOLUTE`, `LAYOUT_ZORDER_FLOW_CONFLICT`, `LAYOUT_WRAP_REVERSE_UNSUPPORTED`, `LAYOUT_SPACE_AROUND_APPROX`, `LAYOUT_ALIGN_SELF_WRAPPED`, `LAYOUT_GROW_RATIO_FIXED`, `LAYOUT_PERCENT_RESOLVED`, `LAYOUT_RTL_REVERSED`, `LAYOUT_IRREGULAR_GAPS`, `LAYOUT_BREAKPOINT_IN_PROBE`, `LAYOUT_GRID_MINMAX_FIXED`, `LAYOUT_GRID_AUTOFILL_FROZEN`, `LAYOUT_GRID_UNREPRESENTABLE`, `LAYOUT_SIM_MISMATCH`, `LAYOUT_ZINDEX_HOIST`, `LAYOUT_OVERFLOW_AXIS_APPROX`.
 - **Apply:** `APPLY_LAYOUT_RELAXED`, `APPLY_LAYOUT_FALLBACK`.
-- **Text:** `TEXT_WORD_SPACING_DROPPED`, `TEXT_CASE_BAKED`, `TEXT_OVERLINE_OVERLAY`, `TEXT_DECORATION_STYLE_APPROX`, `TEXT_SHADOW_RANGE_APPROX`, `TEXT_BASELINE_SHIFT_DROPPED`, `TEXT_OVERLAY_LOCKED`. `TEXT_LINE_MISMATCH` is emitted by the plugin ([09](09-plugin.md)).
-- **Font:** none. `FONT_SYNTHETIC` is raised by capture; `FONT_MISSING` and `FONT_SUBSTITUTED` are emitted by the plugin.
-- **Paint:** `PAINT_TABLE_BORDER_APPROX`, `PAINT_CONIC_APPROX`, `PAINT_REPEATING_CAPPED`, `PAINT_DASH_APPROX`, `PAINT_BORDER_DECOMPOSED`, `PAINT_BORDER_DOMINANT`, `PAINT_BORDER_STYLE_APPROX`, `PAINT_ELLIPTICAL_RADIUS_APPROX`, `PAINT_SPREAD_BACKING_RECT`, `PAINT_RING_PROMOTED`, `PAINT_FILTER_RASTERIZED`, `PAINT_SUBTREE_RASTERIZED`.
-- **SVG:** `SVG_RASTERIZED`.
+- **Text:** `TEXT_WORD_SPACING_DROPPED`, `TEXT_CASE_BAKED`, `TEXT_OVERLINE_OVERLAY`, `TEXT_DECORATION_STYLE_APPROX`, `TEXT_SHADOW_RANGE_APPROX`, `TEXT_BASELINE_SHIFT_DROPPED`, `TEXT_OVERLAY_LOCKED`, `TEXT_SPLIT_MIDLINE` (§8.1), `TEXT_OPENTYPE_UNSUPPORTED` (warn, §8.2). `TEXT_LINE_MISMATCH` is emitted by the plugin ([09](09-plugin.md)).
+- **Font:** `FONT_AXIS_DROPPED` (info, §8.6). `FONT_SYNTHETIC` is raised by capture; `FONT_MISSING` and `FONT_SUBSTITUTED` are emitted by the plugin.
+- **Paint:** `PAINT_TABLE_BORDER_APPROX`, `PAINT_CONIC_APPROX`, `PAINT_REPEATING_CAPPED`, `PAINT_DASH_APPROX`, `PAINT_BORDER_DECOMPOSED`, `PAINT_BORDER_DOMINANT`, `PAINT_BORDER_STYLE_APPROX`, `PAINT_ELLIPTICAL_RADIUS_APPROX`, `PAINT_SPREAD_BACKING_RECT`, `PAINT_RING_PROMOTED`, `PAINT_FILTER_RASTERIZED`, `PAINT_SUBTREE_RASTERIZED`, `PAINT_COLOR_GAMUT_MAPPED` (§9), `PAINT_GRADIENT_APPROX` (§9), `PAINT_BLEND_UNSUPPORTED` (§10.5).
+- **SVG:** `SVG_RASTERIZED`, `SVG_ICON_EXTRACTED` (§10.7).
 - **Planner:** `PLAN_ALIGNMENT_ANCHOR_CONFLICT`, `PLAN_ALIGNMENT_DIVERGENT`, `PLAN_ALIGNMENT_ORDER_CONFLICT`, `PLAN_PROPERTY_UNBOUND`, `PLAN_INSTANCE_PROPS_UNMAPPED`, `PLAN_INSTANCE_MISMATCH` (mapper-side check; the plugin's read-back check is `APPLY_INSTANCE_MISMATCH`). Cycles are broken by the plugin (`APPLY_INSTANCE_CYCLE`).
 - **Token:** reuses `TOKEN_PADDING_BORDER_OFFSET`, `TOKEN_EXPRESSION_UNBOUND`, `TOKEN_FALLBACK_USED`, `TOKEN_VALUE_AMBIGUOUS`, `TOKEN_MODE_UNTOKENIZED_DIFF` from [08](08-tokens.md).

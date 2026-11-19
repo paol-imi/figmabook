@@ -52,6 +52,8 @@ Probe order for `url`:
 3. `GET <url>/project.json`, which gives `storybookVersion`, `framework`, `renderer`, `builder`, `language`, `storybookPackages` (written by `utils/metadata.ts`). It is optional: dev servers may 404 it.
 4. `GET <url>/iframe.html` must be 200, otherwise `SB_IFRAME_UNREACHABLE`.
 
+If neither `index.json` nor `stories.json` loads (network error, non-200, or not JSON), emit `SB_INDEX_UNREACHABLE` (error, `data.fatal`): the run stops.
+
 If `<url>` ends in `/index.html` or `/?path=…`, strip it to the root. If the URL has a `?path=/story/<id>` deep link, record `<id>` as the default selection for the UI.
 
 ### 2.2 Story index (`index.json`)
@@ -69,7 +71,7 @@ type IndexEntry =
 ```
 
 - v5 (SB ≥8.1) only adds the automatic `dev`/`test` tags. v4 entries are treated the same, with `tags ?? []`. A v3 `stories.json` (SB 6/7, unsupported) is parsed only so `list` can name what is skipped: map `{kind, story, parameters.__id}` the way `transformStoryIndexV3toV4` in `manager-api/lib/stories.ts` does.
-- **Filter.** Keep `type==='story' && subtype!=='test'`. Drop entries tagged `!figma`, or not tagged `figma` when `config.requireTag` is set. Apply `config.include`/`exclude` globs against `title` and `id`. Docs entries are never captured.
+- **Filter.** Keep `type==='story' && subtype!=='test'`. Drop entries tagged `!figma`, or not tagged `figma` when `config.requireTag` is set. Apply `config.include`/`exclude` globs against `title` and `id` (keys in [16](16-config.md#storybook)). Docs entries are never captured.
 - **Fingerprint.** `indexHash = sha256(canonicalJSON(filteredEntries))`. It goes into the cache key ([12](12-quality.md)) and into `bundle.manifest.source`.
 
 ### 2.3 Component manifest and docgen services (10.1+ / 11)
@@ -127,8 +129,8 @@ interface SbCapabilities {
   version: string;                 // semver of core
   indexFormat: 'v3' | 'v4' | 'v5';
   storyFinishedEvent: boolean;     // STORY_FINISHED (≥8.x late; verify S-07)
-  awaitsAnimations: boolean;       // ≥9.0 'completing' phase waits for animations
-  pauseAnimationsInTestRunner: boolean; // ≥9.1
+  awaitsAnimations: boolean;       // ≥9.0 'completing' phase waits for animations (skipped with the D-24 UA)
+  pauseAnimationsInTestRunner: boolean; // ≥9.1: pauses CSS animations instead of waiting (§5.5)
   docgenServer: boolean;           // 11 default for supported renderers
   componentsManifest: boolean;     // 10.1+
   argTypesInfoEvent: boolean;      // ARGTYPES_INFO_REQUEST/RESPONSE
@@ -167,11 +169,11 @@ const out = await page.evaluate(async (ids: string[]) => {
   for (const id of ids) {
     try {
       const s = await p.loadStory({ storyId: id });
-      res[id] = __fb.safe({
+      res[id] = __holotype.safe({
         id: s.id, title: s.title, name: s.name, tags: s.tags,
         parameters: s.parameters, argTypes: s.argTypes, initialArgs: s.initialArgs,
         storyGlobals: s.storyGlobals ?? s.globals,
-        component: __fb.describeComponent(s.component),       // §6
+        component: __holotype.describeComponent(s.component), // §6
         subcomponents: Object.keys(s.subcomponents ?? {}),
         usesMount: !!s.usesMount, hasPlay: typeof s.playFunction === 'function',
       });
@@ -182,7 +184,8 @@ const out = await page.evaluate(async (ids: string[]) => {
 ```
 
 - **Use per-id `loadStory`, not `extract()`** (`Preview.tsx:493-504`). `extract()` imports *every* CSF file, so one broken file fails the whole extraction. A per-id failure produces `SB_STORY_LOAD_FAILED` (error, story skipped). Work in batches of 50 ids per `evaluate`, so a hang loses only one batch. Timeout: 30s per batch, then `SB_METADATA_TIMEOUT`, and the batch is retried with a fresh page.
-- **`__fb.safe`** is a structured serializer. It is injected with the capture bundle ([05 §2](05-capture.md#injection)) and replaces each non-JSON value with a tagged marker:
+- **Preview boot.** If `__STORYBOOK_PREVIEW__` never appears, or `ready()` does not resolve within 30s, emit `SB_PREVIEW_INIT_TIMEOUT` (error) and stop metadata extraction for this source.
+- **`__holotype.safe`** is a structured serializer. It is injected with the capture bundle ([05 §2](05-capture.md#injection)) and replaces each non-JSON value with a tagged marker:
   - functions → `{$fn: name}`
   - React elements (`$$typeof`) → `{$node: 'react', type: displayName}`
   - Vue VNodes (`__v_isVNode`) → `{$node: 'vue'}`
@@ -258,6 +261,8 @@ type ControlType = 'boolean'|'text'|'number'|'range'|'color'|'date'|'object'|'fi
 
 Apply it for argTypes that lack a control, so v8–v11 behave identically.
 
+**Unknown args.** An arg named in config or `parameters.holotype` that has no argType after the merge (§4.2) is dropped. The planner emits `SB_ARG_UNKNOWN` (warn).
+
 ---
 
 ## 5. Render-loop driver <a id="render-loop-driver"></a><a id="render-loop"></a>
@@ -309,7 +314,7 @@ A single update per variant:
 ```ts
 async function render(req) {
   const wantStory = req.storyId !== current.storyId;
-  await page.evaluate(__fb.sb.armWaiter, { storyId: req.storyId, timeoutMs: T.render });
+  await page.evaluate(__holotype.sb.armWaiter, { storyId: req.storyId, timeoutMs: T.render });
   // armWaiter subscribes BEFORE emitting, resolves on done/error, records phase transitions.
 
   if (req.viewport && !eq(req.viewport, current.viewport)) await page.setViewportSize(req.viewport);
@@ -335,7 +340,7 @@ async function render(req) {
 Notes and edge cases:
 
 - **Why one update instead of `reset` then `update`.** `resetStoryArgs` followed by `updateStoryArgs` costs two renders. A single `updateStoryArgs` with `undefined` for keys we want back at their initial value does not, *but* a key whose initial value is defined must be **set to its initial value**, not to `undefined`. So build `updatedArgs` as `{...initialArgs, ...req.args}` plus `undefined` for keys that exist in neither. (verify the `deleteUndefined` semantics per version, S-07)
-- **In-page values.** `Channel.emit` calls local listeners synchronously with the original object (`channels/main.ts:62-82`), and `ArgsStore.update` does **no validation**. So args can carry any value, including JSX built in the page. Marker objects from `__fb.safe` are rehydrated in-page by `__fb.rehydrate`:
+- **In-page values.** `Channel.emit` calls local listeners synchronously with the original object (`channels/main.ts:62-82`), and `ArgsStore.update` does **no validation**. So args can carry any value, including JSX built in the page. Marker objects from `__holotype.safe` are rehydrated in-page by `__holotype.rehydrate`:
   - `{$mapKey}` → `argTypes[k].mapping[key]`
   - `{$fromStory: storyId, arg}` → that story's `initialArgs[arg]`
 
@@ -369,8 +374,8 @@ Used when the preview API is unavailable (an exotic or older build), or when `--
 
 The goal is a deterministic frame. Run in order:
 
-1. **Storybook done event**, as in §5.2. On ≥9.0 the `completing` phase already awaits CSS animations and transitions (PR #31287, `waitForAnimations`).
-2. **Animations.** The user agent contains `StorybookTestRunner` (D-24), so ≥9.1 calls `pauseAnimations()` and snaps finite animations to their end (`render/animation-utils.ts`, `StoryRender.ts:386-392`). On older versions, and always as a belt, the capture bundle injects:
+1. **Storybook done event**, as in §5.2. With the D-24 user agent (`StorybookTestRunner`), Storybook does **not** wait for animations: in the `completing` phase it calls `pauseAnimations()` instead of `waitForAnimations` (`render/animation-utils.ts`, `StoryRender.ts:386-392`). `pauseAnimations()` injects `animation-direction: reverse; animation-play-state: paused; transition: none` until story cleanup. This covers CSS animations and transitions only.
+2. **Animations.** The capture engine therefore finishes finite Web Animations (`document.getAnimations().forEach(a => a.effect?.getTiming().iterations !== Infinity && a.finish())`), then requires two rAF-stable frames ([05 §1](05-capture.md#orchestration)). JS-driven animation (framer-motion, react-spring) is caught by the rAF-stable check and the injected CSS belt. On every version, as a belt, the capture bundle injects:
 
    ```css
    *,*::before,*::after{animation-duration:0s!important;animation-delay:0s!important;
@@ -398,7 +403,7 @@ The goal is a deterministic frame. Run in order:
 ### 6.1 Story root <a id="root"></a>
 
 - **Always use `viewMode=story`**. Docs mode applies different decorators and inline rendering.
-- The root container is `#storybook-root` (SB ≥7), falling back to `#root`. `parameters.holotype.rootSelector` overrides it; it is evaluated relative to the document, and it pierces open shadow roots via `>>>`-style segments (`host >>> inner`).
+- The root container is `#storybook-root` (SB ≥7), falling back to `#root`. `parameters.holotype.rootSelector` overrides it; it is evaluated relative to the document, and it pierces open shadow roots via `>>>`-style segments (`host >>> inner`). No match → `SB_ROOT_NOT_FOUND` (error, story skipped).
 - The `body` layout class comes from `parameters.layout` (`WebView.ts:31-136`): `sb-main-padded`, `sb-main-centered`, `sb-main-fullscreen`, `none` (11). **We force `layout: 'fullscreen'`** for capture: we inject `body{padding:0!important}` and `#storybook-root{display:block}` with no centering. Padding from the `padded` layout is decorator chrome, not component. If a story *requires* centering for its own geometry (rare), `parameters.holotype.keepLayout: true` disables the override.
 
 ### 6.2 Decorator unwrapping
@@ -430,7 +435,7 @@ function isTransparentWrapper(el: Element): boolean {
    - a CSS selector string: include exactly those;
    - `false`: ignore them.
 
-   **Default `'auto'`**: include portals only when the root itself has zero size (modal-only stories), or the story is tagged `figma-portal`.
+   **Default `'auto'`**: include portals only when the root itself has zero size (modal-only stories), or the story is tagged `figma-portal`. When `'auto'` finds several candidate portal roots, their union is used and `SB_PORTAL_AMBIGUOUS` (warn) is emitted; a selector string fixes it.
 4. With portals included, the capture root becomes a virtual frame: the union of root and portal rects. Alternatively, with `portal.frame: 'viewport'`, it is the full viewport (useful for modals with backdrops). Backdrops (`position:fixed; inset:0`) are kept as the bottom layer.
 5. Viewport sizing for overlays: default 1280×800 (D-24); `parameters.holotype.viewport` overrides it.
 
@@ -523,6 +528,7 @@ To iterate a mode: `updateGlobals({globals:{theme:'dark'}})`, then wait for `glo
 - Host validation (`core-server/utils/getHostValidationMiddleware.ts`): non-localhost hostnames must be in `core.allowedHosts`. A 403 or 400 with a host message gives `SB_HOST_NOT_ALLOWED`, with the fix-it text "add `<host>` to `core.allowedHosts` in .storybook/main".
 - There is no build hash. The cache key uses `indexHash` plus the per-story module hash where available (`importPath` mtime is not visible). In practice, dev-server captures always re-render, and the apply cache ([10](10-sync.md)) prevents redundant Figma writes.
 - HMR during a capture run: if a `storyIndexInvalidated` or HMR reload is detected mid-run, abort the current component with `SB_HMR_DURING_CAPTURE` and retry once.
+- Branch mode ([15](15-change-requests.md)) captures from the dev server. `storybook.dev` (`url`, `command`, `autoStart`) tells the CLI where it runs and how to start it; schema and defaults in [16](16-config.md#storybook).
 
 ### 9.3 Chromatic
 
@@ -563,7 +569,7 @@ Enhancers ship for **React first** (D-26). The other rows are designed now but s
 
 | Framework | How |
 |---|---|
-| React (16.8–19) | Find the key `__reactFiber$*` (or `__reactInternalInstance$*` in old versions) on the element. Walk `.return` to the nearest fiber whose `type` is a function, class, `memo` or `forwardRef` (unwrap `type.type`/`type.render`). Name = `displayName ?? name`. Props = `memoizedProps`, through `__fb.safe`. A host element belongs to a component's *outermost* host node only if it is the first host descendant of that fiber |
+| React (16.8–19) | Find the key `__reactFiber$*` (or `__reactInternalInstance$*` in old versions) on the element. Walk `.return` to the nearest fiber whose `type` is a function, class, `memo` or `forwardRef` (unwrap `type.type`/`type.render`). Name = `displayName ?? name`. Props = `memoizedProps`, through `__holotype.safe`. A host element belongs to a component's *outermost* host node only if it is the first host descendant of that fiber |
 | Vue 3 | `el.__vueParentComponent`, giving `.type.name ?? .type.__name`, `.props` and `.subTree.el` (the component root el) |
 | Angular (dev builds) | `window.ng?.getComponent(el)` → constructor name; `ng.getHostElement`. Production builds lack `ng`, so these degrade to tag names (`app-button` → "Button") |
 | Svelte 5 | No stable public runtime hook. Use `svelte-meta` dev attributes if present, else nothing (verify, S-13) |
@@ -573,7 +579,7 @@ Enhancers ship for **React first** (D-26). The other rows are designed now but s
 **Mapping a boundary to a Storybook component.**
 
 - During metadata extraction, build an in-page `WeakMap<componentRef, sid>` from every loaded story's `component` (and `subcomponents`). This needs `loadStory` on at least one story per component, which we already do.
-- When the walker meets a fiber whose `type` (or Vue `type`, or custom-element constructor) is in the map, the DOM element is tagged `data-fx-cmp=<sid>`, and its safe props are recorded.
+- When the walker meets a fiber whose `type` (or Vue `type`, or custom-element constructor) is in the map, the DOM element is tagged `data-holotype-cmp=<sid>`, and its safe props are recorded.
 - This is exact identity, not name matching. Name-only matches are reported as `confidence: 'name'`.
 
 (verify per framework, S-13)
@@ -582,14 +588,14 @@ Enhancers ship for **React first** (D-26). The other rows are designed now but s
 
 ## 11. Optional Storybook addon (`@holotype/storybook-addon`) <a id="addon"></a><a id="optional-storybook-addon-holotypestorybook-addon"></a>
 
-It is not required: a zero-install capture uses `page.addInitScript` with the same serializer bundle. Installing it adds:
+Phase: **hardening** ([14](14-roadmap.md#hardening)). It is not required: a zero-install capture uses `page.addInitScript` with the same serializer bundle. Installing it adds:
 
 1. **Typed parameters.** CSF type augmentation for `parameters.holotype` (schema in [04 §9](04-variant-model.md#schema)), like `PseudoTypes` in `addons/pseudo-states/src/types.ts`.
 2. **Build-time manifest.** Through `experimental_manifests` (`core-server/utils/manifests/manifests.ts:133-140`), it writes `manifests/holotype.json` at `storybook build`. The file holds the per-story `parameters.holotype`, resolved tags and component identities. This lets the CLI plan without loading every CSF in a browser, which speeds up `holotype list`.
 3. **Preview hook.** Through `previewAnnotations` and `definePreviewAddon` (10+), a `beforeAll` registers a channel request/response pair `holotype/capture` → `holotype/captured`. This allows capture from inside the preview, for future in-Figma or MCP experiments. It is disabled unless `parameters.holotype.channelCapture` is set.
-4. **Manager panel "Figma".**
+4. **Manager panel "Holotype".**
    - Shows the planned variants and properties for the current story (calling the planner on the args/argTypes the manager already has).
-   - Shows last sync status, read from a `holotype-status.json` published by CI if configured.
+   - Shows last sync status, read from the registry's `status.json` ([02 §5.3](02-architecture.md)) if a registry is configured.
    - Provides "Copy capture command" (`npx holotype capture --story <id>`).
 5. **Lint.** A preset hook warns at dev time about stories whose args cannot be encoded for the URL fallback, and about argTypes missing `options`.
 
@@ -600,6 +606,8 @@ Compatibility: addon versions track Storybook majors (10.x first, 11.x at its GA
 ## 12. Version and framework test matrix <a id="version-and-framework-test-matrix"></a><a id="matrix"></a>
 
 Fixture Storybooks live under `fixtures/` ([12](12-quality.md#fixtures)). Until M5 they are all React + Vite (D-26). CI runs this matrix nightly; PRs run the starred cells.
+
+**Timing (D-11).** Until M-Loop ([14](14-roadmap.md#m-loop)): SB 10.x react-vite only (the owner's repo and `fixtures/ds-react`). SB 8/9 smoke and SB 11 tracking start in hardening (H-G). The table below is the hardening target.
 
 | SB \ renderer | React (Vite) | Other renderers (React Webpack, Vue 3, Angular, Lit/WC, Svelte, HTML) |
 |---|---|---|
@@ -631,7 +639,12 @@ Also run each cell against the **dev server** once per night (CSP and host valid
 |---|---|---|
 | `SB_VERSION_UNSUPPORTED` | error | SB <8 (D-11) |
 | `SB_VERSION_UNTESTED` | warn | newer major than the newest adapter |
+| `SB_INDEX_UNREACHABLE` | error | neither `index.json` nor `stories.json` loads; fatal for the run |
 | `SB_IFRAME_UNREACHABLE` | error | `iframe.html` not 200 |
+| `SB_PREVIEW_INIT_TIMEOUT` | error | preview never became ready |
+| `SB_ARG_UNKNOWN` | warn | configured arg has no argType; dropped |
+| `SB_ROOT_NOT_FOUND` | error | root selector matched nothing |
+| `SB_PORTAL_AMBIGUOUS` | warn | several candidate portal roots; union used |
 | `SB_MANIFEST_UNPARSEABLE` | info | components manifest shape unknown |
 | `SB_DOCGEN_DEGRADED` | warn | SB 11 dev server without docgen service; argTypes reduced |
 | `SB_REF_AUTH_REQUIRED` | warn | composed ref needs login |

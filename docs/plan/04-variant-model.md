@@ -66,7 +66,7 @@ interface PlannedVariant {
   isDefault: boolean;
 }
 
-type PseudoState = 'hover' | 'focus' | 'focus-visible' | 'active' | 'focus-within' | 'visited';
+type PseudoState = 'hover' | 'focus' | 'focus-visible' | 'active' | 'focus-within' | 'visited' | 'target';   // = 06 PseudoStateSpec.classes
 type ProvenanceTag = 'config' | 'parameters' | 'stories' | 'argTypes' | 'verified-diff' | 'heuristic' | 'compat:s2d' | 'compat:chromatic';
 ```
 
@@ -80,6 +80,8 @@ type ProvenanceTag = 'config' | 'parameters' | 'stories' | 'argTypes' | 'verifie
 ---
 
 ## 2. Variant sources and priority (D-12)
+
+> **Loop slice:** stories-as-variants plus declared args (`args.<name>.as`, enum argTypes), VARIANT/BOOLEAN/TEXT, one budget check. Render-and-diff classification (D-13), pairwise, the states axis and pseudo-states are hardening (H-C, [14](14-roadmap.md#hardening)).
 
 They are resolved per component, highest priority first. A higher source *replaces* a lower one for the axes it defines. Sources do not merge their value lists.
 
@@ -116,8 +118,9 @@ function planFromStories(stories: StoryMeta[], base: StoryMeta): AxisCandidates 
   // 4. Otherwise (stories differ in several args or in non-enumerable args, or in render functions),
   //    fall back to a single "Story" axis whose values are story names in index order.
   // 5. Hybrid: arg-explained stories become axes; the rest are appended as values of a "Story" axis
-  //    only if ≤ config.maxStoryAxisValues (default 8); otherwise they become separate components
-  //    named "<Component>/<Story>" (PLAN_STORY_SPLIT).
+  //    only if ≤ stories.maxStoryAxisValues (default 8); otherwise they become separate components
+  //    named "<Component>/<Story>" with id <sid>--<storySlug> (PLAN_STORY_SPLIT; derived-id rule,
+  //    README §7 glossary).
 }
 ```
 
@@ -147,6 +150,8 @@ Candidate axes come from argTypes whose control is `boolean`, `radio`, `inline-r
 | `custom-elements-manifest` | Parse the type string `'a' \| 'b'` with a tolerant parser. Anything else is not enumerable |
 
 Booleans are *candidates*. Classification (§4) decides whether each one becomes VARIANT, BOOLEAN, a State value or FIXED.
+
+An arg with no `options`, no enumerable type and no `args.<name>.values` (a text, object or node arg) is not an axis candidate. It is fixed at its `initialArgs` value unless §3 gives it a TEXT, SLOT or INSTANCE_SWAP prior, with `PLAN_ARG_NOT_ENUMERABLE` (info).
 
 ---
 
@@ -241,6 +246,8 @@ Rules are evaluated per arg, in this order:
 
 **R6 FIXED.** Everything else, fixed at the base value. These include free numbers, colors, objects, dates and unbound strings.
 
+**Forced classifications.** A classification forced by `args.<name>.as` is still probed (unless `classification: 'fast'`). If render-and-diff contradicts it (for example `as: 'boolean'` but paint changes), the arg becomes VARIANT and the planner emits `PLAN_CLASSIFICATION_REJECTED` (warn).
+
 ### 4.3 Interaction with variants
 
 Classification runs **once per component**, on the base variant. Results are re-checked on a sample of non-default variants: up to 3, chosen to span the axes. This catches args that are BOOLEAN on `size=sm` but structurally different on `size=lg`. If a re-check fails, the property is demoted to VARIANT (`PLAN_PROPERTY_INCONSISTENT`, warn).
@@ -304,7 +311,7 @@ story.to.design has shown 2,160 variants importing, which is slow. Our defaults 
 
 ### 5.4 Render-hash dedup
 
-After capture, variants whose normalized render hashes match are reported. The hash covers the paint and geometry tree, and excludes `data-*` attributes and ids.
+After capture, variants whose normalized render hashes match are reported as `PLAN_DUPLICATE_VARIANT` (info). The hash covers the paint and geometry tree, and excludes `data-*` attributes and ids.
 
 - If an **entire axis value** is always identical to another value, the values are merged (as in §4.2 R5).
 - If an **entire axis** is identical across all its values, the axis is removed (`PLAN_AXIS_NO_EFFECT`, warn).
@@ -337,13 +344,15 @@ Non-folded state-like booleans such as `checked` or `selected` stay their own VA
 
 The planner picks the element that receives the pseudo-state:
 
-1. `parameters.holotype.stateTarget` (a CSS selector relative to the capture root, piercing `>>>`).
+1. `parameters.holotype.states.target`, or the older `stateTarget` (a CSS selector relative to the capture root, piercing `>>>`). It is recorded as `PseudoStateSpec.selector` in the Capture IR ([06](06-ir.md)).
 2. The first interactive element in the composed tree, as defined in §6.1. A native `input` inside a custom wrapper counts.
 3. The capture root.
 
 ### 6.4 Application strategy
 
 Mechanics are in [05 §9](05-capture.md#pseudo-states).
+
+The element is chosen by §6.3 (`states.target`, or `stateTarget`). The pseudo-classes are those of `PseudoState` (§1), including `target`. Config `states.mode` maps to Capture IR `PseudoStateSpec.method` with the same strings: `'force' | 'interact' | 'addon'` ([06](06-ir.md)).
 
 | Mode | Mechanism | Default for |
 |---|---|---|
@@ -384,7 +393,7 @@ interface ModePlan { dimensions: { global: string; values: { value: unknown; lab
 
 - `parameters.holotype.viewports: { mobile: 390, desktop: 1440 }`, or a compat import from `chromatic.modes[*].viewport` and `parameters.viewport.options`.
 - `viewports.as`, default `'axis'`, becomes a `Viewport` axis.
-- `'components'` creates separate component sets `Name/Mobile` and `Name/Desktop`. This is the recommended choice for page-level patterns whose structure changes across breakpoints (`PLAN_VIEWPORT_STRUCTURE_CHANGE` suggests it automatically when the aligned trees differ structurally).
+- `'components'` creates separate component sets `Name/Mobile` and `Name/Desktop`, with ids `<sid>@<viewportName>` (derived-id rule, README §7 glossary). This is the recommended choice for page-level patterns whose structure changes across breakpoints (`PLAN_VIEWPORT_STRUCTURE_CHANGE` suggests it automatically when the aligned trees differ structurally).
 
 ### 7.3 Size of the component
 
@@ -402,23 +411,23 @@ interface ModePlan { dimensions: { global: string; values: { value: unknown; lab
 
 ## 8. Naming and ordering
 
-- **Axis names.** Use `parameters.holotype.axes[arg].name`. Otherwise Title Case the arg name (`iconPosition` → `Icon position`). The State axis is named `State`, the story axis `Story`, viewport `Viewport`, and global axes take the `globalTypes[g].name` or the title-cased key.
+- **Axis names.** Use `parameters.holotype.args[arg].name`. Otherwise Title Case the arg name (`iconPosition` → `Icon position`). The State axis is named `State`, the story axis `Story`, viewport `Viewport`, and global axes take the `globalTypes[g].name` or the title-cased key.
 - **Value labels.** Use `control.labels[value]`, then the mapping key, then `String(value)` in Title Case for strings and `True`/`False` for booleans (Figma's convention; `true` maps to `True`). `undefined` becomes `Default`, or the `table.defaultValue.summary` parsed value.
 - **Sanitizing.** Strip `=`, `,`, `/` (variant-name delimiters) and trim. Make labels unique by suffixing `(2)`. Max 64 characters.
-- **Value order.** Use the `options` order. The base value moves to index 0 *unless* `axes[arg].order: 'options'` is set. Booleans are ordered by default value first. The State axis follows `states` order.
-- **Grid placement.** By default the first axis goes on columns and all other axes nest on rows, last axis innermost. Override with `parameters.holotype.layout: { columns: ['State'], rows: ['Variant','Size'] }`. The default variant is at the top-left ([09](09-plugin.md)).
+- **Value order.** Use the `options` order. The base value moves to index 0 *unless* `args[arg].order: 'options'` is set. Booleans are ordered by default value first. The State axis follows `states` order.
+- **Grid placement.** By default the first axis goes on columns and all other axes nest on rows, last axis innermost. Override with `parameters.holotype.grid: { columns: ['State'], rows: ['Variant','Size'] }`. The default variant is at the top-left ([09](09-plugin.md)).
 - **Default variant.** The variant with all base values: the base story's args, no pseudo-state, the default viewport.
 
 ---
 
 ## 9. Configuration schema <a id="schema"></a><a id="config"></a>
 
-The same TypeBox schema is used for `parameters.holotype` (any level) and `holotype.config.ts → defaults | components[sid]`. The schema is defined in `@holotype/ir` (D-07), and JSON Schema is published at `/schema/config/v1.json`.
+This is `HolotypeParams` only: the same TypeBox schema is used for `parameters.holotype` (per story, at any level) and for `holotype.config.ts → defaults | components[sid]`. Project-level keys are in [16](16-config.md#reference) (D-51). The schema is defined in `@holotype/ir` (D-07), and JSON Schema is published at `/schema/config/v1.json`.
 
 ```ts
 import { Type as T, Static } from '@sinclair/typebox';
 
-const PseudoStateT = T.Union(['hover','focus','focus-visible','active','focus-within','visited'].map(s => T.Literal(s)));
+const PseudoStateT = T.Union(['hover','focus','focus-visible','active','focus-within','visited','target'].map(s => T.Literal(s)));
 const ArgValuesT = T.Array(T.Unknown());
 
 export const HolotypeParams = T.Object({
@@ -439,12 +448,14 @@ export const HolotypeParams = T.Object({
   }))),
   fixed: T.Optional(T.Record(T.String(), T.Unknown())),           // args pinned for all variants
   variants: T.Optional(T.Array(T.Record(T.String(), T.String()))),// curated combos (axisName → label)
+  excludeCombos: T.Optional(T.Array(T.Record(T.String(), T.String()))), // variant combos to skip (axisName → label)
+  split: T.Optional(T.Boolean()),                                 // one component per value (icons); automatic for icon enums (PLAN_ICON_SPLIT)
   states: T.Optional(T.Union([T.Literal(false), T.Object({
     include: T.Optional(T.Array(T.Union([PseudoStateT, T.Literal('default')]))),
     foldBooleans: T.Optional(T.Array(T.String())),
     labels: T.Optional(T.Record(T.String(), T.String())),
-    mode: T.Optional(T.Union([T.Literal('force'), T.Literal('addon'), T.Literal('interact')])),
-    target: T.Optional(T.String()),
+    mode: T.Optional(T.Union([T.Literal('force'), T.Literal('addon'), T.Literal('interact')])), // = Capture IR PseudoStateSpec.method (06)
+    target: T.Optional(T.String()),                               // selector of the element that receives the state (§6.3)
     includePortals: T.Optional(T.Boolean()),
   })])),
   modes: T.Optional(T.Object({
@@ -464,20 +475,26 @@ export const HolotypeParams = T.Object({
   unwrap: T.Optional(T.Union([T.Boolean(), T.Number()])),
   portal: T.Optional(T.Union([T.Boolean(), T.Literal('auto'), T.String(),
     T.Object({ selector: T.Optional(T.String()), frame: T.Optional(T.Union([T.Literal('union'), T.Literal('viewport')])) })])),
-  exclude: T.Optional(T.Array(T.String())),                       // selectors removed from capture
+  exclude: T.Optional(T.Array(T.String())),                       // CSS selectors removed from capture (not the top-level `exclude`, which filters stories)
   stateTarget: T.Optional(T.String()),
   slots: T.Optional(T.Record(T.String(), T.Object({ selector: T.Optional(T.String()),
     min: T.Optional(T.Number()), max: T.Optional(T.Number()) }))),
-  layout: T.Optional(T.Object({ columns: T.Optional(T.Array(T.String())), rows: T.Optional(T.Array(T.String())) })),
+  grid: T.Optional(T.Object({ columns: T.Optional(T.Array(T.String())), rows: T.Optional(T.Array(T.String())) })), // set grid placement (§8)
   stories: T.Optional(T.Object({ fillMatrix: T.Optional(T.Union(['none','budget','full'].map(s => T.Literal(s)))),
     maxStoryAxisValues: T.Optional(T.Number()) })),
-  budget: T.Optional(T.Object({ max: T.Optional(T.Number()), warn: T.Optional(T.Number()), maxProbes: T.Optional(T.Number()) })),
+  budget: T.Optional(T.Object({ max: T.Optional(T.Number()), warn: T.Optional(T.Number()),
+    hardLimit: T.Optional(T.Number()),                            // default 1024 (D-28, §5.2)
+    maxProbes: T.Optional(T.Number()) })),
   conditional: T.Optional(T.Union([T.Literal('dense'), T.Literal('sparse')])),
   play: T.Optional(T.Union([T.Literal('initial-only'), T.Literal('rerun')])),
   remount: T.Optional(T.Boolean()),
   delay: T.Optional(T.Number()),
   keepLayout: T.Optional(T.Boolean()),
   textMode: T.Optional(T.Union([T.Literal('reflow'), T.Literal('locked-lines')])),  // D-17, used by [07]
+  implements: T.Optional(T.Array(T.String())),                    // DCR item ids this story implements (D-37, 15 §8)
+  replacedBy: T.Optional(T.Union([T.String(),                     // deprecation target (15 §4.13)
+    T.Object({ sid: T.String(), args: T.Optional(T.Record(T.String(), T.String())) })])),
+  channelCapture: T.Optional(T.Boolean()),                        // enables the in-preview capture hook (03 §11)
 }, { additionalProperties: false });
 export type HolotypeParams = Static<typeof HolotypeParams>;
 ```
@@ -495,7 +512,7 @@ export default {
   parameters: { holotype: {
     args: { label: { as: 'text', name: 'Label' }, icon: { as: 'instance-swap' }, iconOnly: { as: 'boolean' } },
     states: { include: ['default', 'hover', 'focus-visible', 'active'], foldBooleans: ['disabled', 'loading'] },
-    layout: { columns: ['State'], rows: ['Variant', 'Size'] },
+    grid: { columns: ['State'], rows: ['Variant', 'Size'] },
   } },
 } satisfies Meta<typeof Button>;
 ```
@@ -506,7 +523,7 @@ export default {
 
 ### 10.1 story.to.design (`parameters.s2d`)
 
-This is read **only** when `parameters.holotype` is absent and `compat.s2d !== false`. It is a migration path; we implement it from the public docs (https://story.to.design/docs/variant-properties-api), not from their code.
+This is read **only** when `parameters.holotype` is absent and the project key `compat.s2d` ([16](16-config.md#reference)) is not `false`. It is a migration path; we implement it from the public docs (https://story.to.design/docs/variant-properties-api), not from their code.
 
 | s2d | holotype |
 |---|---|
@@ -584,7 +601,7 @@ The planner produces:
 ### 11.4 Icon library
 
 - Story `Icons/All` renders a grid of 300 icons, or `Icon` with `name` options over 300 values.
-- `name` with more than 12 options is an INSTANCE_SWAP candidate, but the component itself *is* the icon. So the rule is: **an enum-valued arg of a component whose render is a single SVG is split into separate components**, one per value (`Icon/ArrowLeft`, …), on the Icons page. This sets `viewports.as`-style split `as:'components'` automatically (`PLAN_ICON_SPLIT`).
+- `name` with more than 12 options is an INSTANCE_SWAP candidate, but the component itself *is* the icon. So the rule is: **an enum-valued arg of a component whose render is a single SVG is split into separate components**, one per value (`Icon/ArrowLeft`, …, ids `<sid>=<valueSlug>` per the derived-id rule, README §7 glossary), on the Icons page. This sets `split: true` automatically (`PLAN_ICON_SPLIT`).
 - `size` → FIXED, because icons scale in Figma.
 - `color` → FIXED. The SVG fill is bound to `currentColor`, which becomes a fill on the vector that an instance can override.
 - These components become the `preferredValues` of INSTANCE_SWAP properties elsewhere.
@@ -607,7 +624,7 @@ The planner produces:
   2. **final plan**: after probe captures, with classification resolved and the matrix generated.
 
   Only the final plan is persisted in the bundle (`manifest.components[sid].plan`), so the plugin UI can explain every decision.
-- `holotype plan <sid>` prints the plan, its provenance and its budget without capturing variants, but it does run probes unless `--fast`.
+- `holotype list --plan --only <sid>` prints the plan, its provenance and its budget without capturing variants, but it does run probes unless `--fast`.
 
 ---
 
@@ -641,4 +658,7 @@ The planner produces:
 | `PLAN_CHROMATIC_DISABLED_HINT` | info | Chromatic disableSnapshot seen |
 | `PLAN_SUGGEST_MERGE_AXES` | info | exclusive booleans could become one axis |
 | `PLAN_ICON_SPLIT` | info | icon enum split into components |
+| `PLAN_ARG_NOT_ENUMERABLE` | info | arg without options or `values` fixed at its `initialArgs` value (§2.2) |
+| `PLAN_CLASSIFICATION_REJECTED` | warn | a forced classification failed render-and-diff; VARIANT used (§4.2) |
+| `PLAN_DUPLICATE_VARIANT` | info | two combinations render identically (§5.4) |
 | `CAP_STATE_PORTAL_IGNORED` | info | state produced a portal that was excluded |

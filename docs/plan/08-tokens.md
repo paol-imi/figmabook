@@ -5,6 +5,7 @@
 > **Binding decisions:** D-18 (provenance-only binding; matching before creation; no silent overwrite), D-08 (inference is CLI-side in `mapper`; the plugin only applies), D-19 (identity in shared plugin data).
 
 Contents:
+0. Loop slice subset
 1. Principles
 2. Pipeline overview
 3. Discovery: which custom properties are tokens
@@ -26,6 +27,21 @@ Contents:
 
 ---
 
+<a id="slice"></a>
+## 0. Loop slice subset
+
+The Loop slice ([14](14-roadmap.md#loop-slice)) ships a subset of this chapter. Everything else is hardening H-F ([14](14-roadmap.md#hardening)).
+
+| In the slice | Hardening H-F |
+|---|---|
+| CSS custom properties → one local collection (`tokens.collectionName`) | tiered and grouped collections (§6.1) |
+| default mode only | modes from themes (§7), `TOKEN_MODE_LIMIT` |
+| alias chains (§5) | styles (§9) |
+| bindings only when provable (D-18, `confidence: 'chain'`) on fills, strokes, padding, gap, radius, text fills | library matching (§10), value matching (§10.3) |
+| untokenized edited values become DCR questions (`DCR_VALUE_UNTOKENIZED`, [15](15-change-requests.md)) | motion tokens; the Chakra and Carbon gates |
+
+---
+
 <a id="principles"></a>
 ## 1. Principles
 
@@ -44,10 +60,10 @@ Contents:
 capture (per variant, per mode)                     mapper (CLI, pure)                    plugin
 ───────────────────────────────                     ──────────────────                    ──────
 A. Token discovery   ─► CaptureDoc.tokens[]  ─┐
-   (root/theme scopes, custom props,           ├─► token graph build ─► TokenSet ─► tokens.json ─► preflight: match/import
+   (root/theme scopes, custom props,           ├─► token graph build ─► TokensDoc ─► tokens.json ─► preflight: match
     per-mode values)                           │   (aliases, types,       (collections,              ─► diff (Tokens tab)
-B. Provenance probes ─► CaptureNode.provenance ┘    scopes, naming)        modes, vars)               ─► create/update vars
-   (CDP matched styles per                          binding resolution ─► SceneNode.bindings ──────► bind on apply
+B. Provenance probes ─► CaptureNode.provenance ┘    scopes, naming)        modes, vars)               ─► import + create/update vars
+   (CDP matched styles per                          binding resolution ─► SceneNode.bind ──────────► bind on apply
     node+property)                                  (per node field)
 ```
 
@@ -144,30 +160,30 @@ The authored value text is parsed into a tiny AST: `var(name, fallback?)`, funct
 
 | Winning declaration (authored) | Property bound | Result | Confidence |
 |---|---|---|---|
-| `background-color: var(--color-bg)` | fill color | bind → `--color-bg` | `exact` |
-| `background: var(--color-bg)` | fill color (shorthand) | bind → `--color-bg` (the longhand `background-color` is implicit, inheriting the shorthand text) | `exact` |
-| `border: 1px solid var(--color-border)` | stroke color → `--color-border`; stroke weight literal | partial: color bound, width unbound | `exact` (color) |
-| `padding: var(--space-2) var(--space-4)` | `paddingTop/Bottom` → `--space-2`, `paddingLeft/Right` → `--space-4` | positional shorthand expansion (1–4 values) | `exact` |
-| `gap: var(--space-2)` | `itemSpacing` (and `counterAxisSpacing` when wrap) | bind | `exact` |
-| `color: var(--fg, #111)`, with `--fg` defined | text fill → `--fg` | bind | `exact` |
+| `background-color: var(--color-bg)` | fill color | bind → `--color-bg` | `chain` |
+| `background: var(--color-bg)` | fill color (shorthand) | bind → `--color-bg` (the longhand `background-color` is implicit, inheriting the shorthand text) | `chain` |
+| `border: 1px solid var(--color-border)` | stroke color → `--color-border`; stroke weight literal | partial: color bound, width unbound | `chain` (color) |
+| `padding: var(--space-2) var(--space-4)` | `paddingTop/Bottom` → `--space-2`, `paddingLeft/Right` → `--space-4` | positional shorthand expansion (1–4 values) | `chain` |
+| `gap: var(--space-2)` | `itemSpacing` (and `counterAxisSpacing` when wrap) | bind | `chain` |
+| `color: var(--fg, #111)`, with `--fg` defined | text fill → `--fg` | bind | `chain` |
 | `color: var(--fg, #111)`, with `--fg` *undefined* (the fallback was used) | — | no bind; literal `#111` | — (`TOKEN_FALLBACK_USED`, info) |
-| `color: var(--fg, var(--fg-default))`, with `--fg` undefined | text fill → `--fg-default` | bind to the fallback var | `exact` |
+| `color: var(--fg, var(--fg-default))`, with `--fg` undefined | text fill → `--fg-default` | bind to the fallback var | `chain` |
 | `padding: calc(var(--space-2) * 2)` | — | no bind (an expression has no variable equivalent) | — (`TOKEN_EXPRESSION_UNBOUND`, info) |
 | `background: color-mix(in srgb, var(--brand) 80%, white)` | — | no bind | — (`TOKEN_EXPRESSION_UNBOUND`) |
 | `border-radius: var(--radius)`, where `--radius: 9999px` and the box is 32px tall | corner radii | bind. The *effective* radius is clamped by the CSS overlap rule ([07](07-mapping.md#radius)). If clamping changed the value, the bound value differs from the rendered one, so we **don't bind** | — (`TOKEN_CLAMPED_UNBOUND`) |
-| `box-shadow: var(--shadow-md)`, a full shadow list | effect | effect style (preferred, [§9.2](#effect-styles)) or per-field effect variables when the shadow parts are themselves vars | `exact` |
-| `box-shadow: 0 1px 2px var(--shadow-color)` | effect color → `--shadow-color` | `setBoundVariableForEffect(color)` | `exact` |
-| `font: var(--font-body)`, a shorthand token | — | `font` shorthands are expanded by the browser; the longhands carry the implicit shorthand text. Map to a text style if the token resolves to a typography group ([§9.1](#text-styles)) | `exact` |
-| inherited `color` from an ancestor declared `color: var(--fg)` | text fill → `--fg` | bind (use CDP `inherited[]`) | `exact` |
-| Tailwind `bg-blue-500` compiled to `background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))` | — | `--tw-*` is ignored and the expression has no variable | — (Tailwind v4 uses `var(--color-blue-500)` directly, which binds `exact`) |
+| `box-shadow: var(--shadow-md)`, a full shadow list | effect | effect style (preferred, [§9.2](#effect-styles)) or per-field effect variables when the shadow parts are themselves vars | `chain` |
+| `box-shadow: 0 1px 2px var(--shadow-color)` | effect color → `--shadow-color` | `setBoundVariableForEffect(color)` | `chain` |
+| `font: var(--font-body)`, a shorthand token | — | `font` shorthands are expanded by the browser; the longhands carry the implicit shorthand text. Map to a text style if the token resolves to a typography group ([§9.1](#text-styles)) | `chain` |
+| inherited `color` from an ancestor declared `color: var(--fg)` | text fill → `--fg` | bind (use CDP `inherited[]`) | `chain` |
+| Tailwind `bg-blue-500` compiled to `background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))` | — | `--tw-*` is ignored and the expression has no variable | — (Tailwind v4 uses `var(--color-blue-500)` directly, which binds `chain`) |
 
-**Confidence levels** are carried in the Scene IR ([§14](#scene-ir)):
+**Confidence levels** are carried in the Scene IR (`VarRef.confidence`, [§14](#scene-ir)):
 
-- `exact`: provenance proven by the cascade.
+- `chain`: provenance proven by the cascade.
 - `value`: opt-in value-equality match against the token table ([§10.3](#value-match)).
-- `none`: unbound.
+- none: unbound (no `VarRef`).
 
-The plugin binds `exact` always, and binds `value` only when `tokens.bindByValue: true`.
+The plugin binds `chain` always, and binds `value` only when `tokens.bindByValue: true`.
 
 ### 4.3 Sanity check: computed equals token value
 
@@ -307,10 +323,10 @@ For each mode:
 2. Wait for `globalsUpdated` + `storyRendered` ([03](03-storybook.md#render-loop)).
 3. Re-run token discovery ([§3.2](#discovery)).
 
-Variant geometry is captured **once**, in the default mode. Per-mode re-capture of variants is needed only to detect **non-token theme differences**: properties whose computed value differs between modes but that have no `exact` provenance. A sample of `tokens.modeProbeVariants` (default: the default variant of every component) is re-captured in each mode and diffed node by node via `nk`.
+Variant geometry is captured **once**, in the default mode. Per-mode re-capture of variants is needed only to detect **non-token theme differences**: properties whose computed value differs between modes but that have no `chain` provenance. A sample of `tokens.modeProbeVariants` (default: the default variant of every component) is re-captured in each mode and diffed node by node via `nk`.
 
 - If every differing property is token-bound, modes are sufficient.
-- Otherwise emit `TOKEN_MODE_UNTOKENIZED_DIFF` (warn) listing the node and property, and offer the fallback: `tokens.themeFallback: "variant-axis"`, which adds a `Theme` VARIANT axis for *that component only*.
+- Otherwise emit `TOKEN_MODE_UNTOKENIZED_DIFF` (warn) listing the node and property, and apply `tokens.themeFallback`. The default `"variant-axis"` adds a `Theme` VARIANT axis for *that component only* (matches 04 §7.1 and 07 §16, `PLAN_THEME_AS_AXIS`). `"report"` only reports.
 
 ### 7.3 Applying modes
 
@@ -324,13 +340,14 @@ Variant geometry is captured **once**, in the default mode. Per-mode re-capture 
 <a id="mode-limits"></a>
 ### 7.4 Plan limits
 
-The mode count per collection is plan-limited. The commonly reported figures are Starter 1 (verify), Professional 4–10, Organization 20, Enterprise more (verify, S-12).
+The mode count per collection is plan-limited: Starter 1 (verify), Professional up to 10 modes per collection, Organization and Enterprise 20 (verify at write time). Enterprise also has **extended collections** (`VariableCollection.extend(name)` → `ExtendedVariableCollection`), the preferred answer for a brand dimension.
 
 - The plugin does not know the plan. It tries `addMode` and catches the error.
-- On failure:
-  1. `tokens.modeOverflow: "split"` (default): create additional collections `Semantic (2)`, …, each holding the overflow modes with duplicated variables. Emit `TOKEN_MODE_LIMIT` (warn), with guidance to upgrade or reduce modes.
-  2. `"variant-axis"`: drop the extra modes and add a `Theme` axis on affected components.
-  3. `"first-only"`: import the default mode only.
+- On failure, apply `tokens.modeOverflow` and emit `TOKEN_MODE_LIMIT` (warn), with guidance to upgrade or reduce modes:
+  1. `"variant-axis"` (default): drop the extra modes and add a `Theme` axis on affected components.
+  2. `"extend"` (Enterprise): put the overflow brand values in an extended collection of the mode-bearing collection.
+  3. `"split"`: create additional collections `Semantic (2)`, …, each holding the overflow modes with duplicated variables. These collections' modes do not compose: a binding points to one collection, so it cannot switch between them.
+  4. `"first-only"`: import the default mode only.
 
 ---
 
@@ -343,7 +360,7 @@ This is the complete set the applier ([09](09-plugin.md#apply-order)) knows how 
 |---|---|---|---|
 | `fills[i]` (SOLID color) | `background-color`, `color` on shapes, SVG fill | `node.fills = [figma.variables.setBoundVariableForPaint(paint, 'color', v)]` (returns a **new** paint) | COLOR |
 | `strokes[i]` color | `border-*-color`, `outline-color` | same, on `strokes` | COLOR |
-| gradient stop color | `linear-gradient(var(--a), var(--b))` | `gradientStops[i].boundVariables = { color: alias }` (verify, S-12) | COLOR |
+| gradient stop color | `linear-gradient(var(--a), var(--b))` | `setBoundVariableForPaint` accepts SolidPaint only. For gradients, build new `ColorStop` objects with `boundVariables: { color: { type: 'VARIABLE_ALIAS', id } }` (`VariableBindableColorStopField = 'color'`) and reassign the paint. S-12 keeps only the render check | COLOR |
 | text range fill | `color` | `text.setRangeFills(s, e, [setBoundVariableForPaint(…)])` | COLOR |
 | `paddingTop/Right/Bottom/Left` | `padding-*` (+ border, [07](07-mapping.md#border-padding)) | `node.setBoundVariable('paddingLeft', v)`. **Only when the Scene padding equals the token value**: with D-16, padding = CSS padding + border width, so a 1px border breaks equality. Then **don't bind**, and emit `TOKEN_PADDING_BORDER_OFFSET` (info). See [§17](#edge) | FLOAT |
 | `itemSpacing` / `counterAxisSpacing` | `gap`, `column-gap`, `row-gap` | `setBoundVariable('itemSpacing' \| 'counterAxisSpacing', v)` | FLOAT |
@@ -410,7 +427,7 @@ Not generated.
 <a id="matching"></a>
 ## 10. Matching existing variables & styles
 
-This runs in plugin **preflight** ([09](09-plugin.md#preflight)), before any write.
+Matching runs in plugin **preflight** ([09](09-plugin.md#preflight)), before any write, and is read-only. Importing the chosen library matches is a write; it runs in the `tokens` stage after the user confirms Apply (§10.1).
 
 ### 10.1 Candidate sets
 
@@ -421,15 +438,16 @@ This runs in plugin **preflight** ([09](09-plugin.md#preflight)), before any wri
 2. **Libraries** (requires `permissions: ["teamlibrary"]`):
    - `await figma.teamLibrary.getAvailableLibraryVariableCollectionsAsync()` lists the collections in libraries enabled for the file;
    - for each collection, `figma.teamLibrary.getVariablesInLibraryCollectionAsync(collection.key)` returns `{ key, name, resolvedType }`.
-   - Library variable *values* and `codeSyntax` are not in that listing. To compare them, import with `figma.variables.importVariableByKeyAsync(key)`, which only adds a reference to the file, then read `codeSyntax` and `valuesByMode`.
-   - To bound the cost, import only name-matched candidates (cap `tokens.libraryProbeLimit`, default 500) (verify, S-12).
+   - Preflight matches by name and key from `getVariablesInLibraryCollectionAsync` only (read-only).
+   - `importVariableByKeyAsync` / `importComponentByKeyAsync` add library references to the document, so they are writes. They run in the `tokens` stage **after** the user confirms Apply, for the chosen matches only. Only then are library `codeSyntax` and `valuesByMode` read, so value drift (`TOKEN_LIBRARY_VALUE_DRIFT`) is reported during Apply, not in preflight. 09 mirrors this.
+   - To bound the cost, import at most `tokens.libraryProbeLimit` matches (default 500) (verify, S-12).
 
 ### 10.2 Match order (per token)
 
 | Order | Rule | Result |
 |---|---|---|
 | 1 | Previously linked: the variable's shared plugin data `holotype/tok = "--color-bg"` ([10](10-sync.md#keys)) | reuse |
-| 2 | `codeSyntax.WEB` equals `var(--color-bg)` (normalized whitespace), or equals `--color-bg` | reuse (`match: 'codeSyntax'`) |
+| 2 | `codeSyntax.WEB` equals `var(--color-bg)` (normalized whitespace), or equals `--color-bg`. Local variables only; library `codeSyntax` is readable only after import (§10.1) | reuse (`match: 'codeSyntax'`) |
 | 3 | Transformed name equals the variable name (case-insensitive, `/` and `-`/`.` normalized), and types agree | reuse (`match: 'name'`). Surface in preflight for confirmation if the *value* also differs |
 | 4 | Value equality (per default mode) and type agree; only with `tokens.matchByValue: true` | propose (`match: 'value'`); always requires user confirmation |
 | — | none | create a local variable |
@@ -441,7 +459,7 @@ Styles match the same way: name, then a `holotype/tok` pluginData link, then (fo
 <a id="value-match"></a>
 ### 10.3 Value-equality binding (opt-in)
 
-With `tokens.bindByValue: true`, the mapper also marks unbound node properties whose value equals exactly one token's value in the default mode (and in *every* mode, when modes exist) as `confidence: 'value'`. Ambiguity, where several tokens share the value, yields no bind, with `TOKEN_VALUE_AMBIGUOUS` (info, lists the candidates). This rescues CSS-in-JS libraries that inline literal theme values (emotion/styled-components theme objects) at the cost of possible false positives.
+With `tokens.bindByValue: true`, the mapper also marks unbound node properties whose value equals exactly one token's value in the default mode (and in *every* mode, when modes exist) as `confidence: 'value'`. Each value-equality match emits `TOKEN_VALUE_MATCHED` (info). Ambiguity, where several tokens share the value, yields no bind, with `TOKEN_VALUE_AMBIGUOUS` (info, lists the candidates). This rescues CSS-in-JS libraries that inline literal theme values (emotion/styled-components theme objects) at the cost of possible false positives.
 
 ---
 
@@ -512,7 +530,7 @@ Every write is recorded in the variable's shared plugin data: `holotype/tok`, `h
 | `%` (lengths) | not bindable (context-dependent); unbound |
 | unitless `line-height` token (`--leading-tight: 1.25`) | FLOAT variables can't be "percent" (verify, S-12). Options (`tokens.lineHeight`): `"px-per-usage"` (default) binds only when a single font size uses it (value = size × factor); `"percent-string"` creates no variable and uses literal PERCENT line height |
 | `letter-spacing` in `em` | px at the usage font size; same per-usage rule as `em` |
-| colors (`oklch()`, `color(display-p3 …)`, `color-mix` results) | converted to sRGB with gamut mapping (colorjs.io `toGamut`), or P3 when `figma.root.documentColorProfile === 'DISPLAY_P3'` ([07](07-mapping.md#color)). The original string is kept in the variable description when `tokens.keepOriginalColor: true` |
+| colors (`oklch()`, `color(display-p3 …)`, `color-mix` results) | converted to sRGB with gamut mapping (colorjs.io `toGamut`), or P3 when `figma.root.documentColorProfile === 'DISPLAY_P3'` ([07](07-mapping.md#color)). A `LEGACY` profile is treated as sRGB. When the CSS original is present, the applier prefers Figma's own conversion (`figma.util.rgb`/`solidPaint` on the original string, 07 §9); the mapper's numbers are the fallback. The original string is kept in the variable description when `tokens.keepOriginalColor: true` |
 | alpha colors | COLOR variable with `a < 1` |
 | `font-weight: 600` | FLOAT 600 |
 | `font-family: "Inter", sans-serif` | STRING `Inter` (first family only) |
@@ -522,50 +540,20 @@ Every write is recorded in the variable's shared plugin data: `holotype/tok`, `h
 <a id="scene-ir"></a>
 ## 14. Scene IR shapes
 
-These are canonical in [06](06-ir.md#tokens); reproduced here for reference.
-
-```ts
-interface TokenSet {                       // bundle: tokens.json
-  version: 1;
-  rootFontSize: number;
-  modes: { id: string; name: string; globals: Record<string, unknown>; isDefault: boolean }[];
-  collections: { id: string; name: string; modeIds: string[]; tier?: 'primitives' | 'semantic' }[];
-  tokens: TokenDef[];
-  textStyles?: TextStyleDef[];
-  effectStyles?: EffectStyleDef[];
-}
-interface TokenDef {
-  css: string;                             // "--color-bg" (identity)
-  name: string;                            // "color/bg"
-  collectionId: string;
-  type: 'COLOR' | 'FLOAT' | 'STRING' | 'BOOLEAN' | 'TIMING' | 'EASING';
-  scopes: VariableScope[];
-  description?: string;
-  values: Record<string /*modeId*/, { literal: unknown } | { alias: string /*css name*/ }>;
-  source: 'css' | 'dtcg' | 'style-dictionary' | 'tokens-studio';
-  usage: number;                           // bound sites across the bundle
-}
-interface Binding {                        // on SceneNode.bindings[]
-  field: BindableField;                    // 'fill.color' | 'stroke.color' | 'paddingLeft' | 'itemSpacing' | 'topLeftRadius' | 'text.fontSize' | 'effect.color' | ...
-  index?: number;                          // paint/effect index
-  range?: [number, number];                // text ranges
-  token: string;                           // css name
-  confidence: 'exact' | 'value';
-  via?: string[];                          // redeclaration path, diagnostics only
-}
-```
+Canonical shapes: `TokensDoc` (the bundle's `tokens.json`) and `SceneBindings`/`VarRef` (on Scene nodes) in [06 §4.3](06-ir.md#tokens). This chapter defines semantics only: which token a field binds to (§4, §8), with which `confidence` (`'chain' | 'value'`, §4.2), and how collections, modes and names are derived (§6, §7).
 
 ---
 
 <a id="config"></a>
 ## 15. Config
 
-This is part of `holotype.config.ts`; the full schema is in [11](11-ux.md#config).
+Schema and defaults: [16 §tokens](16-config.md#tokens). Semantics below. §7 is the single owner of theme → mode semantics; there is no top-level `themes` key, and 04's per-component `modes` only overrides `tokens.modes` for that component.
 
 ```ts
 tokens: {
   enabled: true,
   include: 'referenced',                    // | 'all'
+  includePatterns: undefined,               // string[]: globs on CSS names, added to 'referenced'
   ignore: [/^--tw-/, /^--radix-/],          // merged with defaults
   stripPrefix: undefined,
   naming: 'dash-groups',                    // | 'flat' | 'all-dashes'
@@ -573,8 +561,8 @@ tokens: {
   collections: 'tiered',                    // | 'single' | { groups: [...] }
   collectionName: 'Tokens',
   modes: undefined,                         // explicit [{ name, globals }]
-  modeOverflow: 'split',                    // | 'variant-axis' | 'first-only'
-  themeFallback: 'report',                  // | 'variant-axis'
+  modeOverflow: 'variant-axis',             // | 'extend' | 'split' | 'first-only'
+  themeFallback: 'variant-axis',            // | 'report'
   modeProbeVariants: 'default-variant',     // | 'all' | number
   bindByValue: false,
   matchByValue: false,
@@ -613,6 +601,7 @@ tokens: {
 | `TOKEN_PADDING_BORDER_OFFSET` | info | padding is not bound because Scene padding includes the border width (D-16) |
 | `TOKEN_RELATIVE_UNIT` | info | an `em`/`%` token is not bindable as a stable variable |
 | `TOKEN_LIBRARY_VALUE_DRIFT` | warn | a matched library variable's value differs from code |
+| `TOKEN_VALUE_MATCHED` | info | a binding was made by value equality only (opt-in, `confidence: 'value'`) |
 | `TOKEN_VALUE_AMBIGUOUS` | info | value-equality match has several candidates; not bound |
 | `TOKEN_SOURCE_CSS_MISMATCH` | warn | the tokens file value ≠ the CSS computed value |
 | `TOKEN_BIND_FAILED` | warn | the Plugin API refused a binding (field unsupported on the node type, scope mismatch) |
@@ -639,8 +628,8 @@ tokens: {
 
 All are tracked in [14](14-roadmap.md#phase-0) under **S-12**.
 
-1. The exact mode limit per plan, and the error shape on `addMode` overflow.
-2. Whether gradient stops are bindable via the Plugin API (`ColorStop.boundVariables`).
+1. The mode limit per plan at write time (§7.4), and the error shape on `addMode` overflow.
+2. Gradient stops bound via `ColorStop.boundVariables` render with the variable's value in every mode (render check only; the construction is known, §8).
 3. `setRangeBoundVariable` support for `fontWeight` and `fontStyle`, and their scopes.
 4. Text style fields bindable to variables, and how they interact with range overrides.
 5. The per-node cost of `CSS.getMatchedStylesForNode` on large components (bounds §4.5).
