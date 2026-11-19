@@ -104,5 +104,5 @@ describe('published JSON Schema files (D-07)', () => {
     for (const [name, testCase] of cases<InvalidCase>('invalid', doc)) {
       expect(check(patched(doc, testCase)), `invalid/${name}`).toBe(false);
     }
-  });
+  }, 30_000); // compiling the full DCR schema with allErrors takes ~6 s on a busy CI runner
 });
