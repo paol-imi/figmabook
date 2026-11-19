@@ -532,7 +532,7 @@ Provenance needs source maps, so **branch workflows capture from the Vite dev se
 | Fact | How | Status |
 |---|---|---|
 | CSS rule location | `CSS.getMatchedStylesForNode` → `rule.styleSheetId` + `style.range` (start line and column within the served stylesheet) | CDP, in use ([05 §6.2](05-capture.md)); range capture is new |
-| Original file | Vite injects dev CSS as `<style>`; the CLI forces `css.devSourcemap: true` in branch mode. Inline sheets resolve via `ownerNode` → `data-vite-dev-id` and the inline source map, with `style.range` offset by `header.startLine/startColumn`; linked sheets use the `CSS.styleSheetAdded` header (`sourceURL`, `sourceMapURL`). Otherwise `DCR_PROVENANCE_NO_SOURCEMAP` (warn) | S-19 |
+| Original file | Vite injects dev CSS as `<style>`; the CLI forces `css.devSourcemap: true` in branch mode ([`capture.devSourcemap`](16-config.md#capture)). Inline sheets resolve via `ownerNode` → `data-vite-dev-id` and the inline source map, with `style.range` offset by `header.startLine/startColumn`; linked sheets use the `CSS.styleSheetAdded` header (`sourceURL`, `sourceMapURL`). Otherwise `DCR_PROVENANCE_NO_SOURCEMAP` (warn) | S-19 |
 | CSS modules | hashed class `_btn_x7a3` → the original `.btn` selector, via the source map | S-19 |
 | Tailwind v4 | utility classes on the element; theme values are CSS variables (`--spacing`, `--color-*`), so `var()` chains work. Provenance = the **class list + JSX location**; a value change becomes a utility suggestion `p-3 → p-4`, derived deterministically from the theme scale | adapter, Phase 7 |
 | CSS-in-JS (emotion, styled-components) | injected sheets; source maps only if the babel/SWC plugin emits them | best-effort |

@@ -71,7 +71,7 @@ type IndexEntry =
 ```
 
 - v5 (SB ≥8.1) only adds the automatic `dev`/`test` tags. v4 entries are treated the same, with `tags ?? []`. A v3 `stories.json` (SB 6/7, unsupported) is parsed only so `list` can name what is skipped: map `{kind, story, parameters.__id}` the way `transformStoryIndexV3toV4` in `manager-api/lib/stories.ts` does.
-- **Filter.** Keep `type==='story' && subtype!=='test'`. Drop entries tagged `!figma`, or not tagged `figma` when `storybook.requireTag` is set. Apply `storybook.include`/`exclude` globs against `title` and `id` (keys in [16](16-config.md#storybook)). Docs entries are never captured.
+- **Filter.** Keep `type==='story' && subtype!=='test'`. Drop entries tagged `!figma`, or not tagged `figma` when [`storybook.requireTag`](16-config.md#storybook) is set. Apply the top-level [`include`/`exclude`](16-config.md#reference) globs against `title` and `id`. Docs entries are never captured.
 - **Fingerprint.** `indexHash = sha256(canonicalJSON(filteredEntries))`. It goes into the cache key ([12](12-quality.md)) and into `bundle.manifest.source`.
 
 ### 2.3 Component manifest and docgen services (10.1+ / 11)

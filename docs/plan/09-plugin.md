@@ -38,7 +38,8 @@ Contents:
 | Compute and show an **apply plan** (diff) before writing | Write anything before the user confirms (except in `--auto` harness mode) |
 | Apply nodes, components, sets, properties, variables and bindings in the required order | Publish the library (no API exists; the user publishes) |
 | Verify geometry and text by read-back, then fall back per container | Rasterize content (rasters arrive pre-rendered as assets) |
-| Write the registry, diagnostics and report; optionally export PNGs for fidelity | Send any document data anywhere except the paired local server or registry |
+| Write the registry, diagnostics and report; optionally export PNGs for fidelity | Send any document data anywhere except the paired local CLI on this computer (Submit writes the request into the file instead, §20.3) |
+| In branch files: list changes and submit a design change request ([§20](#proposal)) | Merge branches (never, D-47) |
 
 ---
 

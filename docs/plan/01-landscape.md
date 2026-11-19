@@ -1,12 +1,15 @@
 # 01 · Landscape & differentiation
 
-> **Purpose:** know exactly what exists, where it fails, and which ground holotype takes. Every claim below is tagged:
-> - **[V]**: verified in a cited source.
+> **Purpose:** know exactly what exists, where it fails, and which ground Holotype takes. Every claim below is tagged:
+> - **[V]**: verified in a cited source. **Last checked: 2026-11** for every [V] row unless the row gives another date.
 > - **[I]**: inferred.
+> - **(unverified)**: an older claim that could not be confirmed at the last check.
 >
-> Sources are the planning research briefs (Nov 2026). The story.to.design docs were read from `https://story.to.design/docs/*`. Its bug tracker is `https://github.com/divriots/story-to-design/issues`.
+> Re-check this chapter every quarter (the "first-party check", [14](14-roadmap.md#hardening)). Sources are the planning research briefs (Nov 2026). The story.to.design docs were read from `https://story.to.design/docs/*`. Its bug tracker is `https://github.com/divriots/story-to-design/issues`.
 
-## 1. story.to.design (divRIOTS): the incumbent
+## 1. story.to.design (divRIOTS): the incumbent (last checked: 2026-11)
+
+Re-checked Nov 2026: no notable product change (SB10 support Nov 2025; no AI/MCP features).
 
 ### 1.1 Snapshot
 - [V] Figma plugin by ‹div›RIOTS. Announced 16 Feb 2022, open beta 1 Sep 2022 ([announcement](https://divriots.com/blog/announcing-story-to-design), [open beta](https://story.to.design/blog/we-are-open-beta)).

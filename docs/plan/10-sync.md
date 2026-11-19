@@ -1,6 +1,10 @@
 # 10 · Identity & sync
 
-> **Scope:** how holotype recognises what it built before, and updates it **in place**. Designers' instance overrides survive (G5), designer additions survive, designer edits to managed layers are detected and resolved by policy, and every change is previewed first.
+> **Scope:** how Holotype recognises what it built before, and updates it **in place**. Designers' instance overrides survive (G5), designer additions survive, designer edits to managed layers are detected and resolved by policy, and every change is previewed first.
+>
+> **Phasing (D-46):**
+> - **Phase 4a (Loop slice):** D-19 keys, `irh`/`ah`, the S-02 safe-mutation rules, idempotent keyed in-place apply with Merkle skip, proposal-mode preservation, conflict policy `keep` without UI.
+> - **Phase 4b (hardening H-D):** Diff preview and Conflicts screens, the take (`overwrite`) and `fork` policies, renames, deprecation, consumer-file override retention.
 >
 > **Binding decisions:**
 > - **D-19:** shared plugin data namespace `holotype`; keys `sid`, `vk`, `nk`, `irh`, `ah`, `v`; no delete-and-recreate of managed nodes.
