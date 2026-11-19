@@ -5,6 +5,7 @@ node_modules/
 dist/
 packages/plugin/build/
 packages/plugin/manifest.json
+storybook-static/
 *.tsbuildinfo
 
 # Tooling caches

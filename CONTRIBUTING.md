@@ -10,13 +10,15 @@ corepack enable    # pnpm version from package.json `packageManager`
 pnpm install
 ```
 
-| Command           | What it does                                                    |
-| ----------------- | --------------------------------------------------------------- |
-| `pnpm build`      | builds every package (tsup; create-figma-plugin for the plugin) |
-| `pnpm test`       | runs Vitest in every package                                    |
-| `pnpm lint`       | Biome lint and format check (`pnpm format` to fix formatting)   |
-| `pnpm typecheck`  | `tsc` in every package, strict                                  |
-| `pnpm check:deps` | dependency-cruiser: package boundaries from plan 02 §6.2        |
+| Command                | What it does                                                                  |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| `pnpm build`           | builds every package (tsup; create-figma-plugin for the plugin)               |
+| `pnpm test`            | runs Vitest in every package                                                  |
+| `pnpm lint`            | Biome lint and format check (`pnpm format` to fix formatting)                 |
+| `pnpm typecheck`       | `tsc` in every package, strict                                                |
+| `pnpm check:deps`      | dependency-cruiser: package boundaries from plan 02 §6.2                      |
+| `pnpm build-storybook` | static build of the fixture Storybook (`fixtures/ds-react/storybook-static/`) |
+| `pnpm test:smoke`      | renders every fixture story in headless Chromium (Playwright)                 |
 
 Workspace packages resolve to each other's TypeScript sources through the `@holotype/source` export condition, so tests and type checks don't need a build first.
 

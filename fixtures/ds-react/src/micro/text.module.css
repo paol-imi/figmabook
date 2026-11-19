@@ -1,0 +1,85 @@
+/* Micro-fixtures: text (12 §2.2). Literal values on purpose; the font is the locked Inter. */
+
+.text {
+  margin: 0;
+  color: #0f172a;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.singleLine {
+  white-space: nowrap;
+}
+
+.paragraph {
+  width: 240px;
+}
+
+.weights {
+  display: flex;
+  flex-direction: column;
+}
+
+.w400 {
+  font-weight: 400;
+}
+
+.w500 {
+  font-weight: 500;
+}
+
+.w600 {
+  font-weight: 600;
+}
+
+.w700 {
+  font-weight: 700;
+}
+
+.lineHeightPx {
+  width: 240px;
+  font-size: 14px;
+  line-height: 30px;
+}
+
+.letterSpacing {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+
+.transforms {
+  display: flex;
+  flex-direction: column;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.mixedInline {
+  width: 280px;
+}
+
+.accent {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.mark {
+  background: #fef3c7;
+}
+
+.small {
+  font-size: 14px;
+  font-weight: 500;
+}

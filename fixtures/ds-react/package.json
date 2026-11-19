@@ -1,0 +1,43 @@
+{
+  "name": "@holotype/fixture-ds-react",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Fixture design system (React + Vite, Storybook 10) that capture, mapper, DCR tests and the loop demo run against.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens/tokens.css",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "storybook dev --port 6006 --host 127.0.0.1 --ci --no-open",
+    "build-storybook": "storybook build --output-dir storybook-static --quiet",
+    "fonts:lock": "node scripts/lock-fonts.ts",
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "test:smoke": "vitest run --config vitest.smoke.config.ts",
+    "test:e2e": "pnpm run test:smoke"
+  },
+  "dependencies": {
+    "@fontsource/inter": "5.3.0",
+    "lucide": "1.70.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@storybook/react-vite": "10.6.7",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "playwright": "1.63.0",
+    "storybook": "10.6.7",
+    "vite": "8.3.8"
+  }
+}
