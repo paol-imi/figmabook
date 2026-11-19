@@ -1,0 +1,86 @@
+{
+  "dcrHash": "69237df3aec88408",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [
+    {
+      "code": "DCR_PROVENANCE_MISSING",
+      "message": "No code location (no CDP or source map, or plugin-only extraction).",
+      "severity": "warn"
+    }
+  ],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/card-title-prop",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "abb64c5db56b74f6"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "bc951ae5ad66a9b8",
+  "items": [
+    {
+      "acceptance": {
+        "story": "must-add",
+        "type": "structure"
+      },
+      "assets": {
+        "after": "deb884288ba7cf5a:after"
+      },
+      "designerTitle": "Card · new property Title (text)",
+      "id": "deb884288ba7cf5a",
+      "kind": "property.added",
+      "property": {
+        "default": "Mountain retreat",
+        "name": "Title",
+        "type": "TEXT"
+      },
+      "target": {
+        "figmaNodeId": "30:1",
+        "key": "Title#45:0",
+        "sid": "components-card"
+      },
+      "title": "Card · new TEXT property title"
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": ["components-card"],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "property.added": 1
+    },
+    "headline": ["Card: new text property Title"],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}

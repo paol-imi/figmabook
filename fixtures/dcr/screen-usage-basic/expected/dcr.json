@@ -1,0 +1,308 @@
+{
+  "dcrHash": "b10c53a8b63376f0",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [
+    {
+      "code": "DCR_PROVENANCE_MISSING",
+      "message": "No code location (no CDP or source map, or plugin-only extraction).",
+      "severity": "warn"
+    }
+  ],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/checkout-screen",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "eea712a37f057b7b"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "95a445fd1d2dabf7",
+  "items": [
+    {
+      "acceptance": {
+        "story": "optional",
+        "type": "usage",
+        "usage": {
+          "mustImport": ["components-badge", "components-button", "components-card"]
+        }
+      },
+      "assets": {
+        "after": "f6ad55006974cd7f:Desktop:default"
+      },
+      "designerTitle": "Checkout: Desktop",
+      "id": "f6ad55006974cd7f",
+      "kind": "screen",
+      "screen": {
+        "name": "Checkout",
+        "target": "components",
+        "variants": [
+          {
+            "a11y": [],
+            "asset": "f6ad55006974cd7f:Desktop:default",
+            "breakpoint": {
+              "inferred": true,
+              "minWidth": 1280,
+              "name": "Desktop"
+            },
+            "figmaNodeId": "60:1",
+            "frameName": "Checkout",
+            "height": 900,
+            "interactions": [],
+            "snippet": {
+              "code": "<frame name=\"Checkout\" direction=\"column\" gap=\"--space-6\" padding=\"--space-7\" w=\"1440px\">\n  <text style=\"Inter Semi Bold 20/28\">Your cart</text>\n  <Card media=\"Landscape\" />\n  <frame name=\"Actions\" direction=\"row\" gap=\"--space-2\" align=\"center\">\n    <Badge dot label=\"In stock\" tone=\"success\" />\n    <Button label=\"Continue shopping\" variant=\"secondary\" />\n    <Button label=\"Checkout\" showIcon />\n  </frame>\n</frame>",
+              "imports": [
+                "import { Badge } from \"src/components/Badge/Badge\";",
+                "import { Button } from \"src/components/Button/Button\";",
+                "import { Card } from \"src/components/Card/Card\";"
+              ],
+              "lang": "jsx-sketch"
+            },
+            "state": "default",
+            "structure": [
+              {
+                "children": [
+                  {
+                    "characters": "Your cart",
+                    "key": "Checkout:0/Title:0",
+                    "style": {
+                      "family": "Inter",
+                      "lineHeight": 28,
+                      "size": 20,
+                      "style": "Semi Bold"
+                    },
+                    "t": "text"
+                  },
+                  {
+                    "inst": {
+                      "component": {
+                        "exportName": "Card",
+                        "importPath": "src/components/Card/Card.tsx",
+                        "package": "@holotype/fixture-ds-react",
+                        "sid": "components-card",
+                        "storiesPath": "src/components/Card/Card.stories.tsx",
+                        "storyIds": [
+                          "components-card--default",
+                          "components-card--long-text",
+                          "components-card--with-media"
+                        ]
+                      },
+                      "defaults": ["body", "children", "title"],
+                      "props": {
+                        "body": "A quiet cabin above the tree line, two hours from the city.",
+                        "children": "Pair",
+                        "media": "Landscape",
+                        "title": "Mountain retreat"
+                      },
+                      "sid": "components-card"
+                    },
+                    "key": "Checkout:0/Card:1",
+                    "t": "instance"
+                  },
+                  {
+                    "children": [
+                      {
+                        "inst": {
+                          "component": {
+                            "exportName": "Badge",
+                            "importPath": "src/components/Badge/Badge.tsx",
+                            "package": "@holotype/fixture-ds-react",
+                            "sid": "components-badge",
+                            "storiesPath": "src/components/Badge/Badge.stories.tsx",
+                            "storyIds": ["components-badge--default"]
+                          },
+                          "defaults": [],
+                          "props": {
+                            "dot": true,
+                            "label": "In stock",
+                            "tone": "success"
+                          },
+                          "sid": "components-badge"
+                        },
+                        "key": "Checkout:0/Actions:2/Badge:0",
+                        "t": "instance"
+                      },
+                      {
+                        "inst": {
+                          "component": {
+                            "exportName": "Button",
+                            "importPath": "src/components/Button/Button.tsx",
+                            "package": "@holotype/fixture-ds-react",
+                            "sid": "components-button",
+                            "storiesPath": "src/components/Button/Button.stories.tsx",
+                            "storyIds": [
+                              "components-button--ghost",
+                              "components-button--large",
+                              "components-button--primary",
+                              "components-button--secondary",
+                              "components-button--small"
+                            ]
+                          },
+                          "defaults": ["disabled", "iconLeading", "loading", "showIcon", "size"],
+                          "props": {
+                            "disabled": false,
+                            "iconLeading": "plus",
+                            "label": "Continue shopping",
+                            "loading": false,
+                            "showIcon": false,
+                            "size": "md",
+                            "variant": "secondary"
+                          },
+                          "sid": "components-button"
+                        },
+                        "key": "Checkout:0/Actions:2/Button:1",
+                        "t": "instance"
+                      },
+                      {
+                        "inst": {
+                          "component": {
+                            "exportName": "Button",
+                            "importPath": "src/components/Button/Button.tsx",
+                            "package": "@holotype/fixture-ds-react",
+                            "sid": "components-button",
+                            "storiesPath": "src/components/Button/Button.stories.tsx",
+                            "storyIds": [
+                              "components-button--ghost",
+                              "components-button--large",
+                              "components-button--primary",
+                              "components-button--secondary",
+                              "components-button--small"
+                            ]
+                          },
+                          "defaults": ["disabled", "iconLeading", "loading", "size", "variant"],
+                          "props": {
+                            "disabled": false,
+                            "iconLeading": "plus",
+                            "label": "Checkout",
+                            "loading": false,
+                            "showIcon": true,
+                            "size": "md",
+                            "variant": "primary"
+                          },
+                          "sid": "components-button"
+                        },
+                        "key": "Checkout:0/Actions:2/Button:2",
+                        "t": "instance"
+                      }
+                    ],
+                    "key": "Checkout:0/Actions:2",
+                    "layout": {
+                      "align": "center",
+                      "direction": "row",
+                      "gap": {
+                        "token": "--space-2",
+                        "value": 8
+                      },
+                      "sizing": {
+                        "h": "hug",
+                        "w": "hug"
+                      }
+                    },
+                    "name": "Actions",
+                    "t": "frame"
+                  }
+                ],
+                "fills": [
+                  {
+                    "token": "--color-bg",
+                    "value": "#ffffff"
+                  }
+                ],
+                "key": "Checkout:0",
+                "layout": {
+                  "direction": "column",
+                  "fixed": {
+                    "h": 900,
+                    "w": 1440
+                  },
+                  "gap": {
+                    "token": "--space-6",
+                    "value": 24
+                  },
+                  "padding": [
+                    {
+                      "token": "--space-7",
+                      "value": 32
+                    },
+                    {
+                      "token": "--space-7",
+                      "value": 32
+                    },
+                    {
+                      "token": "--space-7",
+                      "value": 32
+                    },
+                    {
+                      "token": "--space-7",
+                      "value": 32
+                    }
+                  ],
+                  "sizing": {
+                    "h": "fixed",
+                    "w": "fixed"
+                  }
+                },
+                "name": "Checkout",
+                "t": "frame"
+              }
+            ],
+            "width": 1440
+          }
+        ]
+      },
+      "target": {
+        "figmaNodeId": "60:1",
+        "key": "Checkout"
+      },
+      "title": "Screen \"Checkout\" · 1 breakpoint · 1 state"
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": [],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "screen": 1
+    },
+    "headline": ["Screen Checkout (Desktop): Card, Badge, 2 Buttons"],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [
+      {
+        "breakpoints": ["Desktop"],
+        "interactions": 0,
+        "itemId": "f6ad55006974cd7f",
+        "name": "Checkout",
+        "states": ["default"]
+      }
+    ],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}

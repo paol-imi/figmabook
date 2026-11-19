@@ -33,6 +33,21 @@ importers:
         specifier: 4.1.12
         version: 4.1.12(@types/node@22.20.5)(happy-dom@21.0.4)(vite@8.3.8(@types/node@22.20.5)(esbuild@0.27.7))
 
+  fixtures/dcr:
+    devDependencies:
+      '@holotype/dcr':
+        specifier: workspace:*
+        version: link:../../packages/dcr
+      '@holotype/ir':
+        specifier: workspace:*
+        version: link:../../packages/ir
+      '@holotype/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@sinclair/typebox':
+        specifier: ~0.34.52
+        version: 0.34.52
+
   fixtures/ds-react:
     dependencies:
       '@fontsource/inter':

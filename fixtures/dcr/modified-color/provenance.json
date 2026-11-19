@@ -1,0 +1,53 @@
+{
+  "kind": "holotype/fixture-provenance",
+  "v": 1,
+  "components": [
+    {
+      "code": {
+        "sid": "components-button",
+        "exportName": "Button",
+        "importPath": "src/components/Button/Button.tsx",
+        "storiesPath": "src/components/Button/Button.stories.tsx",
+        "storyIds": ["components-button--primary"],
+        "package": "@holotype/fixture-ds-react"
+      },
+      "doc": {
+        "kind": "holotype/provenance",
+        "v": 1,
+        "sid": "components-button",
+        "nodes": {
+          "0ea44dbf4e7b9668": {
+            "root": {
+              "dom": {
+                "path": "button",
+                "tag": "button",
+                "classes": ["button", "primary", "md"]
+              },
+              "fields": {
+                "paint.fills[0]": {
+                  "css": ["background-color"],
+                  "authored": "var(--button-bg)",
+                  "selector": ".primary",
+                  "rule": {
+                    "file": "src/components/Button/Button.module.css",
+                    "line": 21,
+                    "col": 3
+                  },
+                  "varChain": ["--button-bg", "--color-primary", "--color-blue-600"],
+                  "transform": "none"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "tokens": {
+    "--button-bg": {
+      "file": "src/tokens/tokens.css",
+      "line": 148,
+      "col": 3
+    }
+  }
+}

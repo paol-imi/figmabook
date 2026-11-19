@@ -1,0 +1,1125 @@
+[
+  {
+    "v": 1,
+    "vk": "4b097af13c9f3545",
+    "sid": "components-card",
+    "baseCommit": "3f9c2e14b7a0",
+    "baselineFp": "b2386d3ecfc5f8d0",
+    "nodes": {
+      "set": {
+        "vis": {
+          "name": "Card",
+          "visible": true
+        }
+      }
+    },
+    "order": {},
+    "props": {
+      "axes": [
+        {
+          "name": "Story",
+          "key": "story",
+          "values": ["Default", "With media", "Long text"]
+        }
+      ],
+      "properties": {}
+    }
+  },
+  {
+    "v": 1,
+    "vk": "4b097af13c9f3545",
+    "sid": "components-card",
+    "baseCommit": "3f9c2e14b7a0",
+    "baselineFp": "b2386d3ecfc5f8d0",
+    "nodes": {
+      "root": {
+        "geom": {
+          "width": 320,
+          "height": 240
+        },
+        "layout": {
+          "layoutMode": "VERTICAL",
+          "paddingTop": 1,
+          "paddingRight": 1,
+          "paddingBottom": 1,
+          "paddingLeft": 1,
+          "itemSpacing": 0,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "MIN",
+          "layoutSizingHorizontal": "FIXED",
+          "layoutSizingVertical": "HUG",
+          "minHeight": 240,
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 1,
+                "g": 1,
+                "b": 1
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.8863,
+                "g": 0.9098,
+                "b": 0.9412
+              },
+              "opacity": 1
+            }
+          ],
+          "strokeWeight": 1,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 10,
+          "topRightRadius": 10,
+          "bottomLeftRadius": 10,
+          "bottomRightRadius": 10,
+          "effects": [
+            {
+              "type": "DROP_SHADOW",
+              "color": {
+                "r": 0.0588,
+                "g": 0.0902,
+                "b": 0.1647,
+                "a": 0.08
+              },
+              "offset": {
+                "x": 0,
+                "y": 1
+              },
+              "radius": 2,
+              "spread": 0,
+              "visible": true,
+              "blendMode": "NORMAL"
+            }
+          ],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": true
+        },
+        "text": {},
+        "vis": {
+          "name": "Story=Default",
+          "visible": true
+        },
+        "bind": {
+          "fills": ["VariableID:1:108"],
+          "strokes": ["VariableID:1:81"],
+          "topLeftRadius": "VariableID:1:109",
+          "topRightRadius": "VariableID:1:109",
+          "bottomLeftRadius": "VariableID:1:109",
+          "bottomRightRadius": "VariableID:1:109",
+          "width": "VariableID:1:70",
+          "minHeight": "VariableID:1:73"
+        },
+        "inst": {}
+      },
+      "root/content": {
+        "geom": {
+          "width": 318,
+          "height": 238
+        },
+        "layout": {
+          "layoutMode": "VERTICAL",
+          "paddingTop": 16,
+          "paddingRight": 16,
+          "paddingBottom": 16,
+          "paddingLeft": 16,
+          "itemSpacing": 8,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "MIN",
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "FILL",
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Content",
+          "visible": true
+        },
+        "bind": {
+          "paddingTop": "VariableID:1:40",
+          "paddingRight": "VariableID:1:40",
+          "paddingBottom": "VariableID:1:40",
+          "paddingLeft": "VariableID:1:40",
+          "itemSpacing": "VariableID:1:38"
+        },
+        "inst": {}
+      },
+      "root/content/title": {
+        "geom": {
+          "width": 286,
+          "height": 28
+        },
+        "layout": {
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "HUG"
+        },
+        "paint": {},
+        "text": {
+          "characters": "Mountain retreat",
+          "fontName": {
+            "family": "Inter",
+            "style": "Semi Bold"
+          },
+          "fontSize": 18,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 28
+          },
+          "letterSpacing": {
+            "unit": "PIXELS",
+            "value": 0
+          },
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.0588,
+                "g": 0.0902,
+                "b": 0.1647
+              },
+              "opacity": 1
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textAlignHorizontal": "LEFT",
+          "textAlignVertical": "TOP",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE"
+        },
+        "vis": {
+          "name": "Title",
+          "visible": true
+        },
+        "bind": {
+          "fontSize": "VariableID:1:59",
+          "lineHeight": "VariableID:1:64",
+          "fontWeight": "VariableID:1:54",
+          "fills": ["VariableID:1:77"]
+        },
+        "inst": {}
+      },
+      "root/content/body": {
+        "geom": {
+          "width": 286,
+          "height": 40
+        },
+        "layout": {
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "HUG"
+        },
+        "paint": {},
+        "text": {
+          "characters": "A quiet cabin above the tree line, two hours from the city.",
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "letterSpacing": {
+            "unit": "PIXELS",
+            "value": 0
+          },
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.3922,
+                "g": 0.4549,
+                "b": 0.5451
+              },
+              "opacity": 1
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textAlignHorizontal": "LEFT",
+          "textAlignVertical": "TOP",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "maxLines": 3,
+          "textTruncation": "ENDING"
+        },
+        "vis": {
+          "name": "Body",
+          "visible": true
+        },
+        "bind": {
+          "fontSize": "VariableID:1:57",
+          "lineHeight": "VariableID:1:62",
+          "fills": ["VariableID:1:78"]
+        },
+        "inst": {}
+      },
+      "root/content/actions": {
+        "geom": {
+          "width": 286,
+          "height": 44
+        },
+        "layout": {
+          "layoutMode": "HORIZONTAL",
+          "paddingTop": 8,
+          "paddingRight": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "itemSpacing": 8,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "MIN",
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "HUG",
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Actions",
+          "visible": true
+        },
+        "bind": {
+          "paddingTop": "VariableID:1:38",
+          "itemSpacing": "VariableID:1:38"
+        },
+        "inst": {}
+      },
+      "root/content/actions/button": {
+        "geom": {
+          "width": 70,
+          "height": 36
+        },
+        "layout": {
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {},
+        "text": {},
+        "vis": {
+          "name": "Button",
+          "visible": true
+        },
+        "bind": {},
+        "inst": {
+          "mainComponent": "12:2",
+          "componentProperties": {
+            "Variant": "Primary",
+            "Size": "Md",
+            "Label#13:0": "Open",
+            "Show icon#13:1": false
+          }
+        }
+      },
+      "root/content/actions/button#1": {
+        "geom": {
+          "width": 76,
+          "height": 36
+        },
+        "layout": {
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {},
+        "text": {},
+        "vis": {
+          "name": "Button",
+          "visible": true
+        },
+        "bind": {},
+        "inst": {
+          "mainComponent": "12:20",
+          "componentProperties": {
+            "Variant": "Ghost",
+            "Size": "Md",
+            "Label#13:0": "Share",
+            "Show icon#13:1": false
+          }
+        }
+      }
+    },
+    "order": {
+      "root": ["root/content"],
+      "root/content": ["root/content/title", "root/content/body", "root/content/actions"],
+      "root/content/actions": ["root/content/actions/button", "root/content/actions/button#1"]
+    }
+  },
+  {
+    "v": 1,
+    "vk": "20ffbb58f97bc129",
+    "sid": "components-card",
+    "baseCommit": "3f9c2e14b7a0",
+    "baselineFp": "b2386d3ecfc5f8d0",
+    "nodes": {
+      "root": {
+        "geom": {
+          "width": 320,
+          "height": 240
+        },
+        "layout": {
+          "layoutMode": "VERTICAL",
+          "paddingTop": 1,
+          "paddingRight": 1,
+          "paddingBottom": 1,
+          "paddingLeft": 1,
+          "itemSpacing": 0,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "MIN",
+          "layoutSizingHorizontal": "FIXED",
+          "layoutSizingVertical": "HUG",
+          "minHeight": 240,
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 1,
+                "g": 1,
+                "b": 1
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.8863,
+                "g": 0.9098,
+                "b": 0.9412
+              },
+              "opacity": 1
+            }
+          ],
+          "strokeWeight": 1,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 10,
+          "topRightRadius": 10,
+          "bottomLeftRadius": 10,
+          "bottomRightRadius": 10,
+          "effects": [
+            {
+              "type": "DROP_SHADOW",
+              "color": {
+                "r": 0.0588,
+                "g": 0.0902,
+                "b": 0.1647,
+                "a": 0.08
+              },
+              "offset": {
+                "x": 0,
+                "y": 1
+              },
+              "radius": 2,
+              "spread": 0,
+              "visible": true,
+              "blendMode": "NORMAL"
+            }
+          ],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": true
+        },
+        "text": {},
+        "vis": {
+          "name": "Story=With media",
+          "visible": true
+        },
+        "bind": {
+          "fills": ["VariableID:1:108"],
+          "strokes": ["VariableID:1:81"],
+          "topLeftRadius": "VariableID:1:109",
+          "topRightRadius": "VariableID:1:109",
+          "bottomLeftRadius": "VariableID:1:109",
+          "bottomRightRadius": "VariableID:1:109",
+          "width": "VariableID:1:70",
+          "minHeight": "VariableID:1:73"
+        },
+        "inst": {}
+      },
+      "root/media": {
+        "geom": {
+          "width": 318,
+          "height": 160
+        },
+        "layout": {
+          "layoutMode": "NONE",
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "IMAGE",
+              "imageHash": "6b1f3c9e2d4a8b7c0e5f1a2d3c4b5a6978e9f0a1",
+              "scaleMode": "FILL",
+              "opacity": 1
+            }
+          ],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Media",
+          "visible": true
+        },
+        "bind": {
+          "height": "VariableID:1:72"
+        },
+        "inst": {}
+      },
+      "root/content": {
+        "geom": {
+          "width": 318,
+          "height": 78
+        },
+        "layout": {
+          "layoutMode": "VERTICAL",
+          "paddingTop": 16,
+          "paddingRight": 16,
+          "paddingBottom": 16,
+          "paddingLeft": 16,
+          "itemSpacing": 8,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "MIN",
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "FILL",
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Content",
+          "visible": true
+        },
+        "bind": {
+          "paddingTop": "VariableID:1:40",
+          "paddingRight": "VariableID:1:40",
+          "paddingBottom": "VariableID:1:40",
+          "paddingLeft": "VariableID:1:40",
+          "itemSpacing": "VariableID:1:38"
+        },
+        "inst": {}
+      },
+      "root/content/title": {
+        "geom": {
+          "width": 286,
+          "height": 28
+        },
+        "layout": {
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "HUG"
+        },
+        "paint": {},
+        "text": {
+          "characters": "Mountain retreat",
+          "fontName": {
+            "family": "Inter",
+            "style": "Semi Bold"
+          },
+          "fontSize": 18,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 28
+          },
+          "letterSpacing": {
+            "unit": "PIXELS",
+            "value": 0
+          },
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.0588,
+                "g": 0.0902,
+                "b": 0.1647
+              },
+              "opacity": 1
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textAlignHorizontal": "LEFT",
+          "textAlignVertical": "TOP",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE"
+        },
+        "vis": {
+          "name": "Title",
+          "visible": true
+        },
+        "bind": {
+          "fontSize": "VariableID:1:59",
+          "lineHeight": "VariableID:1:64",
+          "fontWeight": "VariableID:1:54",
+          "fills": ["VariableID:1:77"]
+        },
+        "inst": {}
+      },
+      "root/content/body": {
+        "geom": {
+          "width": 286,
+          "height": 40
+        },
+        "layout": {
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "HUG"
+        },
+        "paint": {},
+        "text": {
+          "characters": "A quiet cabin above the tree line, two hours from the city.",
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "letterSpacing": {
+            "unit": "PIXELS",
+            "value": 0
+          },
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.3922,
+                "g": 0.4549,
+                "b": 0.5451
+              },
+              "opacity": 1
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textAlignHorizontal": "LEFT",
+          "textAlignVertical": "TOP",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "maxLines": 3,
+          "textTruncation": "ENDING"
+        },
+        "vis": {
+          "name": "Body",
+          "visible": true
+        },
+        "bind": {
+          "fontSize": "VariableID:1:57",
+          "lineHeight": "VariableID:1:62",
+          "fills": ["VariableID:1:78"]
+        },
+        "inst": {}
+      },
+      "root/content/actions": {
+        "geom": {
+          "width": 286,
+          "height": 44
+        },
+        "layout": {
+          "layoutMode": "HORIZONTAL",
+          "paddingTop": 8,
+          "paddingRight": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "itemSpacing": 8,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "MIN",
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "HUG",
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Actions",
+          "visible": true
+        },
+        "bind": {
+          "paddingTop": "VariableID:1:38",
+          "itemSpacing": "VariableID:1:38"
+        },
+        "inst": {}
+      },
+      "root/content/actions/button": {
+        "geom": {
+          "width": 70,
+          "height": 36
+        },
+        "layout": {
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {},
+        "text": {},
+        "vis": {
+          "name": "Button",
+          "visible": true
+        },
+        "bind": {},
+        "inst": {
+          "mainComponent": "12:2",
+          "componentProperties": {
+            "Variant": "Primary",
+            "Size": "Md",
+            "Label#13:0": "Open",
+            "Show icon#13:1": false
+          }
+        }
+      },
+      "root/content/actions/button#1": {
+        "geom": {
+          "width": 76,
+          "height": 36
+        },
+        "layout": {
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {},
+        "text": {},
+        "vis": {
+          "name": "Button",
+          "visible": true
+        },
+        "bind": {},
+        "inst": {
+          "mainComponent": "12:20",
+          "componentProperties": {
+            "Variant": "Ghost",
+            "Size": "Md",
+            "Label#13:0": "Share",
+            "Show icon#13:1": false
+          }
+        }
+      }
+    },
+    "order": {
+      "root": ["root/media", "root/content"],
+      "root/content": ["root/content/title", "root/content/body", "root/content/actions"],
+      "root/content/actions": ["root/content/actions/button", "root/content/actions/button#1"]
+    }
+  },
+  {
+    "v": 1,
+    "vk": "173fed9bb59ebe6c",
+    "sid": "components-card",
+    "baseCommit": "3f9c2e14b7a0",
+    "baselineFp": "b2386d3ecfc5f8d0",
+    "nodes": {
+      "root": {
+        "geom": {
+          "width": 320,
+          "height": 240
+        },
+        "layout": {
+          "layoutMode": "VERTICAL",
+          "paddingTop": 1,
+          "paddingRight": 1,
+          "paddingBottom": 1,
+          "paddingLeft": 1,
+          "itemSpacing": 0,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "MIN",
+          "layoutSizingHorizontal": "FIXED",
+          "layoutSizingVertical": "HUG",
+          "minHeight": 240,
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 1,
+                "g": 1,
+                "b": 1
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.8863,
+                "g": 0.9098,
+                "b": 0.9412
+              },
+              "opacity": 1
+            }
+          ],
+          "strokeWeight": 1,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 10,
+          "topRightRadius": 10,
+          "bottomLeftRadius": 10,
+          "bottomRightRadius": 10,
+          "effects": [
+            {
+              "type": "DROP_SHADOW",
+              "color": {
+                "r": 0.0588,
+                "g": 0.0902,
+                "b": 0.1647,
+                "a": 0.08
+              },
+              "offset": {
+                "x": 0,
+                "y": 1
+              },
+              "radius": 2,
+              "spread": 0,
+              "visible": true,
+              "blendMode": "NORMAL"
+            }
+          ],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": true
+        },
+        "text": {},
+        "vis": {
+          "name": "Story=Long text",
+          "visible": true
+        },
+        "bind": {
+          "fills": ["VariableID:1:108"],
+          "strokes": ["VariableID:1:81"],
+          "topLeftRadius": "VariableID:1:109",
+          "topRightRadius": "VariableID:1:109",
+          "bottomLeftRadius": "VariableID:1:109",
+          "bottomRightRadius": "VariableID:1:109",
+          "width": "VariableID:1:70",
+          "minHeight": "VariableID:1:73"
+        },
+        "inst": {}
+      },
+      "root/content": {
+        "geom": {
+          "width": 318,
+          "height": 238
+        },
+        "layout": {
+          "layoutMode": "VERTICAL",
+          "paddingTop": 16,
+          "paddingRight": 16,
+          "paddingBottom": 16,
+          "paddingLeft": 16,
+          "itemSpacing": 8,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "MIN",
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "FILL",
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Content",
+          "visible": true
+        },
+        "bind": {
+          "paddingTop": "VariableID:1:40",
+          "paddingRight": "VariableID:1:40",
+          "paddingBottom": "VariableID:1:40",
+          "paddingLeft": "VariableID:1:40",
+          "itemSpacing": "VariableID:1:38"
+        },
+        "inst": {}
+      },
+      "root/content/title": {
+        "geom": {
+          "width": 286,
+          "height": 56
+        },
+        "layout": {
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "HUG"
+        },
+        "paint": {},
+        "text": {
+          "characters": "A very long card title that wraps onto a second line",
+          "fontName": {
+            "family": "Inter",
+            "style": "Semi Bold"
+          },
+          "fontSize": 18,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 28
+          },
+          "letterSpacing": {
+            "unit": "PIXELS",
+            "value": 0
+          },
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.0588,
+                "g": 0.0902,
+                "b": 0.1647
+              },
+              "opacity": 1
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textAlignHorizontal": "LEFT",
+          "textAlignVertical": "TOP",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE"
+        },
+        "vis": {
+          "name": "Title",
+          "visible": true
+        },
+        "bind": {
+          "fontSize": "VariableID:1:59",
+          "lineHeight": "VariableID:1:64",
+          "fontWeight": "VariableID:1:54",
+          "fills": ["VariableID:1:77"]
+        },
+        "inst": {}
+      },
+      "root/content/body": {
+        "geom": {
+          "width": 286,
+          "height": 60
+        },
+        "layout": {
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "HUG"
+        },
+        "paint": {},
+        "text": {
+          "characters": "Body copy that is far longer than three lines, so the line clamp cuts it off with an ellipsis. It keeps going to make sure the clamp, not the card height, decides where the text ends. Designers can still edit the text in Figma; the line count stays locked.",
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "letterSpacing": {
+            "unit": "PIXELS",
+            "value": 0
+          },
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.3922,
+                "g": 0.4549,
+                "b": 0.5451
+              },
+              "opacity": 1
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textAlignHorizontal": "LEFT",
+          "textAlignVertical": "TOP",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "maxLines": 3,
+          "textTruncation": "ENDING"
+        },
+        "vis": {
+          "name": "Body",
+          "visible": true
+        },
+        "bind": {
+          "fontSize": "VariableID:1:57",
+          "lineHeight": "VariableID:1:62",
+          "fills": ["VariableID:1:78"]
+        },
+        "inst": {}
+      },
+      "root/content/actions": {
+        "geom": {
+          "width": 286,
+          "height": 44
+        },
+        "layout": {
+          "layoutMode": "HORIZONTAL",
+          "paddingTop": 8,
+          "paddingRight": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "itemSpacing": 8,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "MIN",
+          "layoutSizingHorizontal": "FILL",
+          "layoutSizingVertical": "HUG",
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Actions",
+          "visible": true
+        },
+        "bind": {
+          "paddingTop": "VariableID:1:38",
+          "itemSpacing": "VariableID:1:38"
+        },
+        "inst": {}
+      },
+      "root/content/actions/button": {
+        "geom": {
+          "width": 70,
+          "height": 36
+        },
+        "layout": {
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {},
+        "text": {},
+        "vis": {
+          "name": "Button",
+          "visible": true
+        },
+        "bind": {},
+        "inst": {
+          "mainComponent": "12:2",
+          "componentProperties": {
+            "Variant": "Primary",
+            "Size": "Md",
+            "Label#13:0": "Open",
+            "Show icon#13:1": false
+          }
+        }
+      },
+      "root/content/actions/button#1": {
+        "geom": {
+          "width": 76,
+          "height": 36
+        },
+        "layout": {
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {},
+        "text": {},
+        "vis": {
+          "name": "Button",
+          "visible": true
+        },
+        "bind": {},
+        "inst": {
+          "mainComponent": "12:20",
+          "componentProperties": {
+            "Variant": "Ghost",
+            "Size": "Md",
+            "Label#13:0": "Share",
+            "Show icon#13:1": false
+          }
+        }
+      }
+    },
+    "order": {
+      "root": ["root/content"],
+      "root/content": ["root/content/title", "root/content/body", "root/content/actions"],
+      "root/content/actions": ["root/content/actions/button", "root/content/actions/button#1"]
+    }
+  }
+]
