@@ -1,37 +1,30 @@
 import { runInNewContext } from 'node:vm';
 import { describe, expect, it } from 'vitest';
-import { CAPTURE_ENVIRONMENT, type PageSerializer, serializerSource } from '../src';
+import { PAGE_GLOBAL, type PageSerializer, SERIALIZER_PROTOCOL, serializerSource } from '../src';
+
+/** Budget of the built page bundle (05 §2.1, BUILD §3.2 "Page code"). */
+const MAX_BYTES = 150 * 1024;
 
 describe('serializerSource', () => {
-  it('is a self-contained IIFE that installs the page serializer', () => {
-    const sandbox: { __holotype__?: PageSerializer; document?: unknown } = {};
+  it('is a self-contained IIFE that installs only the page serializer', () => {
+    const sandbox: Record<string, unknown> = {};
     runInNewContext(serializerSource, sandbox);
-    expect(sandbox.__holotype__?.protocol).toBe(1);
+    const api = sandbox[PAGE_GLOBAL] as PageSerializer | undefined;
+    expect(api?.protocol).toBe(SERIALIZER_PROTOCOL);
+    expect(typeof api?.serialize).toBe('function');
+    expect(Object.isFrozen(api)).toBe(true);
     // Nothing else leaks into the page's global scope.
     expect(Object.keys(sandbox)).toEqual([]);
   });
 
-  it('measures the capture root with the page DOM', () => {
-    const root = { getBoundingClientRect: () => ({ x: 8, y: 16, width: 120, height: 40 }) };
-    const sandbox: { __holotype__?: PageSerializer; document: unknown } = {
-      document: { querySelector: (selector: string) => (selector === '#storybook-root' ? root : null) },
-    };
-    runInNewContext(serializerSource, sandbox);
-    expect(sandbox.__holotype__?.measureRoot('#storybook-root')).toEqual({ x: 8, y: 16, w: 120, h: 40 });
-    expect(sandbox.__holotype__?.measureRoot('#missing')).toBeNull();
+  it(`stays within the ${MAX_BYTES / 1024} kB budget and imports nothing`, () => {
+    expect(new TextEncoder().encode(serializerSource).byteLength).toBeLessThanOrEqual(MAX_BYTES);
+    expect(serializerSource).not.toMatch(/\brequire\(|\bimport\s*\(|^import\s/m);
   });
-});
 
-describe('CAPTURE_ENVIRONMENT (D-24)', () => {
-  it('pins the deterministic browser context', () => {
-    expect(CAPTURE_ENVIRONMENT.context).toEqual({
-      deviceScaleFactor: 2,
-      viewport: { width: 1280, height: 800 },
-      reducedMotion: 'reduce',
-      locale: 'en-US',
-      timezoneId: 'UTC',
-    });
-    expect(CAPTURE_ENVIRONMENT.clock).toBe('2026-01-01T00:00:00Z');
-    expect(CAPTURE_ENVIRONMENT.chromiumArgs).toContain('--font-render-hinting=none');
+  it('can be installed twice (the init script runs in every document)', () => {
+    const sandbox: Record<string, unknown> = {};
+    runInNewContext(serializerSource, sandbox);
+    expect(() => runInNewContext(serializerSource, sandbox)).not.toThrow();
   });
 });
