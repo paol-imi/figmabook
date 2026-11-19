@@ -1,8 +1,8 @@
 # `@holotype/fixture-dcr`
 
-The DCR golden cases ([12 §2.4](../../docs/plan/12-quality.md#dcr-fixtures), BUILD B-68). Each case is
+The DCR golden cases ([12 §2.4](../../internal/plan/12-quality.md#dcr-fixtures), BUILD B-68). Each case is
 a designer's edit to a branch file of [`fixtures/ds-react`](../ds-react), hand-built as the plugin would
-read it, together with the request ([15 §6](../../docs/plan/15-change-requests.md#dcr-ir)) the pipeline
+read it, together with the request ([15 §6](../../internal/plan/15-change-requests.md#dcr-ir)) the pipeline
 must produce from it, byte for byte. Private: never published.
 
 ## Scripts

@@ -1,1 +1,1 @@
-docs/plan/12-quality.md:29: row has 7 cells, expected 6 (escape a literal pipe as \|)
+internal/plan/12-quality.md:29: row has 7 cells, expected 6 (escape a literal pipe as \|)

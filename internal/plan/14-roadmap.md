@@ -102,7 +102,7 @@ Until M-Loop the slice's own checks gate; the hardening exit criteria below neve
 - **Spike runner:** a **separate "Holotype Spikes" dev plugin** with its own manifest id (the product plugin's id is fixed forever). It runs spike scripts and exports results JSON. Spike kits exist for all 15 Figma spikes ([BUILD §9](BUILD.md#spike-kit)).
 - `figma-fake` and op-log replay ([12 §4.4.4](12-quality.md)), so agents iterate without Figma.
 - `fixtures/ds-react`: first 30 micro-fixtures + React golden Button/Input/Card on Storybook 10.
-- **Spike reports** in `docs/spikes/S-xx.md`, each ending with a decision update to README §5.
+- **Spike reports** in `internal/spikes/S-xx.md`, each ending with a decision update to README §5.
 
 **Spike order.** Slice spikes first: S-02, S-05, S-06 step 1, S-12 (Organization account only), S-16, S-17, S-18 subset, S-19 on CSS modules, S-07 on SB 10 only. The rest are hardening spikes, scheduled with the track that needs them: S-01 full matrix with topology A (H-E); S-03 and S-04 with H-A; S-09 icon fonts with H-A; S-10 grid with H-B; S-06 step 2 and S-08 with H-C; S-15 with H-E; S-11 `use_figma` with automation; S-13 with composition.
 
@@ -300,7 +300,7 @@ Code Connect generation stays here; the bake-off uses hand-written Code Connect 
 
 ### Public track (optional, post-M8)
 
-Only if the project goes public: publish the docs site (W-01 already builds it from `website/` with VitePress and a Pages workflow that stays inert until Pages is enabled; it grows here with getting started, config reference generated from TypeBox, diagnostics pages, recipes, migration guide from story.to.design with the `parameters.s2d.variantProperties` reader, [04](04-variant-model.md)); published benchmarks ([12](12-quality.md) §4.5); Community listing (D-39: trademark-compliant title, privacy policy, submit ≥3 weeks before the target date); trademark search and repo rename ([13](13-security-legal.md#publishing)); the Action, registry and addon once a second team exists. Risks R9 and R10 belong here.
+Only if the project goes public: publish the docs site (W-01 already builds it from `docs/` with VitePress and a Pages workflow that stays inert until Pages is enabled; it grows here with getting started, config reference generated from TypeBox, diagnostics pages, recipes, migration guide from story.to.design with the `parameters.s2d.variantProperties` reader, [04](04-variant-model.md)); published benchmarks ([12](12-quality.md) §4.5); Community listing (D-39: trademark-compliant title, privacy policy, submit ≥3 weeks before the target date); trademark search and repo rename ([13](13-security-legal.md#publishing)); the Action, registry and addon once a second team exists. Risks R9 and R10 belong here.
 
 ---
 

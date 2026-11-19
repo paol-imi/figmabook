@@ -1,1 +1,1 @@
-docs/plan/12-quality.md:29: SB_ARG_UNKNOWN: "Defined in" must be one link like [03](03-storybook.md), got "chapter 03"
+internal/plan/12-quality.md:29: SB_ARG_UNKNOWN: "Defined in" must be one link like [03](03-storybook.md), got "chapter 03"

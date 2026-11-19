@@ -1,6 +1,6 @@
 # `@holotype/storybook`
 
-The Storybook adapter (plan [03](../../docs/plan/03-storybook.md)). It is the only package that knows
+The Storybook adapter (plan [03](../../internal/plan/03-storybook.md)). It is the only package that knows
 Storybook internals: everything downstream sees the model and the render driver below.
 
 This version (BUILD B-10) covers discovery and the URL render path on Storybook 10. The channel render

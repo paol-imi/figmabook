@@ -1,8 +1,8 @@
 # `@holotype/capture`
 
-The capture engine (plan [05](../../docs/plan/05-capture.md)): Playwright orchestration in Node, and
+The capture engine (plan [05](../../internal/plan/05-capture.md)): Playwright orchestration in Node, and
 the in-page serializer, shipped as one IIFE string. It turns a rendered story into **Capture IR**
-(`CaptureDoc`, [06 §2](../../docs/plan/06-ir.md)): browser facts only, never a Figma decision.
+(`CaptureDoc`, [06 §2](../../internal/plan/06-ir.md)): browser facts only, never a Figma decision.
 
 This version (BUILD B-11) is the skeleton: the worker pool, the deterministic environment and the
 first collectors. Geometry through CDP, the full computed subset, paints, fonts, replaced content and

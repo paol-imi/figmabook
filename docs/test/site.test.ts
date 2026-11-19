@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import {
   DEFAULT_SITE_BASE,
+  designDocsNav,
   designDocsRepo,
   planLinks,
   repoLink,
   repoWebUrl,
   resolveRepoUrl,
   siteBase,
+  socialLinks,
 } from '../.vitepress/lib/site.ts';
 
 describe('siteBase', () => {
@@ -95,11 +97,11 @@ describe('resolveRepoUrl', () => {
 
 describe('repoLink', () => {
   it('links files and folders on the default branch', () => {
-    expect(repoLink('https://github.com/acme/ui', 'docs/plan/05-capture.md#a')).toBe(
-      'https://github.com/acme/ui/blob/main/docs/plan/05-capture.md#a',
+    expect(repoLink('https://github.com/acme/ui', 'internal/plan/05-capture.md#a')).toBe(
+      'https://github.com/acme/ui/blob/main/internal/plan/05-capture.md#a',
     );
-    expect(repoLink('https://github.com/acme/ui', '/docs/plan', 'tree')).toBe(
-      'https://github.com/acme/ui/tree/main/docs/plan',
+    expect(repoLink('https://github.com/acme/ui', '/internal/plan', 'tree')).toBe(
+      'https://github.com/acme/ui/tree/main/internal/plan',
     );
   });
 });
@@ -127,5 +129,21 @@ describe('designDocsRepo', () => {
     expect(designDocsRepo('repo', 'https://github.com/acme/ui')).toBe('https://github.com/acme/ui');
     expect(designDocsRepo('text', 'https://github.com/acme/ui')).toBeUndefined();
     expect(designDocsRepo('repo', undefined)).toBeUndefined();
+  });
+});
+
+describe('repository links in the nav and header', () => {
+  const REPO = 'https://github.com/acme/ui';
+
+  it('show nothing by default, even when the repository URL is known', () => {
+    const repo = designDocsRepo('text', REPO);
+    expect(designDocsNav(repo)).toEqual([]);
+    expect(socialLinks(repo)).toEqual([]);
+  });
+
+  it('link the design docs folder and the repository when opted in', () => {
+    const repo = designDocsRepo('repo', REPO);
+    expect(designDocsNav(repo)).toEqual([{ text: 'Design docs', link: `${REPO}/tree/main/internal/plan` }]);
+    expect(socialLinks(repo)).toEqual([{ icon: 'github', link: REPO }]);
   });
 });

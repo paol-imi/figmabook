@@ -33,6 +33,15 @@ importers:
         specifier: 4.1.12
         version: 4.1.12(@types/node@22.20.5)(happy-dom@21.0.4)(vite@8.3.8(@types/node@22.20.5)(esbuild@0.27.7))
 
+  docs:
+    devDependencies:
+      vitepress:
+        specifier: 1.6.4
+        version: 1.6.4(@algolia/client-search@5.65.0)(@types/node@22.20.5)(lightningcss@1.33.0)(postcss@8.5.33)(search-insights@2.17.3)(typescript@5.9.3)
+      vue:
+        specifier: 3.5.45
+        version: 3.5.45(typescript@5.9.3)
+
   fixtures/dcr:
     devDependencies:
       '@holotype/dcr':
@@ -403,15 +412,6 @@ importers:
       '@holotype/shared':
         specifier: workspace:*
         version: link:../../packages/shared
-
-  website:
-    devDependencies:
-      vitepress:
-        specifier: 1.6.4
-        version: 1.6.4(@algolia/client-search@5.65.0)(@types/node@22.20.5)(lightningcss@1.33.0)(postcss@8.5.33)(search-insights@2.17.3)(typescript@5.9.3)
-      vue:
-        specifier: 3.5.45
-        version: 3.5.45(typescript@5.9.3)
 
 packages:
 

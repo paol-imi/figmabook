@@ -81,12 +81,13 @@ export function repoLink(repoUrl: string, path: string, kind: 'blob' | 'tree' = 
 }
 
 /**
- * How the site treats links into the internal design docs (`docs/plan/`, `docs/research/`),
- * which it never publishes:
- * - `text` (default): the link becomes its plain text. The repository is private, so a link
- *   would be dead for readers and would expose internal file names.
- * - `repo`: the link points at the file in the repository, and the nav shows "Design docs".
- *   Only for a public repository.
+ * How the site treats the repository and links into the internal design docs (`internal/plan/`,
+ * `internal/research/`), which it never publishes:
+ * - `text` (default): a design-doc link becomes its plain text, and the site has no repository
+ *   links at all (no GitHub icon). The repository is private, so links would be dead for
+ *   readers and would expose internal file names.
+ * - `repo`: design-doc links point at the files in the repository, the nav shows "Design docs"
+ *   and the header shows the GitHub icon. Only for a public repository.
  */
 export type PlanLinks = 'text' | 'repo';
 
@@ -111,4 +112,20 @@ export function planLinks(value: string | undefined): PlanLinks {
  */
 export function designDocsRepo(mode: PlanLinks, repoUrl: string | undefined): string | undefined {
   return mode === 'repo' ? repoUrl : undefined;
+}
+
+/** Where the internal design docs live in the repository (never published). */
+export const DESIGN_DOCS_PATH = 'internal/plan';
+
+/** The nav's "Design docs" item: only with a repository from {@link designDocsRepo}. */
+export function designDocsNav(repo: string | undefined): { text: string; link: string }[] {
+  return repo ? [{ text: 'Design docs', link: repoLink(repo, DESIGN_DOCS_PATH, 'tree') }] : [];
+}
+
+/**
+ * The header's social links: the GitHub icon, only with a repository from {@link designDocsRepo},
+ * so a site built from a private repository never links to it.
+ */
+export function socialLinks(repo: string | undefined): { icon: 'github'; link: string }[] {
+  return repo ? [{ icon: 'github', link: repo }] : [];
 }

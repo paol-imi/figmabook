@@ -1,1 +1,1 @@
-docs/plan/12-quality.md:21: table outside a "#### Title (PREFIX_) — N" domain section
+internal/plan/12-quality.md:21: table outside a "#### Title (PREFIX_) — N" domain section

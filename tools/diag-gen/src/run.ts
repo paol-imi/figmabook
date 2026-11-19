@@ -1,13 +1,14 @@
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { DOCS_DIR, renderDocs } from './emit-docs.ts';
+import { type ChapterTitles, renderDocs } from './emit-docs.ts';
 import { CATALOG_MODULE_PATH, renderCatalogModule } from './emit-ts.ts';
+import { chapterTitle } from './markdown.ts';
 import { type Catalog, type CatalogIssue, catalogRows } from './model.ts';
 import { parseCatalog } from './parse.ts';
+import { CATALOG_SOURCE, DOCS_DIR, PLAN_DIR } from './paths.ts';
 import { scanPackageSources } from './scan.ts';
 
-/** The catalog source, repository-relative (12 §6.2). */
-export const CATALOG_SOURCE = 'docs/plan/12-quality.md';
+export { CATALOG_SOURCE } from './paths.ts';
 
 /** Thrown when the catalog tables are malformed; lists every problem as `file:line: message`. */
 export class CatalogError extends Error {
@@ -34,10 +35,35 @@ export async function loadCatalog(root: string, source = CATALOG_SOURCE): Promis
 }
 
 /** Every generated file, keyed by repository-relative path, in a stable order. */
-export function renderOutputs(catalog: Catalog): ReadonlyMap<string, string> {
+export function renderOutputs(catalog: Catalog, titles: ChapterTitles = new Map()): ReadonlyMap<string, string> {
   const outputs = new Map<string, string>([[CATALOG_MODULE_PATH, renderCatalogModule(catalog)]]);
-  for (const [name, content] of renderDocs(catalog)) outputs.set(`${DOCS_DIR}/${name}`, content);
+  for (const [name, content] of renderDocs(catalog, titles)) outputs.set(`${DOCS_DIR}/${name}`, content);
   return outputs;
+}
+
+/**
+ * The text of every chapter the catalog links to (its **Defined in** chapters and the catalog
+ * itself), keyed by file name inside {@link PLAN_DIR}; `undefined` for a missing file.
+ */
+async function readChapters(root: string, catalog: Catalog): Promise<ReadonlyMap<string, string | undefined>> {
+  const files = new Set([sourceFile(catalog.source), ...catalogRows(catalog).map((row) => row.definedIn.file)]);
+  const chapters = new Map<string, string | undefined>();
+  for (const file of [...files].sort()) chapters.set(file, await readOptional(join(root, PLAN_DIR, file)));
+  return chapters;
+}
+
+/** Chapter titles from their headings, for the pages' "Where it is defined" links. */
+function titlesOf(chapters: ReadonlyMap<string, string | undefined>): ChapterTitles {
+  const titles = new Map<string, string>();
+  for (const [file, text] of chapters) {
+    const title = text === undefined ? undefined : chapterTitle(text);
+    if (title) titles.set(file, title);
+  }
+  return titles;
+}
+
+function sourceFile(source: string): string {
+  return source.slice(source.lastIndexOf('/') + 1);
 }
 
 export interface GenerateResult {
@@ -49,7 +75,8 @@ export interface GenerateResult {
 
 /** `pnpm diag:gen`: writes the module and docs pages, and deletes pages of codes no longer listed. */
 export async function generate(root: string): Promise<GenerateResult> {
-  const outputs = renderOutputs(await loadCatalog(root));
+  const catalog = await loadCatalog(root);
+  const outputs = renderOutputs(catalog, titlesOf(await readChapters(root, catalog)));
   const written: string[] = [];
   for (const [path, content] of outputs) {
     if ((await readOptional(join(root, path))) === content) continue;
@@ -86,7 +113,8 @@ export async function check(root: string): Promise<CheckReport> {
   }
   const errors: string[] = [];
   const warnings: string[] = [];
-  const outputs = renderOutputs(catalog);
+  const chapters = await readChapters(root, catalog);
+  const outputs = renderOutputs(catalog, titlesOf(chapters));
   for (const [path, content] of outputs) {
     const actual = await readOptional(join(root, path));
     if (actual === undefined) errors.push(`${path}: missing; run \`pnpm diag:gen\``);
@@ -106,18 +134,17 @@ export async function check(root: string): Promise<CheckReport> {
     }
   }
 
-  const chapters = new Map<string, string | undefined>();
   for (const row of catalogRows(catalog)) {
     const { file, anchor } = row.definedIn;
-    if (!chapters.has(file)) chapters.set(file, await readOptional(join(root, 'docs/plan', file)));
     const text = chapters.get(file);
     const at = `${CATALOG_SOURCE}:${row.line}`;
+    const path = `${PLAN_DIR}/${file}`;
     if (text === undefined) {
-      errors.push(`${at}: ${row.code} is defined in docs/plan/${file}, which does not exist`);
+      errors.push(`${at}: ${row.code} is defined in ${path}, which does not exist`);
       continue;
     }
-    if (!text.includes(row.code)) warnings.push(`${at}: docs/plan/${file} does not mention ${row.code}`);
-    if (anchor && !hasAnchor(text, anchor)) warnings.push(`${at}: docs/plan/${file} has no #${anchor} anchor`);
+    if (!text.includes(row.code)) warnings.push(`${at}: ${path} does not mention ${row.code}`);
+    if (anchor && !hasAnchor(text, anchor)) warnings.push(`${at}: ${path} has no #${anchor} anchor`);
   }
   return { errors, warnings };
 }

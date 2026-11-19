@@ -5,7 +5,7 @@ export type CatalogSeverity = 'info' | 'warn' | 'error';
 export interface ChapterRef {
   /** Link text, e.g. `03`. */
   readonly chapter: string;
-  /** File name inside `docs/plan/`, e.g. `03-storybook.md`. */
+  /** File name inside `internal/plan/`, e.g. `03-storybook.md`. */
   readonly file: string;
   /** Fragment without `#`, when the link has one. */
   readonly anchor?: string;

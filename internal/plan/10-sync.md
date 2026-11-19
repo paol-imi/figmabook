@@ -572,7 +572,7 @@ Override kinds (columns):
 - resized instance (FIXED width)
 - layer added inside the instance (slot)
 
-Outcome: the matrix is checked into `docs/research/s02-override-matrix.md`. Any ❌ in a row that the reconciler relies on changes this chapter. For example, if reparenting loses overrides, `findMoved` is disabled and a structural move becomes a breaking change.
+Outcome: the matrix is checked into `internal/research/s02-override-matrix.md`. Any ❌ in a row that the reconciler relies on changes this chapter. For example, if reparenting loses overrides, `findMoved` is disabled and a structural move becomes a breaking change.
 
 ---
 

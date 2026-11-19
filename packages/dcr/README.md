@@ -1,6 +1,6 @@
 # @holotype/dcr
 
-Design Change Requests ([15](../../docs/plan/15-change-requests.md)): the deterministic request
+Design Change Requests ([15](../../internal/plan/15-change-requests.md)): the deterministic request
 a designer's branch-file edits become, for a coding agent to implement. Pure and isomorphic
 (D-35): no clock, no randomness, no network, no Node built-ins. It runs in the CLI and in the
 plugin UI. TypeBox is the source of truth (D-07); the build emits JSON Schema 2020-12 to

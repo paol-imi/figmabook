@@ -1,6 +1,6 @@
 # @holotype/plugin
 
-The Holotype Figma plugin ([09](../../docs/plan/09-plugin.md)). Built with create-figma-plugin
+The Holotype Figma plugin ([09](../../internal/plan/09-plugin.md)). Built with create-figma-plugin
 (D-06): a sandboxed main thread that owns the document, and a Preact UI iframe.
 Install steps for designers: [INSTALL.md](INSTALL.md).
 

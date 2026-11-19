@@ -1,6 +1,6 @@
-# @holotype/website
+# @holotype/docs
 
-The Holotype documentation site, built with [VitePress](https://vitepress.dev) and deployed to GitHub Pages. This README is for contributors; it is not a page of the site.
+The Holotype documentation site, built with [VitePress](https://vitepress.dev) and deployed to GitHub Pages. Everything in `docs/` is public: it is the site's source. Internal notes (the plan, research, spike reports) live in [`internal/`](../internal/README.md), outside the site root, and are never published. This README is for contributors; it is not a page of the site.
 
 ## Run it locally
 
@@ -8,12 +8,12 @@ From the repository root:
 
 ```sh
 pnpm install
-pnpm -F @holotype/website dev       # dev server with hot reload, http://localhost:5173/figmabook/
-pnpm -F @holotype/website build     # static site in website/.vitepress/dist; fails on dead links
-pnpm -F @holotype/website preview   # serve the built site, http://localhost:4173/figmabook/
+pnpm -F @holotype/docs dev       # dev server with hot reload, http://localhost:5173/figmabook/
+pnpm -F @holotype/docs build     # static site in docs/.vitepress/dist; fails on dead links
+pnpm -F @holotype/docs preview   # serve the built site, http://localhost:4173/figmabook/
 ```
 
-`pnpm build` at the root builds the site too, through Turborepo (cached on the site's files and `docs/diagnostics/`).
+`pnpm build` at the root builds the site too, through Turborepo (cached on the files in `docs/`, the generated diagnostics pages included).
 
 ## Content
 
@@ -23,6 +23,7 @@ pnpm -F @holotype/website preview   # serve the built site, http://localhost:417
 | `guide/` | How it works, Concepts, Getting started |
 | `reference/cli.md`, `exit-codes.md`, `configuration.md` | CLI reference, written from plan chapters 11 and 16 |
 | `reference/diagnostics/` | One page per diagnostic code (see below) |
+| `diagnostics/` | Generated diagnostics pages (`pnpm diag:gen`); read by `reference/diagnostics/`, not pages themselves |
 | `roadmap.md` | Stages and milestones, from plan chapter 14 |
 
 Rules for content:
@@ -30,22 +31,22 @@ Rules for content:
 - Plain, user-facing English. Short sentences.
 - Holotype is pre-release. Say clearly what is planned and what exists today. Do not promise dates.
 - "Figma" describes the integration. It is never part of the product name.
-- `docs/plan/` and `docs/research/` are internal and are **not** published, and the repository is private. Do not link to them or name their files on a page.
+- `internal/` (plan, research, spike reports) is **not** published, and the repository is private. Do not link to it or name its files on a page.
 - Markdown here is excluded from Biome, because Biome's Markdown formatter rewrites VitePress frontmatter.
 
 ### Diagnostics pages
 
-`tools/diag-gen` (`pnpm diag:gen`) is the only generator of the diagnostics pages; it writes them to `docs/diagnostics/`. The site does not copy them. `reference/diagnostics/[code].paths.ts` reads them at build time and serves each one as a page; `.vitepress/lib/diagnostics.ts` adapts their links (the index becomes `/reference/diagnostics/`, links into `docs/plan/` and `docs/research/` become plain text, keeping the link text; with `HOLOTYPE_SITE_PLAN_LINKS=repo` they point at the repository). The sidebar lists the codes by area, read from the generated index.
+`tools/diag-gen` (`pnpm diag:gen`) is the only generator of the diagnostics pages; it writes them to `docs/diagnostics/`, and `pnpm diag:check` fails when they drift from the catalog. The site does not copy them, and `srcExclude` keeps VitePress from rendering that folder as raw pages. `reference/diagnostics/[code].paths.ts` reads them at build time and serves each one as a page; `.vitepress/lib/diagnostics.ts` adapts them: the generator's banner comment is dropped, the index becomes `/reference/diagnostics/`, and links into `internal/` become plain text, keeping the link text (with `HOLOTYPE_SITE_PLAN_LINKS=repo` they point at the repository). The generator names a design-notes chapter by its title, never by file name, so the plain text gives nothing internal away. The sidebar lists the codes by area, read from the generated index.
 
-After `pnpm diag:gen`, restart `pnpm -F @holotype/website dev` to see the new pages.
+After `pnpm diag:gen`, restart `pnpm -F @holotype/docs dev` to see the new pages.
 
 ## Build settings
 
 | Variable | Default | Effect |
 |---|---|---|
 | `HOLOTYPE_SITE_BASE` | `/figmabook/` | URL path the site is served under. Use `/` for a custom domain. A repository rename only changes this value. |
-| `HOLOTYPE_REPO_URL` | from `GITHUB_SERVER_URL` and `GITHUB_REPOSITORY` in Actions, else the `origin` remote | Repository the site links to (the header's GitHub icon, and design-doc links when opted in). With none, the site has no repository links. |
-| `HOLOTYPE_SITE_PLAN_LINKS` | `text` | How links into `docs/plan/` and `docs/research/` (from the diagnostics pages) are shown. `text`: as plain text, because the repository is private and the links would be dead for readers. `repo`: as links into the repository, plus a "Design docs" item in the nav. Set `repo` only once the repository is public. Any other value fails the build. |
+| `HOLOTYPE_REPO_URL` | from `GITHUB_SERVER_URL` and `GITHUB_REPOSITORY` in Actions, else the `origin` remote | Repository the site links to when `HOLOTYPE_SITE_PLAN_LINKS=repo`. With none, the site has no repository links. |
+| `HOLOTYPE_SITE_PLAN_LINKS` | `text` | Whether the site links to the repository at all. `text`: no repository links. Links into `internal/` (from the diagnostics pages) are shown as plain text, and the header has no GitHub icon, because the repository is private and the links would be dead for readers. `repo`: links into `internal/` point at the repository, the nav gets a "Design docs" item and the header the GitHub icon. Set `repo` only once the repository is public. Any other value fails the build. |
 
 Local search is built in. Light and dark mode follow the system and can be switched in the header. Edit links are off.
 
@@ -53,7 +54,7 @@ Local search is built in. Light and dark mode follow the system and can be switc
 
 ### What the workflow does
 
-`.github/workflows/pages.yml` runs on pushes to `main` that touch the site, `docs/diagnostics/`, the lockfile or the workflow, and when started by hand (**Actions ▸ Pages ▸ Run workflow**):
+`.github/workflows/pages.yml` runs on pushes to `main` that touch `docs/` (the site and its generated diagnostics pages), the lockfile or the workflow, and when started by hand (**Actions ▸ Pages ▸ Run workflow**):
 
 1. It installs only the site's dependencies and asks the GitHub API whether Pages is enabled with **GitHub Actions** as its source.
 2. It builds the site. When Pages is enabled, the base path comes from the Pages settings (`actions/configure-pages`), so a custom domain or a renamed repository needs no change here.
@@ -84,7 +85,7 @@ Pages deploys go through the `github-pages` environment, and GitHub recommends t
 ### Who can see it
 
 > [!WARNING]
-> **Published Pages are public.** A GitHub Pages site is public on the internet, even when the repository is private ([publishing source][source]). Anyone with the URL can read it. The only exception is an organization on GitHub Enterprise Cloud, which can make a site private under **Settings ▸ Pages ▸ GitHub Pages visibility** ([visibility][visibility]). Publish only what may be public: never internal plans, research or competitor analysis. That is why the site renders links into `docs/plan/` and `docs/research/` as plain text unless `HOLOTYPE_SITE_PLAN_LINKS=repo` is set.
+> **Published Pages are public.** A GitHub Pages site is public on the internet, even when the repository is private ([publishing source][source]). Anyone with the URL can read it. The only exception is an organization on GitHub Enterprise Cloud, which can make a site private under **Settings ▸ Pages ▸ GitHub Pages visibility** ([visibility][visibility]). Publish only what may be public: never internal plans, research or competitor analysis. That is why internal notes live outside the site root, in `internal/`, and why the site renders links into it as plain text, with no link to the repository, unless `HOLOTYPE_SITE_PLAN_LINKS=repo` is set.
 
 [plans]: https://docs.github.com/en/get-started/learning-about-github/githubs-plans
 [dispatch]: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch

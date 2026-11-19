@@ -2,7 +2,7 @@
 
 > Package: `@holotype/storybook` (Node + in-page). Consumers: `planner` ([04](04-variant-model.md)) and `capture` ([05](05-capture.md)).
 > Governing decisions: D-05, D-11, D-12, D-14, D-24, D-26.
-> Research: [docs/research](../research/) and the Storybook monorepo at `next`@0cdcdc9 (11.0.0-beta.3). Paths below are relative to `code/`.
+> Research: [internal/research](../research/) and the Storybook monorepo at `next`@0cdcdc9 (11.0.0-beta.3). Paths below are relative to `code/`.
 
 This package is the only one that knows Storybook internals. Everything downstream sees a version-neutral `StorybookAdapter`.
 

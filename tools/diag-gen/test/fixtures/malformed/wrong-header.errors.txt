@@ -1,1 +1,1 @@
-docs/plan/12-quality.md:38: table header must be "| Code | Severity | Emitted by | Meaning | User remedy | Defined in |", got "| Code | Severity | Emitter | Meaning | Remedy | Defined in |"
+internal/plan/12-quality.md:38: table header must be "| Code | Severity | Emitted by | Meaning | User remedy | Defined in |", got "| Code | Severity | Emitter | Meaning | Remedy | Defined in |"
