@@ -83,8 +83,10 @@ function writeSizing(node: TextNode, text: SceneText, box: { readonly w: number;
     node.textAutoResize = 'WIDTH_AND_HEIGHT';
     return;
   }
-  node.resize(atLeastMin(box.w), atLeastMin(box.h));
+  // Mode before resize: `resize()` on auto-width text may switch it to HEIGHT and re-fit the
+  // height to the content, so a fixed box is only kept when NONE is already set (S-04 verifies).
   node.textAutoResize = text.autoResize === 'HEIGHT' && !truncate ? 'HEIGHT' : 'NONE';
+  node.resize(atLeastMin(box.w), atLeastMin(box.h));
   if (truncate) {
     node.textTruncation = 'ENDING';
     if (text.truncation) node.maxLines = text.truncation.maxLines;
