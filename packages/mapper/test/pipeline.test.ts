@@ -14,8 +14,10 @@ describe('stage registry (07 §1)', () => {
     expect(new Set(steps).size).toBe(steps.length);
     expect(STAGES.map((stage) => `${stage.step} ${stage.name}`)).toEqual([
       '1 normalize',
+      '2 order',
       '6 text',
       '7 visuals',
+      '8 simplify',
       '11 properties',
       '13 naming',
       '14 emit',
@@ -25,12 +27,12 @@ describe('stage registry (07 §1)', () => {
   });
 
   it('runs an appended stage in its step position', () => {
-    const late: Stage = { step: 2, name: 'order', per: 'component', run: () => {} };
+    const late: Stage = { step: 4, name: 'layout', per: 'variant', run: () => {} };
     expect(
       orderStages([...STAGES, late])
         .map((stage) => stage.step)
-        .slice(0, 3),
-    ).toEqual([1, 2, 6]);
+        .slice(0, 4),
+    ).toEqual([1, 2, 4, 6]);
   });
 
   it('refuses two stages with the same step', () => {

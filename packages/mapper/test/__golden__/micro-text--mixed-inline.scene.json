@@ -1,0 +1,660 @@
+{
+  "dependencies": [],
+  "diagnostics": [],
+  "irh": "dfaff7bbefca9acd",
+  "kind": "holotype/scene-component",
+  "meta": {
+    "description": "Text fixture.",
+    "descriptionSource": "parameters",
+    "exportName": "Text",
+    "framework": "react",
+    "importPath": "src/Text.tsx",
+    "kind": "component",
+    "links": [
+      {
+        "label": "Storybook",
+        "url": "http://127.0.0.1:6006/?path=/docs/micro-text--docs"
+      }
+    ],
+    "name": "Text",
+    "storyIds": [
+      "micro-text--mixed-inline"
+    ],
+    "titlePath": [
+      "Components",
+      "Text"
+    ]
+  },
+  "properties": [],
+  "sceneVersion": "0.1.0",
+  "setLayout": {
+    "columnsBy": [],
+    "gap": {
+      "x": 24,
+      "y": 24
+    },
+    "labels": false,
+    "mode": "grid",
+    "padding": 32,
+    "rowsBy": []
+  },
+  "sid": "micro-text",
+  "variants": [
+    {
+      "diagnostics": [
+        {
+          "code": "CAP_CSS_UNSUPPORTED",
+          "data": {
+            "inline": "mark"
+          },
+          "fallback": "left out",
+          "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
+          "nodeKey": "root/text",
+          "property": "background-color",
+          "severity": "warn",
+          "sid": "micro-text",
+          "value": "rgb(254, 243, 199)",
+          "variantKey": "ef0f0385002ceee5"
+        }
+      ],
+      "grid": {
+        "col": 0,
+        "row": 0
+      },
+      "irh": "296b584d7db9fac9",
+      "provenance": {
+        "args": {},
+        "captureHash": "3d2c7982a51aee40",
+        "globals": {},
+        "state": null,
+        "storyId": "micro-text--mixed-inline",
+        "viewport": {
+          "h": 800,
+          "w": 1280
+        }
+      },
+      "root": {
+        "children": [
+          {
+            "expect": {
+              "h": 73,
+              "w": 277.828,
+              "x": 0,
+              "y": 0
+            },
+            "irh": "d9dcb3f26d747a2a",
+            "kind": "text",
+            "name": "Plain text, bold text, accent color, hig",
+            "nk": "root/text",
+            "size": {
+              "h": 73,
+              "w": 277.828
+            },
+            "source": {
+              "path": "p:0>#text:0",
+              "tag": "#text"
+            },
+            "text": {
+              "alignH": "LEFT",
+              "alignV": "TOP",
+              "autoResize": "HEIGHT",
+              "characters": "Plain text, bold text, accent color, highlighted and smaller medium in one paragraph.",
+              "lines": [
+                {
+                  "endChar": 37,
+                  "startChar": 0
+                },
+                {
+                  "endChar": 75,
+                  "startChar": 37
+                },
+                {
+                  "endChar": 85,
+                  "startChar": 75
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "NONE",
+                  "end": 12,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0.164706,
+                        "g": 0.090196,
+                        "r": 0.058824
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": false,
+                    "italic": false,
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 16,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "start": 0,
+                  "textCase": "ORIGINAL"
+                },
+                {
+                  "decoration": "NONE",
+                  "end": 21,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0.164706,
+                        "g": 0.090196,
+                        "r": 0.058824
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": false,
+                    "italic": false,
+                    "styleCandidates": [
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Medium",
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline"
+                    ],
+                    "weight": 700
+                  },
+                  "fontSize": 16,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "start": 12,
+                  "textCase": "ORIGINAL"
+                },
+                {
+                  "decoration": "NONE",
+                  "end": 23,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0.164706,
+                        "g": 0.090196,
+                        "r": 0.058824
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": false,
+                    "italic": false,
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 16,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "start": 21,
+                  "textCase": "ORIGINAL"
+                },
+                {
+                  "decoration": "NONE",
+                  "end": 35,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0.921569,
+                        "g": 0.388235,
+                        "r": 0.145098
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": false,
+                    "italic": false,
+                    "styleCandidates": [
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy",
+                      "Medium",
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline"
+                    ],
+                    "weight": 600
+                  },
+                  "fontSize": 16,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "start": 23,
+                  "textCase": "ORIGINAL"
+                },
+                {
+                  "decoration": "NONE",
+                  "end": 37,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0.164706,
+                        "g": 0.090196,
+                        "r": 0.058824
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": false,
+                    "italic": false,
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 16,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "start": 35,
+                  "textCase": "ORIGINAL"
+                },
+                {
+                  "decoration": "NONE",
+                  "end": 48,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": false,
+                    "italic": false,
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 16,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "start": 37,
+                  "textCase": "ORIGINAL"
+                },
+                {
+                  "decoration": "NONE",
+                  "end": 53,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0.164706,
+                        "g": 0.090196,
+                        "r": 0.058824
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": false,
+                    "italic": false,
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 16,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "start": 48,
+                  "textCase": "ORIGINAL"
+                },
+                {
+                  "decoration": "NONE",
+                  "end": 67,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0.164706,
+                        "g": 0.090196,
+                        "r": 0.058824
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": false,
+                    "italic": false,
+                    "styleCandidates": [
+                      "Medium",
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 500
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "start": 53,
+                  "textCase": "ORIGINAL"
+                },
+                {
+                  "decoration": "NONE",
+                  "end": 85,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0.164706,
+                        "g": 0.090196,
+                        "r": 0.058824
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": false,
+                    "italic": false,
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 16,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "start": 67,
+                  "textCase": "ORIGINAL"
+                }
+              ],
+              "widthBuffer": {
+                "max": 4
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        ],
+        "clipsContent": false,
+        "expect": {
+          "h": 73,
+          "w": 280,
+          "x": 0,
+          "y": 0
+        },
+        "fills": [],
+        "irh": "807a52fb89bdf736",
+        "kind": "component",
+        "name": "Text",
+        "nk": "root",
+        "size": {
+          "h": 73,
+          "w": 280
+        },
+        "source": {
+          "path": "p:0",
+          "tag": "p"
+        },
+        "visible": true
+      },
+      "values": {},
+      "vk": "ef0f0385002ceee5"
+    }
+  ]
+}

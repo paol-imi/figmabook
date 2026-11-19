@@ -35,10 +35,18 @@ export function classFilter(stripClassPatterns: readonly string[]): (className: 
     !configured.some((pattern) => (typeof pattern === 'string' ? pattern === className : pattern.test(className)));
 }
 
-/** The first class that names something, or `undefined`. */
+/**
+ * The authored name inside a Vite CSS-module class: `_item_1ypxr_9` (`_[local]_[hash]_[line]`)
+ * → `item`. The hash and line change with unrelated edits; the local name does not.
+ */
+export function cssModuleLocal(className: string): string {
+  return /^_([A-Za-z][A-Za-z0-9_-]*?)_[A-Za-z0-9]{5}_\d+$/.exec(className)?.[1] ?? className;
+}
+
+/** The first class that names something (CSS-module classes by their local name), or `undefined`. */
 export function semanticClass(
   classes: readonly string[] | undefined,
   keep: (className: string) => boolean,
 ): string | undefined {
-  return classes?.find(keep);
+  return classes?.map(cssModuleLocal).find(keep);
 }

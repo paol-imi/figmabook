@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { toTargetRgb } from '../src/color';
 import { hasOwnPaint, isTransformed } from '../src/css';
 import { cornerRadius } from '../src/visuals/radius';
-import { borderStroke } from '../src/visuals/stroke';
+import { borderVisual } from '../src/visuals/stroke';
 import { loadCapture } from './support';
 
 const base = (): CComputed => {
@@ -20,6 +20,13 @@ const color = (r: number, g: number, b: number, a = 1, space: Color['space'] = '
   space,
 });
 const codes = (notes: readonly Diagnostic[]) => notes.map((note) => note.code);
+const BOX = { x: 10, y: 20, w: 40, h: 30 };
+const ROUNDED = { tl: 4, tr: 4, br: 4, bl: 4 };
+/** The border as a stroke (on a rounded box, so differing sides use the dominant one). */
+const borderStroke = (computed: CComputed, notes: Diagnostic[]) => {
+  const visual = borderVisual(computed, BOX, ROUNDED, true, 'srgb', notes);
+  return visual?.kind === 'stroke' ? visual.stroke : undefined;
+};
 
 describe('borders → strokes (07 §10.3)', () => {
   it('maps a uniform border to an INSIDE stroke with per-side weights', () => {
@@ -27,7 +34,7 @@ describe('borders → strokes (07 §10.3)', () => {
     const red = color(1, 0, 0);
     computed.border = { width: [1, 2, 3, 4], style: ['solid', 'solid', 'solid', 'solid'], color: [red, red, red, red] };
     const notes: Diagnostic[] = [];
-    expect(borderStroke(computed, 'srgb', notes)).toEqual({
+    expect(borderStroke(computed, notes)).toEqual({
       paints: [{ type: 'SOLID', color: { r: 1, g: 0, b: 0 }, opacity: 1 }],
       align: 'INSIDE',
       weight: { t: 1, r: 2, b: 3, l: 4 },
@@ -42,10 +49,10 @@ describe('borders → strokes (07 §10.3)', () => {
       style: ['none', 'hidden', 'solid', 'solid'],
       color: [color(0, 0, 0), color(0, 0, 0), color(0, 0, 0), color(0, 0, 0, 0)],
     };
-    expect(borderStroke(computed, 'srgb', [])).toBeUndefined();
+    expect(borderStroke(computed, [])).toBeUndefined();
   });
 
-  it('uses the color covering the most border width when sides differ', () => {
+  it('uses the color covering the most border width when sides of a rounded box differ', () => {
     const computed = base();
     computed.border = {
       width: [1, 1, 4, 1],
@@ -53,9 +60,7 @@ describe('borders → strokes (07 §10.3)', () => {
       color: [color(1, 0, 0), color(1, 0, 0), color(0, 0, 1), color(0, 1, 0)],
     };
     const notes: Diagnostic[] = [];
-    expect(borderStroke(computed, 'srgb', notes)?.paints).toEqual([
-      { type: 'SOLID', color: { r: 0, g: 0, b: 1 }, opacity: 1 },
-    ]);
+    expect(borderStroke(computed, notes)?.paints).toEqual([{ type: 'SOLID', color: { r: 0, g: 0, b: 1 }, opacity: 1 }]);
     expect(codes(notes)).toEqual(['PAINT_BORDER_DOMINANT']);
   });
 });

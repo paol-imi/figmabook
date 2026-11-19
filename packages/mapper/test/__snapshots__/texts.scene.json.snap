@@ -1,7 +1,7 @@
 {
   "dependencies": [],
   "diagnostics": [],
-  "irh": "e3757b825e95e18b",
+  "irh": "506c127f5f5035f6",
   "kind": "holotype/scene-component",
   "meta": {
     "description": "Texts fixture.",
@@ -43,39 +43,6 @@
     {
       "diagnostics": [
         {
-          "code": "TEXT_WORD_SPACING_DROPPED",
-          "message": "`word-spacing` has no Figma equivalent and was dropped.",
-          "nodeKey": "root/fancy",
-          "property": "word-spacing",
-          "severity": "warn",
-          "sid": "micro-text",
-          "value": "2px",
-          "variantKey": "c2cf11684d4b6956"
-        },
-        {
-          "code": "CAP_CSS_UNSUPPORTED",
-          "data": {
-            "property": "text-shadow"
-          },
-          "fallback": "left out of the Figma layer",
-          "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
-          "nodeKey": "root/fancy",
-          "property": "text-shadow",
-          "severity": "warn",
-          "sid": "micro-text",
-          "variantKey": "c2cf11684d4b6956"
-        },
-        {
-          "code": "TEXT_OPENTYPE_UNSUPPORTED",
-          "message": "OpenType features (e.g. `tnum`) cannot be written through the Plugin API.",
-          "nodeKey": "root/fancy",
-          "property": "font-feature-settings",
-          "severity": "warn",
-          "sid": "micro-text",
-          "value": "liga 0, tnum 1",
-          "variantKey": "c2cf11684d4b6956"
-        },
-        {
           "code": "CAP_CSS_UNSUPPORTED",
           "data": {
             "property": "text-decoration-line"
@@ -99,13 +66,33 @@
           "sid": "micro-text",
           "value": "dashed",
           "variantKey": "c2cf11684d4b6956"
+        },
+        {
+          "code": "TEXT_OPENTYPE_UNSUPPORTED",
+          "message": "OpenType features (e.g. `tnum`) cannot be written through the Plugin API.",
+          "nodeKey": "root/fancy",
+          "property": "font-feature-settings",
+          "severity": "warn",
+          "sid": "micro-text",
+          "value": "liga 0, tnum 1",
+          "variantKey": "c2cf11684d4b6956"
+        },
+        {
+          "code": "TEXT_WORD_SPACING_DROPPED",
+          "message": "`word-spacing` has no Figma equivalent and was dropped.",
+          "nodeKey": "root/fancy",
+          "property": "word-spacing",
+          "severity": "warn",
+          "sid": "micro-text",
+          "value": "2px",
+          "variantKey": "c2cf11684d4b6956"
         }
       ],
       "grid": {
         "col": 0,
         "row": 0
       },
-      "irh": "564bede6736b30a5",
+      "irh": "dea95df1826dd5ea",
       "provenance": {
         "args": {},
         "captureHash": "36fb019471e95652",
@@ -334,13 +321,30 @@
             }
           },
           {
+            "effects": [
+              {
+                "color": {
+                  "a": 0.3,
+                  "b": 0,
+                  "g": 0,
+                  "r": 0
+                },
+                "offset": {
+                  "x": 0,
+                  "y": 1
+                },
+                "radius": 0,
+                "spread": 0,
+                "type": "DROP_SHADOW"
+              }
+            ],
             "expect": {
               "h": 20,
               "w": 200,
               "x": 8,
               "y": 36
             },
-            "irh": "30bc9163d1a97168",
+            "irh": "de4839edaade6b9e",
             "kind": "text",
             "name": "Fancy",
             "nk": "root/fancy",
@@ -1126,7 +1130,7 @@
             "type": "SOLID"
           }
         ],
-        "irh": "3e6c7e2b8096bfbd",
+        "irh": "6dde8321f990bde2",
         "kind": "component",
         "name": "Texts",
         "nk": "root",

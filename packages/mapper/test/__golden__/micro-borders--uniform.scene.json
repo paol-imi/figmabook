@@ -1,0 +1,118 @@
+{
+  "dependencies": [],
+  "diagnostics": [],
+  "irh": "53a212d92c20631a",
+  "kind": "holotype/scene-component",
+  "meta": {
+    "description": "Borders fixture.",
+    "descriptionSource": "parameters",
+    "exportName": "Borders",
+    "framework": "react",
+    "importPath": "src/Borders.tsx",
+    "kind": "component",
+    "links": [
+      {
+        "label": "Storybook",
+        "url": "http://127.0.0.1:6006/?path=/docs/micro-borders--docs"
+      }
+    ],
+    "name": "Borders",
+    "storyIds": [
+      "micro-borders--uniform"
+    ],
+    "titlePath": [
+      "Components",
+      "Borders"
+    ]
+  },
+  "properties": [],
+  "sceneVersion": "0.1.0",
+  "setLayout": {
+    "columnsBy": [],
+    "gap": {
+      "x": 24,
+      "y": 24
+    },
+    "labels": false,
+    "mode": "grid",
+    "padding": 32,
+    "rowsBy": []
+  },
+  "sid": "micro-borders",
+  "variants": [
+    {
+      "diagnostics": [],
+      "grid": {
+        "col": 0,
+        "row": 0
+      },
+      "irh": "ddd986efafce5fa0",
+      "provenance": {
+        "args": {},
+        "captureHash": "899233a019bbd09b",
+        "globals": {},
+        "state": null,
+        "storyId": "micro-borders--uniform",
+        "viewport": {
+          "h": 800,
+          "w": 1280
+        }
+      },
+      "root": {
+        "clipsContent": false,
+        "expect": {
+          "h": 64,
+          "w": 120,
+          "x": 0,
+          "y": 0
+        },
+        "fills": [
+          {
+            "color": {
+              "b": 1,
+              "g": 1,
+              "r": 1
+            },
+            "opacity": 1,
+            "type": "SOLID"
+          }
+        ],
+        "irh": "d229930027e56dc8",
+        "kind": "component",
+        "name": "Borders",
+        "nk": "root",
+        "size": {
+          "h": 64,
+          "w": 120
+        },
+        "source": {
+          "path": "div:0",
+          "tag": "div"
+        },
+        "strokes": {
+          "align": "INSIDE",
+          "paints": [
+            {
+              "color": {
+                "b": 0.164706,
+                "g": 0.090196,
+                "r": 0.058824
+              },
+              "opacity": 1,
+              "type": "SOLID"
+            }
+          ],
+          "weight": {
+            "b": 2,
+            "l": 2,
+            "r": 2,
+            "t": 2
+          }
+        },
+        "visible": true
+      },
+      "values": {},
+      "vk": "d73d4d66bab1ebc8"
+    }
+  ]
+}

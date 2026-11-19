@@ -1,0 +1,1040 @@
+{
+  "dependencies": [],
+  "diagnostics": [],
+  "irh": "2eb167ce0f4a85bd",
+  "kind": "holotype/scene-component",
+  "meta": {
+    "description": "Layers fixture.",
+    "descriptionSource": "parameters",
+    "exportName": "Layers",
+    "framework": "react",
+    "importPath": "src/Layers.tsx",
+    "kind": "component",
+    "links": [
+      {
+        "label": "Storybook",
+        "url": "http://127.0.0.1:6006/?path=/docs/mapper-layers--docs"
+      }
+    ],
+    "name": "Layers",
+    "storyIds": [
+      "mapper-layers--kitchen-sink"
+    ],
+    "titlePath": [
+      "Components",
+      "Layers"
+    ]
+  },
+  "properties": [],
+  "sceneVersion": "0.1.0",
+  "setLayout": {
+    "columnsBy": [],
+    "gap": {
+      "x": 24,
+      "y": 24
+    },
+    "labels": false,
+    "mode": "grid",
+    "padding": 32,
+    "rowsBy": []
+  },
+  "sid": "mapper-layers",
+  "variants": [
+    {
+      "diagnostics": [
+        {
+          "code": "LAYOUT_ZINDEX_HOIST",
+          "data": {
+            "from": "div:0>section:5",
+            "to": "div:0"
+          },
+          "fallback": "moved into a clip frame of the stacking context",
+          "message": "A layer painting above its ancestor's sibling was moved up the tree as absolute.",
+          "nodeKey": "root/section/div.badge",
+          "severity": "warn",
+          "sid": "mapper-layers",
+          "variantKey": "50e003e46aae024a"
+        },
+        {
+          "code": "PAINT_BORDER_DECOMPOSED",
+          "fallback": "one vector per side",
+          "message": "Per-side border colors or styles became four vector layers.",
+          "nodeKey": "root/div.sides",
+          "property": "border-color",
+          "severity": "info",
+          "sid": "mapper-layers",
+          "variantKey": "50e003e46aae024a"
+        },
+        {
+          "code": "PAINT_RING_PROMOTED",
+          "fallback": "outside stroke",
+          "message": "A ring shadow (e.g. Tailwind `ring-*`) became an outside stroke.",
+          "nodeKey": "root/div.ring",
+          "property": "box-shadow",
+          "severity": "info",
+          "sid": "mapper-layers",
+          "variantKey": "50e003e46aae024a"
+        },
+        {
+          "code": "PAINT_SPREAD_BACKING_RECT",
+          "fallback": "backing rectangle",
+          "message": "A shadow spread was moved to a backing rectangle.",
+          "nodeKey": "root/div.raised",
+          "property": "box-shadow",
+          "severity": "info",
+          "sid": "mapper-layers",
+          "variantKey": "50e003e46aae024a"
+        }
+      ],
+      "grid": {
+        "col": 0,
+        "row": 0
+      },
+      "irh": "71b90ebbeb82bd67",
+      "provenance": {
+        "args": {},
+        "captureHash": "311bf3d275b9bfa0",
+        "globals": {},
+        "state": null,
+        "storyId": "mapper-layers--kitchen-sink",
+        "viewport": {
+          "h": 800,
+          "w": 1280
+        }
+      },
+      "root": {
+        "children": [
+          {
+            "children": [
+              {
+                "expect": {
+                  "h": 2,
+                  "w": 80,
+                  "x": 16,
+                  "y": 16
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0,
+                      "g": 0,
+                      "r": 1
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "02ada9a6eb4cca4e",
+                "kind": "vector",
+                "name": "Border top",
+                "nk": "root/div.sides/border-t",
+                "size": {
+                  "h": 2,
+                  "w": 80
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 0 0 L 80 0 L 78 2 L 2 2 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              {
+                "expect": {
+                  "h": 40,
+                  "w": 2,
+                  "x": 94,
+                  "y": 16
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0,
+                      "g": 0.6,
+                      "r": 0
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "46caef360b743c84",
+                "kind": "vector",
+                "name": "Border right",
+                "nk": "root/div.sides/border-r",
+                "size": {
+                  "h": 40,
+                  "w": 2
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 2 0 L 2 40 L 0 38 L 0 2 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 78,
+                  "y": 0
+                }
+              },
+              {
+                "expect": {
+                  "h": 2,
+                  "w": 80,
+                  "x": 16,
+                  "y": 54
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0,
+                      "g": 0,
+                      "r": 1
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "4ba1856b23741307",
+                "kind": "vector",
+                "name": "Border bottom",
+                "nk": "root/div.sides/border-b",
+                "size": {
+                  "h": 2,
+                  "w": 80
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 80 2 L 0 2 L 2 0 L 78 0 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 38
+                }
+              },
+              {
+                "expect": {
+                  "h": 40,
+                  "w": 2,
+                  "x": 16,
+                  "y": 16
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 1,
+                      "g": 0,
+                      "r": 0
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "0bffc3deb02766b3",
+                "kind": "vector",
+                "name": "Border left",
+                "nk": "root/div.sides/border-l",
+                "size": {
+                  "h": 40,
+                  "w": 2
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 0 40 L 0 0 L 2 2 L 2 38 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 0
+                }
+              }
+            ],
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 80,
+              "x": 16,
+              "y": 16
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0.97,
+                  "g": 0.95,
+                  "r": 0.95
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "110d557f1da3af6c",
+            "kind": "frame",
+            "name": "Sides",
+            "nk": "root/div.sides",
+            "size": {
+              "h": 40,
+              "w": 80
+            },
+            "source": {
+              "path": "div:0>div:0",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 16,
+              "y": 16
+            }
+          },
+          {
+            "children": [
+              {
+                "expect": {
+                  "h": 32,
+                  "w": 72,
+                  "x": 116,
+                  "y": 20
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0.9,
+                      "g": 0.4,
+                      "r": 0.2
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "520276130bc1cea5",
+                "kind": "rectangle",
+                "name": "Background",
+                "nk": "root/div.inset/bg",
+                "radius": {
+                  "bl": 4,
+                  "br": 4,
+                  "tl": 4,
+                  "tr": 4
+                },
+                "size": {
+                  "h": 32,
+                  "w": 72
+                },
+                "visible": true,
+                "xy": {
+                  "x": 4,
+                  "y": 4
+                }
+              }
+            ],
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 80,
+              "x": 112,
+              "y": 16
+            },
+            "fills": [],
+            "irh": "f818e0252d5e0a08",
+            "kind": "frame",
+            "name": "Inset",
+            "nk": "root/div.inset",
+            "radius": {
+              "bl": 8,
+              "br": 8,
+              "tl": 8,
+              "tr": 8
+            },
+            "size": {
+              "h": 40,
+              "w": 80
+            },
+            "source": {
+              "path": "div:0>div:1",
+              "tag": "div"
+            },
+            "strokes": {
+              "align": "INSIDE",
+              "paints": [
+                {
+                  "color": {
+                    "b": 0,
+                    "g": 0,
+                    "r": 0
+                  },
+                  "opacity": 0.2,
+                  "type": "SOLID"
+                }
+              ],
+              "weight": {
+                "b": 4,
+                "l": 4,
+                "r": 4,
+                "t": 4
+              }
+            },
+            "visible": true,
+            "xy": {
+              "x": 112,
+              "y": 16
+            }
+          },
+          {
+            "children": [
+              {
+                "effects": [
+                  {
+                    "color": {
+                      "a": 0.2,
+                      "b": 0,
+                      "g": 0,
+                      "r": 0
+                    },
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "radius": 8,
+                    "spread": 2,
+                    "type": "DROP_SHADOW"
+                  }
+                ],
+                "expect": {
+                  "h": 40,
+                  "w": 96,
+                  "x": 208,
+                  "y": 16
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 1,
+                      "g": 1,
+                      "r": 1
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "4c095844bdaf0b7a",
+                "kind": "rectangle",
+                "name": "Shadow",
+                "nk": "root/div.raised/shadow",
+                "radius": {
+                  "bl": 6,
+                  "br": 6,
+                  "tl": 6,
+                  "tr": 6
+                },
+                "size": {
+                  "h": 40,
+                  "w": 96
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              {
+                "expect": {
+                  "h": 20,
+                  "w": 100,
+                  "x": 216,
+                  "y": 26
+                },
+                "irh": "e6bad3ee362abbc6",
+                "kind": "text",
+                "name": "Overflowing label",
+                "nk": "root/div.raised/text",
+                "size": {
+                  "h": 20,
+                  "w": 100
+                },
+                "source": {
+                  "path": "div:0>div:2>#text:0",
+                  "tag": "#text"
+                },
+                "text": {
+                  "alignH": "LEFT",
+                  "alignV": "TOP",
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "characters": "Overflowing label",
+                  "lines": [
+                    {
+                      "endChar": 17,
+                      "startChar": 0
+                    }
+                  ],
+                  "ranges": [
+                    {
+                      "decoration": "NONE",
+                      "end": 17,
+                      "fills": [
+                        {
+                          "color": {
+                            "b": 0.388,
+                            "g": 0.333,
+                            "r": 0.294
+                          },
+                          "opacity": 1,
+                          "type": "SOLID"
+                        }
+                      ],
+                      "font": {
+                        "fallbackFamily": "Inter",
+                        "family": "Inter",
+                        "isCustom": true,
+                        "italic": false,
+                        "postScriptName": "Inter-Regular",
+                        "styleCandidates": [
+                          "Regular",
+                          "Normal",
+                          "Book",
+                          "Roman",
+                          "Medium",
+                          "Light",
+                          "ExtraLight",
+                          "Extra Light",
+                          "UltraLight",
+                          "Thin",
+                          "Hairline",
+                          "SemiBold",
+                          "Semi Bold",
+                          "DemiBold",
+                          "Demi Bold",
+                          "Bold",
+                          "ExtraBold",
+                          "Extra Bold",
+                          "UltraBold",
+                          "Black",
+                          "Heavy"
+                        ],
+                        "weight": 400
+                      },
+                      "fontSize": 14,
+                      "letterSpacing": {
+                        "unit": "PIXELS",
+                        "value": 0
+                      },
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "start": 0,
+                      "textCase": "ORIGINAL"
+                    }
+                  ],
+                  "widthBuffer": {
+                    "max": 3.5
+                  },
+                  "wrapMode": "reflow"
+                },
+                "visible": true,
+                "xy": {
+                  "x": 8,
+                  "y": 10
+                }
+              }
+            ],
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 96,
+              "x": 208,
+              "y": 16
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 1,
+                  "g": 1,
+                  "r": 1
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "f427d603869dbcd2",
+            "kind": "frame",
+            "name": "Raised",
+            "nk": "root/div.raised",
+            "radius": {
+              "bl": 6,
+              "br": 6,
+              "tl": 6,
+              "tr": 6
+            },
+            "size": {
+              "h": 40,
+              "w": 96
+            },
+            "source": {
+              "path": "div:0>div:2",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 208,
+              "y": 16
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 32,
+              "w": 80,
+              "x": 16,
+              "y": 80
+            },
+            "fills": [],
+            "irh": "5af1879f6809a6a4",
+            "kind": "frame",
+            "name": "Ring",
+            "nk": "root/div.ring",
+            "size": {
+              "h": 32,
+              "w": 80
+            },
+            "source": {
+              "path": "div:0>div:3",
+              "tag": "div"
+            },
+            "strokes": {
+              "align": "OUTSIDE",
+              "paints": [
+                {
+                  "color": {
+                    "b": 0.9,
+                    "g": 0.4,
+                    "r": 0.2
+                  },
+                  "opacity": 1,
+                  "type": "SOLID"
+                }
+              ],
+              "weight": {
+                "b": 2,
+                "l": 2,
+                "r": 2,
+                "t": 2
+              }
+            },
+            "visible": true,
+            "xy": {
+              "x": 16,
+              "y": 80
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 32,
+              "w": 80,
+              "x": 112,
+              "y": 80
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0.97,
+                  "g": 0.95,
+                  "r": 0.95
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "d90db0b6d7a01dd4",
+            "kind": "frame",
+            "name": "Frame",
+            "nk": "root/button",
+            "radius": {
+              "bl": 4,
+              "br": 4,
+              "tl": 4,
+              "tr": 4
+            },
+            "size": {
+              "h": 32,
+              "w": 80
+            },
+            "source": {
+              "path": "div:0>button:4",
+              "tag": "button"
+            },
+            "visible": true,
+            "xy": {
+              "x": 112,
+              "y": 80
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 40,
+              "w": 88,
+              "x": 108,
+              "y": 76
+            },
+            "fills": [],
+            "irh": "6fa059cba496e8dc",
+            "kind": "frame",
+            "name": "Outline",
+            "nk": "root/button/outline",
+            "radius": {
+              "bl": 8,
+              "br": 8,
+              "tl": 8,
+              "tr": 8
+            },
+            "size": {
+              "h": 40,
+              "w": 88
+            },
+            "strokes": {
+              "align": "INSIDE",
+              "paints": [
+                {
+                  "color": {
+                    "b": 0.9,
+                    "g": 0.4,
+                    "r": 0.2
+                  },
+                  "opacity": 1,
+                  "type": "SOLID"
+                }
+              ],
+              "weight": {
+                "b": 2,
+                "l": 2,
+                "r": 2,
+                "t": 2
+              }
+            },
+            "visible": true,
+            "xy": {
+              "x": 108,
+              "y": 76
+            }
+          },
+          {
+            "children": [
+              {
+                "clipsContent": false,
+                "expect": {
+                  "h": 40,
+                  "w": 60,
+                  "x": 16,
+                  "y": 128
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0.97,
+                      "g": 0.95,
+                      "r": 0.95
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "33b3ff9a30c7aa22",
+                "kind": "frame",
+                "name": "Frame",
+                "nk": "root/section/div",
+                "size": {
+                  "h": 40,
+                  "w": 60
+                },
+                "source": {
+                  "path": "div:0>section:5>div:0",
+                  "tag": "div"
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 0
+                }
+              }
+            ],
+            "clipsContent": true,
+            "expect": {
+              "h": 40,
+              "w": 120,
+              "x": 16,
+              "y": 128
+            },
+            "fills": [],
+            "irh": "e0deed12c3eb7235",
+            "kind": "frame",
+            "name": "Frame 2",
+            "nk": "root/section",
+            "size": {
+              "h": 40,
+              "w": 120
+            },
+            "source": {
+              "path": "div:0>section:5",
+              "tag": "section"
+            },
+            "visible": true,
+            "xy": {
+              "x": 16,
+              "y": 128
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 24,
+              "w": 288,
+              "x": 16,
+              "y": 168
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0.97,
+                  "g": 0.95,
+                  "r": 0.95
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "6e66e3de9dc2491a",
+            "kind": "frame",
+            "name": "Frame 3",
+            "nk": "root/footer",
+            "size": {
+              "h": 24,
+              "w": 288
+            },
+            "source": {
+              "path": "div:0>footer:6",
+              "tag": "footer"
+            },
+            "visible": true,
+            "xy": {
+              "x": 16,
+              "y": 168
+            }
+          },
+          {
+            "expect": {
+              "h": 20,
+              "w": 60,
+              "x": 208,
+              "y": 80
+            },
+            "irh": "07b9dbdf65e4bfbd",
+            "kind": "text",
+            "name": "Caption",
+            "nk": "root/span",
+            "size": {
+              "h": 20,
+              "w": 60
+            },
+            "source": {
+              "path": "div:0>span:7",
+              "tag": "span"
+            },
+            "text": {
+              "alignH": "LEFT",
+              "alignV": "TOP",
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "characters": "Caption",
+              "lines": [
+                {
+                  "endChar": 7,
+                  "startChar": 0
+                }
+              ],
+              "ranges": [
+                {
+                  "decoration": "NONE",
+                  "end": 7,
+                  "fills": [
+                    {
+                      "color": {
+                        "b": 0.388,
+                        "g": 0.333,
+                        "r": 0.294
+                      },
+                      "opacity": 1,
+                      "type": "SOLID"
+                    }
+                  ],
+                  "font": {
+                    "fallbackFamily": "Inter",
+                    "family": "Inter",
+                    "isCustom": true,
+                    "italic": false,
+                    "postScriptName": "Inter-Regular",
+                    "styleCandidates": [
+                      "Regular",
+                      "Normal",
+                      "Book",
+                      "Roman",
+                      "Medium",
+                      "Light",
+                      "ExtraLight",
+                      "Extra Light",
+                      "UltraLight",
+                      "Thin",
+                      "Hairline",
+                      "SemiBold",
+                      "Semi Bold",
+                      "DemiBold",
+                      "Demi Bold",
+                      "Bold",
+                      "ExtraBold",
+                      "Extra Bold",
+                      "UltraBold",
+                      "Black",
+                      "Heavy"
+                    ],
+                    "weight": 400
+                  },
+                  "fontSize": 14,
+                  "letterSpacing": {
+                    "unit": "PIXELS",
+                    "value": 0
+                  },
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "start": 0,
+                  "textCase": "ORIGINAL"
+                }
+              ],
+              "widthBuffer": {
+                "max": 3.5
+              },
+              "wrapMode": "reflow"
+            },
+            "visible": true,
+            "xy": {
+              "x": 208,
+              "y": 80
+            }
+          },
+          {
+            "children": [
+              {
+                "clipsContent": false,
+                "expect": {
+                  "h": 40,
+                  "w": 40,
+                  "x": 96,
+                  "y": 150
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0.2,
+                      "g": 0.2,
+                      "r": 0.9
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "f4c844aa11aa6440",
+                "kind": "frame",
+                "name": "Badge",
+                "nk": "root/section/div.badge",
+                "size": {
+                  "h": 40,
+                  "w": 40
+                },
+                "source": {
+                  "path": "div:0>section:5>div:1",
+                  "tag": "div"
+                },
+                "visible": true,
+                "xy": {
+                  "x": 80,
+                  "y": 22
+                }
+              }
+            ],
+            "clipsContent": true,
+            "expect": {
+              "h": 40,
+              "w": 120,
+              "x": 16,
+              "y": 128
+            },
+            "fills": [],
+            "irh": "6151ca11a24d8ae4",
+            "kind": "frame",
+            "name": "Clip",
+            "nk": "root/section/div.badge/clip",
+            "size": {
+              "h": 40,
+              "w": 120
+            },
+            "visible": true,
+            "xy": {
+              "x": 16,
+              "y": 128
+            }
+          }
+        ],
+        "clipsContent": false,
+        "expect": {
+          "h": 200,
+          "w": 320,
+          "x": 0,
+          "y": 0
+        },
+        "fills": [
+          {
+            "color": {
+              "b": 1,
+              "g": 1,
+              "r": 1
+            },
+            "opacity": 1,
+            "type": "SOLID"
+          }
+        ],
+        "irh": "ccc7a34f09c3f938",
+        "kind": "component",
+        "name": "Layers",
+        "nk": "root",
+        "size": {
+          "h": 200,
+          "w": 320
+        },
+        "source": {
+          "path": "div:0",
+          "tag": "div"
+        },
+        "visible": true
+      },
+      "values": {},
+      "vk": "50e003e46aae024a"
+    }
+  ]
+}

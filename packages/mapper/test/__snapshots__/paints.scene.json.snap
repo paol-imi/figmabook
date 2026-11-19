@@ -1,7 +1,7 @@
 {
   "dependencies": [],
   "diagnostics": [],
-  "irh": "d78d94998009c936",
+  "irh": "c82560780b3bbc28",
   "kind": "holotype/scene-component",
   "meta": {
     "description": "Swatches fixture.",
@@ -43,105 +43,6 @@
     {
       "diagnostics": [
         {
-          "code": "PAINT_BORDER_DOMINANT",
-          "fallback": "dominant side color",
-          "message": "Per-side borders on a rounded box use the dominant color.",
-          "nodeKey": "root/per-side",
-          "property": "border-color",
-          "severity": "warn",
-          "sid": "micro-paint",
-          "variantKey": "ac22c096f1a58da4"
-        },
-        {
-          "code": "PAINT_DASH_APPROX",
-          "message": "Dashed borders use a Figma dash pattern; corners phase differently.",
-          "nodeKey": "root/dashed",
-          "property": "border-style",
-          "severity": "info",
-          "sid": "micro-paint",
-          "value": "dashed",
-          "variantKey": "ac22c096f1a58da4"
-        },
-        {
-          "code": "PAINT_BORDER_STYLE_APPROX",
-          "fallback": "solid stroke",
-          "message": "A `double`/`groove`/`ridge`/`inset`/`outset` border was approximated.",
-          "nodeKey": "root/double",
-          "property": "border-style",
-          "severity": "info",
-          "sid": "micro-paint",
-          "value": "double",
-          "variantKey": "ac22c096f1a58da4"
-        },
-        {
-          "code": "PAINT_ELLIPTICAL_RADIUS_APPROX",
-          "fallback": "the smaller radius",
-          "message": "Elliptical corner radii used the smaller radius.",
-          "nodeKey": "root/elliptical",
-          "property": "border-radius",
-          "severity": "warn",
-          "sid": "micro-paint",
-          "variantKey": "ac22c096f1a58da4"
-        },
-        {
-          "code": "LAYOUT_OVERFLOW_AXIS_APPROX",
-          "fallback": "clipped on both axes",
-          "message": "Overflow hidden on one axis only; Figma clips both.",
-          "nodeKey": "root/overflow-x",
-          "property": "overflow-x",
-          "severity": "warn",
-          "sid": "micro-paint",
-          "value": "hidden",
-          "variantKey": "ac22c096f1a58da4"
-        },
-        {
-          "code": "PAINT_BLEND_UNSUPPORTED",
-          "fallback": "normal",
-          "message": "A blend mode (e.g. `plus-lighter`) has no exact Figma match.",
-          "nodeKey": "root/plus-lighter",
-          "property": "mix-blend-mode",
-          "severity": "warn",
-          "sid": "micro-paint",
-          "value": "plus-lighter",
-          "variantKey": "ac22c096f1a58da4"
-        },
-        {
-          "code": "PAINT_COLOR_GAMUT_MAPPED",
-          "fallback": "channels clipped to sRGB",
-          "message": "An out-of-sRGB color was gamut-mapped.",
-          "nodeKey": "root/p3",
-          "property": "background-color",
-          "severity": "info",
-          "sid": "micro-paint",
-          "value": "color(display-p3 0 1 0)",
-          "variantKey": "ac22c096f1a58da4"
-        },
-        {
-          "code": "PAINT_SUBTREE_RASTERIZED",
-          "data": {
-            "reason": "canvas"
-          },
-          "message": "A subtree was captured as an image (`data.reason`); layers inside are not editable.",
-          "nodeKey": "root/raster",
-          "severity": "warn",
-          "sid": "micro-paint",
-          "variantKey": "ac22c096f1a58da4"
-        },
-        {
-          "code": "CAP_CSS_UNSUPPORTED",
-          "data": {
-            "property": "object-fit"
-          },
-          "fallback": "drawn with object-fit: contain",
-          "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
-          "nodeKey": "root/img-none",
-          "property": "object-fit",
-          "severity": "warn",
-          "sid": "micro-paint",
-          "value": "none",
-          "variantKey": "ac22c096f1a58da4"
-        },
-        {
           "code": "CAP_CSS_UNSUPPORTED",
           "data": {
             "property": "transform"
@@ -150,19 +51,6 @@
           "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
           "nodeKey": "root/effects",
           "property": "transform",
-          "severity": "warn",
-          "sid": "micro-paint",
-          "variantKey": "ac22c096f1a58da4"
-        },
-        {
-          "code": "CAP_CSS_UNSUPPORTED",
-          "data": {
-            "property": "box-shadow"
-          },
-          "fallback": "left out of the Figma layer",
-          "message": "A CSS property has no Figma equivalent (`data.property`); it was ignored.",
-          "nodeKey": "root/effects",
-          "property": "box-shadow",
           "severity": "warn",
           "sid": "micro-paint",
           "variantKey": "ac22c096f1a58da4"
@@ -194,13 +82,98 @@
           "sid": "micro-paint",
           "value": "circle(50%)",
           "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "LAYOUT_OVERFLOW_AXIS_APPROX",
+          "fallback": "clipped on both axes",
+          "message": "Overflow hidden on one axis only; Figma clips both.",
+          "nodeKey": "root/overflow-x",
+          "property": "overflow-x",
+          "severity": "warn",
+          "sid": "micro-paint",
+          "value": "hidden",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_BLEND_UNSUPPORTED",
+          "fallback": "normal",
+          "message": "A blend mode (e.g. `plus-lighter`) has no exact Figma match.",
+          "nodeKey": "root/plus-lighter",
+          "property": "mix-blend-mode",
+          "severity": "warn",
+          "sid": "micro-paint",
+          "value": "plus-lighter",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_BORDER_DECOMPOSED",
+          "fallback": "one vector per side",
+          "message": "Per-side border colors or styles became four vector layers.",
+          "nodeKey": "root/per-side",
+          "property": "border-color",
+          "severity": "info",
+          "sid": "micro-paint",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_BORDER_STYLE_APPROX",
+          "fallback": "solid stroke",
+          "message": "A `double`/`groove`/`ridge`/`inset`/`outset` border was approximated.",
+          "nodeKey": "root/double",
+          "property": "border-style",
+          "severity": "info",
+          "sid": "micro-paint",
+          "value": "double",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_COLOR_GAMUT_MAPPED",
+          "fallback": "channels clipped to sRGB",
+          "message": "An out-of-sRGB color was gamut-mapped.",
+          "nodeKey": "root/p3",
+          "property": "background-color",
+          "severity": "info",
+          "sid": "micro-paint",
+          "value": "color(display-p3 0 1 0)",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_DASH_APPROX",
+          "message": "Dashed borders use a Figma dash pattern; corners phase differently.",
+          "nodeKey": "root/dashed",
+          "property": "border-style",
+          "severity": "info",
+          "sid": "micro-paint",
+          "value": "dashed",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_ELLIPTICAL_RADIUS_APPROX",
+          "fallback": "the smaller radius",
+          "message": "Elliptical corner radii used the smaller radius.",
+          "nodeKey": "root/elliptical",
+          "property": "border-radius",
+          "severity": "warn",
+          "sid": "micro-paint",
+          "variantKey": "ac22c096f1a58da4"
+        },
+        {
+          "code": "PAINT_SUBTREE_RASTERIZED",
+          "data": {
+            "reason": "canvas"
+          },
+          "message": "A subtree was captured as an image (`data.reason`); layers inside are not editable.",
+          "nodeKey": "root/raster",
+          "severity": "warn",
+          "sid": "micro-paint",
+          "variantKey": "ac22c096f1a58da4"
         }
       ],
       "grid": {
         "col": 0,
         "row": 0
       },
-      "irh": "964270c5b337f452",
+      "irh": "72147c2b8f304dfa",
       "provenance": {
         "args": {},
         "captureHash": "75eb5f60d1269a59",
@@ -215,6 +188,168 @@
       "root": {
         "children": [
           {
+            "children": [
+              {
+                "expect": {
+                  "h": 2,
+                  "w": 40,
+                  "x": 10,
+                  "y": 10
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0,
+                      "g": 0,
+                      "r": 1
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "bb9d52a1b4f04dea",
+                "kind": "vector",
+                "name": "Border top",
+                "nk": "root/per-side/border-t",
+                "size": {
+                  "h": 2,
+                  "w": 40
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 0 0 L 40 0 L 38 2 L 2 2 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              {
+                "expect": {
+                  "h": 40,
+                  "w": 2,
+                  "x": 48,
+                  "y": 10
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0,
+                      "g": 0,
+                      "r": 1
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "f50b9d8da0d56dae",
+                "kind": "vector",
+                "name": "Border right",
+                "nk": "root/per-side/border-r",
+                "size": {
+                  "h": 40,
+                  "w": 2
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 2 0 L 2 40 L 0 36 L 0 2 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 38,
+                  "y": 0
+                }
+              },
+              {
+                "expect": {
+                  "h": 4,
+                  "w": 40,
+                  "x": 10,
+                  "y": 46
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 1,
+                      "g": 0,
+                      "r": 0
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "a2a056110e52bcaf",
+                "kind": "vector",
+                "name": "Border bottom",
+                "nk": "root/per-side/border-b",
+                "size": {
+                  "h": 4,
+                  "w": 40
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 40 4 L 0 4 L 2 0 L 38 0 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 36
+                }
+              },
+              {
+                "expect": {
+                  "h": 40,
+                  "w": 2,
+                  "x": 10,
+                  "y": 10
+                },
+                "fills": [
+                  {
+                    "color": {
+                      "b": 0,
+                      "g": 0,
+                      "r": 1
+                    },
+                    "opacity": 1,
+                    "type": "SOLID"
+                  }
+                ],
+                "irh": "2f404334d1f0f2ab",
+                "kind": "vector",
+                "name": "Border left",
+                "nk": "root/per-side/border-l",
+                "size": {
+                  "h": 40,
+                  "w": 2
+                },
+                "vector": {
+                  "paths": [
+                    {
+                      "data": "M 0 40 L 0 0 L 2 2 L 2 36 Z",
+                      "windingRule": "NONZERO"
+                    }
+                  ]
+                },
+                "visible": true,
+                "xy": {
+                  "x": 0,
+                  "y": 0
+                }
+              }
+            ],
             "clipsContent": false,
             "expect": {
               "h": 40,
@@ -223,7 +358,7 @@
               "y": 10
             },
             "fills": [],
-            "irh": "467ff858490e5861",
+            "irh": "c355ada0b909c6c0",
             "kind": "frame",
             "name": "Per side",
             "nk": "root/per-side",
@@ -234,26 +369,6 @@
             "source": {
               "path": "div:0>div:0",
               "tag": "div"
-            },
-            "strokes": {
-              "align": "INSIDE",
-              "paints": [
-                {
-                  "color": {
-                    "b": 0,
-                    "g": 0,
-                    "r": 1
-                  },
-                  "opacity": 1,
-                  "type": "SOLID"
-                }
-              ],
-              "weight": {
-                "b": 4,
-                "l": 2,
-                "r": 2,
-                "t": 2
-              }
             },
             "visible": true,
             "xy": {
@@ -796,11 +911,23 @@
                 "asset": {
                   "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
                 },
-                "scaleMode": "FIT",
+                "imageTransform": [
+                  [
+                    0.5,
+                    0,
+                    0.25
+                  ],
+                  [
+                    0,
+                    0.5,
+                    0.25
+                  ]
+                ],
+                "scaleMode": "CROP",
                 "type": "IMAGE"
               }
             ],
-            "irh": "c2a644c74d73a8dd",
+            "irh": "fc0b2cbb19737993",
             "kind": "image",
             "name": "Img none",
             "nk": "root/img-none",
@@ -866,6 +993,23 @@
           },
           {
             "clipsContent": false,
+            "effects": [
+              {
+                "color": {
+                  "a": 0.2,
+                  "b": 0,
+                  "g": 0,
+                  "r": 0
+                },
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "radius": 4,
+                "spread": 0,
+                "type": "DROP_SHADOW"
+              }
+            ],
             "expect": {
               "h": 40,
               "w": 40,
@@ -883,7 +1027,7 @@
                 "type": "SOLID"
               }
             ],
-            "irh": "5a584da31227a32a",
+            "irh": "da24a8346ebe0004",
             "kind": "frame",
             "name": "Effects",
             "nk": "root/effects",
@@ -995,7 +1139,7 @@
             "type": "SOLID"
           }
         ],
-        "irh": "d8f1e7ac912620f7",
+        "irh": "b5ae34d7fffc65c4",
         "kind": "component",
         "name": "Swatches",
         "nk": "root",

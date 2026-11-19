@@ -1,0 +1,211 @@
+{
+  "dependencies": [],
+  "diagnostics": [],
+  "irh": "95a1597b130dd800",
+  "kind": "holotype/scene-component",
+  "meta": {
+    "description": "Flex fixture.",
+    "descriptionSource": "parameters",
+    "exportName": "Flex",
+    "framework": "react",
+    "importPath": "src/Flex.tsx",
+    "kind": "component",
+    "links": [
+      {
+        "label": "Storybook",
+        "url": "http://127.0.0.1:6006/?path=/docs/micro-flex--docs"
+      }
+    ],
+    "name": "Flex",
+    "storyIds": [
+      "micro-flex--row"
+    ],
+    "titlePath": [
+      "Components",
+      "Flex"
+    ]
+  },
+  "properties": [],
+  "sceneVersion": "0.1.0",
+  "setLayout": {
+    "columnsBy": [],
+    "gap": {
+      "x": 24,
+      "y": 24
+    },
+    "labels": false,
+    "mode": "grid",
+    "padding": 32,
+    "rowsBy": []
+  },
+  "sid": "micro-flex",
+  "variants": [
+    {
+      "diagnostics": [],
+      "grid": {
+        "col": 0,
+        "row": 0
+      },
+      "irh": "e86aa002f449006e",
+      "provenance": {
+        "args": {},
+        "captureHash": "00d0c878f9b67967",
+        "globals": {},
+        "state": null,
+        "storyId": "micro-flex--row",
+        "viewport": {
+          "h": 800,
+          "w": 1280
+        }
+      },
+      "root": {
+        "children": [
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 32,
+              "w": 48,
+              "x": 8,
+              "y": 8
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0.964706,
+                  "g": 0.509804,
+                  "r": 0.231373
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "390d763899f9f298",
+            "kind": "frame",
+            "name": "Item",
+            "nk": "root/div.item",
+            "size": {
+              "h": 32,
+              "w": 48
+            },
+            "source": {
+              "path": "div:0>div:0",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 8,
+              "y": 8
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 32,
+              "w": 48,
+              "x": 56,
+              "y": 8
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0.964706,
+                  "g": 0.509804,
+                  "r": 0.231373
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "6d999bf0ba59be9d",
+            "kind": "frame",
+            "name": "Item 2",
+            "nk": "root/div.item#2",
+            "size": {
+              "h": 32,
+              "w": 48
+            },
+            "source": {
+              "path": "div:0>div:1",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 56,
+              "y": 8
+            }
+          },
+          {
+            "clipsContent": false,
+            "expect": {
+              "h": 32,
+              "w": 48,
+              "x": 104,
+              "y": 8
+            },
+            "fills": [
+              {
+                "color": {
+                  "b": 0.964706,
+                  "g": 0.509804,
+                  "r": 0.231373
+                },
+                "opacity": 1,
+                "type": "SOLID"
+              }
+            ],
+            "irh": "bfdd439f7370f0b7",
+            "kind": "frame",
+            "name": "Item 3",
+            "nk": "root/div.item#3",
+            "size": {
+              "h": 32,
+              "w": 48
+            },
+            "source": {
+              "path": "div:0>div:2",
+              "tag": "div"
+            },
+            "visible": true,
+            "xy": {
+              "x": 104,
+              "y": 8
+            }
+          }
+        ],
+        "clipsContent": false,
+        "expect": {
+          "h": 48,
+          "w": 1280,
+          "x": 0,
+          "y": 0
+        },
+        "fills": [
+          {
+            "color": {
+              "b": 0.976471,
+              "g": 0.960784,
+              "r": 0.945098
+            },
+            "opacity": 1,
+            "type": "SOLID"
+          }
+        ],
+        "irh": "f64d973e71c2bdb1",
+        "kind": "component",
+        "name": "Flex",
+        "nk": "root",
+        "size": {
+          "h": 48,
+          "w": 1280
+        },
+        "source": {
+          "path": "div:0",
+          "tag": "div"
+        },
+        "visible": true
+      },
+      "values": {},
+      "vk": "a4f0ee12dbeac5dd"
+    }
+  ]
+}
