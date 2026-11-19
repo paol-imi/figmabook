@@ -8,7 +8,7 @@
     "nodes": {
       "set": {
         "vis": {
-          "name": "Action button",
+          "name": "Button",
           "visible": true
         }
       }
