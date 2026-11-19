@@ -15,6 +15,7 @@ import { resolveWorkerCount } from './workers';
  */
 export function createCapturer(options: CapturerOptions): Capturer {
   const env = resolveEnvironment(options.config);
+  const { origin } = options.storybook;
   const workers = resolveWorkerCount(options.workers ?? options.config?.workers ?? 'auto');
   const backend = new ChromiumBackend({
     env,
@@ -49,7 +50,9 @@ export function createCapturer(options: CapturerOptions): Capturer {
       if (closing !== undefined) throw new Error('capture() after close(): the capturer is closed.');
       const info = await engineInfo();
       const key = request.sid ?? componentIdFromStoryId(request.storyId);
-      return pool.run(key, (session, { attempt }) => captureVariant(session, request, { env, engine: info, attempt }));
+      return pool.run(key, (session, { attempt }) =>
+        captureVariant(session, request, { env, engine: info, origin, attempt }),
+      );
     },
     close() {
       closing ??= pool.close().finally(() => backend.close());

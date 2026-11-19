@@ -8,7 +8,6 @@ import {
   checkStories,
   ExitCode,
   makeRunId,
-  portableCapture,
   redactSource,
   resolveMapperSettings,
   resolveSource,
@@ -16,7 +15,7 @@ import {
   storybookLinks,
   unzipBundle,
 } from '../src';
-import { fakeDeps, GOLDEN_STORIES, goldenCapture } from './support';
+import { fakeDeps, GOLDEN_STORIES } from './support';
 
 let cwd: string;
 beforeEach(async () => {
@@ -211,15 +210,6 @@ describe('capture helpers', () => {
     expect(storybookLinks({ kind: 'url', url: 'https://sb.example.com/' }, 'https://sb.example.com/', 'a--b')).toEqual([
       { label: 'Storybook', url: 'https://sb.example.com/?path=/story/a--b' },
     ]);
-  });
-
-  it('drops the ephemeral port of a static build from the capture', () => {
-    const doc = goldenCapture('micro-flex--row');
-    const moved = { ...doc, target: { ...doc.target, storybookUrl: 'http://127.0.0.1:53111/iframe.html' } };
-    expect(portableCapture(moved, { kind: 'static', dir: '/x/storybook-static' }).target.storybookUrl).toBe(
-      'static:storybook-static/iframe.html',
-    );
-    expect(portableCapture(moved, { kind: 'url', url: 'http://127.0.0.1:53111/' })).toBe(moved);
   });
 
   it('applies the mapper namespaces of the config', () => {

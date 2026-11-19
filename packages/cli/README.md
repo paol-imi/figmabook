@@ -50,26 +50,26 @@ overrides come later.
 canonical JSON files, `manifest.json` first in the zip and the rest sorted, `integrity` over every
 other file, only the assets a scene refers to, fixed zip timestamps and attributes, `STORE` for
 PNG/JPEG/GIF and `DEFLATE` (level 9) for JSON and SVG. A static build's ephemeral loopback port
-is kept out of the bundle (`source.origin` is `static:<folder>`; `portableCapture`), so equal
-input gives equal bytes.
+is kept out of the bundle (`source.origin` is `static:<folder>`, and the capture engine records
+`target.storybookUrl` as `static:<folder>/iframe.html`), so equal input gives equal bytes.
 
 ## Public API
 
-| Export                                                                                                                                                           | What it does                                                                                            |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `main(argv, io, deps?)`, `run({ command, args })`                                                                                                                | the CLI in-process; returns the exit code                                                               |
-| `runCapture(options, deps?)`                                                                                                                                     | the capture command without flag parsing: `{ exitCode, report, bundle? }`                               |
-| `captureMain`, `captureArgs`, `captureCommand`, `rootCommand`                                                                                                    | the citty command definitions                                                                           |
-| `createBundle(input)`, `zipBundle(files)`, `unzipBundle(zip)`, `writeBundle(bundle, out, cwd?)`, `outputKind(out)`                                               | the bundle writer                                                                                       |
-| `buildBundleReport(components)`, `sortDiagnostics`, `autoLayoutCoverage`                                                                                         | `report.json` (`BundleReport`)                                                                          |
-| `countNodes`, `assetRefs`, `fontUses`, `featuresOf`, `entryMethod`                                                                                               | facts the manifest records                                                                              |
-| `loadConfig`, `resolveConfig`, `findConfigFile`, `readConfigFile`, `mergeConfig`, `withoutPointer`, `CONFIG_FILES`                                               | config loading                                                                                          |
-| `defineConfig` (also `@holotype/cli/config`)                                                                                                                     | types a `holotype.config.ts`                                                                            |
-| `ExitCode`, `exitCodeFor(diagnostics, failOn?)`                                                                                                                  | 11 §3.2 exit codes                                                                                      |
-| `RunReport`, `RunComponent`, `countByCode`                                                                                                                       | the `--json` document (12 §7.1, plus `run.command`, `run.exitCode`, `output`, `failure`, `diagnostics`) |
-| `formatCaptureSummary`, `formatDiagnostic`, `helpLink`, `displayPath`, `formatBytes`                                                                             | human output                                                                                            |
-| `resolveMapperSettings`, `resolveSource`, `redactSource`, `storybookLinks`, `portableCapture`, `mapWork`, `metaInput`, `checkStories`, `makeRunId`, `configHash` | pipeline steps                                                                                          |
-| `serve`, `exportBundle`                                                                                                                                          | not built yet (`NotImplementedError`)                                                                   |
+| Export                                                                                                                                        | What it does                                                                                            |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `main(argv, io, deps?)`, `run({ command, args })`                                                                                             | the CLI in-process; returns the exit code                                                               |
+| `runCapture(options, deps?)`                                                                                                                  | the capture command without flag parsing: `{ exitCode, report, bundle? }`                               |
+| `captureMain`, `captureArgs`, `captureCommand`, `rootCommand`                                                                                 | the citty command definitions                                                                           |
+| `createBundle(input)`, `zipBundle(files)`, `unzipBundle(zip)`, `writeBundle(bundle, out, cwd?)`, `outputKind(out)`                            | the bundle writer                                                                                       |
+| `buildBundleReport(components)`, `sortDiagnostics`, `autoLayoutCoverage`                                                                      | `report.json` (`BundleReport`)                                                                          |
+| `countNodes`, `assetRefs`, `fontUses`, `featuresOf`, `entryMethod`                                                                            | facts the manifest records                                                                              |
+| `loadConfig`, `resolveConfig`, `findConfigFile`, `readConfigFile`, `mergeConfig`, `withoutPointer`, `CONFIG_FILES`                            | config loading                                                                                          |
+| `defineConfig` (also `@holotype/cli/config`)                                                                                                  | types a `holotype.config.ts`                                                                            |
+| `ExitCode`, `exitCodeFor(diagnostics, failOn?)`                                                                                               | 11 §3.2 exit codes                                                                                      |
+| `RunReport`, `RunComponent`, `countByCode`                                                                                                    | the `--json` document (12 §7.1, plus `run.command`, `run.exitCode`, `output`, `failure`, `diagnostics`) |
+| `formatCaptureSummary`, `formatDiagnostic`, `helpLink`, `displayPath`, `formatBytes`                                                          | human output                                                                                            |
+| `resolveMapperSettings`, `resolveSource`, `redactSource`, `storybookLinks`, `mapWork`, `metaInput`, `checkStories`, `makeRunId`, `configHash` | pipeline steps                                                                                          |
+| `serve`, `exportBundle`                                                                                                                       | not built yet (`NotImplementedError`)                                                                   |
 
 ## Scripts
 

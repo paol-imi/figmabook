@@ -1,3 +1,4 @@
+import { basename, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { StorybookSource } from './types';
 
@@ -42,4 +43,27 @@ export function normalizeStorybookUrl(input: string): NormalizedUrl {
   if (!pathname.endsWith('/')) pathname += '/';
   const baseUrl = `${url.origin}${pathname}`;
   return deepLink === undefined ? { baseUrl } : { baseUrl, defaultStoryId: decodeURIComponent(deepLink) };
+}
+
+/** The scheme of a {@link documentOrigin} for a static build. */
+export const STATIC_ORIGIN_SCHEME = 'static:';
+
+/**
+ * The origin that documents record for renders of `source` (06 §2 `target.storybookUrl`), so a
+ * capture is the same wherever it ran. A URL source is its server origin (scheme, host, port; no
+ * credentials). A static build is `static:<folder name>`: Holotype serves it on an ephemeral
+ * loopback port (03 §9.1), which is not a fact of the design, and its local path is private.
+ * Throws a `TypeError` for a URL source that is not an `http(s)` URL.
+ */
+export function documentOrigin(source: StorybookSource): string {
+  if (source.kind === 'static') return `${STATIC_ORIGIN_SCHEME}${basename(resolve(source.dir))}`;
+  return new URL(normalizeStorybookUrl(source.url).baseUrl).origin;
+}
+
+/**
+ * A page URL as documents record it: `origin` ({@link documentOrigin}) and the path of `url`;
+ * credentials, query and hash are dropped.
+ */
+export function documentUrl(url: string, origin: string): string {
+  return `${origin}${new URL(url).pathname}`;
 }

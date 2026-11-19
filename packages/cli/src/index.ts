@@ -20,7 +20,6 @@ export { ExitCode, exitCodeFor } from './exit-codes';
 export { type MainDeps, main, rootCommand } from './main';
 export { displayPath, formatBytes, formatCaptureSummary, formatDiagnostic, helpLink } from './output/human';
 export { type CliIo, processIo } from './output/io';
-export { FAVICON_PATTERN, quietFavicon } from './pipeline/browser';
 export {
   type CaptureDeps,
   type CaptureProgress,
@@ -33,7 +32,7 @@ export {
   makeRunId,
   runCapture,
 } from './pipeline/capture';
-export { type ComponentWork, mapWork, metaInput, portableCapture, skipReason } from './pipeline/component';
+export { type ComponentWork, mapWork, metaInput, skipReason } from './pipeline/component';
 export { resolveMapperSettings } from './pipeline/settings';
 export { redactSource, resolveSource, storybookLinks } from './pipeline/source';
 export { CLI_VERSION, MAPPER_VERSION } from './pipeline/versions';

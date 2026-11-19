@@ -31,7 +31,6 @@ import {
 import { loadConfig } from '../config/load';
 import { ExitCode, exitCodeFor } from '../exit-codes';
 import { countByCode, type RunComponent, type RunReport } from '../run-report';
-import { quietFavicon } from './browser';
 import { type ComponentWork, mapWork, skipReason } from './component';
 import { resolveMapperSettings } from './settings';
 import { redactSource, resolveSource } from './source';
@@ -258,7 +257,6 @@ export async function runCapture(
     storybook,
     ...(config.capture === undefined ? {} : { config: config.capture }),
     ...(options.chromiumPath === undefined ? {} : { chromiumPath: options.chromiumPath }),
-    preparePage: quietFavicon,
   });
   let browserError: Error | undefined;
   try {

@@ -8,7 +8,7 @@ import { createUrlDriver } from './driver/url-driver';
 import { filterStories } from './filter';
 import { describeOutcome, type FetchOutcome, fetchText, parseJsonBody } from './http';
 import { type ParsedIndex, parseStoriesJsonV3, parseStoryIndex } from './index-json';
-import { normalizeStorybookUrl, parseSource } from './source';
+import { documentOrigin, normalizeStorybookUrl, parseSource } from './source';
 import { type StaticServer, startStaticServer } from './static-server';
 import type {
   DriverOptions,
@@ -31,7 +31,13 @@ export interface ConnectOptions {
 
 /** A discovered Storybook (03 §2–3): its model, plus render drivers for Playwright pages. */
 export interface ConnectedStorybook {
+  /** Root URL the browser loads, with a trailing slash; a static build's has an ephemeral port. */
   readonly baseUrl: string;
+  /**
+   * The origin documents record for its renders ({@link documentOrigin}): the server origin of a
+   * URL source, `static:<folder name>` for a static build. The same on every run.
+   */
+  readonly origin: string;
   readonly caps: SbCapabilities;
   readonly model: StorybookModel;
   /** Warnings from discovery, such as `SB_VERSION_UNTESTED`. */
@@ -112,6 +118,7 @@ async function loadIndex(baseUrl: string, timeoutMs: number): Promise<Result<Par
 
 interface Endpoint {
   readonly baseUrl: string;
+  readonly origin: string;
   readonly defaultStoryId?: string;
   readonly server?: StaticServer;
 }
@@ -119,7 +126,7 @@ interface Endpoint {
 async function openEndpoint(source: StorybookSource): Promise<Result<Endpoint, readonly Diagnostic[]>> {
   if (source.kind === 'url') {
     try {
-      return ok(normalizeStorybookUrl(source.url));
+      return ok({ ...normalizeStorybookUrl(source.url), origin: documentOrigin(source) });
     } catch (error) {
       return indexUnreachable(source.url, { reason: (error as Error).message });
     }
@@ -131,7 +138,7 @@ async function openEndpoint(source: StorybookSource): Promise<Result<Endpoint, r
   );
   if (!isDir) return indexUnreachable(dir, { reason: 'the static build directory does not exist', dir });
   const server = await startStaticServer(dir);
-  return ok({ baseUrl: server.url, server });
+  return ok({ baseUrl: server.url, origin: documentOrigin({ kind: 'static', dir }), server });
 }
 
 /**
@@ -158,7 +165,7 @@ async function discover(
   filter: StoryFilter,
   timeoutMs: number,
 ): Promise<Result<ConnectedStorybook, readonly Diagnostic[]>> {
-  const { baseUrl, server } = endpoint;
+  const { baseUrl, origin, server } = endpoint;
   const index = await loadIndex(baseUrl, timeoutMs);
   if (!index.ok) return index;
 
@@ -200,6 +207,7 @@ async function discover(
 
   return ok({
     baseUrl,
+    origin,
     caps,
     model,
     diagnostics: version.warnings,

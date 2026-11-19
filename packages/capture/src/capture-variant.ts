@@ -6,7 +6,7 @@
 import { createHash } from 'node:crypto';
 import { type CaptureDoc, type JsonValue, type Rect, validateCaptureDoc, variantKey } from '@holotype/ir';
 import { createDiagnostic, type Diagnostic, diagnostic, HolotypeError } from '@holotype/shared';
-import { componentIdFromStoryId, DEFAULT_ROOT_SELECTORS, type RenderResult } from '@holotype/storybook';
+import { componentIdFromStoryId, DEFAULT_ROOT_SELECTORS, documentUrl, type RenderResult } from '@holotype/storybook';
 import type { ElementHandle, Page } from 'playwright';
 import { canonicalCapture, captureHash } from './canonical';
 import { assembleCaptureDoc, type ScreenshotAsset } from './document';
@@ -26,6 +26,8 @@ export interface EngineInfo {
 export interface VariantContext {
   readonly env: CaptureEnvironment;
   readonly engine: EngineInfo;
+  /** The Storybook's `origin` (`ConnectedStorybook.origin`): `target.storybookUrl` is this origin plus the render path. */
+  readonly origin: string;
   /** 1 on the retry after a page crash (`CAP_PAGE_CRASHED`). */
   readonly attempt: number;
 }
@@ -162,9 +164,9 @@ export async function captureVariant(
     return failure(storyId, serializeFailed(storyId, scope, data), warnings);
   }
 
-  const renderUrl = new URL(render.url);
   const target: CaptureDoc['target'] = {
-    storybookUrl: `${renderUrl.origin}${renderUrl.pathname}`,
+    // A portable URL: a static build's ephemeral port would change the hash on every run.
+    storybookUrl: documentUrl(render.url, context.origin),
     storyId,
     sid,
     vk,
