@@ -1,0 +1,54 @@
+{
+  "dcrHash": "936088453e5e82fb",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/noise",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "6ec800783ee9e7b6"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "a2aded9f31b97d31",
+  "items": [],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": [],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {},
+    "headline": [],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "dcrHash": "4ca9293f60df9613",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [
+    {
+      "code": "DCR_PROVENANCE_MISSING",
+      "message": "No code location (no CDP or source map, or plugin-only extraction).",
+      "severity": "warn"
+    }
+  ],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/card-no-body",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "0205c8471614f0a6"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "580a0e4182028a30",
+  "items": [
+    {
+      "acceptance": {
+        "story": "existing",
+        "type": "structure"
+      },
+      "assets": {
+        "after": "b8aef15697b26ef1:after",
+        "before": "b8aef15697b26ef1:before"
+      },
+      "designerTitle": "Card · Story=Default · layer Body removed",
+      "id": "b8aef15697b26ef1",
+      "kind": "node.removed",
+      "target": {
+        "figmaNodeId": "30:2",
+        "nk": "root/content/body",
+        "sid": "components-card",
+        "vk": "4b097af13c9f3545"
+      },
+      "title": "Card · story=default · element root/content/body removed"
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": ["components-card"],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "node.removed": 1
+    },
+    "headline": ["Card (Story=Default): layer Body removed"],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}

@@ -1,0 +1,949 @@
+[
+  {
+    "v": 1,
+    "vk": "5be54159555605cc",
+    "sid": "components-badge",
+    "baseCommit": "3f9c2e14b7a0",
+    "baselineFp": "b2386d3ecfc5f8d0",
+    "nodes": {
+      "set": {
+        "vis": {
+          "name": "Badge",
+          "visible": true
+        }
+      }
+    },
+    "order": {},
+    "props": {
+      "axes": [
+        {
+          "name": "Tone",
+          "key": "arg:tone",
+          "values": ["Neutral", "Info", "Success", "Warning", "Danger"]
+        }
+      ],
+      "properties": {
+        "arg:dot": {
+          "id": "Dot#21:0",
+          "type": "BOOLEAN",
+          "default": false
+        },
+        "arg:label": {
+          "id": "Label#21:1",
+          "type": "TEXT",
+          "default": "Badge"
+        }
+      }
+    }
+  },
+  {
+    "v": 1,
+    "vk": "5be54159555605cc",
+    "sid": "components-badge",
+    "baseCommit": "3f9c2e14b7a0",
+    "baselineFp": "b2386d3ecfc5f8d0",
+    "nodes": {
+      "root": {
+        "geom": {
+          "width": 51,
+          "height": 20
+        },
+        "layout": {
+          "layoutMode": "HORIZONTAL",
+          "paddingTop": 2,
+          "paddingRight": 8,
+          "paddingBottom": 2,
+          "paddingLeft": 8,
+          "itemSpacing": 4,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "CENTER",
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "HUG",
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.9451,
+                "g": 0.9608,
+                "b": 0.9765
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 9999,
+          "topRightRadius": 9999,
+          "bottomLeftRadius": 9999,
+          "bottomRightRadius": 9999,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Tone=Neutral",
+          "visible": true
+        },
+        "bind": {
+          "fills": ["VariableID:1:91"],
+          "paddingTop": "VariableID:1:50",
+          "paddingBottom": "VariableID:1:50",
+          "paddingLeft": "VariableID:1:38",
+          "paddingRight": "VariableID:1:38",
+          "itemSpacing": "VariableID:1:37",
+          "topLeftRadius": "VariableID:1:48",
+          "topRightRadius": "VariableID:1:48",
+          "bottomLeftRadius": "VariableID:1:48",
+          "bottomRightRadius": "VariableID:1:48"
+        },
+        "inst": {}
+      },
+      "root/dot": {
+        "geom": {
+          "width": 6,
+          "height": 6
+        },
+        "layout": {
+          "layoutMode": "NONE",
+          "layoutSizingHorizontal": "FIXED",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.2,
+                "g": 0.2549,
+                "b": 0.3333
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 9999,
+          "topRightRadius": 9999,
+          "bottomLeftRadius": 9999,
+          "bottomRightRadius": 9999,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Dot",
+          "visible": false
+        },
+        "bind": {
+          "componentPropertyReferences": {
+            "visible": "Dot#21:0"
+          },
+          "width": "VariableID:1:69",
+          "height": "VariableID:1:69",
+          "topLeftRadius": "VariableID:1:48",
+          "topRightRadius": "VariableID:1:48",
+          "bottomLeftRadius": "VariableID:1:48",
+          "bottomRightRadius": "VariableID:1:48"
+        },
+        "inst": {}
+      },
+      "root/label": {
+        "geom": {
+          "width": 35,
+          "height": 16
+        },
+        "layout": {
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "HUG"
+        },
+        "paint": {},
+        "text": {
+          "characters": "Badge",
+          "fontName": {
+            "family": "Inter",
+            "style": "Medium"
+          },
+          "fontSize": 12,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 16
+          },
+          "letterSpacing": {
+            "unit": "PIXELS",
+            "value": 0
+          },
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.2,
+                "g": 0.2549,
+                "b": 0.3333
+              },
+              "opacity": 1
+            }
+          ],
+          "textAutoResize": "WIDTH_AND_HEIGHT",
+          "textAlignHorizontal": "LEFT",
+          "textAlignVertical": "TOP",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE"
+        },
+        "vis": {
+          "name": "Label",
+          "visible": true
+        },
+        "bind": {
+          "componentPropertyReferences": {
+            "characters": "Label#21:1"
+          },
+          "fontSize": "VariableID:1:56",
+          "lineHeight": "VariableID:1:61",
+          "fontWeight": "VariableID:1:53",
+          "fills": ["VariableID:1:92"]
+        },
+        "inst": {}
+      }
+    },
+    "order": {
+      "root": ["root/dot", "root/label"]
+    }
+  },
+  {
+    "v": 1,
+    "vk": "47962fe399b8b71f",
+    "sid": "components-badge",
+    "baseCommit": "3f9c2e14b7a0",
+    "baselineFp": "b2386d3ecfc5f8d0",
+    "nodes": {
+      "root": {
+        "geom": {
+          "width": 51,
+          "height": 20
+        },
+        "layout": {
+          "layoutMode": "HORIZONTAL",
+          "paddingTop": 2,
+          "paddingRight": 8,
+          "paddingBottom": 2,
+          "paddingLeft": 8,
+          "itemSpacing": 4,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "CENTER",
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "HUG",
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.8588,
+                "g": 0.9176,
+                "b": 0.9961
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 9999,
+          "topRightRadius": 9999,
+          "bottomLeftRadius": 9999,
+          "bottomRightRadius": 9999,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Tone=Info",
+          "visible": true
+        },
+        "bind": {
+          "fills": ["VariableID:1:93"],
+          "paddingTop": "VariableID:1:50",
+          "paddingBottom": "VariableID:1:50",
+          "paddingLeft": "VariableID:1:38",
+          "paddingRight": "VariableID:1:38",
+          "itemSpacing": "VariableID:1:37",
+          "topLeftRadius": "VariableID:1:48",
+          "topRightRadius": "VariableID:1:48",
+          "bottomLeftRadius": "VariableID:1:48",
+          "bottomRightRadius": "VariableID:1:48"
+        },
+        "inst": {}
+      },
+      "root/dot": {
+        "geom": {
+          "width": 6,
+          "height": 6
+        },
+        "layout": {
+          "layoutMode": "NONE",
+          "layoutSizingHorizontal": "FIXED",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.1176,
+                "g": 0.251,
+                "b": 0.6863
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 9999,
+          "topRightRadius": 9999,
+          "bottomLeftRadius": 9999,
+          "bottomRightRadius": 9999,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Dot",
+          "visible": false
+        },
+        "bind": {
+          "componentPropertyReferences": {
+            "visible": "Dot#21:0"
+          },
+          "width": "VariableID:1:69",
+          "height": "VariableID:1:69",
+          "topLeftRadius": "VariableID:1:48",
+          "topRightRadius": "VariableID:1:48",
+          "bottomLeftRadius": "VariableID:1:48",
+          "bottomRightRadius": "VariableID:1:48"
+        },
+        "inst": {}
+      },
+      "root/label": {
+        "geom": {
+          "width": 35,
+          "height": 16
+        },
+        "layout": {
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "HUG"
+        },
+        "paint": {},
+        "text": {
+          "characters": "Badge",
+          "fontName": {
+            "family": "Inter",
+            "style": "Medium"
+          },
+          "fontSize": 12,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 16
+          },
+          "letterSpacing": {
+            "unit": "PIXELS",
+            "value": 0
+          },
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.1176,
+                "g": 0.251,
+                "b": 0.6863
+              },
+              "opacity": 1
+            }
+          ],
+          "textAutoResize": "WIDTH_AND_HEIGHT",
+          "textAlignHorizontal": "LEFT",
+          "textAlignVertical": "TOP",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE"
+        },
+        "vis": {
+          "name": "Label",
+          "visible": true
+        },
+        "bind": {
+          "componentPropertyReferences": {
+            "characters": "Label#21:1"
+          },
+          "fontSize": "VariableID:1:56",
+          "lineHeight": "VariableID:1:61",
+          "fontWeight": "VariableID:1:53",
+          "fills": ["VariableID:1:94"]
+        },
+        "inst": {}
+      }
+    },
+    "order": {
+      "root": ["root/dot", "root/label"]
+    }
+  },
+  {
+    "v": 1,
+    "vk": "1eb2faf0e1dc380c",
+    "sid": "components-badge",
+    "baseCommit": "3f9c2e14b7a0",
+    "baselineFp": "b2386d3ecfc5f8d0",
+    "nodes": {
+      "root": {
+        "geom": {
+          "width": 51,
+          "height": 20
+        },
+        "layout": {
+          "layoutMode": "HORIZONTAL",
+          "paddingTop": 2,
+          "paddingRight": 8,
+          "paddingBottom": 2,
+          "paddingLeft": 8,
+          "itemSpacing": 4,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "CENTER",
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "HUG",
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.8627,
+                "g": 0.9882,
+                "b": 0.9059
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 9999,
+          "topRightRadius": 9999,
+          "bottomLeftRadius": 9999,
+          "bottomRightRadius": 9999,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Tone=Success",
+          "visible": true
+        },
+        "bind": {
+          "fills": ["VariableID:1:95"],
+          "paddingTop": "VariableID:1:50",
+          "paddingBottom": "VariableID:1:50",
+          "paddingLeft": "VariableID:1:38",
+          "paddingRight": "VariableID:1:38",
+          "itemSpacing": "VariableID:1:37",
+          "topLeftRadius": "VariableID:1:48",
+          "topRightRadius": "VariableID:1:48",
+          "bottomLeftRadius": "VariableID:1:48",
+          "bottomRightRadius": "VariableID:1:48"
+        },
+        "inst": {}
+      },
+      "root/dot": {
+        "geom": {
+          "width": 6,
+          "height": 6
+        },
+        "layout": {
+          "layoutMode": "NONE",
+          "layoutSizingHorizontal": "FIXED",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.0824,
+                "g": 0.502,
+                "b": 0.2392
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 9999,
+          "topRightRadius": 9999,
+          "bottomLeftRadius": 9999,
+          "bottomRightRadius": 9999,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Dot",
+          "visible": false
+        },
+        "bind": {
+          "componentPropertyReferences": {
+            "visible": "Dot#21:0"
+          },
+          "width": "VariableID:1:69",
+          "height": "VariableID:1:69",
+          "topLeftRadius": "VariableID:1:48",
+          "topRightRadius": "VariableID:1:48",
+          "bottomLeftRadius": "VariableID:1:48",
+          "bottomRightRadius": "VariableID:1:48"
+        },
+        "inst": {}
+      },
+      "root/label": {
+        "geom": {
+          "width": 35,
+          "height": 16
+        },
+        "layout": {
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "HUG"
+        },
+        "paint": {},
+        "text": {
+          "characters": "Badge",
+          "fontName": {
+            "family": "Inter",
+            "style": "Medium"
+          },
+          "fontSize": 12,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 16
+          },
+          "letterSpacing": {
+            "unit": "PIXELS",
+            "value": 0
+          },
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.0824,
+                "g": 0.502,
+                "b": 0.2392
+              },
+              "opacity": 1
+            }
+          ],
+          "textAutoResize": "WIDTH_AND_HEIGHT",
+          "textAlignHorizontal": "LEFT",
+          "textAlignVertical": "TOP",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE"
+        },
+        "vis": {
+          "name": "Label",
+          "visible": true
+        },
+        "bind": {
+          "componentPropertyReferences": {
+            "characters": "Label#21:1"
+          },
+          "fontSize": "VariableID:1:56",
+          "lineHeight": "VariableID:1:61",
+          "fontWeight": "VariableID:1:53",
+          "fills": ["VariableID:1:96"]
+        },
+        "inst": {}
+      }
+    },
+    "order": {
+      "root": ["root/dot", "root/label"]
+    }
+  },
+  {
+    "v": 1,
+    "vk": "ecfa04d7f080ccda",
+    "sid": "components-badge",
+    "baseCommit": "3f9c2e14b7a0",
+    "baselineFp": "b2386d3ecfc5f8d0",
+    "nodes": {
+      "root": {
+        "geom": {
+          "width": 51,
+          "height": 20
+        },
+        "layout": {
+          "layoutMode": "HORIZONTAL",
+          "paddingTop": 2,
+          "paddingRight": 8,
+          "paddingBottom": 2,
+          "paddingLeft": 8,
+          "itemSpacing": 4,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "CENTER",
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "HUG",
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.9961,
+                "g": 0.9529,
+                "b": 0.7804
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 9999,
+          "topRightRadius": 9999,
+          "bottomLeftRadius": 9999,
+          "bottomRightRadius": 9999,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Tone=Warning",
+          "visible": true
+        },
+        "bind": {
+          "fills": ["VariableID:1:97"],
+          "paddingTop": "VariableID:1:50",
+          "paddingBottom": "VariableID:1:50",
+          "paddingLeft": "VariableID:1:38",
+          "paddingRight": "VariableID:1:38",
+          "itemSpacing": "VariableID:1:37",
+          "topLeftRadius": "VariableID:1:48",
+          "topRightRadius": "VariableID:1:48",
+          "bottomLeftRadius": "VariableID:1:48",
+          "bottomRightRadius": "VariableID:1:48"
+        },
+        "inst": {}
+      },
+      "root/dot": {
+        "geom": {
+          "width": 6,
+          "height": 6
+        },
+        "layout": {
+          "layoutMode": "NONE",
+          "layoutSizingHorizontal": "FIXED",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.7059,
+                "g": 0.3255,
+                "b": 0.0353
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 9999,
+          "topRightRadius": 9999,
+          "bottomLeftRadius": 9999,
+          "bottomRightRadius": 9999,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Dot",
+          "visible": false
+        },
+        "bind": {
+          "componentPropertyReferences": {
+            "visible": "Dot#21:0"
+          },
+          "width": "VariableID:1:69",
+          "height": "VariableID:1:69",
+          "topLeftRadius": "VariableID:1:48",
+          "topRightRadius": "VariableID:1:48",
+          "bottomLeftRadius": "VariableID:1:48",
+          "bottomRightRadius": "VariableID:1:48"
+        },
+        "inst": {}
+      },
+      "root/label": {
+        "geom": {
+          "width": 35,
+          "height": 16
+        },
+        "layout": {
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "HUG"
+        },
+        "paint": {},
+        "text": {
+          "characters": "Badge",
+          "fontName": {
+            "family": "Inter",
+            "style": "Medium"
+          },
+          "fontSize": 12,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 16
+          },
+          "letterSpacing": {
+            "unit": "PIXELS",
+            "value": 0
+          },
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.7059,
+                "g": 0.3255,
+                "b": 0.0353
+              },
+              "opacity": 1
+            }
+          ],
+          "textAutoResize": "WIDTH_AND_HEIGHT",
+          "textAlignHorizontal": "LEFT",
+          "textAlignVertical": "TOP",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE"
+        },
+        "vis": {
+          "name": "Label",
+          "visible": true
+        },
+        "bind": {
+          "componentPropertyReferences": {
+            "characters": "Label#21:1"
+          },
+          "fontSize": "VariableID:1:56",
+          "lineHeight": "VariableID:1:61",
+          "fontWeight": "VariableID:1:53",
+          "fills": ["VariableID:1:98"]
+        },
+        "inst": {}
+      }
+    },
+    "order": {
+      "root": ["root/dot", "root/label"]
+    }
+  },
+  {
+    "v": 1,
+    "vk": "8e3b706a25429df5",
+    "sid": "components-badge",
+    "baseCommit": "3f9c2e14b7a0",
+    "baselineFp": "b2386d3ecfc5f8d0",
+    "nodes": {
+      "root": {
+        "geom": {
+          "width": 51,
+          "height": 20
+        },
+        "layout": {
+          "layoutMode": "HORIZONTAL",
+          "paddingTop": 2,
+          "paddingRight": 8,
+          "paddingBottom": 2,
+          "paddingLeft": 8,
+          "itemSpacing": 4,
+          "primaryAxisAlignItems": "MIN",
+          "counterAxisAlignItems": "CENTER",
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "HUG",
+          "strokesIncludedInLayout": false
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.9961,
+                "g": 0.8863,
+                "b": 0.8863
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 9999,
+          "topRightRadius": 9999,
+          "bottomLeftRadius": 9999,
+          "bottomRightRadius": 9999,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Tone=Danger",
+          "visible": true
+        },
+        "bind": {
+          "fills": ["VariableID:1:99"],
+          "paddingTop": "VariableID:1:50",
+          "paddingBottom": "VariableID:1:50",
+          "paddingLeft": "VariableID:1:38",
+          "paddingRight": "VariableID:1:38",
+          "itemSpacing": "VariableID:1:37",
+          "topLeftRadius": "VariableID:1:48",
+          "topRightRadius": "VariableID:1:48",
+          "bottomLeftRadius": "VariableID:1:48",
+          "bottomRightRadius": "VariableID:1:48"
+        },
+        "inst": {}
+      },
+      "root/dot": {
+        "geom": {
+          "width": 6,
+          "height": 6
+        },
+        "layout": {
+          "layoutMode": "NONE",
+          "layoutSizingHorizontal": "FIXED",
+          "layoutSizingVertical": "FIXED"
+        },
+        "paint": {
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.7255,
+                "g": 0.1098,
+                "b": 0.1098
+              },
+              "opacity": 1
+            }
+          ],
+          "strokes": [],
+          "strokeWeight": 0,
+          "strokeAlign": "INSIDE",
+          "topLeftRadius": 9999,
+          "topRightRadius": 9999,
+          "bottomLeftRadius": 9999,
+          "bottomRightRadius": 9999,
+          "effects": [],
+          "opacity": 1,
+          "blendMode": "PASS_THROUGH",
+          "clipsContent": false
+        },
+        "text": {},
+        "vis": {
+          "name": "Dot",
+          "visible": false
+        },
+        "bind": {
+          "componentPropertyReferences": {
+            "visible": "Dot#21:0"
+          },
+          "width": "VariableID:1:69",
+          "height": "VariableID:1:69",
+          "topLeftRadius": "VariableID:1:48",
+          "topRightRadius": "VariableID:1:48",
+          "bottomLeftRadius": "VariableID:1:48",
+          "bottomRightRadius": "VariableID:1:48"
+        },
+        "inst": {}
+      },
+      "root/label": {
+        "geom": {
+          "width": 35,
+          "height": 16
+        },
+        "layout": {
+          "layoutSizingHorizontal": "HUG",
+          "layoutSizingVertical": "HUG"
+        },
+        "paint": {},
+        "text": {
+          "characters": "Badge",
+          "fontName": {
+            "family": "Inter",
+            "style": "Medium"
+          },
+          "fontSize": 12,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 16
+          },
+          "letterSpacing": {
+            "unit": "PIXELS",
+            "value": 0
+          },
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.7255,
+                "g": 0.1098,
+                "b": 0.1098
+              },
+              "opacity": 1
+            }
+          ],
+          "textAutoResize": "WIDTH_AND_HEIGHT",
+          "textAlignHorizontal": "LEFT",
+          "textAlignVertical": "TOP",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE"
+        },
+        "vis": {
+          "name": "Label",
+          "visible": true
+        },
+        "bind": {
+          "componentPropertyReferences": {
+            "characters": "Label#21:1"
+          },
+          "fontSize": "VariableID:1:56",
+          "lineHeight": "VariableID:1:61",
+          "fontWeight": "VariableID:1:53",
+          "fills": ["VariableID:1:100"]
+        },
+        "inst": {}
+      }
+    },
+    "order": {
+      "root": ["root/dot", "root/label"]
+    }
+  }
+]

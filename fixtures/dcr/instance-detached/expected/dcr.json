@@ -1,0 +1,303 @@
+{
+  "dcrHash": "aa6893551d3333bf",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [
+    {
+      "code": "DCR_PROVENANCE_MISSING",
+      "message": "No code location (no CDP or source map, or plugin-only extraction).",
+      "severity": "warn"
+    }
+  ],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/settings-screen",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "11f0ff7a220d0487"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "a02d9259e1759454",
+  "items": [
+    {
+      "acceptance": {
+        "story": "optional",
+        "type": "usage",
+        "usage": {
+          "mustImport": ["components-badge"]
+        }
+      },
+      "assets": {
+        "after": "8a8bdb40f4f27fe4:Mobile:default"
+      },
+      "designerTitle": "Settings: Mobile",
+      "id": "8a8bdb40f4f27fe4",
+      "kind": "screen",
+      "screen": {
+        "name": "Settings",
+        "target": "components",
+        "variants": [
+          {
+            "a11y": [],
+            "asset": "8a8bdb40f4f27fe4:Mobile:default",
+            "breakpoint": {
+              "inferred": true,
+              "minWidth": 0,
+              "name": "Mobile"
+            },
+            "figmaNodeId": "60:1",
+            "frameName": "Settings",
+            "height": 844,
+            "interactions": [],
+            "snippet": {
+              "code": "<frame name=\"Settings\" direction=\"column\" gap=\"--space-4\" padding=\"--space-4\" w=\"390px\">\n  <text style=\"Inter Semi Bold 20/28\">Settings</text>\n  <frame name=\"Button\" direction=\"row\" gap=\"--space-2\" padding=\"2px /* ? --border-width-2 */ 17px 2px /* ? --border-width-2 */ 17px\" justify=\"center\" align=\"center\" w=\"hug\" radius=\"--button-radius\">\n    <text style=\"Inter Semi Bold 14/20\">Delete account</text>\n  </frame>\n  <Badge label=\"Beta\" />\n</frame>",
+              "imports": ["import { Badge } from \"src/components/Badge/Badge\";"],
+              "lang": "jsx-sketch"
+            },
+            "state": "default",
+            "structure": [
+              {
+                "children": [
+                  {
+                    "characters": "Settings",
+                    "key": "Settings:0/Title:0",
+                    "style": {
+                      "family": "Inter",
+                      "lineHeight": 28,
+                      "size": 20,
+                      "style": "Semi Bold"
+                    },
+                    "t": "text"
+                  },
+                  {
+                    "children": [
+                      {
+                        "characters": "Delete account",
+                        "key": "Settings:0/Button:1/Label:0",
+                        "style": {
+                          "family": "Inter",
+                          "lineHeight": 20,
+                          "size": 14,
+                          "style": "Semi Bold"
+                        },
+                        "t": "text"
+                      }
+                    ],
+                    "fills": [
+                      {
+                        "token": "--color-danger",
+                        "value": "#dc2626"
+                      }
+                    ],
+                    "key": "Settings:0/Button:1",
+                    "layout": {
+                      "align": "center",
+                      "direction": "row",
+                      "fixed": {
+                        "h": 36
+                      },
+                      "gap": {
+                        "token": "--space-2",
+                        "value": 8
+                      },
+                      "justify": "center",
+                      "padding": [
+                        {
+                          "candidates": ["--border-width-2"],
+                          "untokenized": true,
+                          "value": 2
+                        },
+                        {
+                          "untokenized": true,
+                          "value": 17
+                        },
+                        {
+                          "candidates": ["--border-width-2"],
+                          "untokenized": true,
+                          "value": 2
+                        },
+                        {
+                          "untokenized": true,
+                          "value": 17
+                        }
+                      ],
+                      "sizing": {
+                        "h": "fixed",
+                        "w": "hug"
+                      }
+                    },
+                    "name": "Button",
+                    "radius": {
+                      "token": "--button-radius",
+                      "value": 6
+                    },
+                    "t": "frame"
+                  },
+                  {
+                    "inst": {
+                      "component": {
+                        "exportName": "Badge",
+                        "importPath": "src/components/Badge/Badge.tsx",
+                        "package": "@holotype/fixture-ds-react",
+                        "sid": "components-badge",
+                        "storiesPath": "src/components/Badge/Badge.stories.tsx",
+                        "storyIds": ["components-badge--default"]
+                      },
+                      "defaults": ["dot", "tone"],
+                      "props": {
+                        "dot": false,
+                        "label": "Beta",
+                        "tone": "neutral"
+                      },
+                      "sid": "components-badge"
+                    },
+                    "key": "Settings:0/Badge:2",
+                    "t": "instance"
+                  }
+                ],
+                "fills": [
+                  {
+                    "token": "--color-bg",
+                    "value": "#ffffff"
+                  }
+                ],
+                "key": "Settings:0",
+                "layout": {
+                  "direction": "column",
+                  "fixed": {
+                    "h": 844,
+                    "w": 390
+                  },
+                  "gap": {
+                    "token": "--space-4",
+                    "value": 16
+                  },
+                  "padding": [
+                    {
+                      "token": "--space-4",
+                      "value": 16
+                    },
+                    {
+                      "token": "--space-4",
+                      "value": 16
+                    },
+                    {
+                      "token": "--space-4",
+                      "value": 16
+                    },
+                    {
+                      "token": "--space-4",
+                      "value": 16
+                    }
+                  ],
+                  "sizing": {
+                    "h": "fixed",
+                    "w": "fixed"
+                  }
+                },
+                "name": "Settings",
+                "t": "frame"
+              }
+            ],
+            "width": 390
+          }
+        ]
+      },
+      "target": {
+        "figmaNodeId": "60:1",
+        "key": "Settings"
+      },
+      "title": "Screen \"Settings\" · 1 breakpoint · 1 state"
+    },
+    {
+      "acceptance": {
+        "story": "optional",
+        "type": "usage",
+        "usage": {
+          "mustImport": ["components-button"]
+        }
+      },
+      "assets": {
+        "after": "0310db43171f2eac:after"
+      },
+      "changes": [
+        {
+          "after": {
+            "b": 0.149,
+            "g": 0.149,
+            "r": 0.8627
+          },
+          "before": {
+            "b": 0.9216,
+            "g": 0.3882,
+            "r": 0.1451
+          },
+          "field": "paint.fills[0].color",
+          "group": "paint",
+          "token": {
+            "after": "--color-danger",
+            "before": "--button-bg"
+          }
+        }
+      ],
+      "designerTitle": "Detached Button (Variant=Primary, Size=Md) in Settings · Fill button/bg → color/danger",
+      "id": "0310db43171f2eac",
+      "kind": "instance.detached",
+      "target": {
+        "figmaNodeId": "60:3",
+        "sid": "components-button",
+        "vk": "0ea44dbf4e7b9668"
+      },
+      "title": "Button detached in screen \"Settings\" · background-color #2563eb → #dc2626"
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": [],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "instance.detached": 1,
+      "screen": 1
+    },
+    "headline": ["Screen Settings (Mobile): Badge", "Detached Button in Settings: fill button/bg → color/danger"],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [
+      {
+        "breakpoints": ["Mobile"],
+        "interactions": 0,
+        "itemId": "8a8bdb40f4f27fe4",
+        "name": "Settings",
+        "states": ["default"]
+      }
+    ],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}

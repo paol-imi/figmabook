@@ -1,0 +1,65 @@
+{
+  "kind": "holotype/fixture-provenance",
+  "v": 1,
+  "components": [
+    {
+      "code": {
+        "sid": "components-button",
+        "exportName": "Button",
+        "importPath": "src/components/Button/Button.tsx",
+        "storiesPath": "src/components/Button/Button.stories.tsx",
+        "storyIds": ["components-button--secondary"],
+        "package": "@holotype/fixture-ds-react"
+      },
+      "doc": {
+        "kind": "holotype/provenance",
+        "v": 1,
+        "sid": "components-button",
+        "nodes": {
+          "f4506d20025247f2": {
+            "root": {
+              "dom": {
+                "path": "button",
+                "tag": "button",
+                "classes": ["button", "secondary", "md"]
+              },
+              "fields": {
+                "layout.padding.l": {
+                  "css": ["border-left-width", "padding-left"],
+                  "authored": "var(--space-4)",
+                  "selector": ".md",
+                  "rule": {
+                    "file": "src/components/Button/Button.module.css",
+                    "line": 67,
+                    "col": 3
+                  },
+                  "varChain": ["--space-4"],
+                  "transform": "border-included"
+                },
+                "layout.padding.r": {
+                  "css": ["border-right-width", "padding-right"],
+                  "authored": "var(--space-4)",
+                  "selector": ".md",
+                  "rule": {
+                    "file": "src/components/Button/Button.module.css",
+                    "line": 67,
+                    "col": 3
+                  },
+                  "varChain": ["--space-4"],
+                  "transform": "border-included"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "tokens": {
+    "--space-4": {
+      "file": "src/tokens/tokens.css",
+      "line": 61,
+      "col": 3
+    }
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "dcrHash": "8b288dc0aa58dd6a",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/button-color",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "8b7e5f733073be3d"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "854acc7b40fc46d6",
+  "items": [
+    {
+      "acceptance": {
+        "fields": [
+          {
+            "expect": {
+              "b": 0.6863,
+              "g": 0.251,
+              "r": 0.1176
+            },
+            "field": "paint.fills[0].color",
+            "tol": 0.001
+          }
+        ],
+        "story": "existing",
+        "token": [
+          {
+            "expect": "--color-primary-active",
+            "field": "bind.fills[0]"
+          }
+        ],
+        "type": "fields"
+      },
+      "assets": {
+        "after": "dde655805db645dc:after",
+        "before": "dde655805db645dc:before"
+      },
+      "changes": [
+        {
+          "after": {
+            "b": 0.6863,
+            "g": 0.251,
+            "r": 0.1176
+          },
+          "before": {
+            "b": 0.9216,
+            "g": 0.3882,
+            "r": 0.1451
+          },
+          "css": {
+            "after": "#1e40af",
+            "before": "#2563eb",
+            "property": "background-color"
+          },
+          "field": "paint.fills[0].color",
+          "group": "paint",
+          "origin": {
+            "authored": "var(--button-bg)",
+            "css": ["background-color"],
+            "rule": {
+              "col": 3,
+              "file": "src/components/Button/Button.module.css",
+              "line": 21
+            },
+            "selector": ".primary",
+            "transform": "none",
+            "varChain": ["--button-bg", "--color-primary", "--color-blue-600"]
+          },
+          "reach": {
+            "designerChangedIn": ["0ea44dbf4e7b9668"],
+            "sameOriginVariants": ["0ea44dbf4e7b9668", "6514ff4a0a3e1275", "6ceefb530280d8ad"]
+          },
+          "token": {
+            "after": "--color-primary-active",
+            "before": "--button-bg"
+          },
+          "varDefinition": {
+            "col": 3,
+            "file": "src/tokens/tokens.css",
+            "line": 148
+          }
+        }
+      ],
+      "designerTitle": "Button · Variant=Primary, Size=Md · Fill button/bg → color/primary-active",
+      "id": "dde655805db645dc",
+      "kind": "component.modified",
+      "target": {
+        "code": {
+          "exportName": "Button",
+          "importPath": "src/components/Button/Button.tsx",
+          "package": "@holotype/fixture-ds-react",
+          "sid": "components-button",
+          "storiesPath": "src/components/Button/Button.stories.tsx",
+          "storyIds": ["components-button--primary"]
+        },
+        "figmaNodeId": "12:2",
+        "nk": "root",
+        "sid": "components-button",
+        "vk": "0ea44dbf4e7b9668"
+      },
+      "title": "Button · variant=primary, size=md · background-color #2563eb → #1e40af"
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": ["components-button"],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "component.modified": 1
+    },
+    "headline": ["Button (Variant=Primary, Size=Md): fill button/bg → color/primary-active"],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}

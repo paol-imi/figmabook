@@ -1,0 +1,307 @@
+{
+  "dcrHash": "e03c9a352ad64680",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [
+    {
+      "code": "DCR_PROVENANCE_MISSING",
+      "message": "No code location (no CDP or source map, or plugin-only extraction).",
+      "severity": "warn"
+    }
+  ],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/product-card",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "6c2180b0dd5ee9d6"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "a0017bd9e3d7b360",
+  "items": [
+    {
+      "acceptance": {
+        "story": "must-add",
+        "type": "structure",
+        "visual": {
+          "boxDeltaMax": 1,
+          "sMaskedMin": 0.97
+        }
+      },
+      "api": {
+        "axes": [],
+        "properties": [
+          {
+            "default": "Trail running shoes",
+            "name": "Name",
+            "type": "TEXT"
+          }
+        ]
+      },
+      "assets": {
+        "after": "0e30e356f8d24346:after"
+      },
+      "designerTitle": "New component Product card",
+      "diagnostics": [
+        {
+          "code": "DCR_NEAREST_COMPONENT",
+          "message": "A new component looks like an existing one (similarity ≥ 0.6).",
+          "severity": "info",
+          "sid": "components-card"
+        },
+        {
+          "code": "DCR_VALUE_UNTOKENIZED",
+          "message": "A raw value is used; matching tokens are listed.",
+          "nodeKey": "Product card:0",
+          "property": "radius",
+          "severity": "warn"
+        }
+      ],
+      "id": "0e30e356f8d24346",
+      "kind": "component.new",
+      "nearest": [
+        {
+          "score": 0.667,
+          "sid": "components-card"
+        }
+      ],
+      "snippet": {
+        "code": "<frame name=\"Product card\" direction=\"column\" w=\"280px\" radius=\"4px /* ? --radius-sm */\">\n  <frame name=\"Content\" direction=\"column\" gap=\"--space-2\" padding=\"--space-4\" w=\"fill\">\n    <text style=\"Inter Semi Bold 16/24\">Trail running shoes</text>\n    <Badge label=\"In stock\" tone=\"success\" />\n    <text style=\"Inter Regular 14/20\">€ 89,00</text>\n    <frame name=\"Actions\" direction=\"row\" gap=\"--space-2\" w=\"fill\">\n      <Button label=\"Add to cart\" size=\"sm\" />\n    </frame>\n  </frame>\n</frame>",
+        "imports": [
+          "import { Badge } from \"src/components/Badge/Badge\";",
+          "import { Button } from \"src/components/Button/Button\";"
+        ],
+        "lang": "jsx-sketch"
+      },
+      "structure": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "characters": "Trail running shoes",
+                  "key": "Product card:0/Content:0/Name:0",
+                  "style": {
+                    "family": "Inter",
+                    "lineHeight": 24,
+                    "size": 16,
+                    "style": "Semi Bold"
+                  },
+                  "t": "text"
+                },
+                {
+                  "inst": {
+                    "component": {
+                      "exportName": "Badge",
+                      "importPath": "src/components/Badge/Badge.tsx",
+                      "package": "@holotype/fixture-ds-react",
+                      "sid": "components-badge",
+                      "storiesPath": "src/components/Badge/Badge.stories.tsx",
+                      "storyIds": ["components-badge--default"]
+                    },
+                    "defaults": ["dot"],
+                    "props": {
+                      "dot": false,
+                      "label": "In stock",
+                      "tone": "success"
+                    },
+                    "sid": "components-badge"
+                  },
+                  "key": "Product card:0/Content:0/Badge:1",
+                  "t": "instance"
+                },
+                {
+                  "characters": "€ 89,00",
+                  "key": "Product card:0/Content:0/Price:2",
+                  "style": {
+                    "family": "Inter",
+                    "lineHeight": 20,
+                    "size": 14,
+                    "style": "Regular"
+                  },
+                  "t": "text"
+                },
+                {
+                  "children": [
+                    {
+                      "inst": {
+                        "component": {
+                          "exportName": "Button",
+                          "importPath": "src/components/Button/Button.tsx",
+                          "package": "@holotype/fixture-ds-react",
+                          "sid": "components-button",
+                          "storiesPath": "src/components/Button/Button.stories.tsx",
+                          "storyIds": [
+                            "components-button--ghost",
+                            "components-button--large",
+                            "components-button--primary",
+                            "components-button--secondary",
+                            "components-button--small"
+                          ]
+                        },
+                        "defaults": ["disabled", "iconLeading", "loading", "showIcon", "variant"],
+                        "props": {
+                          "disabled": false,
+                          "iconLeading": "plus",
+                          "label": "Add to cart",
+                          "loading": false,
+                          "showIcon": false,
+                          "size": "sm",
+                          "variant": "primary"
+                        },
+                        "sid": "components-button"
+                      },
+                      "key": "Product card:0/Content:0/Actions:3/Button:0",
+                      "t": "instance"
+                    }
+                  ],
+                  "key": "Product card:0/Content:0/Actions:3",
+                  "layout": {
+                    "direction": "row",
+                    "gap": {
+                      "token": "--space-2",
+                      "value": 8
+                    },
+                    "sizing": {
+                      "h": "hug",
+                      "w": "fill"
+                    }
+                  },
+                  "name": "Actions",
+                  "t": "frame"
+                }
+              ],
+              "key": "Product card:0/Content:0",
+              "layout": {
+                "direction": "column",
+                "gap": {
+                  "token": "--space-2",
+                  "value": 8
+                },
+                "padding": [
+                  {
+                    "token": "--space-4",
+                    "value": 16
+                  },
+                  {
+                    "token": "--space-4",
+                    "value": 16
+                  },
+                  {
+                    "token": "--space-4",
+                    "value": 16
+                  },
+                  {
+                    "token": "--space-4",
+                    "value": 16
+                  }
+                ],
+                "sizing": {
+                  "h": "hug",
+                  "w": "fill"
+                }
+              },
+              "name": "Content",
+              "t": "frame"
+            }
+          ],
+          "fills": [
+            {
+              "token": "--color-surface",
+              "value": "#ffffff"
+            }
+          ],
+          "key": "Product card:0",
+          "layout": {
+            "direction": "column",
+            "fixed": {
+              "w": 280
+            },
+            "sizing": {
+              "h": "hug",
+              "w": "fixed"
+            }
+          },
+          "name": "Product card",
+          "radius": {
+            "candidates": ["--radius-sm"],
+            "untokenized": true,
+            "value": 4
+          },
+          "t": "frame"
+        }
+      ],
+      "suggested": {
+        "dir": "src/components/ProductCard",
+        "exportName": "ProductCard",
+        "files": ["ProductCard.tsx", "ProductCard.module.css", "ProductCard.stories.tsx"]
+      },
+      "target": {
+        "figmaNodeId": "50:1",
+        "key": "Components/Product card"
+      },
+      "title": "New component \"Product card\""
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [
+    {
+      "code": "DCR_VALUE_UNTOKENIZED",
+      "id": "q1",
+      "itemId": "0e30e356f8d24346",
+      "options": ["--radius-sm", "keep 4px"],
+      "text": "Product card corner radius is 4px and not bound to a variable. One token matches: --radius-sm. Use it?"
+    },
+    {
+      "code": "DCR_NEAREST_COMPONENT",
+      "id": "q2",
+      "itemId": "0e30e356f8d24346",
+      "options": ["extend Card", "new component"],
+      "text": "Product card is structurally similar to Card (0.667). Extend Card or create a new component?"
+    }
+  ],
+  "summary": {
+    "components": [],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "component.new": 1
+    },
+    "headline": ["New component Product card (similar to Card)"],
+    "newComponents": [
+      {
+        "itemId": "0e30e356f8d24346",
+        "name": "Product card",
+        "nearest": "components-card"
+      }
+    ],
+    "questions": 2,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 1
+    }
+  }
+}

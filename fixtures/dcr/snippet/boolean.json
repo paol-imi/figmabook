@@ -1,0 +1,34 @@
+{
+  "kind": "holotype/fixture-snippet",
+  "v": 1,
+  "row": "BOOLEAN",
+  "targets": {
+    "components": {
+      "repo": "github.com/acme/ds-react",
+      "package": "@holotype/fixture-ds-react"
+    }
+  },
+  "tree": [
+    {
+      "t": "instance",
+      "key": "Status:0/Badge:0",
+      "inst": {
+        "sid": "components-badge",
+        "component": {
+          "sid": "components-badge",
+          "exportName": "Badge",
+          "importPath": "src/components/Badge/Badge.tsx",
+          "storiesPath": "src/components/Badge/Badge.stories.tsx",
+          "storyIds": ["components-badge--default"],
+          "package": "@holotype/fixture-ds-react"
+        },
+        "props": {
+          "tone": "neutral",
+          "label": "Badge",
+          "dot": true
+        },
+        "defaults": ["label", "tone"]
+      }
+    }
+  ]
+}

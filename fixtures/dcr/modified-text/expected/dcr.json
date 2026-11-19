@@ -1,0 +1,135 @@
+{
+  "dcrHash": "b5e6b7b195ff0ef2",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [
+    {
+      "code": "DCR_PROVENANCE_MISSING",
+      "message": "No code location (no CDP or source map, or plugin-only extraction).",
+      "severity": "warn"
+    }
+  ],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/button-text",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "f1a91692e97ee618"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "4eb8acf57d1b3588",
+  "items": [
+    {
+      "acceptance": {
+        "fields": [
+          {
+            "expect": 18,
+            "field": "text.fontSize",
+            "tol": 0.5
+          },
+          {
+            "expect": {
+              "unit": "PIXELS",
+              "value": 28
+            },
+            "field": "text.lineHeight"
+          }
+        ],
+        "story": "existing",
+        "token": [
+          {
+            "expect": "--font-size-lg",
+            "field": "bind.fontSize"
+          },
+          {
+            "expect": "--line-height-lg",
+            "field": "bind.lineHeight"
+          }
+        ],
+        "type": "fields"
+      },
+      "assets": {
+        "after": "f16113cc1b2c1367:after",
+        "before": "f16113cc1b2c1367:before"
+      },
+      "changes": [
+        {
+          "after": 18,
+          "before": 16,
+          "field": "text.fontSize",
+          "group": "text",
+          "token": {
+            "after": "--font-size-lg",
+            "before": "--font-size-md"
+          }
+        },
+        {
+          "after": {
+            "unit": "PIXELS",
+            "value": 28
+          },
+          "before": {
+            "unit": "PIXELS",
+            "value": 24
+          },
+          "field": "text.lineHeight",
+          "group": "text",
+          "token": {
+            "after": "--line-height-lg",
+            "before": "--line-height-md"
+          }
+        }
+      ],
+      "designerTitle": "Button · Variant=Primary, Size=Lg · Label font size 16 → 18 (font-size/md → font-size/lg), line height 24 → 28 (line-height/md → line-height/lg)",
+      "id": "f16113cc1b2c1367",
+      "kind": "component.modified",
+      "target": {
+        "figmaNodeId": "12:10",
+        "nk": "root/label",
+        "sid": "components-button",
+        "vk": "6514ff4a0a3e1275"
+      },
+      "title": "Button · variant=primary, size=lg · label font-size 16 → 18, line-height 24 → 28"
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": ["components-button"],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "component.modified": 1
+    },
+    "headline": ["Button (Variant=Primary, Size=Lg): label font size 16 → 18, line height 24 → 28"],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}

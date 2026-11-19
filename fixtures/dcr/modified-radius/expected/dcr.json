@@ -1,0 +1,165 @@
+{
+  "dcrHash": "066c606bee9b57c1",
+  "dcrVersion": "1.0.0",
+  "diagnostics": [
+    {
+      "code": "DCR_PROVENANCE_MISSING",
+      "message": "No code location (no CDP or source map, or plugin-only extraction).",
+      "severity": "warn"
+    }
+  ],
+  "header": {
+    "baseCommit": "3f9c2e14b7a0",
+    "baseline": {
+      "fp": "b2386d3ecfc5f8d0",
+      "framework": "react-vite",
+      "storybookVersion": "10.6.7"
+    },
+    "branch": "feat/card-radius",
+    "dirty": false,
+    "extractor": {
+      "configHash": "9a80ad55e5a1a25c",
+      "version": "1.0.0"
+    },
+    "figma": {
+      "fileKey": "Qm8xT2dsReactBr",
+      "kind": "figma-branch",
+      "snapshotHash": "847e0cf60e9c53af"
+    },
+    "repo": "github.com/acme/ds-react",
+    "scope": {
+      "kind": "changed"
+    },
+    "targets": {
+      "components": {
+        "package": "@holotype/fixture-ds-react",
+        "repo": "github.com/acme/ds-react"
+      }
+    }
+  },
+  "id": "b7620cb5171d4823",
+  "items": [
+    {
+      "acceptance": {
+        "fields": [
+          {
+            "expect": 6,
+            "field": "paint.bottomLeftRadius",
+            "tol": 0.5
+          },
+          {
+            "expect": 6,
+            "field": "paint.bottomRightRadius",
+            "tol": 0.5
+          },
+          {
+            "expect": 6,
+            "field": "paint.topLeftRadius",
+            "tol": 0.5
+          },
+          {
+            "expect": 6,
+            "field": "paint.topRightRadius",
+            "tol": 0.5
+          }
+        ],
+        "story": "existing",
+        "token": [
+          {
+            "expect": "--radius-md",
+            "field": "bind.bottomLeftRadius"
+          },
+          {
+            "expect": "--radius-md",
+            "field": "bind.bottomRightRadius"
+          },
+          {
+            "expect": "--radius-md",
+            "field": "bind.topLeftRadius"
+          },
+          {
+            "expect": "--radius-md",
+            "field": "bind.topRightRadius"
+          }
+        ],
+        "type": "fields"
+      },
+      "assets": {
+        "after": "3a295ae48fd7c215:after",
+        "before": "3a295ae48fd7c215:before"
+      },
+      "changes": [
+        {
+          "after": 6,
+          "before": 10,
+          "field": "paint.bottomLeftRadius",
+          "group": "paint",
+          "token": {
+            "after": "--radius-md",
+            "before": "--card-radius"
+          }
+        },
+        {
+          "after": 6,
+          "before": 10,
+          "field": "paint.bottomRightRadius",
+          "group": "paint",
+          "token": {
+            "after": "--radius-md",
+            "before": "--card-radius"
+          }
+        },
+        {
+          "after": 6,
+          "before": 10,
+          "field": "paint.topLeftRadius",
+          "group": "paint",
+          "token": {
+            "after": "--radius-md",
+            "before": "--card-radius"
+          }
+        },
+        {
+          "after": 6,
+          "before": 10,
+          "field": "paint.topRightRadius",
+          "group": "paint",
+          "token": {
+            "after": "--radius-md",
+            "before": "--card-radius"
+          }
+        }
+      ],
+      "designerTitle": "Card · Story=Default · Corner radius 10 → 6 (card/radius → radius/md)",
+      "id": "3a295ae48fd7c215",
+      "kind": "component.modified",
+      "target": {
+        "figmaNodeId": "30:2",
+        "nk": "root",
+        "sid": "components-card",
+        "vk": "4b097af13c9f3545"
+      },
+      "title": "Card · story=default · border-radius 10 → 6"
+    }
+  ],
+  "kind": "holotype/dcr",
+  "questions": [],
+  "summary": {
+    "components": ["components-card"],
+    "content": {
+      "placeholders": 0
+    },
+    "counts": {
+      "component.modified": 1
+    },
+    "headline": ["Card (Story=Default): corner radius 10 → 6 (card/radius → radius/md)"],
+    "newComponents": [],
+    "questions": 0,
+    "screens": [],
+    "tokens": {
+      "added": 0,
+      "changed": 0,
+      "untokenized": 0
+    }
+  }
+}
