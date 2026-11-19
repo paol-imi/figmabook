@@ -3,8 +3,11 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { designDocsRepo, planLinks, resolveRepoUrl, siteBase } from './site.ts';
 
-/** Repository root (the site lives in `website/`). */
+/** Repository root (the site lives in `docs/`). */
 export const REPO_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
+
+/** The site's source root, `docs/`. */
+export const SITE_ROOT = fileURLToPath(new URL('../../', import.meta.url));
 
 function gitRemote(): string | undefined {
   try {
@@ -33,7 +36,8 @@ export const REPO_URL = resolveRepoUrl({
 export const PLAN_LINKS = planLinks(process.env.HOLOTYPE_SITE_PLAN_LINKS);
 
 /**
- * Repository that links into `docs/plan/` and `docs/research/` point at, and that the nav's
- * "Design docs" opens; `undefined` unless `HOLOTYPE_SITE_PLAN_LINKS=repo` (then no such links).
+ * Repository that links into `internal/` (plan, research) point at, that the nav's "Design
+ * docs" opens and that the header's GitHub icon links to; `undefined` unless
+ * `HOLOTYPE_SITE_PLAN_LINKS=repo` (then the site has no repository links at all).
  */
 export const DESIGN_DOCS_REPO_URL = designDocsRepo(PLAN_LINKS, REPO_URL);

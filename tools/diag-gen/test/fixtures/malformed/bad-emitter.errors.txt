@@ -1,1 +1,1 @@
-docs/plan/12-quality.md:29: SB_ARG_UNKNOWN: "Emitted by" must list backticked package names, got "`Plan ner`"
+internal/plan/12-quality.md:29: SB_ARG_UNKNOWN: "Emitted by" must list backticked package names, got "`Plan ner`"

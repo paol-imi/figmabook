@@ -1,4 +1,4 @@
-> Research brief produced during planning (Nov 2026). Source of truth for the plan is `docs/plan/`; this file is kept as a cited reference.
+> Research brief produced during planning (Nov 2026). Source of truth for the plan is `internal/plan/`; this file is kept as a cited reference.
 
 # DOM to Figma conversion: technical brief and mapping spec
 

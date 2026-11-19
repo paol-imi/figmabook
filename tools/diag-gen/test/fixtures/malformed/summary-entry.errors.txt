@@ -1,2 +1,2 @@
-docs/plan/12-quality.md:19: summary entry must read "PREFIX N", got "CAP two"
-docs/plan/12-quality.md:19: summary lists domains "SB", the sections are "SB CAP"
+internal/plan/12-quality.md:19: summary entry must read "PREFIX N", got "CAP two"
+internal/plan/12-quality.md:19: summary lists domains "SB", the sections are "SB CAP"

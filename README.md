@@ -4,15 +4,16 @@ Holotype turns a **Storybook** into a **native, editable, synced Figma component
 
 It also closes the loop the other way. From a Figma branch file it extracts a **deterministic Design Change Request**, a precise and verifiable prompt for the AI coding agent of your choice. The agent writes the code, and Holotype checks the result by regenerating Figma from it.
 
-> **Status:** Phase 0 (foundations). Nothing user-facing works yet. The plan lives in [`docs/plan/README.md`](docs/plan/README.md).
+> **Status:** Phase 0 (foundations). Nothing user-facing works yet. The plan lives in [`internal/plan/README.md`](internal/plan/README.md).
 
 ## Repository
 
-| Path             | Contents                                                                                   |
-| ---------------- | ------------------------------------------------------------------------------------------ |
-| `packages/*`     | the `@holotype/*` packages (see [plan §6](docs/plan/README.md#6-architecture-at-a-glance)) |
-| `tools/fidelity` | fidelity scoring                                                                           |
-| `docs/plan`      | the master plan and its chapters                                                           |
+| Path             | Contents                                                                                       |
+| ---------------- | ---------------------------------------------------------------------------------------------- |
+| `packages/*`     | the `@holotype/*` packages (see [plan §6](internal/plan/README.md#6-architecture-at-a-glance)) |
+| `tools/fidelity` | fidelity scoring                                                                               |
+| `docs`           | the public documentation site (VitePress), including the generated diagnostics pages           |
+| `internal`       | internal notes, never published: the master plan, research and spike reports                   |
 
 ```sh
 pnpm install

@@ -85,6 +85,8 @@ B-00 provides the root scripts in the first rows (names as in the root `package.
 | `packages/plugin/src/port.ts` | B-06 | Additive only. Each fake item adds the `Pick<>` members it needs |
 | `fixtures/ds-react/src/**` | B-03 | New stories go in new files. Never rename a story id: tests depend on them |
 
+**Layout.** `docs/` is the public documentation site (package `@holotype/docs`, its generated diagnostics pages in `docs/diagnostics/`); `internal/` holds this plan, `internal/research/` and `internal/spikes/`, and is never published.
+
 ### 2.4 Source of truth for shapes
 
 Types come from [06](06-ir.md) via `@holotype/ir`, and DCR types from [15 §6](15-change-requests.md#dcr-ir). If another chapter shows a different field name, use 06 or 15 and note it in the PR. [§11](#plan-gaps) lists the known gaps.
@@ -437,7 +439,7 @@ Acceptance: CI green; the user replies "smoke OK". This is **demo D1**, the firs
 
 ### 5.3 Container-only spikes
 
-Each ends with `docs/spikes/S-xx.md` and a proposed README §5 update. The coordinator confirms README changes with the user (README is binding).
+Each ends with `internal/spikes/S-xx.md` and a proposed README §5 update. The coordinator confirms README changes with the user (README is binding).
 
 | ID | Spike | Track | Path | Depends | Size | Build | Acceptance |
 |---|---|---|---|---|---|---|---|
@@ -978,7 +980,7 @@ Text metrics: deterministic advances per font and character class. "Oracle" mode
 - **Multi-step spikes** keep their state in `clientStorage`, so the user can close Figma between steps.
 - **Two shared test files** serve the library spikes (S-02, S-12, S-15): "Spikes Library" and "Spikes Consumer".
 - **Dry run.** Every spike runs against `figma-fake` in CI (unsupported calls go through a recording proxy).
-- **Analysis.** When results arrive, a container agent writes `docs/spikes/S-xx.md`, ending with a proposed README §5 update.
+- **Analysis.** When results arrive, a container agent writes `internal/spikes/S-xx.md`, ending with a proposed README §5 update.
 
 ### 9.2 One-time setup (user)
 
@@ -1028,7 +1030,7 @@ Each card below is a work item. **Build** runs in the container (`spikes/S-xx`, 
   3. In **Spikes Consumer**, switch on the library (**Assets ▸ Libraries**), then run **S-02 ▸ Step 2 (place instances)**.
   4. In **Spikes Library**, run **S-02 ▸ Step 3 (mutate)**. Copy results and paste (the same-file matrix). Publish again.
   5. In **Spikes Consumer**, accept the update ("Updates available" ▸ **Update all**), then run **S-02 ▸ Step 4 (read)**. Paste.
-- **Paste back:** two results blocks. Output becomes `docs/research/s02-override-matrix.md`.
+- **Paste back:** two results blocks. Output becomes `internal/research/s02-override-matrix.md`.
 
 #### B-24 · S-05 Border model — slice
 

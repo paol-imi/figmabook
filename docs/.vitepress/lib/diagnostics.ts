@@ -1,14 +1,18 @@
 /**
  * Serves the diagnostics pages that `tools/diag-gen` writes to `docs/diagnostics/` as site
  * pages under `/reference/diagnostics/`. The generated files stay the only copy: the site
- * reads them at build time and adapts their links, it never stores or edits them.
+ * reads them at build time and adapts their links, it never stores or edits them. The
+ * config excludes `diagnostics/` from VitePress's sources, so they are not also raw pages.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { repoLink } from './site.ts';
 
-/** Where diag-gen writes the pages, repository-relative (tools/diag-gen `DOCS_DIR`). */
-export const DIAGNOSTICS_SOURCE = 'docs/diagnostics';
+/** Where diag-gen writes the pages, relative to the site root (`docs/`). */
+export const DIAGNOSTICS_DIR = 'diagnostics';
+
+/** The same folder, repository-relative (tools/diag-gen `DOCS_DIR`). */
+export const DIAGNOSTICS_SOURCE = `docs/${DIAGNOSTICS_DIR}`;
 
 /** The generated index page; it becomes `/reference/diagnostics/`. */
 export const DIAGNOSTICS_INDEX = 'README.md';
@@ -39,22 +43,29 @@ export function pageSlug(fileName: string): string | undefined {
   return match?.[1];
 }
 
-/** A link from `docs/diagnostics/` into an internal docs folder: text, folder, path. */
-const INTERNAL_DOCS_LINK = /\[([^\]]*)\]\(\.\.\/(plan|research)\/([^)\s]*)\)/g;
+/** The internal notes folder (plan, research, spike reports), repository-relative; never published. */
+export const INTERNAL_DIR = 'internal';
+
+/** A link from `docs/diagnostics/` into `internal/`: text, path inside `internal/`. */
+const INTERNAL_LINK = /\[([^\]]*)\]\(\.\.\/\.\.\/internal\/([^)\s]*)\)/g;
 const INDEX_LINK = /\]\(README\.md(#[^)\s]*)?\)/g;
+/** HTML comments, such as the generator's banner, which names the internal catalog file. */
+const COMMENT = /<!--[\s\S]*?-->\n*/g;
 
 /**
  * Adapts a generated page to the site:
+ * - HTML comments are dropped (the generator's banner names its internal source file);
  * - links to the index (`README.md`) point at the site's index page;
- * - links into `docs/plan/` and `docs/research/`, which the site never publishes, become
- *   their plain text, or point at the repository when `designDocsRepo` is given (the
+ * - links into `internal/` (plan, research), which the site never publishes, become their
+ *   plain text, or point at the repository when `designDocsRepo` is given (the
  *   `HOLOTYPE_SITE_PLAN_LINKS=repo` opt-in).
  * Every other link is kept, so VitePress's dead-link check still sees it.
  */
 export function toSiteMarkdown(markdown: string, designDocsRepo: string | undefined): string {
   return markdown
-    .replace(INTERNAL_DOCS_LINK, (_, text: string, folder: string, target: string) =>
-      designDocsRepo ? `[${text}](${repoLink(designDocsRepo, `docs/${folder}/${target}`)})` : text,
+    .replace(COMMENT, '')
+    .replace(INTERNAL_LINK, (_, text: string, target: string) =>
+      designDocsRepo ? `[${text}](${repoLink(designDocsRepo, `${INTERNAL_DIR}/${target}`)})` : text,
     )
     .replace(INDEX_LINK, (_, hash: string | undefined) => `](./index.md${hash ?? ''})`);
 }

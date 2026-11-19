@@ -7,7 +7,7 @@ import { type Catalog, parseCatalog, renderCatalogModule, renderDocs, renderOutp
 const fixture = fileURLToPath(new URL('fixtures/valid/12-quality.md', import.meta.url));
 
 function load(): Catalog {
-  const result = parseCatalog(readFileSync(fixture, 'utf8'), 'docs/plan/12-quality.md');
+  const result = parseCatalog(readFileSync(fixture, 'utf8'), 'internal/plan/12-quality.md');
   if (!result.ok) throw new Error('fixture is malformed');
   return result.catalog;
 }
@@ -29,8 +29,15 @@ describe('renderCatalogModule (golden)', () => {
   });
 });
 
+/** Titles of some linked chapters; 05 has none, so its pages fall back to the chapter number. */
+const TITLES = new Map([
+  ['03-storybook.md', 'Storybook integration'],
+  ['12-quality.md', 'Quality, fidelity, performance, diagnostics, observability'],
+  ['13-security-legal.md', 'Security, privacy, legal'],
+]);
+
 describe('renderDocs (golden)', () => {
-  const pages = renderDocs(load());
+  const pages = renderDocs(load(), TITLES);
 
   it('renders an index and one page per code, in sorted order', () => {
     expect([...pages.keys()]).toEqual([
@@ -45,6 +52,22 @@ describe('renderDocs (golden)', () => {
 
   it.each([...pages.keys()])('matches the golden %s', async (name) => {
     await expect(pages.get(name)).toMatchFileSnapshot(`fixtures/valid/expected/docs/${name}`);
+  });
+
+  it('links the design notes by chapter title, never naming their files or paths in text', () => {
+    expect(pages.get('SB_ARG_UNKNOWN.md')).toContain(
+      '- Behaviour: [Storybook integration](../../internal/plan/03-storybook.md) (design notes).',
+    );
+    expect(pages.get('CAP_TREE_TOO_LARGE.md')).toContain(
+      '- Behaviour: [Chapter 05](../../internal/plan/05-capture.md#walk) (design notes).',
+    );
+    for (const [name, page] of pages) {
+      const text = page
+        .replace(/<!--[\s\S]*?-->/g, '')
+        .replace(/\]\([^)]*\)/g, ']')
+        .replace(/\[([^\]]*)\]/g, '$1');
+      expect(text, name).not.toMatch(/internal\/|plan\/|\d\d-[a-z-]+\.md/);
+    }
   });
 
   it('gives every code a stable anchor in the index', () => {

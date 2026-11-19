@@ -1,5 +1,5 @@
-docs/plan/12-quality.md:19: summary says 5 codes, the domain headings add up to 3
-docs/plan/12-quality.md:19: summary says 2 domains, the catalog has 1 section
-docs/plan/12-quality.md:19: summary lists domains "SB CAP", the sections are "SB"
-docs/plan/12-quality.md:31: domain heading must read "#### Title (PREFIX_) — N", got "#### Capture — 2"
-docs/plan/12-quality.md:38: table outside a "#### Title (PREFIX_) — N" domain section
+internal/plan/12-quality.md:19: summary says 5 codes, the domain headings add up to 3
+internal/plan/12-quality.md:19: summary says 2 domains, the catalog has 1 section
+internal/plan/12-quality.md:19: summary lists domains "SB CAP", the sections are "SB"
+internal/plan/12-quality.md:31: domain heading must read "#### Title (PREFIX_) — N", got "#### Capture — 2"
+internal/plan/12-quality.md:38: table outside a "#### Title (PREFIX_) — N" domain section

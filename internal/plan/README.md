@@ -35,7 +35,7 @@ It overlaps with story.to.design (code → Figma) and with Figma MCP + Code Conn
 | — | [Build plan](BUILD.md) | Executable build plan: work items, definition of done, the Loop slice, the Figma spike kit, merge order, plan gaps |
 | — | [Plan review](REVIEW.md) | Record of the November 2026 review: findings, resolutions (D-46…D-58), rejected items, finding → file index |
 
-Research inputs are kept under [`docs/research/`](../research/). Wherever a chapter cites an API, it uses the names verified there. Those names are current as of Nov 2026: `@figma/plugin-typings@1.142.0`, `storybook@10.6.7` / `11.0.0-beta.3`, and Playwright with Chromium.
+Research inputs are kept under [`internal/research/`](../research/). Wherever a chapter cites an API, it uses the names verified there. Those names are current as of Nov 2026: `@figma/plugin-typings@1.142.0`, `storybook@10.6.7` / `11.0.0-beta.3`, and Playwright with Chromium.
 
 Some facts are marked **(verify)** in the chapters. These are inferred or community-reported, and each one is assigned to a spike in [14](14-roadmap.md#phase-0).
 

@@ -9,7 +9,7 @@ const read = (path: string): string => readFileSync(path, 'utf8');
 const VALID = read(`${fixtures}valid/12-quality.md`);
 
 function parseOk(markdown: string): Catalog {
-  const result = parseCatalog(markdown, 'docs/plan/12-quality.md');
+  const result = parseCatalog(markdown, 'internal/plan/12-quality.md');
   if (!result.ok) throw new Error(result.issues.map((issue) => formatIssue('fixture', issue)).join('\n'));
   return result.catalog;
 }
@@ -128,9 +128,9 @@ describe('parseCatalog: malformed tables (golden)', () => {
   });
 
   it.each(cases)('%s', async (name) => {
-    const result = parseCatalog(read(`${fixtures}malformed/${name}`), 'docs/plan/12-quality.md');
+    const result = parseCatalog(read(`${fixtures}malformed/${name}`), 'internal/plan/12-quality.md');
     expect(result.ok).toBe(false);
-    const report = result.ok ? '' : result.issues.map((issue) => formatIssue('docs/plan/12-quality.md', issue));
+    const report = result.ok ? '' : result.issues.map((issue) => formatIssue('internal/plan/12-quality.md', issue));
     await expect(`${[...report].join('\n')}\n`).toMatchFileSnapshot(
       `fixtures/malformed/${name.replace(/\.md$/, '.errors.txt')}`,
     );
@@ -138,7 +138,7 @@ describe('parseCatalog: malformed tables (golden)', () => {
 });
 
 describe('parseCatalog: the plan (12 §6.2)', () => {
-  const catalog = parseOk(read(`${repoRoot}docs/plan/12-quality.md`));
+  const catalog = parseOk(read(`${repoRoot}internal/plan/12-quality.md`));
   const rows = catalogRows(catalog);
 
   it('parses every row with unique codes and non-empty remedies', () => {

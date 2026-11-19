@@ -1,6 +1,6 @@
 # @holotype/mapper
 
-Pure Capture IR → Scene IR mapping ([07](../../docs/plan/07-mapping.md), D-08). Isomorphic and
+Pure Capture IR → Scene IR mapping ([07](../../internal/plan/07-mapping.md), D-08). Isomorphic and
 deterministic: no I/O, no clock, no randomness, no environment. Input and output types come
 from `@holotype/ir` (`MapperInput`, `MapperOutput`, 06 §1.1).
 
