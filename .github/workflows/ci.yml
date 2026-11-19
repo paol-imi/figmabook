@@ -34,18 +34,18 @@ jobs:
       matrix:
         node: [22, 24]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # Uses the pnpm version pinned in package.json `packageManager`.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
           cache: pnpm
 
       - name: Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo/cache
           key: turbo-gate-node${{ matrix.node }}-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
@@ -99,17 +99,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
 
       - name: Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo/cache
           key: turbo-e2e-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
@@ -122,7 +122,7 @@ jobs:
 
       # Browser binaries are keyed by the lockfile, which pins the Playwright version.
       - name: Playwright browser cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
@@ -145,15 +145,18 @@ jobs:
 
       - name: Upload Playwright traces and screenshots
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-failure-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             **/test-results/**
             **/playwright-report/**
+            **/.vitest/**
             **/__screenshots__/**
             **/*.trace.zip
             !**/node_modules/**
+          # Vitest 5 keeps its artifacts under `.vitest/`, which upload-artifact skips unless asked.
+          include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 14
 
@@ -162,17 +165,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
 
       - name: Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo/cache
           key: turbo-artifacts-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
@@ -197,7 +200,7 @@ jobs:
           echo "spikes=$(node -p "require('./spikes/package.json').version")" >> "$GITHUB_OUTPUT"
 
       - name: Upload plugin zip
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: holotype-plugin-${{ steps.versions.outputs.plugin }}
           path: packages/plugin/dist/holotype-plugin-*.zip
@@ -205,7 +208,7 @@ jobs:
           retention-days: 30
 
       - name: Upload spikes zip
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: holotype-spikes-${{ steps.versions.outputs.spikes }}
           path: spikes/dist/holotype-spikes*.zip
