@@ -91,7 +91,7 @@ The branch ↔ file link is written in two places. Both carry the same data:
    ```
    - `status` values are shown with the copy in [11](11-ux.md#status-vocabulary). `approved` and `changes-requested` occur only with `dcr.requireApproval` (§7.4).
    - `approval` has no approver identity (§10.2). `excluded` lives in `lastDcr` (§7.2).
-   - A `fileKey`/`fileId` that differs from the open file means a copy of a branch file: `DCR_BRANCH_FILE_COPIED` (warn), and proposal mode stays off until the user links the copy or treats it as a library (10 §9.5).
+   - A `fileKey`/`fileId` that differs from the open file means a copy of a branch file: `DCR_BRANCH_FILE_COPIED` (warn), and proposal mode stays off until the user links the copy or treats it as a library (10 §9.5). Without `figma.fileKey` (a future Community build), a whole-file duplicate keeps both `fileId` values, so the plugin cannot see the copy; the CLI catches it instead, because REST `branch_data` for the URL it reads does not match `branch:meta` (D-53).
    - `dcrConfig` is the resolved `dcr` config from the bundle's `branch` block ([06](06-ir.md#branch-block)). A local config that hashes differently raises `DCR_CONFIG_DRIFT` (warn).
 2. **In the repo.** `.holotype/branches/<branch-slug>.json` holds `{ figmaFileKey, ...BranchMeta }`. It is **committed** (it holds no secrets), so other machines and CI find the link. The registry, if used, adds `channels/<branch>.json` ([02 §5.3](02-architecture.md)).
 

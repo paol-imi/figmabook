@@ -120,7 +120,7 @@ Until M-Loop the slice's own checks gate; the hardening exit criteria below neve
 | **S-08** | Pseudo-state strategies on real DSs: CDP `CSS.forcePseudoState` (target + ancestors) vs Playwright real interaction vs pseudo-states addon global; CSS-in-JS late rules; JS-driven hover (Radix `data-state`, MUI ripple) | Run all three on MUI, shadcn and the React golden fixtures (Shoelace post-M5, D-26); diff renders | Per-strategy success rates; default strategy ordering & auto-detection heuristics (e.g. hover handlers present ⇒ interact) | 3 d | D-14 |
 | **S-09** | `createNodeFromSvg` fidelity (gradients, clipPath, mask, `<use>`, stroke alignment, `<text>`) and icon-font → outline pipeline (opentype.js/fontkit + harfbuzzjs ligatures) | SVG corpus from 3 icon sets + DS icons; T2 compare; outline extraction for Material Symbols / Font Awesome | Rules for when to rasterize; icon-font converter prototype; diagnostics list | 3 d | [05](05-capture.md), [07](07-mapping.md) |
 | **S-10** | Figma GRID auto layout vs CSS grid: FLEX(fr)/FIXED/HUG tracks, gaps, spans, alignment, HUG containers (Update 120+), defaults for plugin-created grids (FIXED container, FLEX tracks); `SPACE_EVENLY`/`SPACE_AROUND` render parity (D-15) | Grid micro-fixtures; build with `layoutMode:'GRID'`, `setGridChildPosition`; T1 compare | Supported-subset table; `layout-sim` grid model calibrated | 3 d | [07](07-mapping.md) grid |
-| **S-11** | Can Figma MCP `use_figma` run our applier server-side for CI harness or headless builds? Input size limits, execution time, images (`upload_assets`), fonts (account-uploaded only), determinism, pricing outlook | Bundle applier into a self-contained script; drive via remote MCP from a Node client; apply 10 fixtures; read back boxes; compare to desktop results | Feasibility verdict; limits table; harness design if viable; ToS/terms review note ([13](13-security-legal.md)) | 3 d | [12](12-quality.md) §4.4, Phase 7 MCP |
+| **S-11** | Can Figma MCP `use_figma` run our applier server-side for CI harness or headless builds? Input size limits, execution time, images (`upload_assets`), fonts (account-uploaded only), determinism, pricing outlook | Bundle applier into a self-contained script; drive via remote MCP from a Node client; apply 10 fixtures; read back boxes; compare to desktop results | Feasibility verdict; limits table; harness design if viable; ToS/terms review note ([13](13-security-legal.md)) | 3 d | [12](12-quality.md) §4.4, automation (MCP) |
 | **S-12** | Variables: bindable-field coverage in practice (padding, gap, radius, typography, effects), `setExplicitVariableModeForCollection`, mode limits per plan, `codeSyntax.WEB` matching and `importVariableByKeyAsync` against a team library, aliases across collections | On the user's Organization account only (no Starter/Pro bot accounts); scripted bindings; library publish + consume. `documentationLinks` holds one link (known) | Coverage matrix; plan-limit handling (`TOKEN_MODE_LIMIT` fallback); library-matching algorithm confirmed | 3 d | D-18, [08](08-tokens.md) |
 | **S-13** | Nested component detection: React fiber `type` ↔ Storybook `component` refs (dev & prod builds); structural-hash fallback accuracy. Vue `__vueParentComponent.type`, Angular `ng.getComponent` and custom-element tags + CEM are post-M5 (D-26) | React + Vite golden fixtures with nesting (Card→Button→Icon), dev & static builds; plus the Figma SLOT API: `createSlot`, SLOT `addComponentProperty` once per set, `slotContentId` binding (typings gap), `SlotSettings` (`stretchChildOnInsert`, `displayEmptyByDefault`), GRID frames cannot be slots, INSTANCE_SWAP `preferredValues` with local keys | Detection precision/recall per build mode; prop-extraction reliability (`memoizedProps`); decision on default enablement; SLOT API notes | 4 d | D-21, [09](09-plugin.md) |
 | **S-15** | Cross-file instance resolution: can a consumer or branch file resolve instances of library components to our `sid`/`vk`/`irh`? Is `getSharedPluginData` readable on remote main components (`getMainComponentAsync`), or is component key → registry `keys.json` needed? Is `detachedInfo` reliable? Can an outdated library instance be detected? | Library file + consumer file (and a Figma branch); instances before and after a library publish; read through the plugin and REST | Resolution path chosen; `keys.json` format; outdated-detection rule (`irh` vs registry) | 2 d | [15 §4.2, §4.13](15-change-requests.md#instance-versions) |
@@ -308,16 +308,18 @@ Only if the project goes public: docs site (getting started, config reference ge
 
 | M | Name | Definition of done | Decisions due |
 |---|---|---|---|
-| M0 | Foundations | Phase 0 exit criteria | D-25, D-16, D-10 confirmed |
-| M1 | Snapshot | Phase 1 exit | — |
-| M2 | Native structure | Phase 2 exit | D-22 |
-| M3 | Components alpha | Phase 3 exit; private alpha for the user and their boss (dev plugin, D-39) | D-01 shortlist |
-| M4 | Sync beta | Phase 4 exit | — |
-| M4.5 | DCR MVP | Phase 4.5 exit; the flagship demo for the user and their boss | D-41…D-45 (proposed in [15 §13](15-change-requests.md)); screens target default ([15 §14](15-change-requests.md)) |
-| M5 | Tokens | Phase 5 exit; metrics gating | — |
-| M6 | Composition | Phase 6 exit; org beta (private organization plugin, D-39) | — |
-| M7 | Automation | Phase 7 exit | registry hosting |
-| M8 | Launch | Phase 8 exit | hosted tier go/no-go; Community listing (post-M8, D-39) |
+| L0 | Skeleton | L0 exit (D1) | D-16 confirmed (S-05) |
+| **M-Loop** | Loop | L5 exit ([§M-Loop](#m-loop)); first real use | D-57 default scope |
+| M1 | Fidelity | H-A exit | — |
+| M2 | Native structure | H-B exit | D-22 |
+| M3 | Variants at scale | H-C exit | — |
+| M4 | Sync UX | H-D exit | — |
+| M4.5 | DCR complete | H-E exit | D-41, D-43 confirmation; D-25 and D-10 topology A (S-01); screens target default ([15 §14](15-change-requests.md)) |
+| M5 | Tokens and compatibility | H-F and H-G exit; fidelity metrics gating | — |
+| M6 | Composition | composition exit | — |
+| M7 | Automation | automation exit | — |
+| M8 | Private org plugin | M8 exit; owner + designer acceptance | hosted tier go/no-go |
+| — | Public track (optional) | [§Public track](#public-track) | Community listing (D-39); registry hosting |
 
 ---
 
@@ -327,7 +329,7 @@ L = likelihood, I = impact (H/M/L).
 
 | # | Risk | L | I | Mitigation | Owner phase |
 |---|---|---|---|---|---|
-| R1 | Figma ships native Storybook→components (extends code-to-canvas to components/variants) | M | H | Differentiate on open source, CI, override-safe sync, properties quality, tokens; benchmark publicly; keep `mapper` reusable to target `use_figma` | all, review at each M |
+| R1 | Figma's agent workflows (MCP write tools, `figma-generate-library` / `figma-generate-design` skills) already build libraries and screens; happening now (non-deterministic, no identity or sync, small variant matrices, many sequential calls) | H | H | Determinism, identity and sync, embedded baseline, provenance, verify ([01 §2](01-landscape.md)); the bake-off (D-54); quarterly first-party check; keep `mapper` reusable to target `use_figma` | all, review at each M |
 | R2 | Chrome LNA / browser policy blocks loopback for plugin iframes | H | M | Desktop app primary; file import always (D-10); registry/CI topology; S-01 | 0, 7 |
 | R3 | Storybook 11/12 changes preview internals (`__STORYBOOK_PREVIEW__`, channel events, docgen move to server) | H | M | Adapter compatibility layer per version; prefer public events + manifests; sandbox matrix nightly on `next`; optional addon as stable integration point | 3, ongoing |
 | R4 | Override preservation under in-place mutation less reliable than assumed | M | H | S-02 matrix early; conservative reconciler; snapshot/restore overrides fallback; `SYNC_OVERRIDE_NOT_RESTORED` reporting; prefer component properties over layer overrides | 0, 4 |
@@ -335,8 +337,8 @@ L = likelihood, I = impact (H/M/L).
 | R6 | Text wrap drift Chromium vs Figma | H | M | S-04 data; width buffer; `locked-lines` mode; per-font policy | 0, 2 |
 | R7 | Combinatorial explosion / giant sets degrade Figma | M | M | Budgets, pairwise, render-and-diff dedupe, properties instead of axes (D-12, D-13), S-06 limits | 3 |
 | R8 | Plugin freezes or OOM on big imports | M | H | Time-slicing, chunked NDJSON, per-component commits, S-06 measured limits, cancel | 1, 3 |
-| R9 | Community review delays / rejection (network access, localhost reasoning) | M | M | Private org plugin first (no review, D-39); Community only after M8 with minimal domains, clear reasoning, privacy policy, early submission | post-M8 |
-| R10 | Trademark conflict over name | H (if unchanged) | M | Name chosen early (Holotype, D-01); formal trademark search before any public listing; repo renamed from `figmabook` | 3–8 |
+| R9 | Community review delays / rejection (network access, localhost reasoning) | M | M | Private org plugin first (no review, D-39); Community only after M8 with minimal domains, clear reasoning, privacy policy, early submission | public track |
+| R10 | Trademark conflict over name | H (if unchanged) | M | Name chosen early (Holotype, D-01); formal trademark search before any public listing; repo renamed from `figmabook` | public track |
 | R11 | CSS-in-JS late rules / JS-driven states missed | M | M | CDP force + interact fallback (S-08), "no visual effect" detection | 3 |
 | R12 | `use_figma` pricing/limits make headless harness impractical | M | L | macOS runner remains primary | 0, 7 |
 | R13 | Variables mode limits per plan block theming | M | L | `TOKEN_MODE_LIMIT` fallback to axis | 5 |
@@ -346,16 +348,20 @@ L = likelihood, I = impact (H/M/L).
 | R17 | REST lacks fields the DCR needs (plugin data, reactions, annotations), so headless extraction is incomplete | M | M | S-18 early; plugin path is preferred and always complete; `DCR_SNAPSHOT_PARITY` reporting | 0, 4.5 |
 | R18 | Prompt injection through designer text steers the user's agent | M | H | D-38 fencing/escaping, `injection` golden fixture, contract rule 8, PR review (D-37) ([13 §2.5](13-security-legal.md#dcr)) | 4.5 |
 | R19 | Figma branches drop or mangle shared plugin data on create/merge | M | M | S-17; duplicated-file fallback (D-32); CLI-cache baseline (`DCR_BASELINE_EXTERNAL`) | 0, 4.5 |
-| R20 | Provenance unreliable outside CSS modules (CSS-in-JS, Tailwind) | M | M | S-19 coverage table; selector-only fallback flagged `DCR_PROVENANCE_MISSING`; Tailwind adapter (Phase 7) | 4.5, 7 |
+| R20 | Provenance unreliable outside CSS modules (CSS-in-JS, Tailwind) | M | M | S-19 coverage table; selector-only fallback flagged `DCR_PROVENANCE_MISSING`; Tailwind adapter (automation) | 4.5, 7 |
+| R21 | Designers don't follow conventions (branch-only work, naming, variables, Ready for dev) | H | M | Scope `changed` default (D-57), live hints on Changes, Inspector, naming helper, "Include them" action | L3–L5 |
+| R22 | Agent output wrong, or verify tolerance miscalibrated | M | H | Agent-eval corpus, bake-off, Scene-space verify with calibrated advisory visuals (D-55), regression check | L5 |
+| R23 | create-figma-plugin unmaintained since 2025-08 | M | L | Plain esbuild + hand-written manifest (~50 lines) as the fallback (D-06) | L0 |
+| R24 | OpenType features not writable (tabular numerals drift) | H | L | Width buffer, `locked-lines`, Figma feature request (`TEXT_OPENTYPE_UNSUPPORTED`) | H-A |
 
 ---
 
 ## Open questions
 
 From README §9 (user decisions):
-1. D-01 public name (in progress).
+1. ~~D-01~~ → Holotype (decided; trademark search before any listing).
 2. ~~License~~ → MIT (decided).
-3. ~~Fixture target~~ → React + Vite on Storybook 10 (decided, D-26). Vue/Lit/Angular fixtures move out of Phases 2–3 to post-M5 ("renderer expansion"); the pipeline stays DOM-based so they work best-effort meanwhile.
+3. ~~Fixture target~~ → React + Vite on Storybook 10 (decided, D-26). Vue/Lit/Angular fixtures move out of H-B and H-C to post-M5 ("renderer expansion"); the pipeline stays DOM-based so they work best-effort meanwhile.
 4. ~~Distribution~~ → private: dev plugin from `manifest.json` now, private org plugin once stable, Community after M8 (decided, D-39).
 5. ~~Storybook 7.6~~ → not supported; SB10 primary, 11 at GA, 8/9 best-effort (decided, D-11).
 
@@ -365,50 +371,15 @@ Technical (answered by spikes or during phases):
 8. Default variant budget per set (S-06).
 9. Default text wrap mode per font class (S-04).
 10. Is `use_figma` viable for CI (S-11)?
-11. Should doc frames be components themselves (for reuse) or plain frames? (Phase 3)
-12. Registry hosting: first-party domain vs GitHub Pages only (Phase 7; manifest domains are fixed at publish time).
-13. Prototype state reactions on by default? (Phase 3 usability test)
+11. Should doc frames be components themselves (for reuse) or plain frames? (H-C)
+12. Registry hosting: first-party domain vs GitHub Pages only (public track; manifest domains are fixed at publish time).
+13. Prototype state reactions on by default? (H-C usability check)
 14. Should the mapper also be bundled into the plugin for future in-plugin re-inference? (post-M4)
-15. Where do screens live: in the UI repo, or in a separate app repo? Default **same repo**; separate repos via `dcr.targets.screens` ([15 §5.5, §14](15-change-requests.md#targets)). (Phase 4.5)
+15. ~~Where do screens live~~ → answered by D-43 (hardening H-E): default **same repo**; separate repos via `dcr.targets.screens` ([15 §5.5, §14](15-change-requests.md#targets)).
+16. Default DCR scope `changed` vs `ready` (D-57, revisit after D6).
 
 ---
 
-## First 30 days (issue-sized tasks)
+## First 30 days
 
-Week 1 — repo & contracts
-1. Init monorepo: pnpm workspace, Turborepo pipeline (`build`, `test`, `lint`, `typecheck`), Biome config, tsconfig base (strict, ESM), Vitest workspace. (E1)
-2. CI workflow: install, cache, lint/typecheck/test; changesets bot. (E1)
-3. Scaffold packages from README §6 with `index.ts`, README, test placeholder. (E2)
-4. `ir`: canonical JSON + sha256 hashing + fast-check property tests. (E2)
-5. `ir`: TypeBox schema v0 for bundle manifest + JSON Schema emission + committed schema check. (E2)
-6. `shared`: diagnostics registry + docs-page CI check + first 10 codes. (E3)
-7. `plugin`: create-figma-plugin scaffold, manifest (`dynamic-page`, candidate `networkAccess`), "spike runner" UI. (E3)
-
-Week 2 — spikes batch A
-8. S-01 LNA connectivity matrix + report. (E3)
-9. S-07 Storybook sandboxes generator script (react-vite on 10.6 + 11-beta; 8.6/9.1 smoke) + render loop prototype. (E1)
-10. S-03 gradient/shadow/blur sweeps (micro-fixtures + Figma builder script). (E2)
-11. S-05 border model sweep. (E2)
-12. Fixtures: first 30 micro-fixtures (flex, borders, backgrounds, text basics) as plain-markup stories in the React + Vite Storybook (D-26). (E1)
-
-Week 3 — spikes batch B
-13. S-02 override preservation matrix (local + library). (E3)
-14. S-04 text parity corpus + measurement script. (E2)
-15. S-08 pseudo-state strategies on golden fixtures + MUI/shadcn. (E1)
-16. S-10 grid conventions. (E2)
-17. S-06 synthetic Scene generator + perf harness in plugin. (E3)
-
-Week 4 — spikes batch C + smoke path
-18. S-09 SVG/icon-font fidelity. (E2)
-19. S-11 `use_figma` feasibility. (E3)
-20. S-12 variables coverage & plan limits (needs bot accounts on 3 plans). (E3)
-21. S-13 nested component detection prototype (React; other renderers via structural hash only). (E1)
-22. Smoke path: CLI captures one micro-fixture → minimal Capture IR → absolute Scene IR → plugin file import builds rectangles + text. (all)
-23. macOS self-hosted runner provisioning + Figma desktop bot account + "run last plugin" automation proof. (E3)
-24. Write spike reports; update README §5 decisions; replan Phase 1 estimates. (all)
-
-Week 5 — DCR spikes (flagship de-risking, [15](15-change-requests.md))
-25. S-17 branch creation + plugin data on merge, and S-15 cross-file instance resolution, on the user's Organization account. (E3)
-26. S-18 REST ↔ plugin field coverage and parity fixture (absorbs S-14). (E3)
-27. S-19 CDP + Vite source-map provenance; `@holotype/vite-plugin` prototype. (E1)
-28. S-16 override → args round trip on golden fixtures. (E2)
+Issue-sized work items and waves: [BUILD §5–§6, §10](BUILD.md). The old week-by-week list is retired: it predated the Loop slice and ran the spikes in a different order.
