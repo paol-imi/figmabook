@@ -28,5 +28,9 @@
   "dependencies": {
     "@holotype/ir": "workspace:*",
     "@holotype/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "esbuild": "0.27.7",
+    "fast-check": "4.10.3"
   }
 }
