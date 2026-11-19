@@ -466,7 +466,7 @@ The mapper does **not** know which fonts the Figma user has. It emits a *request
 
 ## 9. Colors <a id="color"></a>
 
-- Convert with **colorjs.io and gamut mapping** (`toGamut({space: 'srgb', method: 'css'})`). Raw `.srgb` conversion can produce out-of-range channels (figit). If the target file profile is `DISPLAY_P3` (`figma.colorProfile`, confirmed by the plugin handshake from `figma.root.documentColorProfile`), emit P3 values instead. A `LEGACY` profile is treated as sRGB. Out-of-sRGB colors that were gamut-mapped report `PAINT_COLOR_GAMUT_MAPPED` (info).
+- Convert with **colorjs.io and gamut mapping** (`toGamut({space: 'srgb', method: 'css'})`). Raw `.srgb` conversion can produce out-of-range channels (figit). If the target file profile is `DISPLAY_P3` (`mapper.colorProfile`, [16](16-config.md#mapper); `'auto'` is confirmed by the plugin handshake from `figma.root.documentColorProfile`), emit P3 values instead. A `LEGACY` profile is treated as sRGB. Out-of-sRGB colors that were gamut-mapped report `PAINT_COLOR_GAMUT_MAPPED` (info).
 - **Original string.** Emit the sRGB/P3 numbers and keep `original` (the CSS color string from capture, [05 §7.1](05-capture.md)). The applier prefers `figma.util.solidPaint(original)` when present; S-03 compares both.
 - When the source was `oklch`/`lab`/`p3`, attach `sourceColor` so Figma keeps the original color space (typings Update 141; feature `source-color`).
 - **SOLID alpha:** the color carries `a = 1`, and the CSS alpha goes into `paint.opacity`. Gradient stops and effects carry `color.a` (typings convention).

@@ -34,7 +34,7 @@ CaptureRunner (Node)
  └─ Writer: Capture IR → cache (.holotype/cache/capture/<key>.json.gz, fflate) + assets (assets/<sha256>, 02)
 ```
 
-- **Concurrency:** `N = min(8, max(1, os.availableParallelism() - 1))` locally and `min(4, cpus)` in CI. This is configurable (`--concurrency`). All variants of a component go to **one worker**, so the warm page stays on the same story and cheap arg updates are possible ([03 §5.3](03-storybook.md#render-loop-driver)). Components are distributed across workers.
+- **Concurrency:** `N = min(8, max(1, os.availableParallelism() - 1))` locally and `min(4, cpus)` in CI. This is configurable (`capture.workers`, `--concurrency`). All variants of a component go to **one worker**, so the warm page stays on the same story and cheap arg updates are possible ([03 §5.3](03-storybook.md#render-loop-driver)). Components are distributed across workers.
 - **Context options (D-24):**
 
 ```ts
@@ -49,8 +49,8 @@ await page.clock.setFixedTime(new Date('2026-01-01T00:00:00Z')); // Date frozen;
 await page.addInitScript({ content: `Math.random = ${seededRandomSrc}(0xF16B00C);` }); // opt-out: capture.determinism.random: false
 ```
 
-  `clock.install()` is opt-in per story (`capture.clock` / a story parameter) for stories that need controllable timers ([16](16-config.md#capture)).
-- **Animations.** Storybook pauses CSS animations for this UA instead of waiting ([03 §5.5](03-storybook.md#settle-protocol)). After render: finish finite Web Animations, then wait for two rAF-stable frames.
+  `capture.clock` sets the frozen date (`false` leaves the real clock, [16](16-config.md#capture)). `clock.install()` is opt-in per story (a story parameter) for stories that need controllable timers.
+- **Animations.** Storybook pauses CSS animations for this UA instead of waiting ([03 §5.5](03-storybook.md#settle-protocol)). After render: finish finite Web Animations, then wait for two rAF-stable frames (`capture.animations: 'finish'`; `'pause-only'` skips the finishing step).
 - `colorScheme` changes only for `:appearance`-style modes ([04 §10.1](04-variant-model.md#compatibility-readers)).
 - **Crash recovery:**
   - `page.on('crash')` or a closed target recreates the page, and the whole context if it happens twice. The current variant is retried once (`CAP_PAGE_CRASHED`).
@@ -435,7 +435,7 @@ type AuthoredStyles = Record<string /* property */, AuthoredDecl>;
 
 Vite's `css.devSourcemap` defaults to false, and dev CSS is injected as `<style>` elements. The header's `sourceURL` is then the document URL (`isInline: true`). So:
 
-- **Source maps on.** In branch mode the CLI forces `css: { devSourcemap: true }` through Storybook `viteFinal` (a `main.ts` snippet or `@holotype/vite-plugin`).
+- **Source maps on.** In branch mode the CLI forces `css: { devSourcemap: true }` through Storybook `viteFinal` (a `main.ts` snippet or `@holotype/vite-plugin`); `capture.devSourcemap: 'keep'` opts out ([16](16-config.md#capture)).
 - **Inline sheets.** They are resolved through `CSSStyleSheetHeader.ownerNode` → `data-vite-dev-id` (the file) and the inline source map.
 - **Ranges.** For inline sheets `style.range` is document-relative, so subtract `header.startLine/startColumn`.
 - **No map.** A sheet with neither a source map nor `data-vite-dev-id` raises `DCR_PROVENANCE_NO_SOURCEMAP` (warn).

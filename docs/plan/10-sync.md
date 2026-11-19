@@ -51,7 +51,8 @@ Contents:
 
 All keys live in **shared** plugin data, under the namespace `holotype`: `node.setSharedPluginData('holotype', key, value)`.
 
-- Shared, not private, because other tools, the REST API (`GET /v1/files/:key?plugin_data=shared`), CI and future plugin IDs (D-01 rename → new plugin id!) must be able to read it. Private plugin data is bound to the plugin ID and would be lost if the plugin were re-published under a new ID (research brief §1).
+- Identity is always **shared** plugin data; REST DCR reads and `holotype status` depend on it (D-19). There is no private-storage option.
+- Shared, not private, because other tools, the REST API (`GET /v1/files/:key?plugin_data=shared`), CI and future plugin ids (for example a separate Community listing, [13 §7](13-security-legal.md#publishing)) must be able to read it. Private plugin data is bound to the plugin id (research brief §1).
 - Values are strings, with at most 100 kB per entry (namespace + key + value).
 
 ### 2.1 Per node type
@@ -60,15 +61,15 @@ All keys live in **shared** plugin data, under the namespace `holotype`: `node.s
 |---|---|---|
 | **ComponentSetNode** (a component) | `sid` | Storybook component id, `components-button` |
 | | `nk` | `"set"` |
-| | `src` | JSON `{ title, importPath, componentPath?, exportNames: string[], displayName? }`, for rename detection (§7.2) |
-| | `axes` | JSON `[{ name: "Size", arg: "size", values: ["sm","md","lg"] }]` |
-| | `props` | JSON `{ [arg]: "Show icon#12:3" }`, the persisted property ids (§6) |
+| | `src` | JSON `{ title, importPath, componentPath?, exportName, displayName? }`, for rename detection (§7.2) |
+| | `axes` | JSON `[{ name: "Size", key: "arg:size", values: ["sm","md","lg"] }]` |
+| | `props` | JSON `{ [ScenePropertyDef.key]: "Show icon#12:3" }`, the persisted property ids (§6) |
 | | `irh` | component Merkle hash, 16 hex chars |
 | | `ah` | applied hash of set-level managed properties (name, description, property definitions) |
 | | `v` | `"<irMajor>.<applierEpoch>"`, e.g. `"1.3"` (§10.2) |
-| | `fp` | bundle fingerprint last applied |
-| | `status` | `synced \| outdated \| conflict \| partial \| failed \| deprecated` |
-| | `syncedAt` | ISO time |
+| | `fp` | `bundleFp` last applied ([06](06-ir.md#bundle-fingerprint)) |
+| | `status` | `synced \| outdated \| conflict \| partial \| failed \| deprecated \| locked` ([§15](#status)) |
+| | `syncedAt` | ISO time; written only when the component's `irh` changes (I-2) |
 | | `keep` | JSON `{ [nk]: irhAtKeep }`, per-node keep markers (§9.3) |
 | | `dep` | ISO time when deprecated (absent if active) |
 | **ComponentNode (variant)** | `sid`, `vk`, `nk = "root"`, `irh`, `ah`, `v` | as above |
@@ -80,7 +81,7 @@ All keys live in **shared** plugin data, under the namespace `holotype`: `node.s
 | | `irh` | subtree Merkle hash |
 | | `ah` | applied hash of this node's managed properties (§9.1) |
 | | `v` | (omitted when equal to the variant's, to save writes) |
-| **Icon component** | `sid = "icon:<name>"`, `nk = "root"`, `svgh`, `irh`, `ah` | `svgh` = sha256 of the normalized SVG |
+| **Icon component** | `sid = "icon:<slug>"` (collision: `icon:<slug>-<sha8>`), `nk = "root"`, `svgh`, `irh`, `ah` | `svgh` = sha256 of the normalized SVG |
 | **Doc frame / labels / mode previews** | `sid`, `nk = "doc" \| "doc/…" \| "label/col/i" \| "label/row/j"`, `irh` | regenerated, with no `ah` conflict checks: docs are always ours |
 | **Variable / style** | `tok` | CSS name `--color-bg` (or DTCG path) |
 | | `ah` | hash of the values per mode, scopes and codeSyntax we wrote |
@@ -96,7 +97,7 @@ Our own nested instances (managed `kind: 'instance'` nodes) are themselves index
 
 ### 2.2 Value hygiene
 
-- Hashes use 16 hex characters (64 bits) of sha256 over canonical JSON (`ir` package, [06](06-ir.md#hashing)).
+- Hashes produced by the CLI are 16-hex sha256 over canonical JSON (`ir` package, [06](06-ir.md#hashing)). `ah` and `base:h` are computed in main with FNV-1a-64 (D-31, [06](06-ir.md#ah)), because main has no WebCrypto.
 - JSON values are always canonical: sorted keys, no whitespace.
 - Writing a key whose value is unchanged is skipped. The applier compares against the index snapshot first.
 
@@ -107,13 +108,17 @@ The registry is a cache, so that opening the plugin is fast and the sync status 
 
 ```
 figma.root shared plugin data, namespace "holotype":
-  registry:meta   = {"v":1,"rev":42,"chunks":3,"fp":"<bundle fp>","updatedAt":"…","session":"<random id>"}
+  registry:meta   = {"v":1,"rev":42,"chunks":3,"fp":"<bundleFp>","updatedAt":"…","session":"<random id>"}
   registry:0..N-1 = JSON string chunks, each ≤ 90 000 bytes (headroom under the 100 kB limit)
   registry:lease  = {"session":"…","expiresAt":"…"}            (§14)
   fontmap         = {"Acme Sans|SemiBold":{"family":"Inter","style":"Semi Bold"}}
   report:meta / report:0..M = last report summary (chunked, capped at 5 chunks)
-  branch:meta     = BranchMeta JSON (branch files only; its presence selects proposal mode, 15 §2.2)
+  branch:meta     = BranchMeta JSON (branch files only; with mode 'proposal' it selects proposal mode, 15 §2.2)
+  fileId          = random id written at branch link time; cross-checked with branch:meta.fileId (09 §20.1, D-53)
+  request:0..n    = the submitted request: gzipped canonical DCR core, ≤90 kB chunks (09 §20.3, D-49)
 ```
+
+`fp` here and in `branch:meta.baselineFp` is `bundleFp` ([06](06-ir.md#bundle-fingerprint)). The image map is `Registry.images` below ([02](02-architecture.md) links here).
 
 Registry payload (after joining the chunks):
 
@@ -198,7 +203,7 @@ async function buildIndex(port: FigmaPort, pages: PageNode[]): Promise<IdentityI
 
    These rules minimize type changes (§5.3).
 
-If a mapper change alters `nk` derivation (a new `irMajor` or `applierEpoch`), the bundle carries an **`nkMigrations`** table (`oldNk → newNk` per component), and the plugin renames keys before reconciling. This avoids mass recreation.
+If a mapper change alters `nk` derivation (a new `irMajor` or `applierEpoch`), the bundle carries an **`nkMigrations`** table (`oldNk → newNk` per component) in `BundleManifest.nkMigrations` ([06 §4.2](06-ir.md#bundlemanifest)), and the plugin renames keys before reconciling. This avoids mass recreation.
 
 ---
 
@@ -256,7 +261,7 @@ function reconcileChildren(parent: ChildrenMixin, desired: SceneNode[], ctx: Ctx
 Notes:
 
 - **Moves keep identity.** `insertChild` on an existing node moves it and keeps its node id. Instance override mapping by internal id should therefore survive moves *within* the component (verify, S-02). Cross-parent moves are found via `index.findMoved` (same variant, same `nk`, different parent).
-- **Orphan removal policy** (`sync.orphans`): `'remove'` (default) or `'hide'` (`visible = false`, and kept with `holotype/orphan = "1"`; if the `nk` returns, the node is revived with its overrides intact). Removal reports `SYNC_NODE_REMOVED`, with the local instance count of the variant as impact.
+- **Orphan removal policy** (`sync.orphans`, [16](16-config.md#sync)): `'remove'` (default) or `'hide'` (`visible = false`, and kept with `holotype/orphan = "1"`; if the `nk` returns, the node is revived with its overrides intact). Removal reports `SYNC_NODE_REMOVED`, with the local instance count of the variant as impact.
 - **Unmanaged nodes** are never in `byNk`, so they are never removed. The cursor logic keeps them right after the managed sibling they followed.
 - **Designer-deleted managed nodes** (in the registry or the parent's previous `irh`, but absent now) are re-created and reported as `SYNC_MANAGED_NODE_DELETED` (info). With policy `keep`, they stay deleted: the `keep` marker records it.
 
@@ -270,7 +275,8 @@ Figma node types can't be converted in place (FRAME ↔ TEXT ↔ INSTANCE ↔ VE
       snapshot { instanceId, relPath(nk + sub-path), fields: o.overriddenFields, values: read(field) }
 3. create the new node (09 §6), insert at the same index, write identity (same nk), then remove the old node
 4. for each snapshot: locate sublayer in instance by nk path → for each field compatible with the new type
-      (fills, strokes, effects, opacity, visible, characters/text style when TEXT→TEXT-like) → re-apply
+      (fills, strokes, effects, opacity, visible, characters/text style when TEXT→TEXT-like) → re-apply;
+      unrestorable → SYNC_OVERRIDE_NOT_RESTORED
 5. report SYNC_TYPE_CHANGE_RECREATE (warn) with { restored, dropped } and SYNC_OVERRIDES_AT_RISK for cross-file consumers
 ```
 
@@ -282,7 +288,7 @@ Instances in **other files** (library consumers) can't be reached, so their over
 ## 6. Component property identity & renames
 
 - **The identity of a component property is its full name including `#id`** (`"Label#4:2"`) for BOOLEAN, TEXT, INSTANCE_SWAP and SLOT, and its plain name for VARIANT.
-- We key by **Storybook arg name** in the set's `holotype/props` map ([09 §8](09-plugin.md#props)). The *Figma display name* is free to change.
+- We key by `ScenePropertyDef.key` (`arg:<name>`, `state`, …) in the set's `holotype/props` map ([09 §8](09-plugin.md#props)). The *Figma display name* is free to change.
 
 | Code change | Action | Instance effect |
 |---|---|---|
@@ -350,7 +356,7 @@ A mapped pair is reconciled **in place**: the old ComponentNode gets the new `vk
 
 ### 7.5 Delete (prune)
 
-- Hard deletion is **never automatic**. The explicit plugin action "Prune deprecated…" (or `holotype prune` via the harness) lists deprecated items older than `sync.pruneAfterDays` (default 30).
+- Hard deletion is **never automatic**. The explicit plugin action "Prune deprecated…" (entry point: Settings ▸ Library maintenance, [11](11-ux.md#plugin-ia); or `holotype prune` via the harness) lists deprecated items older than `sync.pruneAfterDays` (default 30, [16](16-config.md#sync)).
 - For each item it shows `await node.getInstancesAsync()`, which counts **this file only**. It warns that library consumers can't be counted.
 - It requires typing the component name for sets that have instances.
 - Deletion is reported in the report and in the library release notes (§13).
@@ -403,7 +409,7 @@ interface PlanDecisions {                               // UI → main on 'apply
 The screens are in [11](11-ux.md#plugin).
 
 - **Grouping.** Components are grouped by action. Breaking changes and conflicts float to the top.
-- **Visual diff per changed variant.** *Before* = lazy `exportAsync` of the current variant (rendered only when expanded). *After* = the bundle's Playwright screenshot asset. Modes: side by side, overlay (opacity slider), or difference (computed in the UI canvas).
+- **Visual diff per changed variant** (Phase 4b). *Before* = the previous capture (browser), *After* = the new capture (browser), so both come from the same renderer. "Figma now" (lazy `exportAsync`, rendered only when expanded) is a third, labelled thumbnail. Every image is labelled with its source ("Browser · before"). Modes: side by side, overlay (opacity slider), or difference (computed in the UI canvas).
 - **Conflict rows** show the property groups the designer changed, with per-node policy toggles.
 - **Footer:** "Apply N components · M token changes". Applying is disabled while any `breaking` item is unacknowledged.
 
@@ -424,23 +430,11 @@ This classification is used for the plan and for the release notes.
 
 ### 9.1 Applied hash (`ah`)
 
-After writing a node (and after any verification fallback), the applier **reads back** the node's *managed property groups*, normalizes them, and stores `ah = h16(canonical(groups))`. Reading back, rather than hashing the Scene values, avoids false conflicts from Figma's own normalization (float rounding, derived values).
-
-| Group | Properties read |
-|---|---|
-| `geom` | `width`, `height`; `x`, `y` only when absolute or not in auto layout; `rotation` |
-| `layout` | `layoutMode`, `layoutWrap`, padding×4, `itemSpacing`, `counterAxisSpacing`, align props, sizing modes, `layoutSizingHorizontal/Vertical`, `layoutPositioning`, `min/max*`, grid props |
-| `paint` | `fills`, `strokes`, stroke weights/align/dash, radii, `effects`, `opacity`, `blendMode`, `clipsContent` (paints serialized including `boundVariables`) |
-| `text` | `characters`, `getStyledTextSegments(['fontName','fontSize','lineHeight','letterSpacing','fills','textCase','textDecoration','hyperlink','boundVariables'])`, `textAutoResize`, alignment, truncation |
-| `vis` | `visible`, `name` |
-| `bind` | `componentPropertyReferences`, `boundVariables` |
-| `inst` | for instances: `mainComponent` id (`getMainComponentAsync`), `componentProperties` values |
-
-Normalization: floats rounded to 1e-3, colors to 1e-4, then canonical JSON.
+After writing a node (and after any verification fallback), the applier **reads back** the node's *managed property groups* and normalizes them with `normalizeGroups()` from `@holotype/ir`. `ah` = 7 per-group FNV-1a-64 sub-hashes (16 hex each) in the order geom, layout, paint, text, vis, bind, inst. Group fields and normalization: [06 §6](06-ir.md#ah). Reading back, rather than hashing the Scene values, avoids false conflicts from Figma's own normalization (float rounding, derived values). The same normalizer produces the branch baseline (`base:*`) and the DCR snapshot.
 
 **Cost control.** `ah` is recomputed and compared **only for nodes the plan intends to write**, meaning those whose `irh` changed. If code didn't change a node, designer edits to it are irrelevant: we don't write it, so there is no conflict (I-4).
 
-The mismatch report includes *which groups* differ, by comparing per-group sub-hashes that are stored concatenated in `ah`: `ah = "<geom8><layout8><paint8><text8><vis8><bind8>"`.
+The mismatch report includes *which groups* differ, by comparing the per-group sub-hashes stored concatenated in `ah` (7 × 16 hex).
 
 ### 9.2 Policies
 
@@ -450,9 +444,9 @@ The mismatch report includes *which groups* differ, by comparing per-group sub-h
 | `keep` | component or node | skip writing this node's managed properties **and its subtree**; record `keep[nk] = irhAtDecision` on the set |
 | `fork` | component | before overwriting, duplicate the set (`set.clone()`) into section "Forks", strip all `holotype` keys from the clone (so it becomes unmanaged), rename it `<name> (designer copy <date>)`, then overwrite the original |
 
-Defaults (`sync.conflicts`):
+Defaults (`sync.conflicts`, [16](16-config.md#sync)):
 
-- **Interactive:** component default `ask`. The plan pre-selects `keep` for nodes with conflicts, and the user must look at them before applying.
+- **Interactive:** default `keep` (D-29). Conflicts are pre-selected `keep` and highlighted; the user reviews them before applying (Phase 4b). In the Loop slice (Phase 4a) there is no conflicts UI: `keep` applies.
 - **Harness/auto/CI:** `keep`, which is safe and never loses designer work.
 - **Configurable:** a per-component default in `holotype.config.ts` → `components[sid].conflicts`.
 
@@ -462,7 +456,8 @@ On later syncs, a kept node is skipped while `irh` (code) equals `keep[nk]`. Whe
 
 ### 9.4 Locks & unmanaged layers
 
-- **`holotype/lock = "1"`** is set via the plugin's "Lock layer (designer-owned)" action on any managed node, or on the set. It skips that subtree on every sync and shows a 🔒 in the report. This is an explicit, durable `keep`.
+- **Lock** ("Keep as designed"): `holotype/lock = "1"` is set via the plugin's Lock action on any managed node, or on the set. It keeps the identity keys, skips that subtree on every sync and shows a 🔒 in the report. It is reversible (Unlock). This is an explicit, durable `keep`.
+- **Detach from Holotype** is a different action: it strips every `holotype` key from a component, so sync never touches it again. It is irreversible and asks first: "Holotype will stop updating this component. This can't be undone." Entry points for both: [11](11-ux.md#plugin-ia).
 - **Unmanaged additions** (annotations, extra layers a designer added inside a variant) are preserved (I-3), but they may break auto layout geometry. Verification ignores unmanaged nodes when computing deltas, but runs with them present. If a fallback triggers *because* of an unmanaged node, the report says so (`SYNC_UNMANAGED_AFFECTS_LAYOUT`, info).
 - **Recommended practice**, printed in the doc frame: annotate *outside* the set, or use locks.
 

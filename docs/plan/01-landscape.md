@@ -106,16 +106,20 @@ Re-checked Nov 2026: no notable product change (SB10 support Nov 2025; no AI/MCP
   - drops CJK glyphs.
 - A sibling tool, `html_to_figma`, converts HTML without running the app.
 
-### 2.2 Write to canvas: `use_figma` (Mar 24, 2026, beta)
-- [V] Runs agent-supplied **Plugin API code** server-side against a file. It can create frames, components, variants, variables and auto layout ([blog](https://www.figma.com/blog/the-figma-canvas-is-now-open-to-agents/), [docs](https://developers.figma.com/docs/figma-mcp-server/write-to-canvas)).
-- [V] Limits:
+### 2.2 Write to canvas: `use_figma` (launched Mar 24, 2026; last checked 2026-11)
+- [V] Runs agent-supplied **Plugin API code** server-side against a file: the general-purpose tool for creating, editing and inspecting Figma content. It can create frames, components, variants, variables and auto layout ([blog](https://www.figma.com/blog/the-figma-canvas-is-now-open-to-agents/), [docs](https://developers.figma.com/docs/figma-mcp-server/write-to-canvas), [tools](https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/)).
+- [V] It is one of a **family of remote write tools**: `upload_assets` (images, SVGs), `create_new_file`, `generate_figma_design`, `html_to_figma`, `add_code_connect_map`, `send_code_to_figma` and others. Agents load a skill (`figma-use`) before they call it; some features (Specs) are open beta and plan-gated ([tools](https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/)).
+- Limits as of Mar 2026 (unverified at the Nov 2026 check; re-check in S-11):
   - ≤48 KB of output per call;
-  - no images on its own (`upload_assets` is a separate tool);
   - only account-uploaded fonts;
-  - remote only;
   - free in beta, later usage-based;
   - needs edit access on Pro or above.
 - **Implication:** our applier code could run headless through it. That gives a CI fidelity harness and possibly a "no plugin" build path (S-11). It is not the product path in v1.
+
+### 2.2b Agent tools and skills (last checked 2026-11)
+- [V] More Figma MCP tools: `create_new_file` (blank Design, FigJam or Slides file), `search_design_system` (components, variables and styles in connected libraries), `get_libraries`, `add_code_connect_map` / `get_code_connect_suggestions`, `send_code_to_figma` (a local project as a Make file or code layer), and the `create_design_system_rules` prompt ([tools](https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/)).
+- [V] Figma's agent skills (repo `figma/mcp-server-guide`, [skills.sh](https://skills.sh/figma/mcp-server-guide/figma-generate-library)): **`figma-generate-library`** builds or updates variables and components with variants and properties from a codebase through `use_figma`, over 20–100+ sequential calls; **`figma-generate-design`** builds screens from library instances, using `generate_figma_design` only as a visual reference ([skills.sh](https://skills.sh/figma/dev-mode-mcp-server-guide/figma-generate-design)).
+- [V] REST `POST /v1/files/:key/duplicate` duplicates a main file or branch into a folder. It needs scope `file_duplicate:write` and is available only to private OAuth apps on Enterprise ([file endpoints](https://developers.figma.com/docs/rest-api/file-endpoints/), [scopes](https://developers.figma.com/docs/rest-api/scopes/)). Branch *creation* still has no API.
 
 ### 2.3 Code Connect
 - [V] Inverse direction: maps existing Figma components to code snippets in Dev Mode ([Code Connect](https://www.figma.com/developers/code-connect)).
@@ -124,6 +128,8 @@ Re-checked Nov 2026: no notable product change (SB10 support Nov 2025; no AI/MCP
 ### 2.4 Other first-party constraints that shape the market
 - The REST API cannot create nodes. Variables REST writes are Enterprise-only ([variables REST](https://developers.figma.com/docs/rest-api/variables/)).
 - The only supported write path is the Plugin API, either in a plugin or via `use_figma`.
+
+**The bar Holotype must clear** against first-party agent workflows: determinism (byte-identical requests), stable identity and override-safe sync, an embedded code baseline (what changed, not a snapshot), provenance to file:line, and verify by re-render.
 
 ## 3. Other products and projects
 
@@ -137,15 +143,48 @@ Re-checked Nov 2026: no notable product change (SB10 support Nov 2025; no AI/MCP
 | **figit web-to-figma** (`@figit/dom-to-figma`) | MIT; geometry-verified auto layout inference, wrap simulation, gradient/blur/border decomposition, oracle "parity ratchet" CI; outputs the Kiwi clipboard format ([repo](https://github.com/figitdesign/web-to-figma)) | Active | **Best technical prior art.** We adopt its *ideas* (verify-then-emit, ratchet) with attribution where code is ported ([13](13-security-legal.md#licensing)) |
 | **Lynavo/web2ui** | AGPL; very thorough in-page extractor (oklch canvas readback, font-fallback detection) | Active | **Study only, never copy** (AGPL) |
 | **bem/storybook-to-figma** | Plugin + addon, props → variants; 7 commits ([repo](https://github.com/bem/storybook-to-figma)) | Archived 20 Jul 2026 | Confirms there is no maintained OSS equivalent |
-| **Locofy / Visual Copilot** | Figma → code | Active | Opposite direction; competes only for the "single source of truth" budget |
+| **Locofy / Visual Copilot** | Figma → code | Active | Competes for the design → agent → code step (G9); see §3b |
 | **UXPin Merge** | Puts code components into UXPin and avoids Figma | Active | Different bet: replaces Figma rather than feeding it |
+
+<a id="design-to-code"></a>
+
+## 3b. Design → code for agents (last checked 2026-11)
+
+With G9, Holotype competes for the design → agent → code step. These are the products an AI coding agent already uses for it.
+
+| Product | What it does | Relevance |
+|---|---|---|
+| **Figma MCP `get_design_context` + Code Connect** | [V] The main MCP tool returns design context and code for a selection; Code Connect maps Figma components to your code components, so the agent sees your imports. Works on any file, no install beyond the MCP server ([tools](https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/)) | The default alternative. It describes a snapshot, not a change against code |
+| **Builder.io Fusion / Visual Copilot** | [V] Maps Figma designs (exported with the Builder plugin) to your design-system components; each session works on its own git branch and opens a PR ([Fusion](https://www.builder.io/blog/figma-to-code-fusion), [concepts](https://www.builder.io/c/docs/key-concepts-fusion)) | Uses your components and git; no code baseline diff or provenance |
+| **Anima Playground + MCP** | [V] An MCP server connects coding agents to Anima Playground, Figma designs and the team's design system; design-system sync to React components is Enterprise ([MCP docs](https://docs.animaapp.com/docs/anima-mcp)) | Code-aware context; vendor-hosted |
+| **Figma Make** (design-system packages) | [V] Imports a React design system as a public or private npm package (React 18, Vite-compatible); Make kits package it ([npm](https://developers.figma.com/docs/code/bring-your-design-system-package)) | Designers compose real code components, but in Make, not in the library file |
+
+| Capability | Figma MCP + Code Connect | Builder Fusion | Anima | Figma Make | **Holotype (M-Loop)** |
+|---|---|---|---|---|---|
+| Uses your components | ✅ (mapped) | ✅ | ◐ | ✅ (npm) | ✅ (generated from Storybook) |
+| Knows what changed vs code | ✗ | ✗ [I] | ✗ [I] | ✗ | ✅ embedded baseline (D-34) |
+| Provenance to file:line | ✗ | ✗ [I] | ✗ [I] | ✗ | ✅ CSS rules (CSS modules first) |
+| Deterministic, reviewable spec | ✗ (agent context) | ✗ | ✗ | ✗ | ✅ byte-identical DCR (D-35, D-50) |
+| New vs existing classification | ✗ | ◐ [I] | ✗ [I] | n/a | ✅ `component.new` vs `component.modified` |
+| Verify | ✗ | ◐ (PR preview) | ✗ | n/a | ✅ `holotype verify` (D-55) |
+| Setup cost | low (MCP server) | medium | medium (Enterprise for DS) | medium (package build) | **high**: Storybook dev server, CLI, dev plugin |
+| Works on any file | ✅ | ✅ | ✅ | n/a | **✗**: Holotype branch files only |
+| Live code preview | ✗ | ✅ | ✅ | ✅ | **✗** |
+
+Holotype is behind on setup cost, on reach (branch files only; usage-only DCR for consumer files is a hardening item, [14](14-roadmap.md#hardening)), on renderer breadth (React + Vite first) and on live code preview. Its edge is the baseline, provenance, determinism and verify. The bake-off ([12](12-quality.md#bake-off), D-54) tests the claim.
 
 ## 4. Feature comparison matrix
 
-Key: ✅ yes, ◐ partial, ✗ no, ? unknown. "holotype v1" means the end of Phase 7 ([14](14-roadmap.md)).
+Key: ✅ yes, ◐ partial, ✗ no, ? unknown. "Holotype v1" means the M8 release ([14](14-roadmap.md)).
 
-| Capability | story.to.design | Figma code-to-canvas | html.to.design | Anima (legacy) | figit | **holotype v1** |
+| Capability | story.to.design | Figma code-to-canvas | html.to.design | Anima (legacy) | figit | **Holotype v1** |
 |---|---|---|---|---|---|---|
+| **DCR: baseline diff** (what changed vs code) | ✗ | ✗ | ✗ | ✗ | ✗ | ✅ (D-34) |
+| **DCR: provenance** to file:line | ✗ | ✗ | ✗ | ✗ | ✗ | ✅ (D-36) |
+| **DCR: deterministic spec** | ✗ | ✗ | ✗ | ✗ | ✗ | ✅ (D-35, D-50) |
+| **DCR: verify** by re-render | ✗ | ✗ | ✗ | ✗ | ✗ | ✅ (D-55) |
+| **DCR: new vs existing** classification | ✗ | ✗ | ✗ | ✗ | ✗ | ✅ |
+| **DCR: usage snippets** for screens | ✗ | ✗ | ✗ | ✗ | ✗ | ✅ (D-42) |
 | Component sets from stories | ✅ | ✗ | ✗ | ✅ | ✗ | ✅ |
 | Variants from args | ✅ (Cartesian) | ✗ | ✗ | ✅ | ✗ | ✅ (planned matrix, D-12) |
 | Stories as variants | ◐ (`:story`) | ✗ | ✗ | ? | ✗ | ✅ default when no curated config |
@@ -170,22 +209,23 @@ Key: ✅ yes, ◐ partial, ✗ no, ? unknown. "holotype v1" means the end of Pha
 
 ## 5. Our wedge
 
-1. **Component model quality, not pixel conversion.** DOM → layers is commoditised now that Figma ships it natively (§2.1). Our value sits in the steps others skip:
+1. **Deterministic design → AI change requests (G9)**: no competitor has a code baseline to diff against ([15](15-change-requests.md)). A designer's edits in a code-aligned branch file become a reviewable request with provenance, and `holotype verify` checks the agent's result (§3b).
+2. **Component model quality, not pixel conversion.** DOM → layers is commoditised now that Figma ships it natively (§2.1). Our value sits in the steps others skip:
    - planned variant matrices (D-12);
    - *verified* component properties (D-13);
    - nested instances (D-21);
    - tokens with modes (D-18).
-2. **Sync that designers can trust.** Keyed in-place reconciliation (D-19), protection of designer additions, conflict policies and deprecation instead of deletion (D-20). This answers story.to.design's "don't edit our components" stance head-on.
-3. **Build artifact, not a SaaS round-trip.**
+3. **Sync that designers can trust.** Keyed in-place reconciliation (D-19), protection of designer additions, conflict policies and deprecation instead of deletion (D-20). This answers story.to.design's "don't edit our components" stance head-on.
+4. **Build artifact, not a SaaS round-trip.**
    - CLI and GitHub Action produce a versioned bundle from `storybook build` (D-10).
    - Private and SSO Storybooks work without sending credentials anywhere.
    - "Outdated" is a CI fact, not a poll.
-4. **Measured fidelity.** Every variant carries a box-delta and SSIM score, and the fixture corpus runs as a ratchet ([12](12-quality.md)). We publish scores against code-to-canvas on the same fixtures.
-5. **Open, scriptable, agent-ready.** MIT, a documented JSON Schema for both IRs, and an MCP server so agents can "sync component X" (Phase 7).
+5. **Measured fidelity.** Every variant carries a box-delta and SSIM score, and the fixture corpus runs as a ratchet ([12](12-quality.md)). We publish scores against code-to-canvas on the same fixtures.
+6. **Open, scriptable, agent-ready.** MIT, a documented JSON Schema for both IRs, and an MCP server: DCR tools in hardening (H-E), sync tools in automation (M7).
 
 ### Deliberately *not* competing on
 - **Arbitrary websites and full-page capture** (html.to.design, code-to-canvas).
-- **Figma → code generation** (Locofy, Builder, Anima). We only generate Code Connect mappings.
+- **Generic Figma → code generation** from arbitrary files. Holotype competes for the design → agent → code step (G9); see §3b. It does not generate code itself: the agent does, from the DCR, and Holotype verifies it.
 - **Histoire or Backlight support** in v1. The adapter interface keeps the door open ([03](03-storybook.md)).
 - **A hosted, zero-install, paste-a-URL onboarding** in v1. Local CLI and file import come first; hosted is Phase 8+ (D-10).
 - **Two-way sync** of design edits back to code (README §3).
@@ -194,7 +234,7 @@ Key: ✅ yes, ◐ partial, ✗ no, ? unknown. "holotype v1" means the end of Pha
 
 | Threat | Likelihood | Impact | Response |
 |---|---|---|---|
-| **Figma adds "Storybook → components" to code-to-canvas/MCP** (variants from a story URL) | Medium–high within 12–24 months: they already have capture, `use_figma` and variable auto-binding | High: it would remove the need for a basic import plugin | Compete on what platform features will be slowest to do well: override-safe sync with designer edits, verified properties, CI artifacts, open IR, fidelity scoring. Keep the builder able to run via `use_figma` (S-11) so we *ride* their platform instead of fighting it |
+| **Figma's agent workflows build libraries and screens from code** (`use_figma` write tools, `figma-generate-library` / `figma-generate-design` skills, §2.2b) | **H: happening now** as agent workflows (non-deterministic, no identity or sync, small variant matrices, many sequential calls) | **H** | The bar in §2: determinism, identity and sync, embedded baseline, provenance, verify; the bake-off (D-54); a quarterly first-party check. Keep the builder able to run via `use_figma` (S-11) so we *ride* their platform instead of fighting it. Same wording as [14](14-roadmap.md) R1 |
 | story.to.design copies open features (BOOLEAN props, multi-collection) | High | Medium | Open source, so features are not the moat. The moat is execution speed, community fixtures and integrations (Chromatic, Code Connect, Tokens Studio interop) |
 | divRIOTS' api.to.design (clipboard-based) wins automation | Medium | Medium | Our CI path produces plugin-applied, *identity-tracked* updates, which the clipboard approach cannot do (it carries no plugin data) ([13](13-security-legal.md#clipboard)) |
 | Figma changes Plugin API or network policy (e.g. LNA) | Medium | High for topology A | File-import fallback is always on (D-10); registry over HTTPS; desktop app as primary client ([02](02-architecture.md#lna)) |
@@ -203,4 +243,6 @@ Key: ✅ yes, ◐ partial, ✗ no, ? unknown. "holotype v1" means the end of Pha
 
 ## 7. Positioning statement (internal)
 
-> For design-system teams that ship components in Storybook, holotype builds and keeps in sync a native Figma component library: real variants, properties, instances and variables. It runs from your CLI or CI. It is open source, and it is built so designers can safely edit around it.
+> For design-system teams that ship components in Storybook, Holotype gives the design team a **code-aligned design branch whose edits become a verified AI implementation**. For each git feature branch it builds a Figma branch of the component library from the code, so designers edit real, synced components and draw screens with them. On Submit, Holotype extracts a deterministic Design Change Request (what changed against the code baseline, what is new, how existing components are used, with file:line provenance and tokens). An AI coding agent implements it, and `holotype verify` checks the result by re-rendering the new code.
+>
+> The enabler is a native, editable, synced Figma library built from Storybook: real variants, properties, instances and variables, and re-imports that never lose designer overrides. It is open source and runs from your CLI.
