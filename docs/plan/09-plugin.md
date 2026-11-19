@@ -97,6 +97,8 @@ Notes:
 | **UI iframe** (`showUI({ width: 420, height: 640, themeColors: true }, data)` from `@create-figma-plugin/utilities`, not `figma.showUI(__html__)`), Preact | full browser APIs, `fetch`/`WebSocket`, File API, `null` origin | pairing, transport (HTTP/WS or file), unzip, asset fetching, every screen ([11](11-ux.md#plugin)) |
 | **Main thread** (sandbox) | document access, `figma.*`, minimal `fetch` | index, plan, apply, verify, registry |
 
+The UI iframe has a `null` origin, so it is not a secure context: `crypto.randomUUID` is unavailable. Ids (`sessionId`, `fileId`, request ids) use `crypto.getRandomValues`. `crypto.subtle` also needs a secure context; if S-06 confirms it is missing in the UI, sha256 (`h16`) there uses a small pure-JS implementation.
+
 Data flows **UI → main** as chunks. Main **pulls**: it asks for the next unit only when it is ready, which gives backpressure for free.
 
 ### 3.2 Message types
@@ -152,6 +154,13 @@ type TransferUnit =
   | { kind: 'asset'; sha256: string; mime: string; bytes: Uint8Array };
 
 type Stage = 'preflight' | 'index' | 'plan' | 'tokens' | 'apply' | 'verify' | 'finalize' | 'export';
+
+interface ApplyOptions { auto?: boolean;                  // harness mode: skip the review screen (§14)
+                         undo?: boolean }                 // true = one undo step at the end (config sync.undo: 'single', §12)
+interface RegistrySummary { components: number; variants: number }
+interface ApplySummary { componentsOk: number; componentsFailed: number; variants: number; durationMs: number; cancelled: boolean }
+interface InspectInfo { managed: boolean; sid?: string; nk?: string; locked?: boolean;
+                        mode: 'library' | 'proposal' | 'copied-branch'; changedGroups?: string[] }   // §20.4
 ```
 
 Transfer rules:
@@ -747,7 +756,7 @@ const yieldToEditor = () => typeof setTimeout === 'function'
 - **Undo.**
   - `figma.commitUndo()` after each component, so the user can step back one component at a time.
   - Token writes are committed as their own undo step.
-  - Note: very large syncs create many undo steps. Option `undo: 'single'` commits once at the end. Memory impact: verify, S-06.
+  - Note: very large syncs create many undo steps. Config `sync.undo: 'single'` ([16](16-config.md#sync)) commits once at the end. Memory impact: verify, S-06.
 
 ---
 
@@ -771,7 +780,7 @@ const yieldToEditor = () => typeof setTimeout === 'function'
 Fidelity export is used by the harness ([12](12-quality.md#fidelity)) and on demand ("Check fidelity" in the report).
 
 1. For each variant in scope:
-   - `await variant.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 2 }, useAbsoluteBounds: true })` (verify option name, S-06);
+   - `await variant.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 2 }, useAbsoluteBounds: true })`;
    - collect `{ nk, absoluteBoundingBox }` for every managed descendant.
 2. Throttle to one export in flight at a time. Yield between exports.
 3. Post `export.png` with the bytes and boxes. The UI POSTs them to the local server's `/v1/fidelity` (topology A), or bundles them into a downloadable zip (file mode).
@@ -847,7 +856,13 @@ These are coined in this chapter. The catalog is in [12](12-quality.md#diagnosti
 | `TEXT_LINE_MISMATCH` | warn | Figma line count ≠ browser line count after buffering |
 | `NET_SERVER_UNREACHABLE` | warn | local server not reachable (not running); a browser LNA block is `NET_LNA_BLOCKED` |
 | `NET_PAIRING_FAILED` | error | pairing code rejected or expired |
-| `APPLY_BUNDLE_CORRUPT` | error | component sha256 mismatch on transfer or import ([02](02-architecture.md)) |
+| `APPLY_BUNDLE_CORRUPT` | error | component checksum differs from `manifest.integrity.files` on transfer or import ([06](06-ir.md#bundlemanifest)) |
+| `APPLY_NO_EDIT_ACCESS` | error | view-only file, Dev Mode, or a non-Design editor; nothing is written (§5) |
+
+The plugin also emits `DCR_BRANCH_FILE_COPIED` (defined in [15](15-change-requests.md#diagnostics); [§20.1](#branch-identity)) and `SYNC_BRANCH_RESIDUE` (defined in [10](10-sync.md#branch-residue); [§20.5](#branch-residue)). `TEXT_OPENTYPE_UNSUPPORTED` is emitted by the mapper ([07](07-mapping.md#8-text)); the applier never writes OpenType features (§6.1).
+
+<a id="apply-report"></a>
+**ApplyReport.** The schema is [06 §4.5](06-ir.md#apply-report). With a paired CLI it is posted to the local server. In file mode, it and any over-budget baselines (§20.1) go into the downloadable report (`*.holotype-report.zip`), which `holotype branch link --import-report` ingests. In the Loop slice they also travel inside `request.zip` (§20.3).
 
 ---
 
@@ -878,15 +893,16 @@ The overall strategy is in [12](12-quality.md#pyramid).
    - `setTimeout` availability in the sandbox;
    - the postMessage practical size ceiling;
    - undo memory with many `commitUndo`s;
-   - `exportAsync` options;
-   - `documentationLinks` / `descriptionMarkdown` writability;
    - editor stall measurements;
    - large-set behaviour.
+
+   Answered from the typings (no spike needed): `exportAsync({ useAbsoluteBounds })` exists; `documentationLinks` is writable and holds one link; `descriptionMarkdown` is writable; plugins can write `devStatus` on nodes directly under a page or section. S-12 confirms the documentation fields on a real file.
 4. **S-09:** `createNodeFromSvg` failure modes on real icon sets; unwrap rules.
 5. **S-10:** grid track/HUG/FLEX combinations accepted by the API; `setGridChildPosition` vs auto flow.
 6. **S-11:** `use_figma` input/output limits, `upload_assets` interplay, cost.
-7. **S-13:** SLOT property creation and binding sequence; `preferredValues` with local component keys; instance verification tolerance.
-8. **S-17 / S-18:** whether Figma branches carry shared plugin data (`branch:meta`, `base:*`) on branch creation and merge; whether plugins can write `devStatus`; `reactions` coverage of interactive components.
+7. **S-13** (as extended in [14](14-roadmap.md#phase-0)): SLOT property creation and binding sequence; the `slotContentId` typings gap; one property shared by all variants; GRID frames can't be slots; `stretchChildOnInsert` / `displayEmptyByDefault` mapping; `preferredValues` with local component keys; instance verification tolerance.
+8. **S-17:** whether Figma branches carry shared plugin data (`branch:meta`, `base:*`) on branch creation and on "Update from main" (branches are never merged, D-47).
+9. **S-18:** REST parity of the DCR fields, and `plugin_data=shared` on the document node at `depth=1` (root `branch:meta` and `request:*`).
 
 ---
 
@@ -897,10 +913,18 @@ The workflow is in [15](15-change-requests.md#proposal-mode). This section cover
 
 ### 20.1 Mode, baseline and `branch:meta`
 
-- **Mode.** Main reads root `holotype/branch:meta` on `hello`. If it is present with `mode: 'proposal'`, the session runs in proposal mode, and `ready` reports it. A main library file never has `branch:meta`, so it never runs in this mode. The UI writes `branch:meta` through `branch.link` once `holotype branch start|link` pairs with the file.
+- **Mode.** Main reads root `holotype/branch:meta` on `hello`. If it is present with `mode: 'proposal'` and the identity check below passes, the session runs in proposal mode, and `ready` reports it. A main library file never has `branch:meta`, so it never runs in this mode (a merged branch leaves residue: [§20.5](#branch-residue)).
+
+<a id="branch-identity"></a>
+- **Link (Import as branch file).** In the slice a branch file is linked by importing a bundle (Import file). When the bundle has a `branch` block ([06](06-ir.md#branch-block)), the import offers "Import as branch file". It writes root `branch:meta` through `branch.link` with:
+  - `fileKey`: from `figma.fileKey`, or `null` when unavailable (Community build, D-53);
+  - `fileId`: a new random id, also stored in the root key `holotype/fileId`;
+  - `baseFrames`: the ids of the existing top-level frames and sections at link time (D-57);
+  - `dcrConfig` and `configHash`, copied from the bundle (D-50).
+- **Copy detection (on open).** The file is a copy if `branch:meta.fileKey` is set and differs from `figma.fileKey`, or if the root `fileId` differs from `branch:meta.fileId`. Then proposal mode stays off and the plugin shows the `DCR_BRANCH_FILE_COPIED` banner: "This is a copy of branch file `<branch>`. Edits here won't become a change request. [Link this copy] [Treat as library]". It never switches silently. Without `fileKey`, a whole-file duplicate carries both ids unchanged; the CLI catches that case by cross-checking REST `branch_data` (D-53).
 - **Plan.** A designer-edited managed node (an `ah` mismatch) is a **proposal**: it is kept and marked `proposal` in the plan, and it is not a conflict ([10 §9](10-sync.md#designer-edits)). Untouched nodes update as usual.
-- **Baseline write (D-34).** After step 4 of §5.5, main normalizes the read-back of each variant with the **same normalizer as `ah`** (shared module, [10 §9.1](10-sync.md#designer-edits)) into a `BaselineSnapshot` ([15 §3.3](15-change-requests.md#proposal-mode)). It then does canonical JSON → fflate deflate → base64, and writes chunks of ≤90 kB to variant shared plugin data `base:0..n`. The set gets its property/axes snapshot the same way.
-  - **Budget:** ≤16 kB compressed per variant. Over budget, nothing is written to the file. The snapshot goes to the CLI in `ApplyReport.baselines`, and `DCR_BASELINE_EXTERNAL` is raised.
+- **Baseline write (D-34).** After step 4 of §5.5, main normalizes the read-back of each variant with the **same normalizer as `ah`** (`normalizeGroups()` from `@holotype/ir`, [06 §6](06-ir.md#ah)) into a `BaselineSnapshot` ([15 §3.3](15-change-requests.md#proposal-mode)). It then does canonical JSON → fflate deflate → base64, and writes chunks of ≤90 kB to variant shared plugin data `base:0..n`. The set gets its property/axes snapshot the same way.
+  - **Budget:** ≤16 kB compressed per variant. Over budget, nothing is written to the file. The snapshot goes to the CLI in `ApplyReport.baselines` ([§17](#apply-report)), and `DCR_BASELINE_EXTERNAL` is raised.
   - **No-op rule:** `base:*` is rewritten only when the snapshot's hash differs from the stored `base:h`, so a no-op re-sync still makes 0 writes.
   - **Edited nodes on refresh** keep the designer's value. Their baseline entry moves to the new code value, flagged `DCR_BASELINE_SHIFTED` when the code changed underneath.
 - **Finalize** writes `branch:meta` (`baseCommit`, `baselineFp`, `status: 'editing'`) in the same undo step as the registry.
@@ -911,7 +935,9 @@ The workflow is in [15](15-change-requests.md#proposal-mode). This section cover
 - It also lists components without `sid` (new), screens in scope, and outdated or deprecated instances ([15 §4.13](15-change-requests.md#instance-versions)).
 - It returns `ChangeSummary[]`: `{ group: sid | 'new' | 'screens', title, kinds, nodeId, excluded }`.
 - The UI refreshes on the current page's `nodechange` events, debounced to 500 ms. `documentchange` needs `loadAllPagesAsync`, which is never called (D-06; verify, S-06).
-- **Exclude** toggles are written to `branch:meta.excluded` with `branch.meta.patch`.
+- **Freshness.** The list also refreshes on `currentpagechange` and when the plugin regains focus. Header: "Updated just now · [Rescan]".
+- **Exclude** toggles live in UI memory and are written only with the Submit patch (`branch:meta.excluded`, §20.3). Nothing lands on the designer's undo stack before Submit.
+- **Convention hints.** Changes also lists live hints: unparsed screen names, raw (untokenized) values, and frames outside the scope.
 - Screen spec: [11 §6.14](11-ux.md#changes).
 
 ### 20.3 Submit flow

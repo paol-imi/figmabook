@@ -337,7 +337,7 @@ Build:
 - UI shell: tabs Library / Import file / Report / Settings ([11 §5](11-ux.md#plugin)); Library and Settings show "coming soon". Message catalog `ui/messages/en.json`.
 - `pnpm -F @holotype/plugin build` → `manifest.json`, `build/main.js`, `build/ui.js` (shown with create-figma-plugin's `showUI()`; there is no `ui.html`). `pnpm -F @holotype/plugin run pack` (not `pnpm pack`, which is pnpm's built-in tarball command) → `holotype-plugin-<version>.zip` with fixed mtimes ([02 §6.4](02-architecture.md#monorepo)).
 
-Acceptance: build and pack succeed, including the bundle budget check; UI tests render each tab's empty state; protocol tests round-trip every message type through a mocked `figma.ui`.
+Acceptance: build and pack succeed; `pnpm size` within budget; UI tests render each tab's empty state; protocol tests round-trip every message type through a mocked `figma.ui`.
 
 #### B-08 · Spike kit infrastructure (`spikes/runner`)
 
@@ -532,7 +532,7 @@ Acceptance: `test:e2e` on the **dev server**: for `components-button--primary`, 
 Build ([04 §1–2](04-variant-model.md), §8):
 - `planComponent(model, sid, config)` for the slice: variant sources per D-12 without classification renders: curated `variants` > stories-as-variants > the product of args declared `as: 'variant'` (values from `argTypes.options` or `values`).
 - Arg kinds: declared `variant` / `boolean` / `text` / `fixed` / `ignore`; otherwise boolean args → BOOLEAN and string args → TEXT with `evidence: 'type-only'`; everything else FIXED. `valueMap` per [06 §3.1](06-ir.md).
-- `vk` per variant, set grid (`layout.columns/rows`), the budget check (`budget.max` 256 → `PLAN_*` error naming the budget).
+- `vk` per variant, set grid (`grid.columns/rows`), the budget check (`budget.max` 256 → `PLAN_*` error naming the budget).
 - Unhandled parameters (`states`, `modes`, `viewports`, `slots`) are read, validated and reported as downgraded.
 
 Acceptance: unit tests per rule; snapshot plans for Button (3 × 3 variants, Label TEXT, Show icon BOOLEAN), Badge (5 tones, Dot, Label), Input, Card.

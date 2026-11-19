@@ -244,7 +244,7 @@ Use these exact terms and identifiers in every chapter.
 | **Scene IR** (`SceneComponent`) | per component: properties, variants, per-variant `SceneNode` trees in Figma terms, plus bindings, fallbacks and diagnostics. Defined in [06](06-ir.md) |
 | **Bundle** | `manifest.json` + `components/<sid>.json` (one Scene IR each) + `assets/<sha256>` (flat) + `tokens.json` + `report.json` (`BundleReport`) [+ `provenance/<sid>.json` in branch mode]. Schema: [06 §4](06-ir.md#bundlemanifest). Shipped as a directory, a `.holotype.zip`, or streamed by the local server |
 | **Bundle fingerprint** (`bundleFp`) | content hash of a whole bundle ([06](06-ir.md#bundle-fingerprint)) |
-| **`planHash`** | hash of a component's variant plan (planner output); a change means the variant set must be rebuilt |
+| **`planHash`** | hash of the canonical `ComponentPlan` (planner output, [04](04-variant-model.md)); part of the cache keys ([02](02-architecture.md#capture-key)) |
 | **`captureKey`** | the capture cache key per variant ([02](02-architecture.md#capture-key)) |
 
 ### Process and policy terms
@@ -255,12 +255,22 @@ Use these exact terms and identifiers in every chapter.
 | **Managed node** | a Figma node carrying `holotype/nk`. Unmanaged nodes inside managed components are designer additions and are never modified |
 | **Fallback** | per container: absolute child positions embedded in the Scene IR, applied when read-back verification fails |
 | **Apply plan** | the plugin-side diff (create/update/move/deprecate/conflict) computed read-only before writing |
+| **Root registry** | the identity cache in `figma.root` shared plugin data (`registry:meta` + chunks, [10 §2.3](10-sync.md#registry)) |
+| **Bundle registry** | the topology-D bundle store that CI publishes to ([02 §5.3](02-architecture.md)) |
+| **`applierEpoch`** | the second part of `v`; bumps when a plugin fix changes output for the same input (D-19) |
+| **Lock** vs **Detach from Holotype** | Lock ("Keep as designed") is reversible, keeps keys and is skipped by sync. Detach strips all `holotype` keys and is irreversible ([10](10-sync.md)) |
 | **Branch file** | a Figma file (duplicate or Figma-native branch) linked to one git feature branch and its `baseCommit` (D-32) |
 | **Proposal mode** | the sync mode of branch files: designer edits to managed nodes are *intent*, captured for a DCR, not conflicts (D-33) |
 | **Baseline snapshot** | the normalized applied state per variant stored at generation time (`base:*`); the DCR diffs against it (D-34) |
 | **DCR** | Design Change Request: deterministic, schema-validated list of design changes vs the baseline (modified, new variant/property/component, screens with states/breakpoints, interactions, content/a11y, deleted, detached, outdated/deprecated instances, tokens), each with provenance, tokens, assets and an acceptance criterion; rendered to `prompt.md` for an AI agent ([15](15-change-requests.md)) |
+| **DCR core** | the DCR without `header.generated`, `header.figma.fileVersion`, the asset map and CLI-enriched provenance; `dcrHash` covers only the core (D-50) |
+| **Request in file** | the submitted DCR stored in the branch file (`request:*` chunks + `branch:meta.lastDcr`) at a frozen version, readable by `holotype dcr --pull` (D-48, D-49) |
+| **Loop slice / M-Loop** | the thin end-to-end slice L0–L5 and its exit milestone, the first real loop with an AI agent (D-46, [14](14-roadmap.md#loop-slice)) |
+| **Hardening track** | everything after the Loop slice, in value order (D-46, [14](14-roadmap.md#hardening)) |
 
 ### Config precedence (lowest to highest)
+
+Keys, types and defaults: [16](16-config.md) (D-51).
 
 1. built-in defaults
 2. `holotype.config.ts` → `defaults`
@@ -276,18 +286,18 @@ Tags `figma` / `!figma` opt in or out. Opt-out wins.
 
 Details, estimates and exit criteria are in [14](14-roadmap.md).
 
-| Phase | Theme | Headline deliverable |
+| Track | Milestone | Headline deliverable |
 |---|---|---|
-| 0 | Foundations & spikes | Repo, CI, schemas skeleton; 18 de-risking spikes (S-01..S-13, S-15..S-19; S-14 folded into S-18) answered |
-| 1 | Pixel-correct snapshot | `holotype capture <story>` → bundle → plugin builds an **absolute**, pixel-faithful frame. Fidelity harness live |
-| 2 | Native structure | Auto layout/grid inference with verification and fallback; text and font fidelity; naming; simplification |
-| 3 | Components & variants | Variant planner, component sets, component properties (BOOLEAN/TEXT), states; local server + pairing; doc frames |
-| 4 | Sync | Identity, keyed in-place reconciliation, diff preview, conflict policies, deprecation, renames |
-| 4.5 | **DCR MVP** (flagship) | Branch files, proposal mode, baseline snapshot, deterministic DCR (modified / new / usage) with provenance, `prompt.md`, `holotype dcr` + MCP `design_changes`. Full verify loop lands with Phase 7 |
-| 5 | Tokens | Variables, aliases, modes from themes, bindings, styles, library matching |
-| 6 | Composition | Nested instances, icon extraction, INSTANCE_SWAP, SLOT |
-| 7 | Automation | GitHub Action + registry, Storybook addon, Code Connect generation, MCP server |
-| 8 | Public launch | Community listing, docs site, migration guides; optional hosted renderer (C) afterwards |
+| Slice L0 | Skeleton (D1, ~wk 4) | monorepo, `ir`, plugin + "Holotype Spikes" dev plugin, slice spikes; a story appears in Figma as frames and text |
+| Slice L1 | Components (D2, ~wk 9) | component sets with VARIANT/BOOLEAN/TEXT; identity keys + `irh`/`ah`; re-import = 0 writes (Phase 4a) |
+| Slice L2 | Tokens and layout (D3, ~wk 12) | flex → auto layout with fallback; tokens subset bound to `var()` values |
+| Slice L3 | Branch file (D4, ~wk 14) | `branch start\|link\|refresh`, proposal mode, `base:*`, Changes list |
+| Slice L4 | DCR (D5, ~wk 17) | Submit (version + request in file), `dcr import`, `prompt.md` with provenance |
+| Slice L5 | **M-Loop** (D6, ~wk 16–20) | `holotype verify` v1, agent-eval corpus, bake-off; the full loop with a real agent |
+| Hardening | M1…M5 | H-A fidelity (M1), H-B structure (M2), H-C variants at scale (M3), H-D sync UX / Phase 4b (M4), H-E DCR complete incl. MCP server and DCR tools, approval, REST parity (M4.5), H-F full tokens + H-G compatibility (M5) |
+| After | M6–M8 | composition (INSTANCE_SWAP icons and nested instances first), automation (Action, registry, addon, Code Connect, MCP sync tools), private org plugin; public track optional after M8 |
+
+Slice details: [14 §loop-slice](14-roadmap.md#loop-slice); hardening order: [14 §hardening](14-roadmap.md#hardening); staffing assumptions: [14 §staffing](14-roadmap.md#staffing).
 
 ## 9. Decisions needed from the user
 
@@ -296,6 +306,6 @@ Details, estimates and exit criteria are in [14](14-roadmap.md).
 3. ~~Primary target stack~~ → **React + Vite on Storybook 10** (decided, D-26).
 4. ~~Distribution~~ → **private**: development plugin shared with the user's boss now, private organization plugin later if the plan allows (D-39).
 5. ~~Storybook minimum version~~ → **Storybook 10 primary**; 11 at GA; 8/9 best-effort; no 7 (decided, D-11).
-6. Is a hosted or paid tier ever intended? (Affects nothing in the MIT core; only where a future service would live.)
+6. Is a hosted or paid tier ever intended? (Affects nothing in the MIT core; only where a future service would live.) Not before the public track (post-M8).
 7. ~~Figma plan~~ → the account has **Figma-native branching** (Organization/Enterprise), so branch files are Figma branches (D-32) and a private organization plugin is available (D-39).
-8. **Who edits branch files:** designers only, or developers too? Affects how much of the DCR preview targets non-developers.
+8. ~~Who edits branch files~~ → **designers** by default (designer view first, code details behind a toggle); developers may edit too.

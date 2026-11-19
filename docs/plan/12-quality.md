@@ -1,6 +1,6 @@
 # 12 — Quality, fidelity, performance, diagnostics, observability
 
-> This chapter defines how we *know* holotype works: the test pyramid, the fixture corpus, the fidelity harness that measures README §4 metrics, performance budgets, the diagnostics catalog, observability and release gates.
+> This chapter defines how we *know* Holotype works: the test pyramid, the fixture corpus, the fidelity harness that measures README §4 metrics, performance budgets, the diagnostics catalog, observability and release gates.
 
 ---
 
@@ -13,7 +13,7 @@
 | **L2 property-based** | invariants of canonical JSON, hashing, layout-sim, gradient math, color conversion | fast-check + Vitest | every PR |
 | **L3 snapshot** | DOM fixture → Capture IR; Capture IR → Scene IR; Scene IR → `figma-fake` scene graph | Vitest file snapshots (deterministic JSON, sorted keys) | every PR |
 | **L4 integration** | Storybook adapter against generated sandboxes per SB version (react-vite until M5, D-26); capture end-to-end in Chromium | Playwright (pinned Chromium, D-05) | every PR (smoke subset), nightly (full matrix) |
-| **L5 fidelity** | T0/T1/T2 harness (§4) in real Figma | macOS runner + Figma desktop; S-11 path | nightly + release |
+| **L5 fidelity** | T0/T1/T2 harness (§4) in real Figma | Figma desktop: manual on the owner's Mac now; macOS runner or S-11 path later (§4) | per slice demo + release; nightly once the runner exists |
 | **L6 sync e2e** | apply → designer-edit simulation → re-sync → assert overrides/conflicts | real Figma (harness mode) + `figma-fake` mirror | nightly |
 | **L7 usability** | scripted tasks with the owner + 1–2 designers (including the boss) at every slice demo D4, D5, D6, and at M4 (resolve a conflict, re-sync) and M4.5 (submit, approve, pull the request on a second machine); 5 DS engineers + 5 designers at M5 and M8. No new flow ships without one (D-40) | moderated sessions | slice demo + milestone |
 
@@ -681,11 +681,13 @@ Endpoint on our own domain (listed in manifest `allowedDomains` only when teleme
 | `sync_outcome` | conflicts count, policy chosen, overrides lost count |
 | `error_crash` | error class, package, version, stack hash (no message text) |
 
-Install id = random UUID stored locally; `DO_NOT_TRACK=1` and `CI=true` force off; `holotype telemetry status|enable|disable`.
+Install id = random UUID stored locally. `CI=true` or `DO_NOT_TRACK=1` force telemetry off, with no override (D-23). `holotype telemetry status|enable|disable`.
 
 ---
 
 ## 8. Release quality gates
+
+**Slice gates (L-demos):** determinism suite (§1.2), DCR goldens (§2.4), an agent-eval run (§2.5), and designer acceptance of 10–15 real components (owner + designer). Fidelity gates apply from M5.
 
 A release (any `@holotype/*` minor/major, plugin publish) requires:
 

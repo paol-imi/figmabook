@@ -697,7 +697,7 @@ export interface DcrItem {
   screen?: { name: string /* untrusted */; target: 'components' | 'screens'; variants: ScreenVariant[] };   // §4.10
   snippet?: UsageSnippet;                      // component.new (screens: per variant), §7.3
   instanceRef?: InstanceVersionRef;            // instance.outdated / instance.deprecated, §4.13
-  nearest?: Array<{ sid: string; score: number; code: CodeRef }>;
+  nearest?: Array<{ sid: string; score: number; code?: CodeRef /* CLI-added */ }>;
   notes?: DcrNote[];                           // designer text: untrusted (§10.3)
   acceptance: Acceptance;                      // §9.2
   assets: { before?: string; after: string };  // role ids → assets.json
@@ -706,29 +706,41 @@ export interface DcrItem {
 
 export interface DcrNote { source: 'annotation' | 'comment' | 'description'; text: string; author?: never /* never stored, 13 */ }
 export interface DcrQuestion { id: string; itemId: string; code: string /* DCR_* */; text: string /* template */; options?: string[] }
-export type DcrScope = { kind: 'ready' } | { kind: 'page'; name: string } | { kind: 'selection'; ids: string[] } | { kind: 'all' };
+export type DcrScope = { kind: 'changed' } | { kind: 'ready' } | { kind: 'page'; name: string } | { kind: 'selection'; ids: string[] } | { kind: 'all' };
 
 export interface Acceptance {
   type: 'fields' | 'visual' | 'structure' | 'usage';
   fields?: Array<{ field: string; expect: JsonValue; tol?: number }>;   // component.modified
   token?: Array<{ field: string; expect: string }>;                     // binding must be exactly this var
-  visual?: { sMaskedMin: number; boxDeltaMax: number };                 // variant.added / component.new (12)
+  visual?: { sMaskedMin: number; boxDeltaMax: number };                 // variant.added / component.new (12); advisory (D-55)
   usage?: { mustImport: string[] /* sids */; mustNotImport?: string[] /* deprecated sids */ };   // screen / instance.*
-  story: 'existing' | 'must-add' | 'optional';                          // every new or changed item needs a story; screens: optional
+  story: 'existing' | 'must-add' | 'optional';                          // required for every new variant, property and component; screens optional (D-37)
 }
 ```
 
+**Schema notes.**
+- `before`/`after` on a change are **Figma values** (13 → 17 includes a 1px border). Never write them to CSS. Write `css.after`.
+- `variant.added`: `variant.args` values are inferred with the inverse of the Title Case rule (the `control.labels` inverse, else lower-kebab) and marked `inferred: true`. The prompt shows "proposed arg value `danger` (new)".
+- Fields marked CLI-added and `header.headCommit` are outside the core hash (§4.9).
+
+<a id="answers"></a>
 **On disk** (committed with the PR; `holotype init` adds `!.holotype/requests/` to `.gitignore`):
 
 ```
 .holotype/requests/<id>/
-  dcr.json            canonical DCR
+  dcr.json            canonical DCR (core + CLI-added provenance)
   prompt.md           rendered prompt (§7), review summary on top (§7.4)
   prompt.components.md / prompt.screens.md   only when targets.screens differs (§5.5)
   assets.json         { "<itemId>:before": "<sha>", "<itemId>:after": "<sha>" }
   assets/<sha>.png    before = Playwright screenshot of the baseline story (cache); after = Figma export @2x
+  answers.json        reviewer answers to open questions, from branch:meta.answers (D-56)
+  decisions.json      the agent's own choices (§8)
   verify.json         written by `holotype verify` (§9)
+.holotype/requests/LATEST-<branch-slug>   id of the newest request on the branch (D-56)
 ```
+
+- **Cumulative requests** (D-56). Each request on a branch holds everything vs the baseline, with stable item ids, and records `parent`. `holotype dcr`, `holotype verify` and MCP `design_changes` use `LATEST-<branch-slug>` by default.
+- **Housekeeping.** Commit the latest request and its `verify.json` per branch. `holotype dcr prune --keep latest` removes older ones.
 
 ### 6.1 Worked example
 
@@ -750,47 +762,60 @@ The component library lives in `github.com/acme/ui` (published as `@acme/ui`); s
                  "screens": { "repo": "github.com/acme/shop", "path": "apps/web" } },
     "figma": { "fileKey": "AbC123", "kind": "duplicate", "snapshotHash": "77aa…" },
     "baseline": { "fp": "b7e1…", "storybookVersion": "10.6.7", "framework": "react-vite" },
-    "scope": { "kind": "ready" }, "extractor": { "version": "1.0.0", "configHash": "c0de…" }
+    "scope": { "kind": "changed" }, "extractor": { "version": "1.0.0", "configHash": "c0de…" }
   },
   "items": [
     {
       "id": "1f2e3d4c5b6a7980", "kind": "component.modified",
-      "title": "Button · size=md · label: padding-left/right 12 → 16",
+      "title": "Button · size=md · padding-left/right 12 → 16",
+      "designerTitle": "Button · Size=md · Padding left/right 13 → 17 (Space/3 → Space/4)",
       "target": { "sid": "components-button", "vk": "3b9a…", "nk": "root", "figmaNodeId": "12:40",
                   "code": { "sid": "components-button", "exportName": "Button",
                             "importPath": "src/components/Button/Button.tsx",
                             "storiesPath": "src/components/Button/Button.stories.tsx", "storyIds": ["components-button--primary"] } },
       "changes": [
-        { "group": "layout", "field": "layout.padding.left", "before": 13, "after": 17,
+        { "group": "layout", "field": "layout.paddingLeft", "before": 13, "after": 17,
           "origin": { "css": ["border-left-width", "padding-left"], "authored": "var(--btn-pad-x)",
                       "selector": ".btn", "rule": { "file": "src/components/Button/Button.module.css", "line": 14, "col": 3 },
                       "varChain": ["--btn-pad-x", "--space-3"], "transform": "border-included" },
-          "cssTarget": { "property": "padding-left", "value": "16px" },
-          "token": { "before": "--space-3", "after": "--space-4" } }
-        /* padding.right: same, collapsed by the renderer into one line */
+          "css": { "property": "padding-inline", "before": "12px", "after": "16px" },
+          "token": { "before": "--space-3", "after": "--space-4" },
+          "reach": { "sameOriginVariants": ["3b9a…", "51c0…", "e7d2…"], "designerChangedIn": ["3b9a…"] },
+          "varDefinition": { "file": "src/components/Button/Button.module.css", "line": 3, "col": 3 } },
+        { "group": "layout", "field": "layout.paddingRight", "before": 13, "after": 17,
+          "origin": { "css": ["border-right-width", "padding-right"], "authored": "var(--btn-pad-x)",
+                      "selector": ".btn", "rule": { "file": "src/components/Button/Button.module.css", "line": 14, "col": 3 },
+                      "varChain": ["--btn-pad-x", "--space-3"], "transform": "border-included" },
+          "css": { "property": "padding-inline", "before": "12px", "after": "16px" },
+          "token": { "before": "--space-3", "after": "--space-4" },
+          "reach": { "sameOriginVariants": ["3b9a…", "51c0…", "e7d2…"], "designerChangedIn": ["3b9a…"] },
+          "varDefinition": { "file": "src/components/Button/Button.module.css", "line": 3, "col": 3 } }
+        /* the Markdown renderer collapses left/right into one row; JSON and acceptance keep both */
       ],
-      "acceptance": { "type": "fields", "fields": [{ "field": "layout.padding.left", "expect": 17, "tol": 0.5 }],
-                      "token": [{ "field": "bind.paddingLeft", "expect": "--space-4" }], "story": "existing" },
+      "acceptance": { "type": "fields",
+                      "fields": [{ "field": "layout.paddingLeft", "expect": 17, "tol": 0.5 }, { "field": "layout.paddingRight", "expect": 17, "tol": 0.5 }],
+                      "token": [{ "field": "bind.paddingLeft", "expect": "--space-4" }, { "field": "bind.paddingRight", "expect": "--space-4" }], "story": "existing" },
       "assets": { "before": "1f2e3d4c5b6a7980:before", "after": "1f2e3d4c5b6a7980:after" }
     },
     {
       "id": "8c7b6a5948372615", "kind": "variant.added",
       "title": "Button · new variant tone=danger (from tone=primary)",
+      "designerTitle": "Button · new variant Tone=Danger (from Tone=Primary)",
       "target": { "sid": "components-button", "figmaNodeId": "12:88", "code": { "…": "…" } },
       "derivedFrom": { "vk": "3b9a…", "values": { "Tone": "Primary", "Size": "md" } },
-      "variant": { "values": { "Tone": "Danger", "Size": "md" }, "args": { "tone": "danger", "size": "md" } },
+      "variant": { "values": { "Tone": "Danger", "Size": "md" }, "args": { "tone": "danger", "size": "md" }, "inferred": true },
       "changes": [
-        { "group": "paint", "field": "fills[0].color", "before": "#2563eb", "after": "#dc2626",
+        { "group": "paint", "field": "paint.fills[0].color", "before": "#2563eb", "after": "#dc2626",
           "origin": { "css": ["background-color"], "authored": "var(--btn-bg)", "selector": ".primary",
                       "rule": { "file": "src/components/Button/Button.module.css", "line": 31, "col": 3 },
                       "varChain": ["--btn-bg", "--color-primary-600"] },
           "token": { "before": "--color-primary-600", "after": "--color-danger-600" } }
       ],
-      "acceptance": { "type": "visual", "visual": { "sMaskedMin": 0.97, "boxDeltaMax": 1 }, "story": "must-add" },
+      "acceptance": { "type": "structure", "visual": { "sMaskedMin": 0.97, "boxDeltaMax": 1 }, "story": "must-add" },
       "assets": { "before": "8c7b6a5948372615:before", "after": "8c7b6a5948372615:after" }
     },
     {
-      "id": "e0d1c2b3a4958677", "kind": "component.new", "title": "New component \"PriceTag\"",
+      "id": "e0d1c2b3a4958677", "kind": "component.new", "title": "New component \"PriceTag\"", "designerTitle": "New component Price tag",
       "target": { "key": "Components/PriceTag", "figmaNodeId": "40:2" },
       "structure": [ { "t": "frame", "key": "PriceTag:0", "name": "PriceTag",
         "layout": { "direction": "row", "gap": { "token": "--space-1", "value": 4 },
@@ -801,13 +826,16 @@ The component library lives in `github.com/acme/ui` (published as `@acme/ui`); s
           { "t": "instance", "key": "PriceTag:0/Icon:0", "inst": { "sid": "icons-tag", "component": { "…": "…" }, "props": {} } },
           { "t": "text", "key": "PriceTag:0/Price:1", "characters": "€ 24,90", "style": { "token": "--text-sm-strong" } } ] } ],
       "nearest": [ { "sid": "components-badge", "score": 0.82, "code": { "…": "…" } } ],
+      "api": { "axes": [], "properties": [ { "name": "price", "type": "TEXT", "default": "€ 24,90" } ] },
+      "suggested": { "exportName": "PriceTag", "dir": "src/components/PriceTag",
+                     "files": ["PriceTag.tsx", "PriceTag.module.css", "PriceTag.stories.tsx"] },
       "snippet": { "lang": "jsx-sketch", "imports": ["import { TagIcon } from \"src/icons/TagIcon\";"],
                    "code": "<frame name=\"PriceTag\" direction=\"row\" gap=\"--space-1\" padding=\"--space-1 --space-2\" radius=\"6px /* ? --radius-md */\">\n  <TagIcon />\n  <text style=\"--text-sm-strong\">€ 24,90</text>\n</frame>" },
-      "acceptance": { "type": "visual", "visual": { "sMaskedMin": 0.97, "boxDeltaMax": 1 }, "story": "must-add" },
+      "acceptance": { "type": "structure", "visual": { "sMaskedMin": 0.97, "boxDeltaMax": 1 }, "story": "must-add" },
       "assets": { "after": "e0d1c2b3a4958677:after" }
     },
     {
-      "id": "c3b2a1f0e9d8c7b6", "kind": "screen", "title": "Screen \"Checkout\" · 2 breakpoints · 2 states",
+      "id": "c3b2a1f0e9d8c7b6", "kind": "screen", "title": "Screen \"Checkout\" · 2 breakpoints · 2 states", "designerTitle": "Checkout: Desktop, Mobile, Mobile / Empty",
       "target": { "key": "Checkout", "figmaNodeId": "60:1" },
       "screen": { "name": "Checkout", "target": "screens", "variants": [
         { "breakpoint": { "name": "Desktop", "minWidth": 1280 }, "state": "default",
@@ -851,7 +879,7 @@ The component library lives in `github.com/acme/ui` (published as `@acme/ui`); s
                        { "code": "DCR_CONTENT_PLACEHOLDER", "severity": "info", "message": "1 placeholder text" } ]
     },
     {
-      "id": "7a6b5c4d3e2f1a0b", "kind": "instance.deprecated", "title": "LegacyAlert is deprecated: use Banner (1 occurrence)",
+      "id": "7a6b5c4d3e2f1a0b", "kind": "instance.deprecated", "title": "LegacyAlert is deprecated: use Banner (1 occurrence)", "designerTitle": "Legacy alert → Banner (1 use)",
       "target": { "sid": "components-legacyalert", "figmaNodeId": "60:9" },
       "instanceRef": {
         "used": { "sid": "components-legacyalert", "vk": "aa01…", "irh": "41f2…", "values": { "Kind": "Info" } },
@@ -887,8 +915,8 @@ The component library lives in `github.com/acme/ui` (published as `@acme/ui`); s
 `renderPrompt(dcr): string` is a pure template with no conditionals on volatile data. Its section order is fixed:
 
 1. **Review summary** (§7.4). The page a reviewer reads before any AI starts: headline, counts, components touched, new components, screens, open questions, approval state.
-2. **Context.** Repo, branch, base commit, targets (§5.5), Storybook version and framework, and the DCR id and hash.
-3. **Rules (agent contract, §8).** Fixed text, versioned with `dcrVersion`.
+2. **Context.** Repo, branch, base commit, head commit (§5.6), targets (§5.5), Storybook version and framework, and the DCR id and hash. When `dcr.content.i18n` detects a library, one line says so: "i18n: detected `react-intl` → use keys".
+3. **Rules (agent contract, §8).** Fixed text, versioned with `dcrVersion`. Rules and Verify are rendered from a capability list (the features of this `dcrVersion`), so a prompt never names a command that does not exist yet.
 4. **Items.** One section per item, in DCR order:
    - title;
    - code location: export, file, story (screens: target repo and import specifier);
