@@ -159,7 +159,7 @@ export function createDiagnosticRegistry<const D extends readonly DiagnosticDef[
     byCode.set(def.code, def);
   }
   return {
-    codes: Object.freeze([...byCode.keys()]),
+    codes: Object.freeze(defs.map((def): D[number]['code'] => def.code)),
     get: (code) => byCode.get(code),
     has: (code): code is D[number]['code'] => byCode.has(code),
     [Symbol.iterator]: () => byCode.values(),

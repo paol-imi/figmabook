@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Holotype Capture IR (CaptureDoc)",
+  "type": "object",
+  "required": [
+    "kind",
+    "captureVersion",
+    "engine",
+    "target",
+    "rootRect",
+    "diagnostics"
+  ],
+  "properties": {
+    "kind": {
+      "const": "holotype/capture",
+      "type": "string"
+    },
+    "captureVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+      "description": "Semantic version",
+      "type": "string"
+    },
+    "engine": {
+      "type": "object",
+      "required": [
+        "name",
+        "version",
+        "chromium",
+        "playwright"
+      ],
+      "properties": {
+        "name": {
+          "const": "@holotype/capture",
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "chromium": {
+          "type": "string"
+        },
+        "playwright": {
+          "type": "string"
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "storybookUrl",
+        "storyId",
+        "sid",
+        "vk",
+        "rootSelector"
+      ],
+      "properties": {
+        "storybookUrl": {
+          "type": "string"
+        },
+        "storyId": {
+          "type": "string"
+        },
+        "sid": {
+          "type": "string"
+        },
+        "vk": {
+          "pattern": "^[0-9a-f]{16}$",
+          "type": "string"
+        },
+        "rootSelector": {
+          "type": "string"
+        }
+      }
+    },
+    "rootRect": {
+      "type": "object",
+      "required": [
+        "x",
+        "y",
+        "w",
+        "h"
+      ],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "w": {
+          "type": "number"
+        },
+        "h": {
+          "type": "number"
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "severity",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "pattern": "^[A-Z]+(?:_[A-Z0-9]+)+$",
+            "type": "string"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "const": "info",
+                "type": "string"
+              },
+              {
+                "const": "warn",
+                "type": "string"
+              },
+              {
+                "const": "error",
+                "type": "string"
+              },
+              {
+                "const": "fatal",
+                "type": "string"
+              }
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "nodeKey": {
+            "type": "string"
+          },
+          "variantKey": {
+            "type": "string"
+          },
+          "sid": {
+            "type": "string"
+          },
+          "property": {
+            "type": "string"
+          },
+          "value": {
+            "maxLength": 200,
+            "type": "string"
+          },
+          "fallback": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "patternProperties": {
+              "^(.*)$": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

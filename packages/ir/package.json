@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "tsup && node scripts/emit-schemas.mjs",
-    "typecheck": "tsc",
+    "typecheck": "tsc && tsc -p test",
     "test": "vitest run"
   },
   "dependencies": {

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Holotype tokens (TokensDoc)",
+  "type": "object",
+  "required": [
+    "kind",
+    "tokensVersion",
+    "irh",
+    "collections",
+    "variables"
+  ],
+  "properties": {
+    "kind": {
+      "const": "holotype/tokens",
+      "type": "string"
+    },
+    "tokensVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+      "description": "Semantic version",
+      "type": "string"
+    },
+    "irh": {
+      "pattern": "^[0-9a-f]{16}$",
+      "type": "string"
+    },
+    "collections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "defaultMode"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "defaultMode": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "collection",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "collection": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "const": "COLOR",
+                "type": "string"
+              },
+              {
+                "const": "FLOAT",
+                "type": "string"
+              },
+              {
+                "const": "STRING",
+                "type": "string"
+              },
+              {
+                "const": "BOOLEAN",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

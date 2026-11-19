@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Holotype Scene IR (SceneComponent)",
+  "type": "object",
+  "required": [
+    "kind",
+    "sceneVersion",
+    "sid",
+    "irh",
+    "variants",
+    "dependencies",
+    "diagnostics"
+  ],
+  "properties": {
+    "kind": {
+      "const": "holotype/scene-component",
+      "type": "string"
+    },
+    "sceneVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+      "description": "Semantic version",
+      "type": "string"
+    },
+    "sid": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "irh": {
+      "pattern": "^[0-9a-f]{16}$",
+      "type": "string"
+    },
+    "variants": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "vk",
+          "irh",
+          "values"
+        ],
+        "properties": {
+          "vk": {
+            "pattern": "^[0-9a-f]{16}$",
+            "type": "string"
+          },
+          "irh": {
+            "pattern": "^[0-9a-f]{16}$",
+            "type": "string"
+          },
+          "values": {
+            "type": "object",
+            "patternProperties": {
+              "^(.*)$": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "severity",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "pattern": "^[A-Z]+(?:_[A-Z0-9]+)+$",
+            "type": "string"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "const": "info",
+                "type": "string"
+              },
+              {
+                "const": "warn",
+                "type": "string"
+              },
+              {
+                "const": "error",
+                "type": "string"
+              },
+              {
+                "const": "fatal",
+                "type": "string"
+              }
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "nodeKey": {
+            "type": "string"
+          },
+          "variantKey": {
+            "type": "string"
+          },
+          "sid": {
+            "type": "string"
+          },
+          "property": {
+            "type": "string"
+          },
+          "value": {
+            "maxLength": 200,
+            "type": "string"
+          },
+          "fallback": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "patternProperties": {
+              "^(.*)$": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

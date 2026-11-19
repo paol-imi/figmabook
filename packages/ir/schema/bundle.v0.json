@@ -1,0 +1,387 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Holotype bundle manifest (BundleManifest)",
+  "type": "object",
+  "required": [
+    "kind",
+    "bundleVersion",
+    "sceneVersion",
+    "features",
+    "generator",
+    "createdBy",
+    "source",
+    "config",
+    "components",
+    "assets",
+    "fonts",
+    "totals"
+  ],
+  "properties": {
+    "kind": {
+      "const": "holotype/bundle",
+      "type": "string"
+    },
+    "bundleVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+      "description": "Semantic version",
+      "type": "string"
+    },
+    "sceneVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+      "description": "Semantic version",
+      "type": "string"
+    },
+    "tokensVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+      "description": "Semantic version",
+      "type": "string"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "const": "grid-layout",
+            "type": "string"
+          },
+          {
+            "const": "variable-fonts",
+            "type": "string"
+          },
+          {
+            "const": "locked-lines",
+            "type": "string"
+          },
+          {
+            "const": "slots",
+            "type": "string"
+          },
+          {
+            "const": "instance-swap",
+            "type": "string"
+          },
+          {
+            "const": "tokens",
+            "type": "string"
+          },
+          {
+            "const": "tokens-modes",
+            "type": "string"
+          },
+          {
+            "const": "text-styles",
+            "type": "string"
+          },
+          {
+            "const": "effect-styles",
+            "type": "string"
+          },
+          {
+            "const": "source-color",
+            "type": "string"
+          },
+          {
+            "const": "decomposed-borders",
+            "type": "string"
+          },
+          {
+            "const": "rasterized-subtrees",
+            "type": "string"
+          },
+          {
+            "const": "prototype-reactions",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "generator": {
+      "type": "object",
+      "required": [
+        "name",
+        "version",
+        "mapper",
+        "capture",
+        "chromium",
+        "playwright"
+      ],
+      "properties": {
+        "name": {
+          "const": "@holotype/cli",
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "mapper": {
+          "type": "string"
+        },
+        "capture": {
+          "type": "string"
+        },
+        "chromium": {
+          "type": "string"
+        },
+        "playwright": {
+          "type": "string"
+        }
+      }
+    },
+    "createdBy": {
+      "anyOf": [
+        {
+          "const": "cli",
+          "type": "string"
+        },
+        {
+          "const": "action",
+          "type": "string"
+        },
+        {
+          "const": "server",
+          "type": "string"
+        },
+        {
+          "const": "hosted",
+          "type": "string"
+        }
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "storybookVersion",
+        "origin",
+        "fingerprint"
+      ],
+      "properties": {
+        "storybookVersion": {
+          "type": "string"
+        },
+        "renderer": {
+          "type": "string"
+        },
+        "builder": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "string"
+        },
+        "fingerprint": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "git": {
+          "type": "object",
+          "required": [
+            "sha",
+            "ref",
+            "dirty"
+          ],
+          "properties": {
+            "sha": {
+              "type": "string"
+            },
+            "ref": {
+              "type": "string"
+            },
+            "dirty": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "required": [
+        "hash"
+      ],
+      "properties": {
+        "hash": {
+          "type": "string"
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sid",
+          "name",
+          "titlePath",
+          "irh",
+          "file",
+          "bytes",
+          "variants",
+          "nodes",
+          "dependencies"
+        ],
+        "properties": {
+          "sid": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "titlePath": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "irh": {
+            "pattern": "^[0-9a-f]{16}$",
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "bytes": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "variants": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "nodes": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sha",
+          "mime",
+          "bytes"
+        ],
+        "properties": {
+          "sha": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "mime": {
+            "type": "string"
+          },
+          "bytes": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "natural": {
+            "type": "object",
+            "required": [
+              "w",
+              "h"
+            ],
+            "properties": {
+              "w": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "h": {
+                "minimum": 0,
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "fonts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "family",
+          "styles",
+          "isCustom"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "styles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isCustom": {
+            "type": "boolean"
+          },
+          "srcUrl": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "required": [
+        "file",
+        "irh",
+        "variables",
+        "collections"
+      ],
+      "properties": {
+        "file": {
+          "const": "tokens.json",
+          "type": "string"
+        },
+        "irh": {
+          "pattern": "^[0-9a-f]{16}$",
+          "type": "string"
+        },
+        "variables": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "collections": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "required": [
+        "components",
+        "variants",
+        "nodes",
+        "assetBytes"
+      ],
+      "properties": {
+        "components": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "variants": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "nodes": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "assetBytes": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

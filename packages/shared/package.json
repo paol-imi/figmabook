@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "typecheck": "tsc",
+    "typecheck": "tsc && tsc -p test",
     "test": "vitest run"
   }
 }
