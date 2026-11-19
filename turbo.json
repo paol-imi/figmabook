@@ -12,6 +12,18 @@
     },
     "test": {
       "inputs": ["$TURBO_DEFAULT$"]
+    },
+    "build-storybook": {
+      "inputs": ["$TURBO_DEFAULT$", "!test/**"],
+      "outputs": ["storybook-static/**"]
+    },
+    "test:smoke": {
+      "cache": false,
+      "passThroughEnv": ["PLAYWRIGHT_BROWSERS_PATH", "HOLOTYPE_CHROMIUM_PATH"]
+    },
+    "test:e2e": {
+      "cache": false,
+      "passThroughEnv": ["PLAYWRIGHT_BROWSERS_PATH", "HOLOTYPE_CHROMIUM_PATH"]
     }
   }
 }

@@ -1,0 +1,9 @@
+/*
+ * Inter 400/500/600/700, Latin subset, self-hosted from @fontsource/inter.
+ * Every file these faces reference is pinned by sha256 in fixtures/fonts.lock:
+ * change the weights here and in scripts/lock-fonts.ts together, then run `pnpm fonts:lock`.
+ */
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-700.css";

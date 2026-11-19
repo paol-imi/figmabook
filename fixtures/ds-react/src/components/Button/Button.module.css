@@ -1,0 +1,111 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-width-1) solid transparent;
+  border-radius: var(--button-radius);
+  font-family: var(--font-family-sans);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.button:focus-visible {
+  outline: var(--border-width-2) solid var(--color-focus-ring);
+  outline-offset: var(--border-width-2);
+}
+
+/* Variants */
+
+.primary {
+  background: var(--button-bg);
+  color: var(--button-fg);
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--button-bg-hover);
+}
+
+.primary:active:not(:disabled) {
+  background: var(--button-bg-active);
+}
+
+.secondary {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface);
+  color: var(--color-fg);
+}
+
+.secondary:hover:not(:disabled),
+.secondary:active:not(:disabled) {
+  background: var(--color-surface-muted);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.ghost:hover:not(:disabled),
+.ghost:active:not(:disabled) {
+  background: var(--color-primary-subtle);
+}
+
+/* Sizes */
+
+.sm {
+  gap: var(--space-1);
+  height: var(--control-height-sm);
+  padding-inline: var(--space-3);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.md {
+  gap: var(--space-2);
+  height: var(--control-height-md);
+  padding-inline: var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.lg {
+  gap: var(--space-2);
+  height: var(--control-height-lg);
+  padding-inline: var(--space-5);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+}
+
+/* States */
+
+.button:disabled {
+  border-color: transparent;
+  background: var(--color-disabled-bg);
+  color: var(--color-disabled-fg);
+  cursor: not-allowed;
+}
+
+.loading:disabled {
+  cursor: progress;
+}
+
+.label {
+  display: inline-block;
+}
+
+.spinner {
+  flex-shrink: 0;
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+  border: var(--border-width-2) solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--radius-full);
+  animation: spin var(--duration-spin) linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}

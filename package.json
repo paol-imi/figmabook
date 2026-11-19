@@ -13,6 +13,8 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
+    "build-storybook": "turbo run build-storybook",
+    "test:smoke": "turbo run test:smoke",
     "lint": "biome check .",
     "format": "biome format --write .",
     "check:deps": "depcruise packages tools --config .dependency-cruiser.mjs",

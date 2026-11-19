@@ -1,0 +1,46 @@
+/*
+ * Micro-fixtures: backgrounds (12 §2.2). Literal values on purpose.
+ * The slice handles solid-alpha, oklch and image-cover; the gradient cases exist so it proves
+ * its fallback diagnostics.
+ */
+
+.box {
+  width: 160px;
+  height: 96px;
+}
+
+.solidAlpha {
+  background-color: rgb(37 99 235 / 0.5);
+}
+
+.oklch {
+  background-color: oklch(0.65 0.2 145);
+}
+
+.linearAngle {
+  background-image: linear-gradient(135deg, #2563eb, #22c55e);
+}
+
+.linearHardStops {
+  background-image: linear-gradient(90deg, #ef4444 0 33%, #f59e0b 33% 66%, #22c55e 66% 100%);
+}
+
+.radial {
+  background-image: radial-gradient(circle at 30% 40%, #fde047, #2563eb 70%);
+}
+
+.conic {
+  background-image: conic-gradient(from 90deg, #ef4444, #f59e0b, #22c55e, #3b82f6, #ef4444);
+}
+
+.multiLayer {
+  background:
+    linear-gradient(rgb(15 23 42 / 0.4), rgb(15 23 42 / 0)),
+    radial-gradient(circle at 80% 20%, #fde047 0 12px, transparent 13px), #3b82f6;
+}
+
+.imageCover {
+  background-image: url("../assets/landscape.png");
+  background-position: center;
+  background-size: cover;
+}
