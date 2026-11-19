@@ -8,10 +8,12 @@
       "outputs": ["dist/**", "build/**", "manifest.json", "schema/**"]
     },
     "typecheck": {
-      "inputs": ["$TURBO_DEFAULT$"]
+      "inputs": ["$TURBO_DEFAULT$"],
+      "dependsOn": ["^build"]
     },
     "test": {
-      "inputs": ["$TURBO_DEFAULT$"]
+      "inputs": ["$TURBO_DEFAULT$"],
+      "dependsOn": ["^build"]
     },
     "@holotype/diag-gen#test": {
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/docs/plan/12-quality.md"]

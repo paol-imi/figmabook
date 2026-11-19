@@ -433,7 +433,7 @@ export function WithText<B extends Ctor>(Base: B) {
       const state = live(this);
       const api = 'set_leadingTrim';
       requireNodeFonts(api, state);
-      state.leadingTrim = checkEnum(api, 'leadingTrim', value, ['CAP_HEIGHT', 'NONE']);
+      state.leadingTrim = checkEnum(api, 'leadingTrim', value, ['CAP_HEIGHT', 'NONE']); // diag-check-ignore: Figma enum, not a diagnostic
       state.ctx.record(state, 'set', 'leadingTrim', value);
     }
 
