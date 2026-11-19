@@ -28,7 +28,7 @@ export const Pattern = T.Union([T.String(), T.RegExp(/.*/)]);
 
 // components[sid] = HolotypeParams plus the one project-only key (10 §9.2)
 export const ComponentConfig = T.Composite([HolotypeParams,
-  T.Object({ conflicts: T.Optional(Enum('ask', 'keep', 'overwrite', 'fork')) })], Strict);
+  T.Object({ conflicts: T.Optional(Enum('keep', 'overwrite', 'fork')) })], Strict);
 
 export const HolotypeConfig = T.Object({
   storybook:  StorybookConfig,                                  // §4, required
@@ -95,7 +95,7 @@ This is the single list of keys. Chapters reference it; the per-namespace sectio
 | `defaults.replacedBy` | `string` (`sid`) | none | [15 §4.13](15-change-requests.md#instance-versions) |
 | `defaults.channelCapture` | see 04 | see 04 | [04](04-variant-model.md) |
 | `defaults.split` | `boolean` | `false` (icon splits are automatic, `PLAN_ICON_SPLIT`) | [04](04-variant-model.md) |
-| `components[sid].conflicts` | `'ask' \| 'keep' \| 'overwrite' \| 'fork'` | `sync.conflicts` | [10](10-sync.md) |
+| `components[sid].conflicts` | `'keep' \| 'overwrite' \| 'fork'` | `sync.conflicts` | [10](10-sync.md) |
 | `capture.dpr` | `1 \| 2 \| 3` | `2` | [05](05-capture.md) (D-24) |
 | `capture.locale` | `string` (BCP 47) | `'en-US'` | [05](05-capture.md) |
 | `capture.timezone` | `string` (IANA) | `'UTC'` | [05](05-capture.md) |
@@ -158,7 +158,7 @@ This is the single list of keys. Chapters reference it; the per-namespace sectio
 | `figma.prototypeStates` | `boolean` | `false` | [09](09-plugin.md) |
 | `figma.grid` | `{ maxColumns, gap, padding }` | `{ maxColumns: 8, gap: 24, padding: 32 }` | [07](07-mapping.md), [09](09-plugin.md#grid) |
 | `figma.files` | `Array<{ name, include: string[] }>` | none (one file) | [10 §13](10-sync.md) |
-| `sync.conflicts` | `'ask' \| 'keep' \| 'overwrite' \| 'fork'` | `'ask'` interactive (pre-selects `keep`); `'keep'` in harness, auto and CI | [10 §9](10-sync.md) (D-29) |
+| `sync.conflicts` | `'keep' \| 'overwrite' \| 'fork'` | `'keep'` everywhere (D-29); the plugin's conflict screen pre-selects it and the user can change it per node | [10 §9](10-sync.md) (D-29) |
 | `sync.orphans` | `'remove' \| 'hide'` | `'remove'` | [10](10-sync.md#reconcile) |
 | `sync.pruneAfterDays` | `number` | `30` (manual prune only) | [10](10-sync.md#deprecation) (D-20) |
 | `sync.undo` | `'per-component' \| 'single'` | `'per-component'` | [09](09-plugin.md) |
@@ -361,7 +361,7 @@ const FigmaConfig = T.Object({
 
 ```ts
 const SyncConfig = T.Object({
-  conflicts: Enum('ask', 'keep', 'overwrite', 'fork'),            // default 'ask' interactive, 'keep' in harness/auto/CI (D-29)
+  conflicts: Enum('keep', 'overwrite', 'fork'),            // default 'keep' (D-29); per-node choice in the plugin
   orphans: Enum('remove', 'hide'),                                // default 'remove'
   pruneAfterDays: T.Integer({ minimum: 0 }),                      // default 30; used only by manual prune
   undo: Enum('per-component', 'single'),                          // default 'per-component'

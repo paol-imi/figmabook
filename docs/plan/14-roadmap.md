@@ -135,27 +135,43 @@ S-14 was proposed in [10 §15](10-sync.md) and never got a separate slot. Its qu
 
 ---
 
-## Phase 1 — Pixel-correct snapshot (M1)
+<a id="hardening"></a>
 
-**Goal:** `holotype capture --story <id>` → bundle → plugin builds an **absolute-positioned** frame tree that is pixel-faithful. Absolute is the baseline that every later phase falls back to (D-15).
+## Hardening track (H-A…H-G, M1–M5)
 
-| Package | Deliverables |
-|---|---|
-| `storybook` | index v4/v5 parse; preview boot; render one story by id (URL + channel); readiness; root detection + decorator unwrap |
-| `capture` | composed-tree walk (open + closed shadow, slots, `display:contents`), CDP box model geometry + affine transforms, fills/strokes/radius/effects capture, text runs + lines, CDP platform fonts, images (fetch, convert, dedupe), inline SVG serialization, pseudo-elements (CDP), stacking order, rasterization fallback |
-| `mapper` | absolute-only Scene IR (frames/rect/text/vector/image), gradient/shadow/blur math (S-03), per-side border handling (S-05), font mapping requests |
-| `plugin` | bundle import (file, topology B), fonts preflight, absolute applier, images, SVG, text ranges, read-back geometry, report tab |
-| `cli` | `capture`, `export`, `doctor` (subset) |
-| `fidelity` | T0, T1, T2 harness; macOS runner online; baseline v1 |
+The old Phases 1–5 become hardening groups. Each starts after the slice item it extends ([BUILD §7](BUILD.md#hardening)); the tables below list only what is not already in the slice. **These are hardening exit criteria; they never block the slice.**
 
-**Out:** auto layout, components, variants, sync, tokens.
-**Exit criteria:** on micro-fixtures excluding layout groups: p95 box error ≤1px, median SSIM_masked ≥0.98; text line parity ≥95%; fonts preflight works; harness nightly green with ratchet. **Effort:** 15 ew.
+| Group | Was | Milestone |
+|---|---|---|
+| H-A Fidelity | Phase 1 | M1 |
+| H-B Native structure | Phase 2 | M2 |
+| H-C Variants at scale | Phase 3 | M3 |
+| H-D Sync UX | Phase 4b | M4 |
+| H-E DCR complete | Phase 4.5 | M4.5 |
+| H-F Tokens complete + H-G Compatibility (SB 8/9 smoke, SB 11 at GA) | Phase 5 | M5 |
+
+A quarterly **first-party check** re-verifies Figma's agent tools and the competitors of [01](01-landscape.md) (R1).
 
 ---
 
-## Phase 2 — Native structure (M2)
+## H-A — Fidelity (M1; was Phase 1)
 
-**Goal:** designer-grade structure: auto layout and grid with verification (D-15), text fidelity (D-17), simplification and naming.
+**Goal:** `holotype capture --story <id>` → bundle → plugin builds an **absolute-positioned** frame tree that is pixel-faithful. Absolute is the baseline that every later phase falls back to (D-15). The slice already covers light DOM + open shadow, solid paints, borders, Latin text, inline SVG and PNG/JPEG; H-A adds the rest.
+
+| Package | Deliverables |
+|---|---|
+| `capture` | closed shadow roots, `display:contents`, affine transforms, gradients, masks, blend, filters, pseudo-elements (CDP), form controls, image transcode, CJK/RTL text, icon fonts (S-09), rasterization fallback |
+| `mapper` | gradient/shadow/blur math (S-03), font mapping requests |
+| `plugin` | report tab polish, read-back geometry for the new node kinds |
+| `cli` | `export`, `doctor` (subset) |
+| `fidelity` | T1, T2 harness on the owner's Mac (manual runs until a runner is decided); baseline v1 |
+**Exit criteria:** on micro-fixtures excluding layout groups: p95 box error ≤1px, median SSIM_masked ≥0.98; text line parity ≥95%; fonts preflight works; harness green with ratchet. **Effort:** 10 agent-weeks, ~10 owner-hours.
+
+---
+
+## H-B — Native structure (M2; was Phase 2)
+
+**Goal:** designer-grade structure: wrap and grid with verification (D-15), text fidelity (D-17), simplification and naming. Flex row/column → auto layout with fallback is already in the slice (L2).
 
 | Package | Deliverables |
 |---|---|
