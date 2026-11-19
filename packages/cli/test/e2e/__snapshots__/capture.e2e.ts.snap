@@ -47,7 +47,7 @@ exports[`holotype capture (B-13) > prints one RunReport with --json 1`] = `
   "diagnostics": [],
   "diagnosticsByCode": {},
   "output": {
-    "bytes": 1972,
+    "bytes": 1964,
     "kind": "zip",
     "path": "<path>",
   },
