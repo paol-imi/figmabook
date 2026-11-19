@@ -14,6 +14,12 @@ export interface CodeUse {
 /** Put this marker on a line to exempt its literals, e.g. a deliberately unknown code. */
 export const IGNORE_MARKER = 'diag-check-ignore';
 
+/**
+ * Upper-snake literals that share a diagnostic prefix but are Figma Plugin API enum values,
+ * not diagnostics (e.g. `leadingTrim: 'CAP_HEIGHT'`).
+ */
+export const NON_DIAGNOSTIC_LITERALS: ReadonlySet<string> = new Set(['CAP_HEIGHT']);
+
 const SOURCE_EXTENSIONS = /\.(?:[cm]?[jt]sx?)$/;
 const SKIPPED_DIRS = new Set(['node_modules', 'dist', 'build', 'coverage']);
 const LITERAL = /(['"`])([A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+)\1/g;
@@ -30,6 +36,7 @@ export function findCodeLiterals(text: string, prefixes: readonly string[]): { l
     if (content.includes(IGNORE_MARKER)) return;
     for (const match of content.matchAll(LITERAL)) {
       const code = match[2] ?? '';
+      if (NON_DIAGNOSTIC_LITERALS.has(code)) continue;
       if (domains.has(code.slice(0, code.indexOf('_')))) found.push({ line: index + 1, code });
     }
   });
